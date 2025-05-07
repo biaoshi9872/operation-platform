@@ -1,0 +1,89 @@
+$color-primary: var(--el-color-primary);
+$default-title-color:#666;
+$default-text-color:#999;
+
+/*多行超出隐藏*/
+@mixin overflow($hang:3) {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: $hang;
+	overflow: hidden;
+	text-overflow:ellipsis;
+	lines:$hang;
+
+}
+@for $i from 1 through 3 {
+	.ellipsis-#{$i} {
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  display: -webkit-box;
+	  -webkit-line-clamp: $i;
+	  line-clamp: $i;
+	  /*! autoprefixer: ignore next */
+	  -webkit-box-orient: vertical;
+	}
+  }
+/*flex布局*/
+@mixin flex($flex) {
+	display: flex;
+	@if ($flex=='center') {
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}@else if($flex=='between'){
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}@else if ($flex=='around'){
+		flex-direction: row;
+		justify-content: space-around;
+		align-items: center;
+	}@else if ($flex=='column'){
+		flex-direction: column;
+		align-items: center;
+	}@else if ($flex=='column-center'){
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}@else if ($flex=='start'){
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+	}@else if ($flex=='end'){
+		flex-direction: row;
+		justify-content: flex-end;
+		align-items: center;
+	}@else if ($flex=='column-start'){
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: center;
+	}@else if ($flex=='top-end'){
+		flex-direction: column;
+		justify-content: flex-end;
+	}
+}
+
+
+@mixin cell_content_box {
+  .item {
+    color: $default-title-color;
+    .item_title {
+      color: $default-text-color;
+      display: inline-block;
+      text-align: right;
+      width: 130px;
+      margin-right: 8px;
+    }
+  }
+}
+
+@mixin grid_content_box($span:3){
+  display: grid;
+  grid-template-columns: repeat($span, 1fr);
+  gap: 16px;
+  @include cell_content_box;
+}
+
+.cell_content_box{
+	@include cell_content_box();
+}

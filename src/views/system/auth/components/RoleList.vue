@@ -1,0 +1,72 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: biao.shi
+ * @Date: 2023-04-17 09:22:09
+ * @LastEditors: biao.shi
+ * @LastEditTime: 2023-04-20 10:10:18
+-->
+
+<script setup lang="ts" name="RoleList">
+import role_api from '@/api/system/role'
+import system_num from '@/utils/constant/system'
+const emits = defineEmits<{
+  (e: 'change', val: any): void
+}>()
+
+const data = reactive({
+  roleName: '',
+  loading: false,
+  roleList: []
+})
+
+const { roleList, roleName, loading } = toRefs(data)
+
+function getList() {
+  loading.value = true
+  const orgType = 1
+  role_api
+    .A_permissionRoleList({ roleName: roleName.value, orgType })
+    .then((data: any) => {
+      roleList.value = data || []
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+// 选中当前行
+function handleRoleChange(val: any) {
+  emits('change', val)
+}
+
+onMounted(() => {
+  getList()
+})
+</script>
+
+<template>
+  <div class="main_box">
+    <h3 class="mb-10">角色列表</h3>
+    <div class="search-row">
+      <el-input v-model="roleName" placeholder="请输入角色名称" clearable />
+      <el-button type="primary" class="ml-5" @click="getList">查询</el-button>
+    </div>
+    <el-table v-loading="loading" :data="roleList" highlight-current-row height="650px" @current-change="handleRoleChange">
+      <YbtTableColumn label="机构类型" prop="name">
+        <template #default="{ row }">{{ system_num.getRoleType(row.createRoleType) }}</template>
+      </YbtTableColumn>
+      <YbtTableColumn label="角色" prop="name" />
+    </el-table>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.main_box {
+  background-color: var(--el-searchForm-bg-color);
+
+  .search-row {
+    display: flex;
+  }
+}
+</style>
