@@ -90,9 +90,6 @@ function handleTab(tab: TabsPaneContext, event: Event) {
       <el-form-item label="菜单名称">
         <el-input v-model="facade.menuName" placeholder="请输菜单名称" clearable />
       </el-form-item>
-      <template #button>
-        <el-button authKey="VO_MEUN_ADD" type="primary" @click="handleAdd('1', null)">新增分组</el-button>
-      </template>
     </SearchForm>
     <TableModel
       :listTableData="dataList"
@@ -101,6 +98,9 @@ function handleTab(tab: TabsPaneContext, event: Event) {
       @rowContextmenu="handleContextMenu"
       :isShowPagination="false"
     >
+      <template #option>
+        <el-button authKey="VO_MEUN_ADD" type="primary" @click="handleAdd('1', null)">新增分组</el-button>
+      </template>
       <YbtTableColumn prop="name" label="名称" min-width="200"></YbtTableColumn>
       <YbtTableColumn prop="id" label="auth"></YbtTableColumn>
       <YbtTableColumn prop="level" label="类型">

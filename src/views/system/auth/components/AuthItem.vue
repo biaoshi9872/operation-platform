@@ -44,7 +44,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="permission-tree common-shadow border-rd-2 p-16">
+  <div class="permission-tree">
     <ModalContent title="权限设置">
       <el-tree
         ref="leftTree"
@@ -99,7 +99,6 @@ $border-color-lighter: #dcdfe6;
 
 <style lang="scss">
 .permission-tree {
-  background-color: var(--el-searchForm-bg-color);
   width: 100%;
   height: 100%;
 

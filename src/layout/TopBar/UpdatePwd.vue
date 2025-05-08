@@ -7,7 +7,6 @@ import { hasNumberAndWord, validatePhone } from '@/utils/validator'
 import { useUserStore } from '@/stores/index'
 const { userInfo } = storeToRefs(useUserStore())
 
-
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
 }>()
@@ -79,11 +78,12 @@ function handleClose() {
 const handleSubmit = () => {
   formRef.value.validate().then(() => {
     data.submitLoading = true
-    const { mobile: phone } = userInfo.value as any
-    user_api.A_resetPwd({
-      ...data.formData,
-      phone
-    })
+    const { id } = userInfo.value as any
+    user_api
+      .A_resetPwd({
+        ...data.formData,
+        id
+      })
       .then(() => {
         ElMessage.success('密码修改成功！')
         handleReset()
@@ -95,28 +95,24 @@ const handleSubmit = () => {
 }
 </script>
 <template>
-  <el-dialog v-bind="$attrs" title="修改密码" destroy-on-close :close-on-click-modal="false" @closed="handleReset" draggable
-    width="500">
+  <el-dialog v-bind="$attrs" title="修改密码" destroy-on-close :close-on-click-modal="false" @closed="handleReset" draggable width="500">
     <el-form ref="formRef" :model="data.formData" :rules="data.formRules" label-width="100px">
       <el-form-item prop="oldPwd" label="旧密码">
-        <el-input v-model.trim="data.formData.oldPwd" placeholder="请输入新密码" show-password clearable
-          autocomplete="new-password">
+        <el-input v-model.trim="data.formData.oldPwd" placeholder="请输入新密码" show-password clearable autocomplete="new-password">
           <template #prefix>
             <svg-icon name="password" class="prefix-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="newPwd" label="新密码">
-        <el-input v-model.trim="data.formData.newPwd" placeholder="请输入新密码" show-password clearable
-          autocomplete="new-password">
+        <el-input v-model.trim="data.formData.newPwd" placeholder="请输入6位数以上字母+数字密码" show-password clearable autocomplete="new-password">
           <template #prefix>
             <svg-icon name="password" class="prefix-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="confirmPwd" label="确认密码">
-        <el-input v-model.trim="data.formData.confirmPwd" placeholder="请输入确认密码" show-password clearable
-          autocomplete="new-password">
+        <el-input v-model.trim="data.formData.confirmPwd" placeholder="请输入6位数以上字母+数字密码" show-password clearable autocomplete="new-password">
           <template #prefix>
             <svg-icon name="password" class="prefix-icon" />
           </template>
@@ -127,7 +123,7 @@ const handleSubmit = () => {
     <template #footer>
       <div class="footer-wrap">
         <el-button @click="handleClose">取消</el-button>
-        <el-button :loading="data.submitLoading" type="primary" @click="handleSubmit()"> 提交</el-button>
+        <el-button :loading="data.submitLoading" type="primary" @click="handleSubmit()">提交</el-button>
       </div>
     </template>
   </el-dialog>

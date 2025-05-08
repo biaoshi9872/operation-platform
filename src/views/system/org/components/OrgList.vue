@@ -12,29 +12,42 @@ import role_api from '@/api/system/role'
 import org_api from '@/api/system/org'
 import system_num from '@/utils/constant/system'
 import OrgModel from './OrgModel.vue'
-
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isOrgLast, orgInfo } = isStateCheckHooks()
+const props = defineProps({
+  curryOrgInfo: {
+    type: Object,
+    default: {}
+  }
+})
 const emits = defineEmits<{
   (e: 'change', val: any): void
+  (e: 'update:curryOrgInfo', val: any): void
 }>()
 const dataInfo = reactive({
   orgName: '',
-  showOrgModel: true,
-  curryInfo: {},
+  showOrgModel: false,
+  type: 'edit',
   dataSource: []
 })
 onMounted(() => {
   getList()
 })
-const editHandler = (node: any, data: any) => {}
-const addHandler = (node: any, data: any) => {
+const editHandler = (node: any, data: any) => {
+  dataInfo.type = 'edit'
   dataInfo.showOrgModel = true
 }
-
-const removeHandler = (node: any, data: any) => {}
-
+const addHandler = (node: any, data: any) => {
+  dataInfo.type = 'add'
+  dataInfo.showOrgModel = true
+}
+const nodeClick = (data: any) => {
+  emits('update:curryOrgInfo', data)
+}
 const getList = () => {
   org_api.A_orgTree({ orgName: dataInfo.orgName }).then((res: any) => {
     dataInfo.dataSource = res
+    emits('update:curryOrgInfo', isOrgLast.value ? orgInfo.value : dataInfo.dataSource[0])
   })
 }
 </script>
@@ -49,7 +62,7 @@ const getList = () => {
       <el-input v-model="dataInfo.orgName" placeholder="请输入关键字进行过滤" clearable />
       <el-button type="primary" class="ml-5" @click="getList">查询</el-button>
     </div>
-    <div>
+    <div class="mt-12">
       <el-tree
         style="max-width: 600px"
         :data="dataInfo.dataSource"
@@ -57,6 +70,7 @@ const getList = () => {
         default-expand-all
         :expand-on-click-node="false"
         :props="{ label: 'name' ,children: 'child' }"
+        @node-click="nodeClick"
       >
         <template #default="{ node, data }">
           <div class="custom-tree-node">
@@ -69,7 +83,7 @@ const getList = () => {
       </el-tree>
     </div>
   </div>
-  <OrgModel v-model="dataInfo.showOrgModel" :curryInfo="dataInfo.curryInfo"></OrgModel>
+  <OrgModel v-model="dataInfo.showOrgModel" :curryInfo="curryOrgInfo" :type="dataInfo.type"></OrgModel>
 </template>
 
 <style lang="scss" scoped>

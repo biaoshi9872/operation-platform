@@ -7,9 +7,11 @@ import org_api from '@/api/system/org'
 
 interface IProp {
   curryInfo: any
+  type: 'add' | 'edit'
 }
 const props = withDefaults(defineProps<IProp>(), {
-  curryInfo: {}
+  curryInfo: {},
+  type: 'edit'
 })
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
@@ -46,13 +48,13 @@ const data = reactive<IData>({
     remark: null,
     relationPerson: null,
     relationPhone: null,
-    relationProvinceId: 1,
-    relationCityId: 1,
-    relationCountryId: 1,
+    relationProvinceId: null,
+    relationCityId: null,
+    relationCountryId: null,
     relationDetailAddress: null,
     licenseNumber: null,
     companyLegalPerson: null,
-    attachment: 1,
+    attachment: '',
     username: null,
     password: null,
     mobile: null
@@ -118,20 +120,44 @@ const openHandler = () => {
   data.formData = {
     ...data.formDataBK
   }
+  if (props.type == 'edit') {
+    getOrgDetail()
+  }
 }
-const handleSubmit = () => {
-  formRef.value.validate().then(() => {
-    data.submitLoading = true
-    org_api
-      .A_save({ ...data.formData, id: props.curryInfo?.id || null })
-      .then(res => {})
-      .finally(() => {
-        data.submitLoading = false
-      })
+
+const getOrgDetail = () => {
+  org_api.A_getOrgDetail(props.curryInfo?.id).then((res: any) => {
+    data.formData = {
+      ...data.formData,
+      ...res
+    }
   })
 }
+
+const handleSubmit = () => {
+  formRef.value
+    .validate()
+    .then(() => {
+      data.submitLoading = true
+      org_api
+        .A_save({ ...data.formData, id: props.curryInfo?.id || null })
+        .then(res => {
+          ElMessage.success('操作成功')
+          handleClose()
+        })
+        .catch(() => {
+          data.submitLoading = false
+        })
+        .finally(() => {
+          data.submitLoading = false
+        })
+    })
+    .catch(() => {
+      ElMessage.error('请检查填写内容')
+    })
+}
 const title = computed(() => {
-  return props.curryInfo?.id ? '修改机构' : '新增机构'
+  return props.type == 'edit' ? '修改机构' : '新增机构'
 })
 </script>
 <template>
@@ -189,7 +215,7 @@ const title = computed(() => {
               <el-form-item label="手机号" prop="relationPhone">
                 <el-input v-model="data.formData.relationPhone" placeholder="请输入手机号" maxlength="11" show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="省市区" prop="stockNum"></el-form-item>
+              <!-- <el-form-item label="省市区" prop="stockNum"></el-form-item> -->
               <el-form-item label="详细地址">
                 <el-input
                   v-model="data.formData.relationDetailAddress"
@@ -208,7 +234,16 @@ const title = computed(() => {
               <el-form-item label="公司法人">
                 <el-input v-model="data.formData.companyLegalPerson" placeholder="请输入公司法人" maxlength="20" show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="资质附件"></el-form-item>
+              <el-form-item label="资质附件">
+                <ImgUpload
+                  v-model="data.formData.attachment"
+                  :limit="5"
+                  :acceptList="['bmp', 'png', 'jpg', 'jpeg', 'pdf']"
+                  :maxSize="5"
+                  :isArray="false"
+                  tip="图片不能超过5MB,支持扩展名：bmp,png,jpg,jpeg,pdf(最多可上传5张)"
+                ></ImgUpload>
+              </el-form-item>
             </el-tab-pane>
           </el-tabs>
         </div>

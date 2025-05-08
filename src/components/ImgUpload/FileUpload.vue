@@ -5,7 +5,7 @@ defineOptions({
   name: 'FileUpload'
 })
 import { UploadFilled } from '@element-plus/icons-vue'
-import { A_upload } from '@/api/proudectManger'
+import files_api from '@/api/files'
 import type { UploadProps } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { getLocal } from '@/utils/storage'
@@ -104,8 +104,8 @@ const handleRemove: UploadProps['onRemove'] = (uploadFiles: any) => {
 }
 
 const uploadSectionFile = (param: any) => {
-  var fileObj = param.file
-  A_upload(fileObj)
+  var file = param.file
+  files_api.A_upload({file})
     .then((res: any) => {
       handleSuccess(res, param)
     })

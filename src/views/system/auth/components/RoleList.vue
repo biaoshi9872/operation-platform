@@ -1,15 +1,8 @@
-<!--
- * @Descripttion: 
- * @version: 
- * @Author: biao.shi
- * @Date: 2023-04-17 09:22:09
- * @LastEditors: biao.shi
- * @LastEditTime: 2023-04-20 10:10:18
--->
-
 <script setup lang="ts" name="RoleList">
 import role_api from '@/api/system/role'
 import system_num from '@/utils/constant/system'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isOrgLast } = isStateCheckHooks()
 const emits = defineEmits<{
   (e: 'change', val: any): void
 }>()
@@ -48,12 +41,12 @@ onMounted(() => {
 <template>
   <div class="main_box">
     <h3 class="mb-10">角色列表</h3>
-    <div class="search-row">
+    <div class="search-row mb-12">
       <el-input v-model="roleName" placeholder="请输入角色名称" clearable />
       <el-button type="primary" class="ml-5" @click="getList">查询</el-button>
     </div>
     <el-table v-loading="loading" :data="roleList" highlight-current-row height="650px" @current-change="handleRoleChange">
-      <YbtTableColumn label="机构类型" prop="name">
+      <YbtTableColumn v-if="!isOrgLast" label="机构类型" prop="name">
         <template #default="{ row }">{{ system_num.getRoleType(row.createRoleType) }}</template>
       </YbtTableColumn>
       <YbtTableColumn label="角色" prop="name" />
@@ -64,7 +57,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .main_box {
   background-color: var(--el-searchForm-bg-color);
-
+  min-width: 300px;
   .search-row {
     display: flex;
   }

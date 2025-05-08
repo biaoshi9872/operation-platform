@@ -13,14 +13,13 @@ async function handleLogout() {
       $router.push('/login')
     })
     // location.reload()
-  } catch (e) { }
+  } catch (e) {}
 }
 
 let showPwd = ref(false)
 const updatePassword = () => {
   showPwd.value = true
 }
-
 </script>
 
 <template>
@@ -30,7 +29,7 @@ const updatePassword = () => {
     <el-dropdown popper-class="userInfo-popper" trigger="click">
       <div class="user-info">
         <img src="@/assets/images/default-avatar.png" class="user-avatar" />
-        <div class="user-name">{{ userInfo?.realName }}</div>
+        <div class="user-name">{{ userInfo?.name }}</div>
         <el-icon>
           <ArrowDown class="user-arrow-down" />
         </el-icon>
@@ -38,13 +37,19 @@ const updatePassword = () => {
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item disabled class="block pb-0">
-            <p class="lh-27"><span class="dropdown-item-label inline-block">姓名</span>：{{ userInfo?.realName }}</p>
+            <p class="lh-27">
+              <span class="dropdown-item-label inline-block">姓名</span>
+              ：{{ userInfo?.name }}
+            </p>
           </el-dropdown-item>
           <el-dropdown-item divided @click="updatePassword" class="block pb-0">
             <span class="back_btn">修改密码</span>
           </el-dropdown-item>
-          <el-dropdown-item divided @click="handleLogout"><span class="back_btn"><svg-icon name="logout"
-                class="mr-3" />退出</span></el-dropdown-item>
+          <el-dropdown-item divided @click="handleLogout">
+            <span class="back_btn">
+              <svg-icon name="logout" class="mr-3" />退出
+            </span>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>

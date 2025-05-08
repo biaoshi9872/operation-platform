@@ -9,8 +9,14 @@ import EditUser from './components/EditUser.vue'
 import ResetPassword from './components/ResetPassword.vue'
 import user_api from '@/api/system/user/index'
 import org_api from '@/api/system/org/index'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isOrgLast, orgInfo } = isStateCheckHooks()
 const tree = ref<InstanceType<typeof ElTree>>()
+const defaultValueConversionHandler = () => {
+  dataPage.facadeKz.orgId = isOrgLast.value ? orgInfo.value.id : ''
+}
 const dataPage: IPage<any, any> = reactive({
+  defaultValueConversion: defaultValueConversionHandler,
   isOnload: false,
   page: {
     page: 1,
@@ -18,7 +24,7 @@ const dataPage: IPage<any, any> = reactive({
     totalCount: 0
   },
   facade: {
-    username: ''
+    usernameOrPhone: ''
   },
   facadeKz: {
     orgId: ''
@@ -32,9 +38,7 @@ const dataPage: IPage<any, any> = reactive({
   showResetPassword: false,
   selectPage: user_api.A_pageList
 })
-const { deleteItem, searchQuery } = pageHooks(dataPage)
-
-const { showResetPassword, facade, curDepartment, isAddDepartment, showEditUser, showEditDepartment } = toRefs(dataPage)
+const { searchQuery } = pageHooks(dataPage)
 
 onMounted(() => {
   getOrgTreeList()
@@ -47,37 +51,40 @@ const curUser = ref<any>()
 function getOrgTreeList() {
   org_api.A_orgTree({}).then(res => {
     departmentData.value = res as any
-    curDepartment.value = departmentData.value[0] as any
-    const firstKey: number = <number>departmentData.value[0].id
+    dataPage.curDepartment = isOrgLast.value ? orgInfo.value : (departmentData.value[0] as any)
+    const firstKey: number = <number>dataPage.curDepartment.id
     defaultCheckedKeys.value = [firstKey]
   })
 }
 
 function handleCurrentChange(val: any) {
-  curDepartment.value = val
+  dataPage.curDepartment = val
 }
 
-watch(curDepartment, () => {
-  dataPage.facadeKz.orgId = curDepartment.value.id
-  searchQueryHandler()
-})
+watch(
+  () => dataPage.curDepartment,
+  () => {
+    dataPage.facadeKz.orgId = dataPage.curDepartment?.value?.id
+    searchQueryHandler()
+  }
+)
 
 // 新增用户
 function handleAdd() {
-  showEditUser.value = true
+  dataPage.showEditUser = true
   curUser.value = null
 }
 
 // 编辑用户
 function handleEditUser(row: any) {
-  showEditUser.value = true
+  dataPage.showEditUser = true
   curUser.value = row
 }
 
 // 修改密码
 function handleRestPassword(row: any) {
   curUser.value = row
-  showResetPassword.value = true
+  dataPage.showResetPassword = true
 }
 
 // 删除用户
@@ -109,7 +116,7 @@ const searchQueryHandler = () => {
 <template>
   <PageContainer v-loading="dataPage.loadingData">
     <el-container>
-      <el-aside class="w-220 border-rd-2 common-bg p-16 common-shadow">
+      <el-aside v-if="!isOrgLast" class="w-220 border-rd-2 common-bg p-16 common-shadow">
         <el-tree
           ref="tree"
           :data="departmentData"
@@ -126,13 +133,13 @@ const searchQueryHandler = () => {
       <el-main class="pt-0">
         <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" @search="searchQueryHandler">
           <el-form-item label="账号/手机号" title="账号/手机号">
-            <el-input v-model="facade.username" placeholder="请输入账号/手机号" clearable />
+            <el-input v-model="dataPage.facade.usernameOrPhone" placeholder="请输入账号/手机号" clearable />
           </el-form-item>
-          <template #button>
-            <el-button authKey="VO_USER_ADDUSER" type="primary" @click="handleAdd()">新增</el-button>
-          </template>
         </SearchForm>
         <TableModel :page="dataPage.page" :loading="dataPage.loadingData" :listTableData="dataPage.dataList" :dataPage="dataPage">
+          <template #option>
+            <el-button authKey="VO_USER_ADDUSER" type="primary" @click="handleAdd()">新增</el-button>
+          </template>
           <YbtTableColumn label="账号" prop="username" />
           <YbtTableColumn label="姓名" prop="name" />
           <YbtTableColumn label="手机号" prop="mobile" />
@@ -161,9 +168,15 @@ const searchQueryHandler = () => {
     </el-container>
   </PageContainer>
   <!-- 新增/编辑用户 -->
-  <EditUser v-if="curDepartment" :curUser="curUser" :curDepartment="curDepartment" v-model="showEditUser" @update="searchQueryHandler" />
+  <EditUser
+    v-if="dataPage.curDepartment"
+    :curUser="curUser"
+    :curDepartment="dataPage.curDepartment"
+    v-model="dataPage.showEditUser"
+    @update="searchQueryHandler"
+  />
   <!-- 修改密码 -->
-  <ResetPassword :userId="curUser?.id" v-model="showResetPassword" />
+  <ResetPassword :userId="curUser?.id" v-model="dataPage.showResetPassword" />
 </template>
 
 <style lang="scss" scoped>

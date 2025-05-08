@@ -40,6 +40,9 @@ class application_api {
     return request<any>({
       url: '/sys/application/status',
       method: 'post',
+      requestOptions: {
+        formData: true
+      },
       data: data
     })
   }

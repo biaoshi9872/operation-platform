@@ -7,10 +7,12 @@ type TisStateCheckHooks = {
   purchaseCostName: any
   isCombinationGoods: any
   isErpAccountState: any
+  isOrgLast: any
+  orgInfo: any
 }
 export default function (data: any = {}): TisStateCheckHooks {
   const $useUserStore = useUserStore()
-  const { erpUseInfo }: { erpUseInfo: API.ISupplyErpFrom } = storeToRefs($useUserStore) as any
+  const { erpUseInfo }: { erpUseInfo: any } = storeToRefs($useUserStore) as any
   const sysTag = import.meta.env.VITE_TAG
 
   /**
@@ -64,10 +66,31 @@ export default function (data: any = {}): TisStateCheckHooks {
         return '采购成本'
     }
   })
+
+  /**
+   * 是否分支机构
+   */
+  const isOrgLast = computed(() => {
+    return $useUserStore.userInfo.orgType != 1
+  })
+
+  /**
+   * 当前用户分支机构信息
+   */
+  const orgInfo = computed(() => {
+    debugger
+    return {
+      id: $useUserStore.userInfo.orgId,
+      name: $useUserStore.userInfo.orgName
+    }
+  })
+
   return {
     isErpAccount: isErpAccount.value,
     isCombinationGoods: isCombinationGoods.value,
     isErpAccountState: isErpAccountState.value,
-    purchaseCostName: purchaseCostName.value
+    purchaseCostName: purchaseCostName.value,
+    isOrgLast: isOrgLast,
+    orgInfo: orgInfo
   }
 }

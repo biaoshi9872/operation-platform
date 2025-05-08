@@ -4,27 +4,41 @@ import pageHooks from '@/hooks/pageListHooks'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ElButton } from 'element-plus'
 import application_api from '@/api/system/application'
-
+const props = defineProps({
+  curryOrgInfo: {
+    type: Object,
+    default: {}
+  },
+  type: {
+    type: String,
+    default: 'edit'
+  }
+})
+const emits = defineEmits<{
+  (e: 'change', val: any): void
+  (e: 'update:curryOrgInfo', val: any): void
+}>()
 const router = useRouter()
 const dataPage: IPage<any, any> = reactive({
-  isOnload: true,
+  isOnload: false,
   page: {
     page: 1,
     limit: 10,
     totalCount: 0
   },
   facade: {
-    orgIdList: null,
     appName: '',
     createDateStart: null,
     createDateEnd: null
   },
-  facadeKz: {},
+  facadeKz: {
+    orgIdList: null
+  },
   showApplication: false,
   curryInfo: {},
   dataList: [],
   toDownloadCenterApi: null,
-  selectPage: application_api.A_list
+  selectPage: application_api.A_page
 })
 const { searchQuery, toDownloadCenter } = pageHooks(dataPage)
 const getQueryParams = () => {
@@ -39,6 +53,17 @@ provide('searchQueryHandler', searchQueryHarder)
 const handleSelectionChange = (value: any) => {
   dataPage.multipleList = value
 }
+watch(
+  () => props.curryOrgInfo,
+  () => {
+    dataPage.facadeKz.orgIdList = [props.curryOrgInfo.id]
+    searchQueryHarder()
+  },
+  {
+    deep: true
+  }
+)
+
 const exportHandler = () => {
   const obj = getQueryParams()
   toDownloadCenter(obj)
@@ -74,8 +99,8 @@ const enableHandler = (row: any) => {
     <el-card>
       <template #header>
         <div class="card-header">
-          <h3>分支机构A</h3>
-          <span>机构ID：2001</span>
+          <h3>{{curryOrgInfo?.name}}</h3>
+          <span>机构ID: {{curryOrgInfo?.id}}</span>
         </div>
       </template>
       <div>
@@ -87,7 +112,7 @@ const enableHandler = (row: any) => {
             @search="searchQueryHarder"
           >
             <el-form-item label="应用">
-              <el-input v-model="dataPage.facade.appName" placeholder="应用ID/应用名称" clearable />
+              <el-input v-model="dataPage.facade.appName" placeholder="应用编码/应用名称" clearable />
             </el-form-item>
           </SearchForm>
           <div class="option_box">
@@ -96,12 +121,11 @@ const enableHandler = (row: any) => {
               :listTableData="dataPage.dataList"
               @pagingQuery="searchQueryHarder"
               @selection-change="handleSelectionChange"
-              :isShowPagination="false"
             >
               <el-table-column prop="orgName" label="分支机构"></el-table-column>
               <el-table-column prop="appName" label="应用名称"></el-table-column>
               <el-table-column prop="appCode" label="应用编码"></el-table-column>
-              <el-table-column prop="appCode" label="上架商品"></el-table-column>
+              <el-table-column prop label="上架商品"></el-table-column>
               <el-table-column prop="createDate" label="创建时间"></el-table-column>
               <el-table-column prop="status" label="状态">
                 <template #default="scope">
@@ -126,7 +150,7 @@ const enableHandler = (row: any) => {
   flex: 1;
   .card-header {
     display: flex;
-    gap: 50px;
+    gap: 24px;
     align-items: center;
   }
 }

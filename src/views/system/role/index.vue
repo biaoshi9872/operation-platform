@@ -7,7 +7,9 @@ import pageHooks from '@/hooks/pageListHooks'
 import { Edit, Download } from '@element-plus/icons-vue'
 import role_api from '@/api/system/role/index'
 import system_num from '@/utils/constant/system'
-import { isNullOrUnDefOrisEmpty } from '@/utils/is'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isOrgLast } = isStateCheckHooks()
+
 //@ts-ignore
 const dataPage: IPage<any, any> = reactive({
   showEdit: false,
@@ -16,21 +18,19 @@ const dataPage: IPage<any, any> = reactive({
     roleName: ''
   },
   dataList: [],
-  curyCheckRow: null,
+  curryInfo: null,
   dataListLoading: false,
   selectPage: role_api.A_rolePageList
 })
 
-const { deleteItem, searchQuery } = pageHooks(dataPage)
+const { searchQuery } = pageHooks(dataPage)
 
-const curRole = ref<any>()
 const handleAdd = () => {
-  dataPage.curRole = null
-
+  dataPage.curryInfo = null
   dataPage.showEdit = true
 }
 const handleEdit = (row: any) => {
-  dataPage.curRole = row
+  dataPage.curryInfo = row
   dataPage.showEdit = true
 }
 
@@ -58,10 +58,6 @@ async function handleDelete({ id }: { id: number }) {
     })
   })
 }
-
-const editCurrentApplicationApproval = (row: any) => {
-  dataPage.curyCheckRow = row
-}
 </script>
 
 <template>
@@ -70,9 +66,6 @@ const editCurrentApplicationApproval = (row: any) => {
       <el-form-item label="角色名称">
         <el-input v-model.trim="dataPage.facade.roleName" placeholder="请输角色名称" clearable />
       </el-form-item>
-      <template #button>
-        <el-button authKey="sys:role:add" type="primary" @click="handleAdd()">新增</el-button>
-      </template>
     </SearchForm>
     <TableModel
       :page="dataPage.page"
@@ -80,13 +73,16 @@ const editCurrentApplicationApproval = (row: any) => {
       :listTableData="dataPage.dataList"
       :dataPage="dataPage"
       :isShowPagination="false"
-      @row-click="editCurrentApplicationApproval"
       :tree-props="{ children: 'children' }"
       default-expand-all
     >
+      <template #option>
+        <el-button authKey="sys:role:add" type="primary" @click="handleAdd()">新增</el-button>
+      </template>
+      <YbtTableColumn label="ID" prop="id" />
       <YbtTableColumn label="角色名称" prop="name" />
       <YbtTableColumn label="创建时间" prop="createDate" />
-      <YbtTableColumn label="机构类型" prop="createRoleType">
+      <YbtTableColumn v-if="!isOrgLast" label="机构类型" prop="createRoleType">
         <template #default="{ row }">{{ system_num.getRoleType(row.createRoleType) }}</template>
       </YbtTableColumn>
       <YbtTableColumn label="创建人" prop="createUserName" />
@@ -100,13 +96,8 @@ const editCurrentApplicationApproval = (row: any) => {
       </YbtTableColumn>
     </TableModel>
   </PageContainer>
-  <EditRole
-    v-model="dataPage.showEdit"
-    :current="dataPage.curRole"
-    :curyCheckRow="dataPage.curyCheckRow"
-    :is-add="!dataPage.curRole"
-    @update="searchQueryHandler"
-  />
+
+  <EditRole v-model="dataPage.showEdit" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHandler" />
 </template>
 
 <style lang="scss" scoped></style>

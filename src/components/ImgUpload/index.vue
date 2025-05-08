@@ -16,13 +16,15 @@ export default {
 defineOptions({
   name: 'Upload'
 })
+import files_api from '@/api/files'
 import { getImgFileWidthAndHeight, getFileType } from '@/utils/upload'
 import type { UploadProps } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import { getLocal } from '@/utils/storage'
 import { isNullOrUnDefOrisEmpty } from '@/utils/is'
-import { A_upload } from '@/api/proudectManger'
+//
+
 const VITE_TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY
 const headersToken = getLocal(VITE_TOKEN_KEY)
 
@@ -179,8 +181,8 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile: any) => 
 }
 
 const uploadSectionFile = (param: any) => {
-  var fileObj = param.file
-  A_upload(fileObj)
+  var file = param.file
+  files_api.A_upload({file})
     .then((res: any) => {
       handleSuccess(res)
     })
@@ -249,9 +251,11 @@ const handleSuccess = (response: any) => {
 }
 
 const fileUrl = computed(() => {
-  return function (item: any) {
+  return function(item: any) {
     console.log(item, 'item')
-    return item?.url?.endsWith('.pdf') ? 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20240110/5d4916c08d454b0ba9ce9c6c08cb1257.png' : item.url
+    return item?.url?.endsWith('.pdf')
+      ? 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20240110/5d4916c08d454b0ba9ce9c6c08cb1257.png'
+      : item.url
   }
 })
 </script>

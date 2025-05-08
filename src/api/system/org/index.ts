@@ -32,6 +32,16 @@ class org_api {
       data: data
     })
   }
+
+  /**
+   * 详情
+   */
+  A_getOrgDetail(id: any) {
+    return request({
+      url: `/sys/org/detail/${id}`,
+      method: 'post'
+    })
+  }
 }
 
 export default new org_api()

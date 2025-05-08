@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 import { getLocal, removeLocal, setLocal } from '@/utils/storage'
-import indexedDBHelper from '@/utils/IndexedDB/indexedDBHelper'
-import dayjs from 'dayjs'
 import user_api from '@/api/system/user'
 import useDBHelper from '@/hooks/dbHelperHooks'
 

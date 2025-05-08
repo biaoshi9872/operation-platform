@@ -1,135 +1,127 @@
-<!--
- * @Author: ncc 472253853@qq.com
- * @Date: 2022-06-16 11:18:47
- * @LastEditors: biao.shi
- * @LastEditTime: 2023-04-28 09:38:12
--->
-
-<script setup lang="ts" name="EditRole">
+<script setup lang="ts">
 import role_api from '@/api/system/role'
 import { reactive, ref, onMounted } from 'vue'
 import system_num from '@/utils/constant/system'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
+import { cloneDeep } from 'lodash-es'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isOrgLast } = isStateCheckHooks()
 
-const props = defineProps({
-  isAdd: {
-    type: Boolean,
-    required: true
-  },
-  current: {
-    type: Object,
-    default: () => {}
-  },
-  curyCheckRow: {
-    type: Object,
-    default: () => {}
-  }
+
+interface IProp {
+  curryInfo: any
+}
+const props = withDefaults(defineProps<IProp>(), {
+  curryInfo: {}
 })
-
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
-  (e: 'update'): void
+  (e: 'refresh'): void
 }>()
-
-const form:any = ref<FormInstance>()
-const data = reactive({
+const formRef = ref<FormInstance>() as any
+interface IData {
+  formData: any
+  formDataBK: any
+  formRules: any
+  tableFromData: any
+  submitLoading: boolean
+}
+const data = reactive<IData>({
   formData: {
     id: '',
     parentId: '',
     roleName: '',
     orgType:'',
   },
-  roleTagList: [],
+  formDataBK: {},
   formRules: {
     roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
     orgType: [{ required: true, message: '请选择机构类型', trigger: 'blur' }]
   },
-  roleTreeList: [],
+  tableFromData: {},
   submitLoading: false
 })
-
-const handleOpen = () => {
-  if (!props.isAdd) {
-    const { id, parentId, roleName, orgType } = props.current
-    data.formData = { id, parentId, roleName, orgType }
-  }
-}
-
-// 初始化 dialog 数据，恢复表单数据，清除表单校验等
 const handleReset = () => {
-  // 重置表单数
-  if (form.value) {
-    form.value.resetFields()
-    data.formData = {
-      id: '',
-      parentId: '',
-      roleName: '',
-      orgType: ''
-    }
+  if (formRef.value) {
+    formRef.value.resetFields()
   }
   emits('update:modelValue', false)
 }
+const handleClose = () => {
+  handleReset()
+  emits('refresh')
+  searchQueryHandler()
+  emits('update:modelValue', false)
+}
+const searchQueryHandler = inject('searchQueryHandler', () => {})
+onMounted(() => {
+  data.formDataBK = cloneDeep(data.formData)
+})
+const openHandler = () => {
+  data.formData = {
+    ...data.formDataBK
+  }
+  if(props.curryInfo?.id){
+    data.formData = {
+      ...data.formDataBK,
+    }
+    data.formData.roleName = props.curryInfo.name
+    data.formData.orgType = props.curryInfo.createRoleType
+  } 
+}
 const handleSubmit = () => {
-  form.value
-    .validate()
-    .then(() => {
-      data.submitLoading = true
+  formRef.value.validate().then(() => {   
+    data.submitLoading = true
        role_api.A_roleSave({
         ...data.formData
       }).then((res: any) => {
         ElMessage({
-        message: `${props.isAdd ? '新增' : '编辑'}角色成功`,
+        message: `操作成功`,
         type: 'success'
       })
       handleClose()
-      emits('update')
+      }).finally(()=>{
+        data.submitLoading = false
       })
-    })
-    .then(() => {
-    
-    })
-    .finally(() => {
-      data.submitLoading = false
-    })
+  })
 }
-const handleClose = () => {
-  emits('update:modelValue', false)
-}
+
+const title = computed(() => {
+  return props.curryInfo?.id ? '编辑角色' : '新增角色'
+})
 
 </script>
-
 <template>
   <el-dialog
     v-bind="$attrs"
-    :title="`${isAdd ? '新增' : '编辑'}角色`"
-    destroy-on-close
+    :title="title"
     width="500px"
+    append-to-body
+    @open="openHandler"
+    draggable
+    destroy-on-close
     :close-on-click-modal="false"
-    @open="handleOpen"
     @closed="handleReset"
   >
-    <el-form ref="form" :model="data.formData" :rules="data.formRules" label-width="120px" label-suffix="：">
-      <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model.trim="data.formData.roleName" placeholder="请输入角色名称" maxlength="20" show-word-limit clearable class="w-248" />
-      </el-form-item>
-      <el-form-item label="机构类型" prop="orgType">
-        <el-select v-model="data.formData.orgType" class="w-248" placeholder="请选择机构类型">
-          <el-option v-for=" (item, index) in system_num.orgType " :key="index" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
-    </el-form>
+    <div class="option">
+      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right" label-width="100px">
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model.trim="data.formData.roleName" placeholder="请输入角色名称" maxlength="20" show-word-limit clearable class="w-248" />
+        </el-form-item>
+        <el-form-item label="机构类型" v-if="!isOrgLast" prop="orgType">
+          <el-select v-model="data.formData.orgType" class="w-248" placeholder="请选择机构类型">
+            <el-option v-for=" (item, index) in system_num.orgType " :key="index" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
     <template #footer>
-      <div class="footer-wrap">
-        <el-button @click="handleClose">取消</el-button>
-        <el-button :loading="data.submitLoading" type="primary" @click="handleSubmit()" v-preventReClick="1500">确定</el-button>
+      <div class="dialog-footer">
+        <el-button @click="handleClose" class="mr-10">取消</el-button>
+        <el-button type="primary" :loading="data.submitLoading" @click="handleSubmit">确认</el-button>
       </div>
     </template>
   </el-dialog>
 </template>
-
-<style scoped lang="scss">
-:deep(.el-input) {
-  width: 248px;
-}
-</style>
+<style lang="scss" scoped></style>

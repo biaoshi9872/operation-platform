@@ -19,10 +19,6 @@ const { loading, webList, webChecked, submitLoading } = toRefs(data)
 const webPermission = ref<InstanceType<typeof AuthItem>>()
 const curRole = ref<any>()
 
-onMounted(() => {
-  getAllAutoTreeList()
-})
-
 watch(curRole, () => {
   curRole.value?.name && getPermission()
 })
@@ -52,27 +48,27 @@ function filterTreeFullSelect(tree: any, selected: any) {
   return fullSelectList
 }
 
-// 单个角色选中
 function getPermission() {
   loading.value = true
-  //@ts-ignore
-  role_api
-    .A_permissionList({
-      roleId: curRole.value?.id
-    })
-    .then(data => {
-      webChecked.value = filterTreeFullSelect(webList.value, data)
+  Promise.all([getCheckPermission(), getAllAutoTreeList()])
+    .then(res => {
+      webChecked.value = filterTreeFullSelect(res[1], res[0])
+      webList.value = res[1]
     })
     .finally(() => {
       loading.value = false
     })
 }
-
+//已选中的权限
+function getCheckPermission() {
+  return role_api.A_permissionList({
+    roleId: curRole.value?.id
+  })
+}
 // 菜单结构
 function getAllAutoTreeList() {
-  menu_api.A_menuManageTree({ menuType: 1, menuName: '' }).then((res: any) => {
-    webList.value = res
-  })
+  const menuType = curRole.value.createRoleType == 1 ? 1 : 2
+  return menu_api.A_menuManageTree({ menuType, menuName: '' })
 }
 
 function handleRoleChange(val: any) {
@@ -105,40 +101,45 @@ function handleSubmit() {
 </script>
 
 <template>
-  <PageContainer>
-    <el-container>
-      <el-aside class="w-220 border-rd-2 common-bg p-16">
-        <RoleList @change="handleRoleChange" />
-      </el-aside>
-      <el-main class="pt-0">
-        <div v-show="curRole" v-loading="loading" class="mb-16">
-          <div class="permission-content">
-            <div class="permission-item">
-              <AuthItem ref="webPermission" :tree="webList" :initial-checked="webChecked" />
-            </div>
-          </div>
-        </div>
-        <div class="permission-bottom" v-if="!isNullOrUnDefOrisEmpty(curRole?.id)">
-          <OptionModel>
-            <el-button authKey="VO_AUTH_UPDATEPWD" type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
-          </OptionModel>
-        </div>
-      </el-main>
-    </el-container>
+  <PageContainer class="auth-page">
+    <div class="border-rd-2 common-bg p-16">
+      <RoleList @change="handleRoleChange" />
+    </div>
+    <div class="manage-wrap">
+      <div v-show="curRole" v-loading="loading" class="mb-16">
+        <AuthItem ref="webPermission" :tree="webList" :initial-checked="webChecked" />
+      </div>
+      <div class="permission-bottom" v-if="!isNullOrUnDefOrisEmpty(curRole?.id)">
+        <OptionModel>
+          <el-button authKey="VO_AUTH_UPDATEPWD" type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
+        </OptionModel>
+      </div>
+    </div>
   </PageContainer>
 </template>
 
 <style lang="scss" scoped>
-.permission-bottom {
-  position: fixed;
-  bottom: 0;
-  width: calc(100% - 460px);
-  background-color: var(--el-searchForm-bg-color);
-  z-index: 999;
+.auth-page {
+  min-height: calc(100vh - 110px);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60px;
-  box-shadow: 0px -1px 4px rgba(10, 50, 97, 0.1);
+  gap: 6px;
+}
+.manage-wrap {
+  flex: 1;
+  position: relative;
+  background-color: var(--el-searchForm-bg-color);
+  .permission-bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    background-color: var(--el-searchForm-bg-color);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    box-shadow: 0px -1px 4px rgba(10, 50, 97, 0.1);
+  }
 }
 </style>
