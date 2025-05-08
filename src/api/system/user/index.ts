@@ -66,6 +66,18 @@ class user_api {
   }
 
   /**
+   * 用户详情
+   * @param id
+   * @returns
+   */
+  A_detail(id: any) {
+    return request<any>({
+      url: `/sys/user/detail/${id}`,
+      method: 'post'
+    })
+  }
+
+  /**
    * 退出登录
    */
   A_logout() {

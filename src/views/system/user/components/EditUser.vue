@@ -97,9 +97,7 @@ function fetchRoleList() {
 function handleOpen() {
   const { curUser } = props as any
   if (props.curUser?.id) {
-    Object.keys(formData).forEach(key => {
-      if (Object.hasOwn(curUser, key)) formData[key] = curUser[key] ?? ''
-    })
+    A_detail()
   } else {
     Object.keys(formData).forEach(key => {
       formData[key] = ''
@@ -113,6 +111,17 @@ function handleOpen() {
   }
   fetchRoleList()
 }
+
+const A_detail=()=>{
+  user_api.A_detail(props.curUser?.id ).then(res=>{
+    console.log(res)
+    Object.keys(formData).forEach(key => {
+      if (Object.hasOwn(res, key)) formData[key] = res[key] ?? ''
+    })
+    formData.roleIds = res.roleInfoList.map((el:any)=>el.id) ||[]
+  })
+}
+
 // 初始化 dialog 数据，恢复表单数据，清除表单校验等
 function handleReset() {
   if (form.value) {

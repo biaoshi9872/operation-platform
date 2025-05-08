@@ -44,7 +44,7 @@ const init = () => {
 }
 </script>
 <template>
-  <el-select v-model="value" placeholder="请选择分销渠道" filterable clearable collapse-tags :multiple="multiple" collapse-tags-tooltip>
+  <el-select v-model="value" placeholder="请选择分支机构" filterable clearable collapse-tags :multiple="multiple" collapse-tags-tooltip>
     <el-option v-for="(item, index) in orgList" :key="item.id" :label="item.name" :value="item.id "></el-option>
   </el-select>
 </template>
