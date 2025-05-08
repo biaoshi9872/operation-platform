@@ -89,8 +89,8 @@ async function handleDelete({ id }: { id: number }) {
       <YbtTableColumn label="操作" width="240" align="right">
         <template #default="{ row }">
           <div>
-            <el-button authKey="'sys:role:edit'" type="text" @click="handleEdit(row)">编辑</el-button>
-            <el-button authKey="'sys:role:delete'" type="text" @click="handleDelete(row)">删除</el-button>
+            <el-button type="text" @click="handleEdit(row)">编辑</el-button>
+            <el-button type="text" @click="handleDelete(row)">删除</el-button>
           </div>
         </template>
       </YbtTableColumn>

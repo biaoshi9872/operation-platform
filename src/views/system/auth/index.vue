@@ -26,11 +26,9 @@ watch(curRole, () => {
 function filterTreeFullSelect(tree: any, selected: any) {
   const setStore = new Set(selected)
   const fullSelectList: any = []
-
   if (Array.isArray(tree)) {
     tree.forEach(item => checkIsChecked(item))
   }
-
   function checkIsChecked(node: any) {
     let isChecked
     if (Array.isArray(node.children) && node.children.length) {
@@ -47,7 +45,6 @@ function filterTreeFullSelect(tree: any, selected: any) {
   }
   return fullSelectList
 }
-
 function getPermission() {
   loading.value = true
   Promise.all([getCheckPermission(), getAllAutoTreeList()])
@@ -111,7 +108,7 @@ function handleSubmit() {
       </div>
       <div class="permission-bottom" v-if="!isNullOrUnDefOrisEmpty(curRole?.id)">
         <OptionModel>
-          <el-button authKey="VO_AUTH_UPDATEPWD" type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
+          <el-button type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
         </OptionModel>
       </div>
     </div>

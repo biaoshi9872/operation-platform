@@ -112,7 +112,7 @@ function handleSubmit() {
       />
     </ModalContent>
     <div class="mt-20 text-center permission-bottom">
-      <el-button authKey="VO_AUTHORITY_SAVE" type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
+      <el-button type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
     </div>
   </div>
 </template>

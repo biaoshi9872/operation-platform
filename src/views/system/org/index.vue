@@ -5,8 +5,11 @@ import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 const { isOrgLast, orgInfo } = isStateCheckHooks()
 
 const dataPage = reactive({
-  curryOrgInfo: orgInfo,
+  curryOrgInfo: {},
   type: 'edit'
+})
+onMounted(() => {
+  dataPage.curryOrgInfo = isOrgLast ? orgInfo.value : {}
 })
 </script>
 <template>

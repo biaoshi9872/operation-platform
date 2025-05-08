@@ -146,10 +146,10 @@ function handleClose() {
           <el-input v-model.trim="formData.name" placeholder="分组名称" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item prop="icon" label="菜单图标">
-          <el-input v-model="formData.icon" placeholder="菜单图标"></el-input>
+          <el-input v-model="formData.icon" placeholder="菜单图标" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item prop="url" label="路由">
-          <el-input v-model="formData.url" placeholder="路由"></el-input>
+          <el-input v-model="formData.url" placeholder="路由" maxlength="500" show-word-limit></el-input>
         </el-form-item>
         <el-form-item prop="isCache" label="是否缓存">
           <el-radio-group v-model="formData.isCache">

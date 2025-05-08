@@ -99,7 +99,7 @@ function handleTab(tab: TabsPaneContext, event: Event) {
       :isShowPagination="false"
     >
       <template #option>
-        <el-button authKey="VO_MEUN_ADD" type="primary" @click="handleAdd('1', null)">新增分组</el-button>
+        <el-button type="primary" @click="handleAdd('1', null)">新增分组</el-button>
       </template>
       <YbtTableColumn prop="name" label="名称" min-width="200"></YbtTableColumn>
       <YbtTableColumn prop="id" label="auth"></YbtTableColumn>
@@ -121,9 +121,9 @@ function handleTab(tab: TabsPaneContext, event: Event) {
       </YbtTableColumn>
       <YbtTableColumn label="操作" fixed="right" align="right" width="200">
         <template #default="{ row }">
-          <el-button authKey="VO_MEUN_ADDUP" type="text" @click="handleAdd('2', row)" v-if="row.level !== 2">新增下级</el-button>
-          <el-button authKey="VO_MEUN_EDIT" type="text" @click="handleEdit(row)">编辑</el-button>
-          <el-button authKey="VO_MEUN_DELETE" type="text" @click="handleDelete(row)">删除</el-button>
+          <el-button type="text" @click="handleAdd('2', row)" v-if="row.level !== 2">新增下级</el-button>
+          <el-button type="text" @click="handleEdit(row)">编辑</el-button>
+          <el-button type="text" @click="handleDelete(row)">删除</el-button>
         </template>
       </YbtTableColumn>
     </TableModel>

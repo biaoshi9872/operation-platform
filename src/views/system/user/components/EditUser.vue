@@ -172,13 +172,13 @@ function handleClose() {
         <el-input v-model.trim="formData.name" maxlength="50" class="w-300" show-word-limit placeholder="请输入用户姓名" clearable />
       </el-form-item>
       <el-form-item label="手机号" prop="mobile">
-        <el-input v-model="formData.mobile" placeholder="请输入手机号" class="w-300" clearable />
+        <el-input v-model="formData.mobile" placeholder="请输入手机号" maxlength="11" show-word-limit class="w-300" clearable />
       </el-form-item>
       <el-form-item v-if="isAdd" label="登录密码" prop="password">
-        <el-input v-model.trim="formData.password" maxlength="50" class="w-300" placeholder="请输入登录密码" clearable />
+        <el-input v-model.trim="formData.password" maxlength="50" class="w-300" placeholder="请输入6位数以上字母+数字密码" clearable />
       </el-form-item>
       <el-form-item v-if="isAdd" label="确认密码" prop="rePassword">
-        <el-input v-model.trim="formData.rePassword" maxlength="50" class="w-300" placeholder="请确认登录密码" clearable />
+        <el-input v-model.trim="formData.rePassword" maxlength="50" class="w-300" placeholder="请输入6位数以上字母+数字密码" clearable />
       </el-form-item>
       <el-form-item label="用户角色" prop="roleIds">
         <el-select v-model="formData.roleIds" multiple filterable placeholder="请选择用户角色" class="w-300">

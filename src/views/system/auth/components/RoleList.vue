@@ -17,7 +17,7 @@ const { roleList, roleName, loading } = toRefs(data)
 
 function getList() {
   loading.value = true
-  const orgType = 1
+  const orgType: any = null
   role_api
     .A_permissionRoleList({ roleName: roleName.value, orgType })
     .then((data: any) => {

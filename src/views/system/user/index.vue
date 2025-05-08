@@ -64,7 +64,7 @@ function handleCurrentChange(val: any) {
 watch(
   () => dataPage.curDepartment,
   () => {
-    dataPage.facadeKz.orgId = dataPage.curDepartment?.value?.id
+    dataPage.facadeKz.orgId = dataPage.curDepartment?.id
     searchQueryHandler()
   }
 )
@@ -145,7 +145,9 @@ const searchQueryHandler = () => {
           <YbtTableColumn label="手机号" prop="mobile" />
           <YbtTableColumn label="角色" prop="roleNameList">
             <template #default="scope">
-              <el-tag v-for="(item, index) in scope.row.roleNameList" :key="index" class="mr-4" type="success">{{ item }}</el-tag>
+              <OverflowTooltipCell :text="scope.row.roleNameList.join('、')">
+                <el-tag v-for="(item, index) in scope.row.roleNameList" :key="index" class="mr-4" type="success">{{ item }}</el-tag>
+              </OverflowTooltipCell>
             </template>
           </YbtTableColumn>
           <YbtTableColumn label="状态">
@@ -157,9 +159,9 @@ const searchQueryHandler = () => {
           <YbtTableColumn label="操作" width="200" align="right">
             <template #default="{ row }">
               <div class="btnStatus">
-                <el-button authKey="VO_USER_EDITUSER" type="text" @click="handleEditUser(row)">编辑</el-button>
-                <el-button authKey="VO_USER_UPDATEPWD" type="text" @click="handleRestPassword(row)">重置密码</el-button>
-                <el-button authKey="VO_USER_DELETESER" type="text" @click="handleDelete(row)">删除</el-button>
+                <el-button type="text" @click="handleEditUser(row)">编辑</el-button>
+                <el-button type="text" @click="handleRestPassword(row)">重置密码</el-button>
+                <el-button type="text" @click="handleDelete(row)">删除</el-button>
               </div>
             </template>
           </YbtTableColumn>

@@ -7,7 +7,7 @@ import org_api from '@/api/system/org'
 
 interface IProp {
   curryInfo: any
-  type: 'add' | 'edit'
+  type: any
 }
 const props = withDefaults(defineProps<IProp>(), {
   curryInfo: {},
@@ -140,7 +140,7 @@ const handleSubmit = () => {
     .then(() => {
       data.submitLoading = true
       org_api
-        .A_save({ ...data.formData, id: props.curryInfo?.id || null })
+        .A_save({ ...data.formData, id: props.type == 'edit' ? props.curryInfo?.id : null })
         .then(res => {
           ElMessage.success('操作成功')
           handleClose()
@@ -221,7 +221,7 @@ const title = computed(() => {
                   v-model="data.formData.relationDetailAddress"
                   :rows="2"
                   type="textarea"
-                  placeholder="请输入备注"
+                  placeholder="请输入详细地址"
                   maxlength="200"
                   show-word-limit
                 ></el-input>

@@ -83,7 +83,7 @@ const getList = () => {
       </el-tree>
     </div>
   </div>
-  <OrgModel v-model="dataInfo.showOrgModel" :curryInfo="curryOrgInfo" :type="dataInfo.type"></OrgModel>
+  <OrgModel v-model="dataInfo.showOrgModel" :curryInfo="curryOrgInfo" :type="dataInfo.type" @refresh="getList"></OrgModel>
 </template>
 
 <style lang="scss" scoped>
