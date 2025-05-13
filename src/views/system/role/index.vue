@@ -58,6 +58,19 @@ async function handleDelete({ id }: { id: number }) {
     })
   })
 }
+
+const showOption = computed(() => {
+  return function(row: any) {
+    if (!isOrgLast.value) return true
+    else {
+      if (row.createRoleType == 2 && isOrgLast.value) {
+        return false
+      } else {
+        return true
+      }
+    }
+  }
+})
 </script>
 
 <template>
@@ -80,7 +93,14 @@ async function handleDelete({ id }: { id: number }) {
         <el-button authKey="sys:role:add" type="primary" @click="handleAdd()">新增</el-button>
       </template>
       <YbtTableColumn label="ID" prop="id" />
-      <YbtTableColumn label="角色名称" prop="name" />
+      <YbtTableColumn label="角色名称" prop="name">
+        <template #default="{ row }">
+          <div class="role-name">
+            <div>{{ row.name }}</div>
+            <div class="role-type">{{ row.createRoleType == '2'?'(公用)':'' }}</div>
+          </div>
+        </template>
+      </YbtTableColumn>
       <YbtTableColumn label="创建时间" prop="createDate" />
       <YbtTableColumn v-if="!isOrgLast" label="机构类型" prop="createRoleType">
         <template #default="{ row }">{{ system_num.getRoleType(row.createRoleType) }}</template>
@@ -88,7 +108,7 @@ async function handleDelete({ id }: { id: number }) {
       <YbtTableColumn label="创建人" prop="createUserName" />
       <YbtTableColumn label="操作" width="240" align="right">
         <template #default="{ row }">
-          <div>
+          <div v-if="showOption(row)">
             <el-button type="text" @click="handleEdit(row)">编辑</el-button>
             <el-button type="text" @click="handleDelete(row)">删除</el-button>
           </div>
@@ -100,4 +120,13 @@ async function handleDelete({ id }: { id: number }) {
   <EditRole v-model="dataPage.showEdit" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHandler" />
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.role-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .role-type {
+    color: var(--el-color-success);
+  }
+}
+</style>

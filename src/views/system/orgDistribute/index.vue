@@ -75,11 +75,9 @@ onMounted(getAllAutoTreeList)
 
 function handleSubmit() {
   const permissionIds = getAllChecked()
-
   if (!permissionIds) {
     return ElMessage.warning('页面权限设置不能为空！')
   }
-
   ElMessageBox.confirm('请确认是否修改完毕，保存权限！', '保存权限', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',

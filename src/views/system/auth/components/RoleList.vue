@@ -49,7 +49,14 @@ onMounted(() => {
       <YbtTableColumn v-if="!isOrgLast" label="机构类型" prop="name">
         <template #default="{ row }">{{ system_num.getRoleType(row.createRoleType) }}</template>
       </YbtTableColumn>
-      <YbtTableColumn label="角色" prop="name" />
+      <YbtTableColumn label="角色" prop="name">
+        <template #default="{ row }">
+          <div class="role-name">
+            <div>{{ row.name }}</div>
+            <div class="role-type">{{ row.createRoleType == '2'?'(公用)':'' }}</div>
+          </div>
+        </template>
+      </YbtTableColumn>
     </el-table>
   </div>
 </template>
@@ -60,6 +67,14 @@ onMounted(() => {
   min-width: 300px;
   .search-row {
     display: flex;
+  }
+  .role-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .role-type {
+      color: var(--el-color-success);
+    }
   }
 }
 </style>

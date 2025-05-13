@@ -32,8 +32,13 @@ export function decrypt(str: string, key = 'e582b9de9cd24d0e9320643bd6ed2c58') {
     })
     .toString()
 }
+
+/**
+ *
+ */
+
 var key = CryptoJS.enc.Utf8.parse('e582b9de9cd24d0e9320643bd6ed2c58') // 32字节
-var iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000')
+var iv = CryptoJS.enc.Hex.parse('abcdefghijklmnop')
 
 // 加密
 export const encrypted = (str: any) => {
@@ -44,10 +49,10 @@ export const encrypted = (str: any) => {
   }).toString()
 }
 // 解密
-export const decrypted = (ciphertext: any) => {
-  return CryptoJS.AES.decrypt(ciphertext, key, {
+export const decrypted = (cipherText: any) => {
+  return CryptoJS.AES.decrypt(cipherText, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7
-  })
+  }).toString(CryptoJS.enc.Utf8)
 }

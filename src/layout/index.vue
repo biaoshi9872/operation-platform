@@ -24,6 +24,10 @@ const defaultActive = computed(() => {
   return path
 })
 
+const curryRoute = computed(() => {
+  return $route.meta
+})
+
 const isCollapse = ref(false)
 
 watch(isCollapse, () => {
@@ -80,7 +84,7 @@ provide('rollingReset', rollingReset)
           <svg-icon :name="isCollapse ? 'packUp' : 'fold'"></svg-icon>
         </span>
         <img src="@/assets/images/logo.png" class="logo-img" />
-        <span class="menu_text">供应链开放平台</span>
+        <span class="menu_text">供应链开放平台 {{curryRoute.autoParams.projectId}}</span>
       </div>
       <TopBar />
     </el-header>

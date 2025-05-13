@@ -80,8 +80,8 @@ const editApplicationHandler = (row: any) => {
         @selection-change="handleSelectionChange"
       >
         <template #option>
-          <el-button type="primary">导出</el-button>
-          <el-button type="primary" @click="addApplicationHandler">创建应用</el-button>
+          <AuthButton authKey="APP_EXPORT" type="primary">导出</AuthButton>
+          <AuthButton authKey="APP_ADD" type="primary" @click="addApplicationHandler">创建应用</AuthButton>
         </template>
         <el-table-column prop="createDate" label="创建时间"></el-table-column>
         <el-table-column prop="orgName" label="分支机构"></el-table-column>

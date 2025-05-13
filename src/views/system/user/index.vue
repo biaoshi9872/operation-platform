@@ -138,14 +138,14 @@ const searchQueryHandler = () => {
         </SearchForm>
         <TableModel :page="dataPage.page" :loading="dataPage.loadingData" :listTableData="dataPage.dataList" :dataPage="dataPage">
           <template #option>
-            <el-button authKey="VO_USER_ADDUSER" type="primary" @click="handleAdd()">新增</el-button>
+            <el-button type="primary" @click="handleAdd()">新增</el-button>
           </template>
           <YbtTableColumn label="账号" prop="username" />
           <YbtTableColumn label="姓名" prop="name" />
           <YbtTableColumn label="手机号" prop="mobile" />
           <YbtTableColumn label="角色" prop="roleNameList">
             <template #default="scope">
-              <OverflowTooltipCell :text="scope.row.roleNameList.join('、')">
+              <OverflowTooltipCell :text="scope.row.roleNameList?.join('、')">
                 <el-tag v-for="(item, index) in scope.row.roleNameList" :key="index" class="mr-4" type="success">{{ item }}</el-tag>
               </OverflowTooltipCell>
             </template>

@@ -10,6 +10,14 @@ const props = defineProps({
   initialChecked: {
     type: Array,
     default: () => []
+  },
+  curRole:{
+    type: Object,
+    default: () => ({})
+  },
+  showOption:{
+    type: Boolean,
+    default: false
   }
 })
 
@@ -27,8 +35,28 @@ watch(
   }
 )
 
-const leftTree = ref<InstanceType<typeof ElTree>>()
+const treeData = computed(()=>{
+  return props.tree.map((el:any)=>{
+    return {
+      ...el,
+      disabled:!props.showOption,
+      children: getChildren(el.children)
+    }
+  })
+})
 
+const getChildren=(el:any)=>{
+  return el?.map((el:any)=>{
+    return {
+      ...el,
+      disabled:!props.showOption,
+      children:getChildren(el.children)
+    }
+  })
+}
+
+
+const leftTree = ref<InstanceType<typeof ElTree>>()
 // 获取所有选中 id 包含全选半选
 function getAllChecked() {
   //@ts-ignore
@@ -48,11 +76,11 @@ defineExpose({
     <ModalContent title="权限设置">
       <el-tree
         ref="leftTree"
-        :data="tree"
+        :data="treeData"
         show-checkbox
         highlight-current
         node-key="id"
-        :props="{ children: 'children', label: 'name' }"
+        :props="{ children: 'children', label: 'name' ,disabled:'disabled'}"
         :default-checked-keys="checkedList"
         default-expand-all="true"
       />

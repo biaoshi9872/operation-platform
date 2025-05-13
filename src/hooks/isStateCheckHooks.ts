@@ -78,7 +78,6 @@ export default function (data: any = {}): TisStateCheckHooks {
    * 当前用户分支机构信息
    */
   const orgInfo = computed(() => {
-    debugger
     return {
       id: $useUserStore.userInfo.orgId,
       name: $useUserStore.userInfo.orgName

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { generateRoutes } from '@/router'
+import { generateRoutes } from '@/utils/routerUtils'
 import { RouteRecordRaw } from 'vue-router'
 import menu_api from '@/api/system/menu'
 import { getLocal, removeLocal, setLocal } from '@/utils/storage'
@@ -25,7 +25,7 @@ export const useRouterStore = defineStore('routerStore', {
           location.reload()
           return
         }
-      } catch (error) { }
+      } catch (error) {}
       const routes = generateRoutes(res)
       this.setAuthorityList(res as [])
       this.menuRoutes.push(...routes)

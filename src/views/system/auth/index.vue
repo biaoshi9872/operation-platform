@@ -8,6 +8,19 @@ import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
 import { isNullOrUnDefOrisEmpty } from '@/utils/is'
 import role_api from '@/api/system/role'
 import menu_api from '@/api/system/menu'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isOrgLast, orgInfo } = isStateCheckHooks()
+
+const showOption = computed(() => {
+  if (!isOrgLast.value) return true
+  else {
+    if (curRole.value?.createRoleType == 2 && isOrgLast.value) {
+      return false
+    } else {
+      return true
+    }
+  }
+})
 
 const data = reactive({
   loading: false,
@@ -104,11 +117,11 @@ function handleSubmit() {
     </div>
     <div class="manage-wrap">
       <div v-show="curRole" v-loading="loading" class="mb-16">
-        <AuthItem ref="webPermission" :tree="webList" :initial-checked="webChecked" />
+        <AuthItem ref="webPermission" :tree="webList" :initial-checked="webChecked" :curRole="curRole" :showOption="showOption" />
       </div>
       <div class="permission-bottom" v-if="!isNullOrUnDefOrisEmpty(curRole?.id)">
         <OptionModel>
-          <el-button type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
+          <el-button v-if="showOption" type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
         </OptionModel>
       </div>
     </div>

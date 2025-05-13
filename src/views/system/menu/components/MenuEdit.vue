@@ -43,10 +43,8 @@ const isGroup = computed(() => {
 const MENU_DEFAULT = {
   level: '1',
   status: 1,
-  isCache: 1,
-  isUrlCache: 2,
-  isColumnCache: 1,
-  erpFlag: 1,
+  isCache: 0,
+  isColumnCache: 0,
   openType: 1,
 }
 const formData = reactive<any>({
@@ -58,8 +56,6 @@ const formData = reactive<any>({
   sort: 0,
   icon: '',
   perms: '',
-  erpFlag: 1,
-  isUrlCache: 2,
   status: 1
 })
 
@@ -154,7 +150,7 @@ function handleClose() {
         <el-form-item prop="isCache" label="是否缓存">
           <el-radio-group v-model="formData.isCache">
             <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
+            <el-radio :label="2">否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item prop="sort" label="排序">
@@ -182,20 +178,20 @@ function handleClose() {
         </el-form-item>
         <el-form-item v-if="formData.level == 1" label="隐藏菜单">
           <el-radio-group v-model="formData.status">
-            <el-radio-button :label="1">是</el-radio-button>
-            <el-radio-button :label="0">否</el-radio-button>
+            <el-radio-button :label="1">否</el-radio-button>
+            <el-radio-button :label="2">是</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="formData.level == 1" prop="isCache" label="是否缓存">
           <el-radio-group v-model="formData.isCache">
-            <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
+            <el-radio :label="1">是</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="formData.level == 1" prop="isColumnCache" label="是否开启列缓存">
           <el-radio-group v-model="formData.isColumnCache">
-            <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
+            <el-radio :label="1">是</el-radio>
           </el-radio-group>
         </el-form-item>
         <!-- <el-form-item v-if="formData.level == 1" prop="openType" label="页签打开模式">
