@@ -6,7 +6,7 @@
  * @LastEditors: biao.shi
  * @LastEditTime: 2023-09-18 11:25:06
  */
-import { getImgWidthAndHeightByUrl } from './image.ts'
+import { getImgWidthAndHeightByUrl } from './image.js'
 import { ElMessage } from 'element-plus'
 /**
  * 获取图片文件宽高

@@ -71,20 +71,19 @@ router.beforeEach(async (to, from, next) => {
   const $routerStore = useRouterStore()
   const $userStore = useUserStore()
   try {
-    const projectId = to.query.projectId || to.meta.autoParams?.projectId || ''
     // token存在的情况
     if (userToken) {
       if (to.path === '/login') {
-        await getMenuRoutes($userStore, next, $routerStore, router, asyncRoutes, constantRoutes, projectId)
+        await getMenuRoutes($userStore, next, $routerStore, router, asyncRoutes, constantRoutes, '')
         const routerPath = getFistRouters($routerStore.routes)
-        nextHandler({ path: routerPath, query: {} }, from, next, projectId)
+        next(routerPath)
       } else {
         // 用户信息不存在，则重新拉取用户等信息
         if (isNullOrUnDefOrisEmpty($userStore.userInfo?.id)) {
-          await getMenuRoutes($userStore, next, $routerStore, router, asyncRoutes, constantRoutes, projectId)
-          next({ ...to, query: { ...to.query, projectId }, replace: true })
+          await getMenuRoutes($userStore, next, $routerStore, router, asyncRoutes, constantRoutes, '')
+          next({ ...to, replace: true })
         } else {
-          nextHandler(to, from, next, projectId)
+          next()
         }
       }
     } else {
@@ -92,53 +91,13 @@ router.beforeEach(async (to, from, next) => {
       if (whiteList.indexOf(to.path) > -1) {
         next()
       } else {
-        next({ path: '/login', query: { ...to.query, projectId } })
+        next({ path: '/login', query: { ...to.query } })
       }
     }
   } catch (error) {
     console.log('路由跳转错误', error)
   }
 })
-
-const nextHandler = (to: any, from: any, next: any, projectId: string) => {
-  let projectInfo = projectId
-  try {
-    let appInfoStr = decrypted(projectId)
-    let appInfoObj = JSON.parse(appInfoStr)
-    //已加密不需加密
-    if (appInfoObj.projectId) {
-      projectInfo = projectId
-    } else {
-      let obj = { projectId: projectId }
-      projectInfo = encrypted(JSON.stringify(obj))
-    }
-  } catch (error) {
-    let obj = { projectId: projectId }
-    projectInfo = encrypted(JSON.stringify(obj))
-  }
-
-  const requiredParams = {
-    projectId: projectInfo
-  }
-  // 判断是否缺少必要参数
-  const hasMissingParam = Object.keys(requiredParams).some(key => !to.query[key])
-  // 合并参数（保留原始参数优先级）
-  const mergedQuery = {
-    ...requiredParams,
-    ...to.query // 原始参数覆盖自动参数
-  }
-  // 参数无变化时直接放行
-  if (JSON.stringify(to.query) === JSON.stringify(mergedQuery)) {
-    return next()
-  }
-  // 跳转时带上合并后的参数
-  next({
-    ...to,
-    query: mergedQuery,
-    replace: true // 使用replace避免history重复记录
-  })
-}
-
 router.afterEach(to => {
   if (to.meta.title) {
     document.title = `V链API开发平台-${to.meta.title}`

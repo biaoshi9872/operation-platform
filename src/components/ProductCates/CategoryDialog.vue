@@ -56,7 +56,7 @@ const bindClick = () => {
   nextTick(() => {
     props.checkStrictly &&
       document.querySelectorAll('.content .el-cascader-node__label').forEach((el: any) => {
-        el.onclick = function () {
+        el.onclick = function() {
           el.parentNode?.childNodes[1].click()
         }
       })

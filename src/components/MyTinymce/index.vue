@@ -14,7 +14,7 @@
 // import PictureInformation from '../SelectModel/pictureInformation/index.vue'
 import { ref, unref, watch, toRefs, reactive, onMounted, onBeforeUnmount } from 'vue'
 
-import tinymce from 'tinymce/tinymce'
+import tinymce from 'tinymce'
 import 'tinymce/themes/silver/theme'
 import TinymcVue from '@tinymce/tinymce-vue'
 import 'tinymce/icons/default/icons'
@@ -154,7 +154,7 @@ const state = reactive({
       input.setAttribute('type', 'file')
       input.setAttribute('accept', '.jpg,.png,.jpeg')
       input.click()
-      input.onchange = function () {
+      input.onchange = function() {
         const file = this.files[0]
         A_upload(file)
           .then((res: any) => {
@@ -168,7 +168,7 @@ const state = reactive({
       }
     },
     images_upload_base_path: '',
-    images_upload_handler: function (blobInfo: any, succFun: any, failFun: any) {
+    images_upload_handler: function(blobInfo: any, succFun: any, failFun: any) {
       const blob = blobInfo.blob()
       const file = new File([blob], '1.png', { type: blob.type })
       A_upload(file)
@@ -186,13 +186,13 @@ const state = reactive({
       dialogTableVisible.value = true
       // uploadFileClick()
     },
-    urlconverter_callback: function (url: any, node: any, on_save: any, name: any) {
+    urlconverter_callback: function(url: any, node: any, on_save: any, name: any) {
       if (node === 'img' && url.startsWith('blob:')) {
         tinymce.activeEditor && tinymce.activeEditor.uploadImages()
       }
       return url
     },
-    paste_preprocess: function (plugin: any, args: any) {
+    paste_preprocess: function(plugin: any, args: any) {
       console.log(args.content)
       args.content = 'helloworld'
     }

@@ -14,8 +14,10 @@ const breadcrumb = computed(() => route.meta.breadcrumb as any[])
         <span>首页</span>
       </el-breadcrumb-item>
       <el-breadcrumb-item v-for="(item, index) in breadcrumb" :key="index">
-        <span :class="index == breadcrumb?.length - 1 ? 'last-tag' : ''">{{ breadcrumb?.length - 1 ? route.query.tabTitle
-          || item : item }}</span>
+        <span :class="index == breadcrumb?.length - 1 ? 'last-tag' : ''">
+          {{ breadcrumb?.length - 1 ? route.query.tabTitle
+          || item : item }}
+        </span>
       </el-breadcrumb-item>
     </el-breadcrumb>
   </div>

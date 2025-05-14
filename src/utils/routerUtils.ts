@@ -42,7 +42,7 @@ export const generateRoutes = (menuList: any): RouteRecordRaw[] => {
         icon: menu.icon,
         id: String(menu.id),
         url: menu.url,
-        openType: menu.menuType || 1,
+        openType: menu.openType || 1,
         cache: menu?.isCache == 1 ? true : false,
         isColumnCache: menu?.isColumnCache == 1 ? true : false,
         breadcrumb: [],
