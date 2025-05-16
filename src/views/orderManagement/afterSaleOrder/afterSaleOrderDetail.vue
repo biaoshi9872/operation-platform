@@ -131,7 +131,6 @@ const closeHandler = () => {
     >
       <OrderReturnUserInfo></OrderReturnUserInfo>
     </CardModel>
-
     <!-- 换货 -->
     <template
       v-if="['1'].includes(String(dataPage.detail.afterSaleType)) && !['201'].includes(String(dataPage.detail.currentFlowNodeCode)) && !['2'].includes(String(dataPage.detail.source))"

@@ -39,10 +39,6 @@ const FIELDS = [
     }
   },
   {
-    label: '渠道售后单编号',
-    prop: 'thirdAfterSaleNo'
-  },
-  {
     label: '申请人',
     prop: 'applyUserName'
   },
@@ -53,10 +49,6 @@ const FIELDS = [
   {
     label: '供应商',
     prop: 'supplyName'
-  },
-  {
-    label: '分销渠道',
-    prop: 'merchantName'
   }
 ]
 

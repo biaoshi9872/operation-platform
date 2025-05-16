@@ -107,26 +107,21 @@ const showGiveawayTagBox = computed(() => {
             ></AttributeModule>
           </template>
         </YbtTableColumn>
-        <!-- <YbtTableColumn prop="taxPurchaseCost" min-width="130" label="含税采购成本">
+        <YbtTableColumn prop="taxPurchaseCost" min-width="130" label="平台成本">
           <template #default="{ row }">
             <span>{{ row.level == 0 ? `￥${row.taxPurchaseCost}`:`￥${row.singleTaxPurchaseCost}` }}</span>
           </template>
         </YbtTableColumn>
-        <YbtTableColumn prop="noTaxPurchaseCost" min-width="150" label="不含税采购成本">
+        <YbtTableColumn prop="noTaxPurchaseCost" min-width="150" label="平台供应价">
           <template #default="{ row }">
             <span>{{ row.level == 0 ? `￥${row.noTaxPurchaseCost}`:`￥${row.singleNoTaxPurchaseCost}` }}</span>
           </template>
         </YbtTableColumn>
-        <YbtTableColumn prop="supplyPrice" min-width="130" label="含税V链供应价">
+        <YbtTableColumn prop="supplyPrice" min-width="130" label="分销价">
           <template #default="{ row }">
             <span>{{row.level == 0 ? `￥${row.supplyPrice}`:`￥${row.singleSupplyPrice}` }}</span>
           </template>
         </YbtTableColumn>
-        <YbtTableColumn prop="noTaxSupplyPrice" min-width="150" label="不含税V链供应价">
-          <template #default="{ row }">
-            <span>{{ row.level == 0 ? `￥${row.noTaxSupplyPrice}` :`￥${row.singleNoTaxSupplyPrice}`}}</span>
-          </template>
-        </YbtTableColumn>-->
         <YbtTableColumn prop="goodsNum" label="数量">
           <template #default="{ row }">
             <span>{{ row.level == 0 ? row.goodsNum :row.comboNum }}</span>

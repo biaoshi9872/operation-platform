@@ -1,4 +1,5 @@
-class order_enum {
+import baseEnum from './baseEnum'
+class order_enum extends baseEnum {
   /**
    * 订单状态
    */
@@ -147,6 +148,19 @@ class order_enum {
     { value: 0, label: '0%' },
     { value: -1, label: '免税' }
   ]
+
+  /**
+   *
+   * 面单是否脱敏
+   */
+  public C_isMaskList = [
+    { value: 1, label: '是' },
+    { value: 0, label: '否' }
+  ]
+
+  public getMaskNameByKey(key: string) {
+    return this.getDictNameByKey(this.C_isMaskList, key)
+  }
 
   /***
     获取枚举值

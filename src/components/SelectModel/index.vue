@@ -8,7 +8,7 @@
 -->
 <script setup lang="ts">
 defineOptions({
-  name: 'SelectModelOption'
+  name: 'SelectModel'
 })
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void

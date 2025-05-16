@@ -25,12 +25,18 @@ interface IData {
 const data = reactive<IData>({
   formData: {
     appName: '',
+    appName1: '',
+    appName2: '',
+    appName3: '',
     developerEmail: '',
     developerPhone: ''
   },
   formDataBK: {},
   formRules: {
     appName: [{ required: true, message: '请输入应用名称', trigger: ['change', 'blur'] }],
+    appName1: [{ required: true, message: '请选择可见商品类型', trigger: ['change', 'blur'] }],
+    appName2: [{ required: true, message: '请选择分支机构', trigger: ['change', 'blur'] }],
+    appName3: [{ required: true, message: '请选择是否支持脱敏', trigger: ['change', 'blur'] }],
     developerEmail: [
       { required: true, message: '请输入开发者邮箱', trigger: ['change', 'blur'] },
       {
@@ -108,6 +114,9 @@ const title = computed(() => {
   >
     <div class="option">
       <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right" label-width="100px">
+        <el-form-item label="分支机构" prop="appName2">
+          <OrgSelect v-model="data.formData.appName2" :multiple="false"></OrgSelect>
+        </el-form-item>
         <el-form-item label="应用名称" prop="appName">
           <el-input v-model="data.formData.appName" placeholder="请输入应用名称" maxlength="50" show-word-limit></el-input>
         </el-form-item>
@@ -116,6 +125,15 @@ const title = computed(() => {
         </el-form-item>
         <el-form-item label="开发者手机" prop="developerPhone">
           <el-input v-model="data.formData.developerPhone" placeholder="请输入开发者手机" maxlength="11" show-word-limit></el-input>
+        </el-form-item>
+        <el-form-item label="可见商品类型" prop="appName1">
+          <el-input v-model="data.formData.appName1" placeholder="请输入开发者地址" maxlength="50" show-word-limit></el-input>
+        </el-form-item>
+        <el-form-item label="是否支持脱敏" prop="appName3">
+          <template #label>
+            <Tooltip content="选择“是”，则API商品池仅展示支持脱敏的驿宝通精选商品;反之，则展示全量驿宝通精选商品。">是否支持脱敏</Tooltip>
+          </template>
+          <el-input v-model="data.formData.appName3" placeholder="请输入开发者地址" maxlength="50" show-word-limit></el-input>
         </el-form-item>
       </el-form>
     </div>

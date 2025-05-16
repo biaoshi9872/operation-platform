@@ -6,6 +6,8 @@ import { IPage } from '@/types/from-types'
 import pageHooks from '@/hooks/pageListHooks'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ElButton } from 'element-plus'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isOrgLast } = isStateCheckHooks()
 import ApplicationModel from './components/ApplicationModel.vue'
 import application_api from '@/api/system/application'
 
@@ -30,7 +32,7 @@ const dataPage: IPage<any, any> = reactive({
   toDownloadCenterApi: null,
   selectPage: application_api.A_page
 })
-const { searchQuery, toDownloadCenter } = pageHooks(dataPage)
+const { searchQuery } = pageHooks(dataPage)
 const getQueryParams = () => {
   const { page, facade, facadeKz } = dataPage
   return { ...page, ...facade, ...facadeKz }
@@ -40,13 +42,6 @@ const searchQueryHarder = () => {
   searchQuery(obj)
 }
 provide('searchQueryHandler', searchQueryHarder)
-const handleSelectionChange = (value: any) => {
-  dataPage.multipleList = value
-}
-const exportHandler = () => {
-  const obj = getQueryParams()
-  toDownloadCenter(obj)
-}
 
 const addApplicationHandler = () => {
   dataPage.curryInfo = null
@@ -56,41 +51,56 @@ const editApplicationHandler = (row: any) => {
   dataPage.curryInfo = row
   dataPage.showApplication = true
 }
+
+const toApplicationHandler = (row: any) => {
+  // const obj = getQueryParams()
+  // toApplication(obj)
+}
 </script>
 <template>
-  <PageContainer class="main_box">
+  <PageContainer class="app_box">
     <SearchForm
       v-model:model="dataPage.facade"
       v-model:current-page="dataPage.page.page"
       class="el-search-item"
       @search="searchQueryHarder"
     >
-      <el-form-item label="创建时间">
-        <DatePickerRange v-model:start="dataPage.facade.createDateStart" v-model:end="dataPage.facade.createDateEnd"></DatePickerRange>
-      </el-form-item>
-      <el-form-item label="分支机构">
+      <template #tabs>
+        <div class="tip-container">
+          海量商品全品类覆盖 品质服务全程保障
+          <br />整合京东、京东生鲜等头部电商平台资源，联合全国知名品牌厂商直供，构建包含实物商品与虚拟权益的多维供应链体系，为您提供一站式采购解决方案：
+          <br />• 全品类实物供应：覆盖百万级SKU，支持企业定制化采购
+          <br />• 虚拟权益全覆盖：含加油卡、通讯充值、影视会员（腾讯/爱奇艺等）、本地生活（饿了么/星巴克/猫眼电影）等千余种数字商品
+        </div>
+      </template>
+      <el-form-item v-if="!isOrgLast" label="分支机构">
         <OrgSelect v-model="dataPage.facade.orgIdList" :multiple="true"></OrgSelect>
+      </el-form-item>
+      <el-form-item label="应用名称">
+        <el-input v-model="dataPage.facade.name" placeholder="请输入应用名称"></el-input>
       </el-form-item>
     </SearchForm>
     <div class="option_box">
-      <TableModel
-        :page="dataPage.page"
-        :listTableData="dataPage.dataList"
-        @pagingQuery="searchQueryHarder"
-        @selection-change="handleSelectionChange"
-      >
+      <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
         <template #option>
           <AuthButton authKey="APP_EXPORT" type="primary">导出</AuthButton>
           <AuthButton authKey="APP_ADD" type="primary" @click="addApplicationHandler">创建应用</AuthButton>
         </template>
-        <el-table-column prop="createDate" label="创建时间"></el-table-column>
+        <el-table-column prop="appName" label="应用名称">
+          <template #default="{row}">
+            <div class="flex items-center gap-2">
+              <img style="width: 30px; height:30px" src="@/assets/images/app.png" />
+              <OverflowTooltipCell :text="row.appName">{{row.appName}}</OverflowTooltipCell>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="orgName" label="分支机构"></el-table-column>
-        <el-table-column prop="appName" label="应用名称"></el-table-column>
-        <el-table-column prop="developerEmail" label="开发者邮箱"></el-table-column>
-        <el-table-column prop="developerPhone" label="开发者手机"></el-table-column>
-        <el-table-column label="操作" width="120px" align="right">
+        <el-table-column prop="createDate" label="创建时间"></el-table-column>
+        <el-table-column prop="createDate" label="创建人"></el-table-column>
+        <el-table-column label="操作" width="200px" align="right">
           <template #default="{ row }">
-            <el-button type="primary" link @click="editApplicationHandler(row)">编辑</el-button>
+            <el-button type="primary" link @click="toApplicationHandler(row)">应用管理</el-button>
+            <AuthButton authKey="APP_EDIT" type="primary" link @click="editApplicationHandler(row)">编辑</AuthButton>
           </template>
         </el-table-column>
       </TableModel>
@@ -98,4 +108,15 @@ const editApplicationHandler = (row: any) => {
     <ApplicationModel v-model="dataPage.showApplication" :curryInfo="dataPage.curryInfo"></ApplicationModel>
   </PageContainer>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.app_box {
+  ::v-deep(.search-container) {
+    padding-top: 10px !important;
+  }
+}
+.tip-container {
+  padding: 12px 16px;
+  background: #f1eded99;
+  color: #999;
+}
+</style>

@@ -93,7 +93,7 @@ const showGiveawayTagBox = computed(() => {
         <span class="item_value">{{ orderInfo.reasonName }}</span>
       </div>
       <div class="item" v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType))">
-        <span class="item_title">{{ `退款金额(采购成本)` }}:</span>
+        <span class="item_title">{{ `退款金额（分销价）` }}:</span>
         <span class="item_value">{{ `￥${supplierAfterSalePrice}` }}</span>
       </div>
       <div class="item" v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType))">
@@ -144,24 +144,19 @@ const showGiveawayTagBox = computed(() => {
               ></AttributeModule>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn prop="taxPurchaseCost" min-width="130" label="含税采购成本">
+          <YbtTableColumn prop="taxPurchaseCost" min-width="130" label="平台成本">
             <template #default="{ row }">
               <span>{{ row.level == 0 ? `￥${row.taxPurchaseCost}`:`￥${row.singleTaxPurchaseCost}` }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn prop="noTaxPurchaseCost" min-width="150" label="不含税采购成本">
+          <YbtTableColumn prop="noTaxPurchaseCost" min-width="150" label="平台供应价">
             <template #default="{ row }">
               <span>{{ row.level == 0 ? `￥${row.noTaxPurchaseCost}`:`￥${row.singleNoTaxPurchaseCost}` }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn prop="supplyPrice" min-width="130" label="含税V链供应价">
+          <YbtTableColumn prop="supplyPrice" min-width="130" label="分销价">
             <template #default="{ row }">
               <span>{{row.level == 0 ? `￥${row.supplyPrice}`:`￥${row.singleSupplyPrice}` }}</span>
-            </template>
-          </YbtTableColumn>
-          <YbtTableColumn prop="noTaxSupplyPrice" min-width="150" label="不含税V链供应价">
-            <template #default="{ row }">
-              <span>{{ row.level == 0 ? `￥${row.noTaxSupplyPrice}` :`￥${row.singleNoTaxSupplyPrice}`}}</span>
             </template>
           </YbtTableColumn>
           <YbtTableColumn prop="totalNum" label="数量">
@@ -188,7 +183,7 @@ const showGiveawayTagBox = computed(() => {
             v-if="!['1'].includes(String(orderInfo.afterSaleType))"
             width="160"
             prop="supplierAfterSalePrice"
-            label="退款金额(采购成本)"
+            label="退款金额(成本)"
           >
             <template #default="{ row }">
               <span>{{ row.level==0 ?`￥${row.supplierAfterSalePrice}`:'/' }}</span>
@@ -199,6 +194,16 @@ const showGiveawayTagBox = computed(() => {
             width="160"
             prop="purchaseAfterSalePrice"
             label="退款金额(供应价)"
+          >
+            <template #default="{ row }">
+              <span>{{row.level==0 ?`￥${row.purchaseAfterSalePrice}` :'/'}}</span>
+            </template>
+          </YbtTableColumn>
+          <YbtTableColumn
+            v-if="!['1'].includes(String(orderInfo.afterSaleType))"
+            width="160"
+            prop="purchaseAfterSalePrice"
+            label="退款金额(分销价)"
           >
             <template #default="{ row }">
               <span>{{row.level==0 ?`￥${row.purchaseAfterSalePrice}` :'/'}}</span>

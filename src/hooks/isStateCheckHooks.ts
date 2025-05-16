@@ -1,6 +1,8 @@
 import { useUserStore } from '@/stores'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { decrypted } from '@/utils/encrypt'
 
 type TisStateCheckHooks = {
   isErpAccount: boolean
@@ -8,13 +10,15 @@ type TisStateCheckHooks = {
   isCombinationGoods: any
   isErpAccountState: any
   isOrgLast: any
+  isFromOrgLast: any
   orgInfo: any
+  decryptApplicationSource: any
 }
 export default function (data: any = {}): TisStateCheckHooks {
   const $useUserStore = useUserStore()
   const { erpUseInfo }: { erpUseInfo: any } = storeToRefs($useUserStore) as any
   const sysTag = import.meta.env.VITE_TAG
-
+  const $route = useRoute()
   /**
    * erp账号判断
    */
@@ -75,6 +79,13 @@ export default function (data: any = {}): TisStateCheckHooks {
   })
 
   /**
+   * 来源分支
+   */
+  const isFromOrgLast = computed(() => {
+    return $useUserStore.userInfo.orgType != 1
+  })
+
+  /**
    * 当前用户分支机构信息
    */
   const orgInfo = computed(() => {
@@ -84,12 +95,27 @@ export default function (data: any = {}): TisStateCheckHooks {
     }
   })
 
+  /**
+   * 解密当前应用数据
+   */
+  const decryptApplicationSource = computed(() => {
+    let projectId = $route.query.projectId as string
+    let projectIStr = decrypted(projectId)
+    let projectInfo = {}
+    try {
+      projectInfo = JSON.parse(projectIStr)
+    } catch (error) {}
+    return projectInfo
+  })
+
   return {
     isErpAccount: isErpAccount.value,
     isCombinationGoods: isCombinationGoods.value,
     isErpAccountState: isErpAccountState.value,
     purchaseCostName: purchaseCostName.value,
     isOrgLast: isOrgLast,
-    orgInfo: orgInfo
+    isFromOrgLast: isFromOrgLast,
+    orgInfo: orgInfo,
+    decryptApplicationSource
   }
 }
