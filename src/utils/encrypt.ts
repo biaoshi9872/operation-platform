@@ -56,3 +56,17 @@ export const decrypted = (cipherText: any) => {
     padding: CryptoJS.pad.Pkcs7
   }).toString(CryptoJS.enc.Utf8)
 }
+
+//encodeURIComponent
+export const strEncodeURIComponent = (str: any) => {
+  return encodeURIComponent(str)
+}
+
+//decodeURIComponent
+export const strDecodeURIComponent = (str: any) => {
+  // let deStr = strDecodeURIComponent(str)
+  // if (deStr != strDecodeURIComponent(deStr)) {
+  //   deStr = strDecodeURIComponent(deStr)
+  // }
+  return decodeURIComponent(str)
+}

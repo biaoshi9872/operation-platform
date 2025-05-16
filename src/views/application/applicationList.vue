@@ -10,7 +10,9 @@ import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 const { isOrgLast } = isStateCheckHooks()
 import ApplicationModel from './components/ApplicationModel.vue'
 import application_api from '@/api/system/application'
-
+import { encrypted, decrypted, strEncodeURIComponent, strDecodeURIComponent } from '@/utils/encrypt'
+import { useUserStore } from '@/stores'
+const $useUserStore = useUserStore()
 const router = useRouter()
 const dataPage: IPage<any, any> = reactive({
   isOnload: true,
@@ -53,8 +55,16 @@ const editApplicationHandler = (row: any) => {
 }
 
 const toApplicationHandler = (row: any) => {
-  // const obj = getQueryParams()
-  // toApplication(obj)
+  let projectId = row.orgId + '_' + row.id
+  let orgId = row.orgId
+  let appId = row.id
+  let appCode = row.appCode
+  let orgType = $useUserStore.userInfo.orgType
+  let projectStr = encrypted(JSON.stringify({ projectId, orgId, appId, appCode, orgType }))
+  let enPro = strEncodeURIComponent(projectStr)
+  let url = 'http://localhost:7082' //window.location.origin
+  let path = `${url}/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
+  window.open(path, '_blank')
 }
 </script>
 <template>
