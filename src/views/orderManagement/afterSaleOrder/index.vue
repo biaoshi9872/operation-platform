@@ -106,6 +106,10 @@ const toDetailHandler = (row: any) => {
     }
   })
 }
+const reviewHandler = (row: any) => {}
+
+const withdrawHandler = (row: any) => {}
+
 const columns: any = ref([])
 onMounted(() => {
   initColumns()
@@ -217,6 +221,27 @@ const initColumns = () => {
     label: '操作',
     align: 'center',
     render: (row: any) => {
+      const SH = withDirectives(
+        h(ElButton, {
+          type: 'text',
+          innerText: '审核',
+          onClick: () => {
+            reviewHandler(row)
+          }
+        }),
+        [[authDir, 'VO_PRODUCT_SH_REFUND']]
+      )
+      const CX = withDirectives(
+        h(ElButton, {
+          type: 'text',
+          innerText: '撤销',
+          onClick: () => {
+            reviewHandler(row)
+          }
+        }),
+        [[authDir, 'VO_PRODUCT_SH_REFUND']]
+      )
+
       const detailButton = h(ElButton, {
         type: 'text',
         innerText: '详情',
