@@ -55,12 +55,8 @@ const editApplicationHandler = (row: any) => {
 }
 
 const toApplicationHandler = (row: any) => {
-  let projectId = row.orgId + '_' + row.id
-  let orgId = row.orgId
   let appId = row.id
-  let appCode = row.appCode
-  let orgType = $useUserStore.userInfo.orgType
-  let projectStr = encrypted(JSON.stringify({ projectId, orgId, appId, appCode, orgType }))
+  let projectStr = encrypted(JSON.stringify({ appId }))
   let enPro = strEncodeURIComponent(projectStr)
   let url = window.location.origin
   let path = `${url}/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`

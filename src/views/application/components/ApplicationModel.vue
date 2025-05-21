@@ -78,12 +78,19 @@ const openHandler = () => {
     ...data.formDataBK
   }
   if (props.curryInfo?.id) {
+    getDetail()
+  }
+}
+
+const getDetail = () => {
+  let appId = props.curryInfo?.id
+  application_api.A_applicationDetail({ appId }).then((res: any) => {
     data.formData = {
       ...data.formDataBK,
-      ...props.curryInfo,
-      goodsSourceTypeCodeList: props.curryInfo.goodsSourceTypeCodeList?.split(',') || []
+      ...res,
+      goodsSourceTypeCodeList: res?.goodsSourceTypeCodeList?.split(',')
     }
-  }
+  })
 }
 const handleSubmit = () => {
   formRef.value.validate().then(() => {

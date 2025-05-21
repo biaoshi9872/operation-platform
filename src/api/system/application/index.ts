@@ -46,6 +46,18 @@ class application_api {
       data: data
     })
   }
+
+  /**
+   * 详情
+   *
+   */
+  A_applicationDetail(data: any) {
+    return request<any>({
+      url: '/sys/application/detail',
+      method: 'get',
+      params: data
+    })
+  }
 }
 
 export default new application_api()
