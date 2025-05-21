@@ -13,4 +13,4 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
 
 # 拷贝程序
 #ADD dist /usr/share/nginx/html/dist
-ADD dist /usr/share/nginx/html/supplychainapi_platform
+ADD dist /usr/share/nginx/html/api_platform
