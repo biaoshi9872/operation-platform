@@ -13,9 +13,9 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 const chunksMap = ['element-plus', 'lodash-es', 'axios', 'vue-router', 'vuedraggable', 'vue3-json-viewer', '@ycb']
 
-//const HOST = 'https://supply-test.ycb51.cn' // 测试环境
+const HOST = 'https://supply-test.ycb51.cn' // 测试环境
 //const HOST = 'https://vsc.ebaoton.cn' // 测试环境
-const HOST = 'http://192.168.10.251:9001' // 刘康
+//const HOST = 'http://192.168.10.251:9001' // 刘康
 //const HOST = 'http://192.168.10.96:7080' //晶晶
 //const HOST = 'http://192.168.10.234:7007' //旺翔
 //const HOST = 'http://192.168.10.203:7080' //双源
@@ -41,20 +41,15 @@ export default defineConfig(({ mode }) => {
               return chunks
             }
             if (id.includes('node_modules')) {
-              return 'vendor' //id.toString().split('node_modules/')[1].split('/')[0].toString()
+              return 'vendor'
             }
           }
         },
-        external: [
-          '@antv/l7', // 核心库
-          '@antv/l7-maps', // 地图插件
-          '@antv/l7-draw' // 可选：绘图插件
-        ]
+        external: []
       },
       outDir: mode === 'development' ? 'voperate_admin' : 'dist',
       sourcemap: false
     },
-
     esbuild:
       mode === 'development'
         ? {}
