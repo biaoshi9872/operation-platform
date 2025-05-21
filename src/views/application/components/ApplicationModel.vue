@@ -3,7 +3,7 @@ import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import { validatePhone, validateEmail } from '@/utils/validator'
 import application_api from '@/api/system/application'
-
+import goods_api from '@/api/goods'
 interface IProp {
   curryInfo: any
 }
@@ -19,24 +19,26 @@ interface IData {
   formData: any
   formDataBK: any
   formRules: any
+  goodsTypeList: any[]
   tableFromData: any
   submitLoading: boolean
 }
 const data = reactive<IData>({
   formData: {
     appName: '',
-    appName1: '',
-    appName2: '',
-    appName3: '',
+    goodsSourceTypeCodeList: [],
+    orgId: '',
+    isSupportMask: false,
     developerEmail: '',
     developerPhone: ''
   },
+  goodsTypeList: [],
   formDataBK: {},
   formRules: {
     appName: [{ required: true, message: '请输入应用名称', trigger: ['change', 'blur'] }],
-    appName1: [{ required: true, message: '请选择可见商品类型', trigger: ['change', 'blur'] }],
-    appName2: [{ required: true, message: '请选择分支机构', trigger: ['change', 'blur'] }],
-    appName3: [{ required: true, message: '请选择是否支持脱敏', trigger: ['change', 'blur'] }],
+    goodsSourceTypeCodeList: [{ required: true, message: '请选择可见商品类型', trigger: ['change', 'blur'] }],
+    orgId: [{ required: true, message: '请选择分支机构', trigger: ['change', 'blur'] }],
+    isSupportMask: [{ required: true, message: '请选择是否支持脱敏', trigger: ['change', 'blur'] }],
     developerEmail: [
       { required: true, message: '请输入开发者邮箱', trigger: ['change', 'blur'] },
       {
@@ -75,18 +77,20 @@ const openHandler = () => {
   data.formData = {
     ...data.formDataBK
   }
-  if (props.curryInfo.id) {
+  if (props.curryInfo?.id) {
     data.formData = {
       ...data.formDataBK,
-      ...props.curryInfo
+      ...props.curryInfo,
+      goodsSourceTypeCodeList: props.curryInfo.goodsSourceTypeCodeList?.split(',') || []
     }
   }
 }
 const handleSubmit = () => {
   formRef.value.validate().then(() => {
     data.submitLoading = true
+    let goodsSourceTypeCodeList = data.formData.goodsSourceTypeCodeList.join(',')
     application_api
-      .A_save({ ...data.formData, id: props.curryInfo?.id || null })
+      .A_save({ ...data.formData, goodsSourceTypeCodeList, id: props.curryInfo?.id || null })
       .then(() => {
         ElMessage.success('操作成功!')
         handleClose()
@@ -99,6 +103,32 @@ const handleSubmit = () => {
 const title = computed(() => {
   return props.curryInfo?.id ? '编辑应用' : '新增应用'
 })
+
+watch(
+  () => data.formData.orgId,
+  val => {
+    if (val) {
+      getGoodTypeList()
+    }
+  },
+  {
+    immediate: true,
+    deep: true
+  }
+)
+const goodsSourceChangeHandler = (val: any) => {
+  if (!val.includes(2)) {
+    data.formData.isSupportMask = null
+  }
+}
+const changeHandler = () => {
+  data.formData.goodsSourceTypeCodeList = []
+}
+const getGoodTypeList = () => {
+  goods_api.A_goodsSourceByOrg({ orgId: data.formData.orgId }).then((res: any) => {
+    data.goodsTypeList = res
+  })
+}
 </script>
 <template>
   <el-dialog
@@ -113,9 +143,9 @@ const title = computed(() => {
     @closed="handleReset"
   >
     <div class="option">
-      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right" label-width="100px">
-        <el-form-item label="分支机构" prop="appName2">
-          <OrgSelect v-model="data.formData.appName2" :multiple="false"></OrgSelect>
+      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right" label-width="140px">
+        <el-form-item label="分支机构" prop="orgId">
+          <OrgSelect :disabled="props.curryInfo?.id" v-model="data.formData.orgId" :multiple="false" @change="changeHandler"></OrgSelect>
         </el-form-item>
         <el-form-item label="应用名称" prop="appName">
           <el-input v-model="data.formData.appName" placeholder="请输入应用名称" maxlength="50" show-word-limit></el-input>
@@ -126,14 +156,19 @@ const title = computed(() => {
         <el-form-item label="开发者手机" prop="developerPhone">
           <el-input v-model="data.formData.developerPhone" placeholder="请输入开发者手机" maxlength="11" show-word-limit></el-input>
         </el-form-item>
-        <el-form-item label="可见商品类型" prop="appName1">
-          <el-input v-model="data.formData.appName1" placeholder="请输入开发者地址" maxlength="50" show-word-limit></el-input>
+        <el-form-item v-if="data.goodsTypeList.length" label="可见商品类型" prop="goodsSourceTypeCodeList">
+          <el-checkbox-group v-model="data.formData.goodsSourceTypeCodeList" @change="goodsSourceChangeHandler">
+            <el-checkbox v-for="item in data.goodsTypeList" :label="item.sourceName" :value="item.id" />
+          </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="是否支持脱敏" prop="appName3">
+        <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(2)" label="是否支持脱敏" prop="isSupportMask">
           <template #label>
             <Tooltip content="选择“是”，则API商品池仅展示支持脱敏的驿宝通精选商品;反之，则展示全量驿宝通精选商品。">是否支持脱敏</Tooltip>
           </template>
-          <el-input v-model="data.formData.appName3" placeholder="请输入开发者地址" maxlength="50" show-word-limit></el-input>
+          <el-radio-group v-model="data.formData.isSupportMask">
+            <el-radio :value="true">是</el-radio>
+            <el-radio :value="false">否</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
     </div>
