@@ -62,7 +62,7 @@ const toApplicationHandler = (row: any) => {
   let orgType = $useUserStore.userInfo.orgType
   let projectStr = encrypted(JSON.stringify({ projectId, orgId, appId, appCode, orgType }))
   let enPro = strEncodeURIComponent(projectStr)
-  let url = 'http://localhost:7082' //window.location.origin
+  let url = window.location.origin
   let path = `${url}/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
   window.open(path, '_blank')
 }
