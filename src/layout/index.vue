@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { tabsStore, useAppStore, useRouterStore, useUserStore } from '@/stores/index'
+import { storeToRefs } from 'pinia'
 import MenuItem from './Menu/MenuItem.vue'
 import TopBar from './TopBar/index.vue'
 import ViewTags from './ViewTags/index.vue'
-import { storeToRefs } from 'pinia'
-import { useAppStore, useRouterStore, useUserStore, tabsStore } from '@/stores/index'
 
 const useUserStoreInfo = useUserStore()
 const $routerStore = useRouterStore()
@@ -140,7 +140,7 @@ provide('rollingReset', rollingReset)
       font-size: 18px;
       transform: skewX(-10deg);
       font-weight: bold;
-      background-image: linear-gradient(to right, #829ff1, #517aee);
+      background-image: linear-gradient(to right, var(--el-color-primary-light-5), var(--el-color-primary));
       color: transparent;
       -webkit-background-clip: text;
     }

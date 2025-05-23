@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/index'
+import { ElMessageBox } from 'element-plus'
 import ThemeToggle from './ThemeToggle.vue'
 import UpdatePwd from './UpdatePwd.vue'
 const { userInfo, reSetUserInfo } = useUserStore()
@@ -28,7 +28,8 @@ const updatePassword = () => {
     <el-divider direction="vertical"></el-divider>
     <el-dropdown popper-class="userInfo-popper" trigger="click">
       <div class="user-info">
-        <img src="@/assets/images/default-avatar.png" class="user-avatar" />
+        <!-- <img src="@/assets/images/default-avatar.png" class="user-avatar" /> -->
+        <svg-icon name="userinfo" class="user-icon" />
         <div class="user-name">{{ userInfo?.name }}</div>
         <el-icon>
           <ArrowDown class="user-arrow-down" />
@@ -61,7 +62,10 @@ const updatePassword = () => {
 .user-info-warp {
   display: flex;
   align-items: center;
-
+  .user-icon {
+    font-size: 20px;
+    color: var(--el-color-primary);
+  }
   .user-info {
     display: flex;
     align-items: center;
@@ -81,6 +85,7 @@ const updatePassword = () => {
       text-overflow: ellipsis;
       margin: 0 4px 0 8px;
       font-size: 16px;
+      color: var(--el-color-primary);
     }
 
     .user-arrow-down {
