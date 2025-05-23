@@ -149,7 +149,7 @@ window.addEventListener('resize', setRootFontSize)
   width: 100%;
   min-height: 100vh;
   min-width: 100vw;
-  background: url('./img/bg.png') no-repeat center / cover;
+  background: url('./img/bg.png') no-repeat 100% 100% / cover;
   display: flex;
   justify-content: center;
   align-items: center;
