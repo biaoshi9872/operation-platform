@@ -42,6 +42,16 @@ class org_api {
       method: 'post'
     })
   }
+
+  /**
+   * 查所渠道信息
+   */
+  A_goodsSourceAll() {
+    return request<any>({
+      url: '/goodsSource/goodsSourceAll',
+      method: 'get'
+    })
+  }
 }
 
 export default new org_api()

@@ -2,13 +2,13 @@
 defineOptions({
   name: 'menu'
 })
-import MenuEdit from './components/MenuEdit.vue'
-import { IPage } from '@/types/from-types'
-import pageHooks from '@/hooks/pageListHooks'
-import type { TabsPaneContext } from 'element-plus'
 import menu_api from '@/api/system/menu'
-import { ElMessageBox ,ElMessage} from 'element-plus'
-const curMenu = ref<any| null>()
+import pageHooks from '@/hooks/pageListHooks'
+import { IPage } from '@/types/from-types'
+import type { TabsPaneContext } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import MenuEdit from './components/MenuEdit.vue'
+const curMenu = ref<any | null>()
 const isAdd = ref<boolean>(false)
 const dataPage: IPage<any, any> = reactive({
   selectPage: menu_api.A_menuManageTree,
@@ -38,22 +38,22 @@ function handleEdit(row: any) {
 }
 
 // 删除
- function handleDelete({ id }: { id: number }) {
+function handleDelete({ id }: { id: number }) {
   ElMessageBox.confirm(
-  `请确认是否删除菜单?`,
-  '警告',
+    `请确认是否删除菜单?`,
+    '警告',
     {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  }
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
   )
-  .then(() => {
-    menu_api.A_menuDelete(id).then(res => {
-      ElMessage.success(`删除成功!`)
-      searchQueryHandler()
+    .then(() => {
+      menu_api.A_menuDelete(id).then(res => {
+        ElMessage.success(`删除成功!`)
+        searchQueryHandler()
+      })
     })
-  })
 }
 
 /**查询参数 */
@@ -79,25 +79,22 @@ function handleTab(tab: TabsPaneContext, event: Event) {
 
 <template>
   <PageContainer v-loading="dataPage.loadingData" class="menu_container">
-    <SearchForm v-model:model="facade" :tabIndex="dataPage.facadeKz.menuType" class="el-search-item" @search="searchQueryHandler">
+    <SearchForm v-model:model="facade" :tabIndex="dataPage.facadeKz.menuType" class="el-search-item"
+      @search="searchQueryHandler">
       <template #tabs>
         <el-tabs v-model.trim="dataPage.facadeKz.menuType" class="demo-tabs" @tab-change="handleTab">
           <el-tab-pane label="顶级机构" name="1"></el-tab-pane>
           <el-tab-pane label="分支机构" name="2"></el-tab-pane>
           <el-tab-pane label="应用" name="3"></el-tab-pane>
+          <el-tab-pane label="渠道自营供应商" name="4"></el-tab-pane>
         </el-tabs>
       </template>
       <el-form-item label="菜单名称">
         <el-input v-model="facade.menuName" placeholder="请输菜单名称" clearable />
       </el-form-item>
     </SearchForm>
-    <TableModel
-      :listTableData="dataList"
-      row-key="id"
-      :tree-props="{ children: 'children' }"
-      @rowContextmenu="handleContextMenu"
-      :isShowPagination="false"
-    >
+    <TableModel :listTableData="dataList" row-key="id" :tree-props="{ children: 'children' }"
+      @rowContextmenu="handleContextMenu" :isShowPagination="false">
       <template #option>
         <el-button type="primary" @click="handleAdd('1', null)">新增分组</el-button>
       </template>
@@ -128,7 +125,8 @@ function handleTab(tab: TabsPaneContext, event: Event) {
       </YbtTableColumn>
     </TableModel>
   </PageContainer>
-  <MenuEdit v-model="showEdit" :is-add="isAdd" @update="searchQueryHandler" :current="curMenu" :menuType="dataPage.facadeKz.menuType"></MenuEdit>
+  <MenuEdit v-model="showEdit" :is-add="isAdd" @update="searchQueryHandler" :current="curMenu"
+    :menuType="dataPage.facadeKz.menuType"></MenuEdit>
 </template>
 
 <style lang="scss" scoped>
