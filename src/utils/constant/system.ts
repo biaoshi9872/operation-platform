@@ -12,6 +12,7 @@ class system_enum {
       label: '分支机构'
     }
   ]
+
   public orgType2 = [
     {
       value: 1,
@@ -27,6 +28,9 @@ class system_enum {
     }
   ]
 
+  public getRoleType(value: any) {
+    return this.orgType2.find(item => item.value == value)?.label || '--'
+  }
   /**
    * 加价类型
    */

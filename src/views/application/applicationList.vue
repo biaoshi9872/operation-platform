@@ -2,16 +2,15 @@
 defineOptions({
   name: 'applicationList'
 })
-import { IPage } from '@/types/from-types'
-import pageHooks from '@/hooks/pageListHooks'
-import { ElMessageBox, ElMessage } from 'element-plus'
-import { ElButton } from 'element-plus'
-import isStateCheckHooks from '@/hooks/isStateCheckHooks'
-const { isOrgLast } = isStateCheckHooks()
-import ApplicationModel from './components/ApplicationModel.vue'
 import application_api from '@/api/system/application'
-import { encrypted, decrypted, strEncodeURIComponent, strDecodeURIComponent } from '@/utils/encrypt'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+import pageHooks from '@/hooks/pageListHooks'
 import { useUserStore } from '@/stores'
+import { IPage } from '@/types/from-types'
+import { encrypted, strEncodeURIComponent } from '@/utils/encrypt'
+import { ElButton } from 'element-plus'
+import ApplicationModel from './components/ApplicationModel.vue'
+const { isOrgLast } = isStateCheckHooks()
 const $useUserStore = useUserStore()
 const router = useRouter()
 const dataPage: IPage<any, any> = reactive({
@@ -65,12 +64,8 @@ const toApplicationHandler = (row: any) => {
 </script>
 <template>
   <PageContainer class="app_box">
-    <SearchForm
-      v-model:model="dataPage.facade"
-      v-model:current-page="dataPage.page.page"
-      class="el-search-item"
-      @search="searchQueryHarder"
-    >
+    <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
+      @search="searchQueryHarder">
       <template #tabs>
         <div class="tip-container">
           海量商品全品类覆盖 品质服务全程保障
@@ -89,14 +84,13 @@ const toApplicationHandler = (row: any) => {
     <div class="option_box">
       <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
         <template #option>
-          <AuthButton authKey="APP_EXPORT" type="primary">导出</AuthButton>
           <AuthButton authKey="APP_ADD" type="primary" @click="addApplicationHandler">创建应用</AuthButton>
         </template>
         <el-table-column prop="appName" label="应用名称">
-          <template #default="{row}">
+          <template #default="{ row }">
             <div class="flex items-center gap-2">
               <img style="width: 30px; height:30px" src="@/assets/images/app.png" />
-              <OverflowTooltipCell :text="row.appName">{{row.appName}}</OverflowTooltipCell>
+              <OverflowTooltipCell :text="row.appName">{{ row.appName }}</OverflowTooltipCell>
             </div>
           </template>
         </el-table-column>
@@ -120,6 +114,7 @@ const toApplicationHandler = (row: any) => {
     padding-top: 10px !important;
   }
 }
+
 .tip-container {
   padding: 12px 16px;
   background: #f1eded99;

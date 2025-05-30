@@ -33,7 +33,6 @@ const initProductMarkUpSet = async (goodsOrgMarkupDTOList: any) => {
         obj.sourceName = item.sourceName
         obj.goodsSourceId = item.id
         //存在代表不开编辑
-        debugger
         if (curry && curry.priceMarkupType) {
             obj = Object.assign(obj, curry)
             obj.isDisabled = true

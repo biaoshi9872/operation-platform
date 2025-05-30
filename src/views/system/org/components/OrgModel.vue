@@ -72,6 +72,16 @@ const data = reactive<IData>({
       }
     ],
     validateStartTime: [{ required: true, message: '请输入有效期', trigger: ['change', 'blur'] }],
+    relationProvinceId: [{
+      required: true, message: '请选择省市区', trigger: ['change', 'blur'],
+      validator: (rule: any, value: any, callback: any) => {
+        if (data.formData.relationProvinceId && data.formData.relationCityId && data.formData.relationCountryId) {
+          callback()
+        } else {
+          callback(new Error('请选择省市区'))
+        }
+      }
+    }],
     username: [{ required: true, message: '请输入管理员账号', trigger: ['change', 'blur'] }],
     password: [
       { required: true, message: '请输入登录密码', trigger: ['change', 'blur'] },
@@ -224,7 +234,11 @@ const title = computed(() => {
                 <el-input v-model="data.formData.relationPhone" placeholder="请输入手机号" maxlength="11"
                   show-word-limit></el-input>
               </el-form-item>
-              <!-- <el-form-item label="省市区" prop="stockNum"></el-form-item> -->
+              <el-form-item label="省市区" prop="relationProvinceId">
+                <AddressSelect v-model:provinceId="data.formData.relationProvinceId"
+                  v-model:cityId="data.formData.relationCityId" v-model:countyId="data.formData.relationCountryId">
+                </AddressSelect>
+              </el-form-item>
               <el-form-item label="详细地址">
                 <el-input v-model="data.formData.relationDetailAddress" :rows="2" type="textarea" placeholder="请输入详细地址"
                   maxlength="200" show-word-limit></el-input>
