@@ -15,7 +15,7 @@ interface IProp {
   townId: string
   townName: string
   openStreet: boolean,
-
+  openCounty: boolean
 }
 
 const props = withDefaults(defineProps<IProp>(), {
@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<IProp>(), {
   cityId: '',
   countyId: '',
   townId: '',
+  openCounty: true,
   openStreet: false
 })
 
@@ -211,7 +212,7 @@ const getLabelName = (val: any, dataListName: any, type: string) => {
     <el-option v-for="item in data.cityList" :key="item.districtId" :label="item.name"
       :value="item.districtId"></el-option>
   </el-select>
-  <el-select v-if="cityValue" v-model="areaValue" class="w-150" placeholder="区"
+  <el-select v-if="cityValue && openCounty" v-model="areaValue" class="w-150" placeholder="区"
     @change="($event: any) => getLabelName($event, 'areaList', 'countyName')">
     <el-option v-for="item in data.areaList" :key="item.districtId" :label="item.name"
       :value="item.districtId"></el-option>

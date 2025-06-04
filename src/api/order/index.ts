@@ -1,4 +1,5 @@
 import request from '@/utils/axios'
+
 class order_api {
   /**
    * 订单分页接口
@@ -28,9 +29,13 @@ class order_api {
   /**
    * 订单进度流程图
    */
-  A_getOrderProcess(id: any) {
+  A_getOrderProcess(data: any) {
     return request<API.T_DingDanJinDuLiuChengTuListRecords[]>({
-      url: `/order/orderProcess/${id}`,
+      url: `/order/orderProcess`,
+      requestOptions: {
+        formData: true
+      },
+      data: data,
       method: 'post'
     })
   }

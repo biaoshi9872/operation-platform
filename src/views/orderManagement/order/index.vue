@@ -1,21 +1,18 @@
 <script setup lang='ts'>
 defineOptions({ name: 'orderList' })
-import { IPage } from '@/types/from-types'
-import pageHooks from '@/hooks/pageListHooks'
+import order_api from '@/api/order/index'
 import SkuDetail from '@/components/SkuDetail/index.vue'
-import order_enum from '@/utils/constant/order'
-// import { A_getOrderPageList, A_orderExport, A_waitingCount } from '@/api/orderManger'
-import { ElButton, ElTag, ElMessage, ElMessageBox } from 'element-plus'
-import { ref, resolveDirective, withDirectives } from 'vue'
-// import { ORDERSTATUS, DELIVERSTAUS, AFTERSALESTATUS, getDictNameByKey } from '@/utils/constant'
-// import authorization from '@/utils/constant/authorization'
-import isStateCheckHooks from '@/hooks/isStateCheckHooks'
-import { tabsStore } from '@/stores'
-import { cloneDeep } from 'lodash-es'
 import StateCell from '@/components/Tooltip/StateCell.vue'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+import pageHooks from '@/hooks/pageListHooks'
+import { tabsStore } from '@/stores'
+import { IPage } from '@/types/from-types'
 import goodPoor from '@/utils/constant/goodPoor'
-// import ycb_bulkOrder_enum from '@/utils/constant/bulkOrder'
-const { isFromOrgLast } = isStateCheckHooks()
+import order_enum from '@/utils/constant/order'
+import { ElButton } from 'element-plus'
+import { cloneDeep } from 'lodash-es'
+import { ref, resolveDirective } from 'vue'
+const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 const authDir = resolveDirective('auth')
 const $route = useRoute()
@@ -26,28 +23,21 @@ const routeConversion = () => {
   }
 }
 const searchForm = {
-  orderNo: '', //订单号
-  parentOrderNo: '', //父订单号
-  goodsName: '',
-  thirdOrderNo: '', //第三方订单号
-  skuCod: '',
-  orderTimeStart: '',
-  orderTimeEnd: '',
-  confirmTimeStart: '',
-  confirmTimeEnd: '',
-  cancelTimeStart: '',
-  cancelTimeEnd: '',
-  finishTimeStart: '',
-  finishTimeEnd: '',
-  orderStatus: [],
-  receiverName: '',
-  receiverPhone: '',
-  buyer: '',
-  supplyId: [],
-  merchantNo: [],
-  channelCodeListModel: null,
-  desensitizationStatus: null,
-  erpType: null
+  skuCode: '', //
+  orgIdList: [], //应用进入应用的时候要传
+  appIdList: [],
+  submitTimeStart: '', //订单提交时间
+  submitTimeEnd: '', //
+  confirmTimeStart: '', //订单确认时间
+  confirmTimeEnd: '', //
+  orderNo: '', //开放平台订单号
+  channelOrderNo: '', //渠道订单号
+  supplyIds: [], //供应商
+  skuName: '', //商品名称
+  receiverName: '', //收货人
+  channelSourceList: [], //
+  orderStatusList: [],
+  desensitizationStatus: '', //面单是否脱敏
 }
 const pageInfo = {
   page: 1,
@@ -67,9 +57,9 @@ const dataList = computed(() => {
 
 //@ts-ignore
 const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
-  selectPage: null, //A_getOrderPageList,
+  selectPage: order_api.A_page,
   defaultValueConversion: routeConversion,
-  toDownloadCenterApi: null, //A_orderExport,
+  toDownloadCenterApi: order_api.A_orderExport,
   loadingCallback: dataRestCallback,
   dataList: [1],
   dataListCache: {
@@ -88,7 +78,7 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
     '3': cloneDeep(pageInfo),
     '4': cloneDeep(pageInfo)
   },
-  isOnload: false,
+  isOnload: true,
   facade: {
     '-1': cloneDeep(searchForm),
     '1': cloneDeep(searchForm),
@@ -156,10 +146,6 @@ const orderTabs = ref([
   {
     label: '已完成',
     value: '3'
-  },
-  {
-    label: '取消',
-    value: '4'
   }
 ])
 const tabChangHarder = () => {
@@ -171,7 +157,7 @@ const toOrderDetailHandler = (row: any) => {
   tabsStoreInfo.reload({
     path: '/orderManagement/order/orderDetail',
     query: {
-      orderNo: row.orderNo
+      channelOrderNo: row.channelOrderNo
     }
   })
 }
@@ -182,11 +168,12 @@ const exportOrderHandler = (row: any) => {
   toDownloadCenter({ ...obj })
 }
 
-const afterApplyHandler = (row: any) => {
+const afterApplyHandler = (row: any, parentRow: any) => {
   tabsStoreInfo.reload({
     path: '/orderManagement/unLineAfterSaleOrder/index',
     query: {
-      subOrderNo: row.subOrderNo
+      channelOrderNo: parentRow.channelOrderNo,
+      skuCode: row.skuCode
     }
   })
 }
@@ -215,11 +202,10 @@ const initColumns = () => {
     render: (row: any, column: any, index: any, parentRow: any) => {
       console.log(row, 'row,row')
       let newRow = row
-      newRow.titleSpec = row.title + ' ' + (row.spec || '')
+      newRow.titleSpec = row.skuName + ' ' + (row.attributeValue1 + row.attributeValue2 || '')
       //商品详情
       const goodsDetail = h(SkuDetail, {
         goodDetail: newRow,
-        showExtraCode: true,
         width: '100%',
         dataList: parentRow.detailList,
         customAttribute: {
@@ -231,13 +217,13 @@ const initColumns = () => {
       //申请售后
       const afterButton =
         ![0, 4, 5, -1].includes(parentRow.orderStatus) &&
-        !['已完成', '售后中'].includes(row.currentFlowNodeCode) &&
+        ![1, 4].includes(row.afterSaleStatus) &&
         h(ElButton, {
           type: 'text',
           innerText: '申请售后',
           style: { 'margin-left': '95px' },
           onClick: () => {
-            afterApplyHandler(row)
+            afterApplyHandler(row, parentRow)
           }
         })
       return h('div', {}, [goodsDetail, afterButton])
@@ -253,32 +239,32 @@ const initColumns = () => {
   if (!isFromOrgLast.value) {
     columns.value.push({
       label: '平台成本',
-      prop: 'taxPurchaseCost',
+      prop: 'platformPurchasePrice',
       align: 'center',
       width: '140px',
       render: (row: any) => {
-        return h('div', `￥${row.taxPurchaseCost ?? ''}`)
+        return h('div', `￥${row.platformPurchasePrice ?? ''}`)
       },
       openMarginCell: true
     })
   }
   columns.value.push({
     label: '平台供应价',
-    prop: 'taxPurchaseCost',
+    prop: 'platformSupplyPrice',
     align: 'center',
     width: '140px',
     render: (row: any) => {
-      return h('div', `￥${row.taxPurchaseCost ?? ''}`)
+      return h('div', `￥${row.platformSupplyPrice ?? ''}`)
     },
     openMarginCell: true
   })
   columns.value.push({
     label: '分销价',
-    prop: 'taxPurchaseCost',
+    prop: 'retailPrice',
     align: 'center',
     width: '140px',
     render: (row: any) => {
-      return h('div', `￥${row.taxPurchaseCost ?? ''}`)
+      return h('div', `￥${row.retailPrice ?? ''}`)
     },
     openMarginCell: true
   })
@@ -298,14 +284,39 @@ const initColumns = () => {
     label: '商品类型',
     align: 'center',
     width: '100px',
-    prop: 'unit',
+    prop: 'channelSource',
     render: (row: any) => {
-      return h('div', goodPoor.getSourceTypeNameByKey(row.sourceType))
+      return h('div', goodPoor.getSourceTypeNameByKey(row.channelSource))
     }
   })
+  //顶级机构
+  if (getSystemOptionType.value == '101') {
+    columns.value.push({
+      label: '机构名称',
+      align: 'center',
+      width: '160px',
+      prop: 'appName'
+    })
+    columns.value.push({
+      label: '应用名称',
+      align: 'center',
+      width: '160px',
+      prop: 'orgName'
+    })
+  }
+  //分支机构
+  if (getSystemOptionType.value == '102') {
+    columns.value.push({
+      label: '应用名称',
+      align: 'center',
+      width: '160px',
+      prop: 'orgName'
+    })
+  }
   columns.value.push({
     label: '订单状态',
     'min-width': '120px',
+    prop: 'orderStatus',
     render: (row: any) => {
       let statusDom = h('div', order_enum.getDictNameByKey(order_enum.order_states, row.orderStatus)) //订单状态
       //状态显示
@@ -318,7 +329,8 @@ const initColumns = () => {
     'min-width': '120px',
     render: (row: any) => {
       //状态显示
-      const statusDom = h('div', row.currentFlowNodeCode)
+      const afterSaleStatus = order_enum.getAfter_order_statesTitle(row.afterSaleStatus)
+      const statusDom = h('div', afterSaleStatus)
       return h('div', {}, [statusDom])
     },
     openMarginCell: true
@@ -345,14 +357,6 @@ const orderStatusList = computed(() => {
         {
           value: '6',
           label: '已完成'
-        },
-        {
-          value: '4',
-          label: '已取消'
-        },
-        {
-          value: '5',
-          label: '取消中'
         }
       ]
     case '2':
@@ -366,31 +370,14 @@ const orderStatusList = computed(() => {
           label: '已发货'
         }
       ]
-    case '4':
-      return [
-        {
-          value: '4',
-          label: '已取消'
-        },
-        {
-          value: '5',
-          label: '取消中'
-        }
-      ]
   }
 })
 </script>
 
 <template>
   <PageContainer v-loading="dataPage.loadingData">
-    <SearchForm
-      v-model:model="dataPage.facade"
-      v-model:current-page="dataPage.page[dataPage.facadeKz.tab].page"
-      class="el-search-item"
-      @search="searchQueryHarder"
-      :customReset="true"
-      @reset="resetHandler"
-    >
+    <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page[dataPage.facadeKz.tab].page"
+      class="el-search-item" @search="searchQueryHarder" :customReset="true" @reset="resetHandler">
       <template #tabs>
         <el-tabs v-model="dataPage.facadeKz.tab" @tab-change="tabChangHarder">
           <el-tab-pane v-for="item in orderTabs" :label="item.label" :name="item.value" :key="item.value">
@@ -405,28 +392,22 @@ const orderStatusList = computed(() => {
         </el-tabs>
       </template>
       <el-form-item label="提交订单时间" class="el-form-item-inputGroup">
-        <DatePickerRange
-          v-model:start="dataPage.facade[dataPage.facadeKz.tab].orderTimeStart"
-          v-model:end="dataPage.facade[dataPage.facadeKz.tab].orderTimeEnd"
-        ></DatePickerRange>
+        <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].submitTimeStart"
+          v-model:end="dataPage.facade[dataPage.facadeKz.tab].submitTimeEnd"></DatePickerRange>
       </el-form-item>
       <el-form-item label="确认下单时间" class="el-form-item-inputGroup">
-        <DatePickerRange
-          v-model:start="dataPage.facade[dataPage.facadeKz.tab].confirmTimeStart"
-          v-model:end="dataPage.facade[dataPage.facadeKz.tab].confirmTimeEnd"
-        ></DatePickerRange>
+        <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].confirmTimeStart"
+          v-model:end="dataPage.facade[dataPage.facadeKz.tab].confirmTimeEnd"></DatePickerRange>
       </el-form-item>
       <el-form-item label="订单编号" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderNo" placeholder="请输入订单编号"></el-input>
       </el-form-item>
       <el-form-item v-show="['-1', '2', '4'].includes(dataPage.facadeKz.tab)" label="订单状态" class="formItem">
-        <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderStatus" :multiple="true" :selectList="orderStatusList"></SelectModel>
+        <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderStatusList" :multiple="true"
+          :selectList="orderStatusList"></SelectModel>
       </el-form-item>
-      <!-- <el-form-item label="供应商" class="formItem" placeholder="请选择">
-        <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyId" :hasJdChance="true"></AffiliatedSupplier>
-      </el-form-item>-->
       <el-form-item label="商品名称" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].goodsName" placeholder="请输入商品名称"></el-input>
+        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].skuName" placeholder="请输入商品名称"></el-input>
       </el-form-item>
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].skuCode" placeholder="请输入商品编码"></el-input>
@@ -434,62 +415,54 @@ const orderStatusList = computed(() => {
       <el-form-item label="收货人姓名" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverName" placeholder="请输入收货人姓名"></el-input>
       </el-form-item>
-      <!-- <el-form-item v-show="['-1', '3'].includes(dataPage.facadeKz.tab)" label="订单完成时间" class="el-form-item-inputGroup">
-        <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].finishTimeStart" v-model:end="dataPage.facade.finishTimeEnd"></DatePickerRange>
-      </el-form-item>-->
-      <el-form-item v-show="['4'].includes(dataPage.facadeKz.tab)" label="订单取消时间" class="el-form-item-inputGroup">
-        <DatePickerRange
-          v-model:start="dataPage.facade[dataPage.facadeKz.tab].cancelTimeStart"
-          v-model:end="dataPage.facade[dataPage.facadeKz.tab].cancelTimeEnd"
-        ></DatePickerRange>
+      <el-form-item label="供应商" class="formItem" placeholder="请选择">
+        <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyIds" :hasJdChance="true">
+        </AffiliatedSupplier>
       </el-form-item>
-      <!-- <el-form-item label="父订单编号" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].parentOrderNo" placeholder="请输入父订单编号"></el-input>
-      </el-form-item>-->
-
-      <!-- <el-form-item label="收货人手机号" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverPhone" placeholder="请输入收货人手机号"></el-input>
+      <el-form-item v-if="['101'].includes(getSystemOptionType)" label="分支机构" class="formItem" placeholder="请选择">
+        <OrgSelect v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orgIdList"></OrgSelect>
       </el-form-item>
-      <el-form-item label="下单人" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].buyer" placeholder="请输入下单人"></el-input>
-      </el-form-item>-->
+      <el-form-item v-if="['101', '201'].includes(getSystemOptionType)" label="应用名称" class="formItem" placeholder="请选择">
+        <ApplicationSelect v-model.trim="dataPage.facade[dataPage.facadeKz.tab].appIdList"></ApplicationSelect>
+      </el-form-item>
       <el-form-item label="商品类型" class="formItem" placeholder="请选择">
-        <SelectModel v-model.trim="dataPage.facade.desensitizationStatus" :selectList="goodPoor.sourceTypeList"></SelectModel>
+        <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelSourceList"
+          :selectList="goodPoor.sourceTypeList">
+        </SelectModel>
       </el-form-item>
       <el-form-item label="是否脱敏发货" class="formItem" placeholder="请选择">
-        <SelectModel v-model.trim="dataPage.facade.desensitizationStatus" :selectList="order_enum.C_isMaskList"></SelectModel>
+        <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].desensitizationStatus"
+          :selectList="order_enum.C_isMaskList">
+        </SelectModel>
       </el-form-item>
       <el-form-item label="渠道订单编号" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].thirdOrderNo" placeholder="请输入渠道订单编号"></el-input>
+        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelOrderNo"
+          placeholder="请输入渠道订单编号"></el-input>
       </el-form-item>
     </SearchForm>
-    <OrderCustomTable
-      class="order-container"
-      :openFold="false"
-      :openERP="false"
-      :border="true"
-      :dataPage="dataPage"
-      :dataList="dataList"
-      orderChildAttr="detailList"
-      :columns="columns"
-    >
+    <OrderCustomTable class="order-container" :openFold="false" :openERP="false" :border="true" :dataPage="dataPage"
+      :dataList="dataList" orderChildAttr="goodsList" :columns="columns">
       <template #option>
-        <AuthButton authKey="VO_ORDER_EXPORT" type="primary" @click="exportOrderHandler" :loading="dataPage.loadingExport">导出</AuthButton>
+        <AuthButton authKey="VO_ORDER_EXPORT" type="primary" @click="exportOrderHandler"
+          :loading="dataPage.loadingExport">导出</AuthButton>
       </template>
       <template #customRow="{ row }">
         <div class="order_row">
           <div class="order_detail">
             <span class="order-overflow" ref="orderNo">
               订单编号：
-              <el-tooltip class="box-item" effect="dark" :content="row.orderNo " placement="top-start">{{ row.orderNo }}</el-tooltip>
+              <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
+                }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               渠道订单编号：
-              <el-tooltip class="box-item" effect="dark" :content="row.orderNo " placement="top-start">{{ row.orderNo }}</el-tooltip>
+              <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
+                row.channelOrderNo
+                }}</el-tooltip>
             </span>
-            <span>提交订单时间:{{ row.createDate }}</span>
+            <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>
-            <span>供应商:{{ row.totalAmount }}</span>
+            <span v-if="!isFromOrgLast && row.channelSource == 104">供应商:{{ row.supplyName }}</span>
             <span>订单总金额:￥{{ row.totalAmount }}</span>
           </div>
           <div>
@@ -527,6 +500,7 @@ const orderStatusList = computed(() => {
       justify-content: flex-start;
       gap: 40px;
       color: #999;
+
       .thirdOrderNo {
         width: 280px;
         overflow: hidden;

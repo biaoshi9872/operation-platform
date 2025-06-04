@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { h } from 'vue'
-import { ElLink } from 'element-plus'
 import Expand from '@/components/OrderCustomTable/expand'
 import { tabsStore } from '@/stores'
+import { ElLink } from 'element-plus'
+import { h } from 'vue'
 
 const tabsStoreInfo: any = tabsStore()
 
@@ -39,6 +39,18 @@ const FIELDS = [
     }
   },
   {
+    label: '渠道订单编号',
+    prop: 'channelOrderNo'
+  },
+  {
+    label: '渠道售后单编号',
+    prop: 'channelAfterSaleNo'
+  },
+  {
+    label: '第三方售后单号',
+    prop: 'thirdAfterSaleNo'
+  },
+  {
     label: '申请人',
     prop: 'applyUserName'
   },
@@ -56,13 +68,13 @@ const toDetailHandler = (row: any) => {
   tabsStoreInfo.reload({
     path: '/orderManagement/order/orderDetail',
     query: {
-      orderNo: row.orderNo
+      channelOrderNo: row.channelOrderNo
     }
   })
 }
 
 const getTitle = computed(() => {
-  return function(find: any) {
+  return function (find: any) {
     return props.orderInfo[find.prop]
   }
 })
@@ -73,8 +85,9 @@ const getTitle = computed(() => {
     <div class="item flex" v-for="(item, index) in FIELDS" :key="index">
       <span class="item_title">{{ item.label }}:</span>
       <span class="item_value">
-        {{ getTitle(item) || '-'}}
-        <Expand v-if="item.render" :row="props.orderInfo" :parentRow="props.orderInfo" :render="item.render" :index="index" :column="item"></Expand>
+        {{ getTitle(item) || '-' }}
+        <Expand v-if="item.render" :row="props.orderInfo" :parentRow="props.orderInfo" :render="item.render"
+          :index="index" :column="item"></Expand>
       </span>
     </div>
   </div>

@@ -1,19 +1,19 @@
 <script setup lang="ts">
-// import { C_taxList, C_invoiceTypeList, getDictNameByKey } from '@/utils/constant'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import { tabsStore } from '@/stores'
-import { getUUID } from '@/utils/tools'
 import order_enum from '@/utils/constant/order'
+import ApplyRefundModel from '../../components/ApplyRefundModel.vue'
+
+const { isFromOrgLast } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 
 interface IProp {
   orderInfo: any
   goodsVOList: any
-  financeVOList: any
 }
 const props = withDefaults(defineProps<IProp>(), {
   orderInfo: {},
-  goodsVOList: [],
-  financeVOList: []
+  goodsVOList: []
 })
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
@@ -32,180 +32,124 @@ const goToDetailHandler = (row: any) => {
   })
 }
 
-const cellClassHandler = ({ row, column, rowIndex, columnIndex }: any) => {
-  if (columnIndex == 0 || column.property == 'title') {
-    return 'cell_no'
-  }
-}
-
-const financeList = computed(() => {
-  let level = 0
-  transformationLogic(props.financeVOList, level)
-  return props.financeVOList
-})
-
 const goodsList = computed(() => {
-  let level = 0
-  transformationLogic(props.goodsVOList, level)
-  return props.goodsVOList
+  return props.goodsVOList || []
 })
-
-const transformationLogic = (dataList: any, level: number) => {
-  dataList.forEach((item: any) => {
-    item.rowKey = getUUID()
-    item.level = level
-    item.combineTitle = item.title || item.skuName
-    //二级商品需要进行名称加工
-    if (level == 1) {
-      item.combineTitle = item.title || item.skuName
-      item.skuCode = ''
-    }
-    if (item?.comboSkuList) {
-      transformationLogic(item.comboSkuList, level + 1)
-    }
-  })
+const applyRefundHandler = (row: any) => {
+  dataInfo.curryInfo = row
+  dataInfo.showApplyRefundModel = true
 }
-
-const showGiveawayTagBox = computed(() => {
-  return goodsList.value?.some((item: any) => {
-    return item.comboSkuList?.some((el: any) => el.giveaway == '2')
-  })
+const dataInfo = reactive({
+  showApplyRefundModel: false,
+  curryInfo: null
 })
+
 </script>
 
 <template>
   <div class="table_container">
     <div>
-      <el-table
-        style="width: 100%"
-        :data="goodsList"
-        row-key="rowKey"
-        border
-        :cell-class-name="cellClassHandler"
-        :tree-props="{ children: 'comboSkuList', hasChildren: 'hasChildren' }"
-      >
-        <YbtTableColumn prop="title" label="商品信息" width="320">
+      <el-table style="width: 100%" :data="goodsList" border>
+        <el-table-column prop="title" label="商品信息" width="320">
           <template #default="{ row }">
-            <SkuDetail
-              :showExtraCode="true"
-              :showGiveawayTagBox="row.level==0 ? false :showGiveawayTagBox"
-              :customAttribute="{ url: 'images', name: 'combineTitle', id: 'skuCode' }"
-              comboNumName="singleComboNum"
-              width="100%"
-              :goodDetail="row"
-            ></SkuDetail>
+            <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
+              comboNumName="singleComboNum" width="100%" :goodDetail="row"></SkuDetail>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="date" label="规格" width="150">
+        </el-table-column>
+        <el-table-column prop="date" label="规格" width="150">
           <template #default="{ row }">
-            <AttributeModule
-              :row="row"
-              :parentRow="row"
-              comboNumName="singleComboNum"
-              :attributeValue1="row.attributeValue1"
-              :attributeValue2="row.attributeValue2"
-            ></AttributeModule>
+            <AttributeModule :row="row" :parentRow="row" comboNumName="singleComboNum"
+              :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2"></AttributeModule>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="taxPurchaseCost" min-width="130" label="平台成本">
+        </el-table-column>
+        <el-table-column v-if="!isFromOrgLast" prop="platformPurchasePrice" min-width="130" label="平台成本">
           <template #default="{ row }">
-            <span>{{ row.level == 0 ? `￥${row.taxPurchaseCost}`:`￥${row.singleTaxPurchaseCost}` }}</span>
+            <span>{{ `￥${row.platformPurchasePrice}` }}</span>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="noTaxPurchaseCost" min-width="150" label="平台供应价">
+        </el-table-column>
+        <el-table-column prop="platformSupplyPrice" min-width="150" label="平台供应价">
           <template #default="{ row }">
-            <span>{{ row.level == 0 ? `￥${row.noTaxPurchaseCost}`:`￥${row.singleNoTaxPurchaseCost}` }}</span>
+            <span>{{ `￥${row.platformSupplyPrice}` }}</span>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="supplyPrice" min-width="130" label="分销价">
+        </el-table-column>
+        <el-table-column prop="retailPrice" min-width="130" label="分销价">
           <template #default="{ row }">
-            <span>{{row.level == 0 ? `￥${row.supplyPrice}`:`￥${row.singleSupplyPrice}` }}</span>
+            <span>{{ `￥${row.retailPrice}` }}</span>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="goodsNum" label="数量">
+        </el-table-column>
+        <el-table-column prop="goodsNum" label="数量">
           <template #default="{ row }">
-            <span>{{ row.level == 0 ? row.goodsNum :row.comboNum }}</span>
+            <span>{{ row.goodsNum }}</span>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="subAmount" min-width="130" label="小计">
+        </el-table-column>
+        <el-table-column prop="subAmount" min-width="130" label="小计">
           <template #default="{ row }">
-            <span>{{ row.level == 0?`￥${row.subAmount}`:`￥${row.supplyPrice}` }}</span>
+            <span>{{ `￥${row.subTotal}` }}</span>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="currentFlowNodeName" min-width="130" label="售后状态">
+        </el-table-column>
+        <el-table-column prop="afterSaleStatus" min-width="130" label="售后状态">
           <template #default="{ row }">
-            <span>{{ row.level == 0 ? row.currentFlowNodeName : '/' }}</span>
+            <span>{{ order_enum.getAfter_order_statesTitle(row.afterSaleStatus) }}</span>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="afterSaleType" min-width="130" label="售后类型">
+        </el-table-column>
+        <el-table-column prop="afterSaleType" min-width="130" label="售后类型">
           <template #default="{ row }">
-            <span>{{ row.level == 0 ? row.afterSaleType : '/' }}</span>
+            <span>{{ order_enum.getAfterSalesTypeTitle(row.afterSaleType) }}</span>
           </template>
-        </YbtTableColumn>
-        <YbtTableColumn label="操作" width="180" align="right">
+        </el-table-column>
+        <el-table-column label="操作" width="180" align="right">
           <template #default="{ row }">
-            <el-button v-if="row.afterSaleNo && row.level == 0" type="text" @click="goToDetailHandler(row)">查看售后详情</el-button>
+            <el-button
+              v-if="![1, 4].includes(row.afterSaleStatus) && ![0, 4, 5, -1].includes(orderInfo.orderBaseInfo.orderStatus)"
+              type="text" @click="applyRefundHandler(row)">申请售后</el-button>
+            <el-button v-if="row.afterSaleNo && row.level == 0" type="text"
+              @click="goToDetailHandler(row)">查看售后详情</el-button>
           </template>
-        </YbtTableColumn>
+        </el-table-column>
       </el-table>
     </div>
     <div class="footer cell_content_box mt8">
       <div>共{{ goodsTotal }}件商品</div>
       <div class="footer-content">
         <span class="item_title">商品金额:</span>
-        <span class="item_price">￥{{ orderInfo.goodsTotalAmount }}</span>
-        <span class="item_title">运费共计:</span>
-        <span class="item_price">￥{{ orderInfo.freight }}</span>
-        <span class="item_title">订单总金额:</span>
         <span class="item_price">￥{{ orderInfo.totalAmount }}</span>
+        <span class="item_title">运费共计:</span>
+        <span class="item_price">￥{{ orderInfo.freightAmount }}</span>
+        <span class="item_title">订单总金额:</span>
+        <span class="item_price">￥{{ orderInfo.orderAmount }}</span>
       </div>
     </div>
   </div>
   <div class="mt-16 table_container">
     <h3 class="mb-8">商品财务信息</h3>
-    <el-table
-      style="width: 100%"
-      row-key="rowKey"
-      :data="financeList"
-      border
-      :cell-class-name="cellClassHandler"
-      :tree-props="{ children: 'comboSkuList', hasChildren: 'hasChildren' }"
-    >
-      <YbtTableColumn prop="title" label="商品名称">
+    <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
+      <el-table-column prop="title" label="商品名称">
         <template #default="{ row }">
-          <SkuDetail
-            :showOnlyTitle="true"
-            :showExtraCode="true"
-            :customAttribute="{ url: '', name: 'combineTitle', id: 'skuCode' }"
-            width="100%"
-            comboNumName="singleComboNum"
-            :goodDetail="row"
-          ></SkuDetail>
+          <SkuDetail :customAttribute="{ url: '', name: 'skuName', id: 'skuCode' }" width="100%"
+            comboNumName="singleComboNum" :goodDetail="row"></SkuDetail>
         </template>
-      </YbtTableColumn>
-      <YbtTableColumn prop="date" label="规格" width="150">
+      </el-table-column>
+      <el-table-column prop="date" label="规格" width="150">
         <template #default="{ row }">
-          <AttributeModule
-            :row="row"
-            comboNumName="singleComboNum"
-            :parentRow="row"
-            :attributeValue1="row.attributeValue1"
-            :attributeValue2="row.attributeValue2"
-          ></AttributeModule>
+          <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row"
+            :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2"></AttributeModule>
         </template>
-      </YbtTableColumn>
-      <YbtTableColumn prop="skuCode" label="商品编码">
+      </el-table-column>
+      <el-table-column prop="skuCode" label="商品编码">
         <template #default="{ row }">
           <span>{{ row.skuCode ? row.skuCode : '/' }}</span>
         </template>
-      </YbtTableColumn>
-      <YbtTableColumn prop="tax" label="进项税率">
+      </el-table-column>
+      <el-table-column prop="tax" label="进项税率">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_taxList, row.tax) }}</template>
-      </YbtTableColumn>
-      <YbtTableColumn prop="price" label="进项发票类型">
-        <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType) }}</template>
-      </YbtTableColumn>
+      </el-table-column>
+      <el-table-column prop="price" label="进项发票类型">
+        <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
+          }}</template>
+      </el-table-column>
     </el-table>
+    <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">
+    </ApplyRefundModel>
   </div>
 </template>
 
@@ -218,12 +162,15 @@ const showGiveawayTagBox = computed(() => {
   padding-bottom: 16px;
   border-bottom: dashed 1px #ccc;
   color: $default-text-color;
+
   .footer-content {
     display: grid;
     grid-template-columns: 80px 1fr;
+
     .item_title {
       text-align: right;
     }
+
     .item_price {
       color: $default-title-color;
     }

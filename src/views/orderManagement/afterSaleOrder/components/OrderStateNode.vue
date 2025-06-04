@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // import { A_getOperationLog } from '@/api/orderManger'
-import { useRoute } from 'vue-router'
+import after_order_api from '@/api/afterOrder'
 import eventBus from '@/utils/eventBus'
+import { useRoute } from 'vue-router'
 
 eventBus.on('afterRefreshEvent', () => {
   getOperationLog()
@@ -14,12 +15,12 @@ onMounted(() => {
 
 //节点状态
 const getOperationLog = () => {
-  const { afterSaleOrderNo } = route.query
-  // afterSaleOrderNo &&
-  //   A_getOperationLog({ afterSaleOrderNo }).then((res:any) => {
-  //     dataPage.nodeList = res as any[]
-  //     dataPage.activeIndex = tranFromActive()
-  //   })
+  const { afterSaleNo }: any = route.query
+  afterSaleNo &&
+    after_order_api.A_progress({ afterSaleNo }).then((res: any) => {
+      dataPage.nodeList = res as any[]
+      dataPage.activeIndex = tranFromActive()
+    })
 }
 
 const tranFromActive = () => {
@@ -39,7 +40,8 @@ const dataPage = reactive({
 <template>
   <div class="order-state-container">
     <el-steps :active="dataPage.activeIndex" finish-status="success" align-center>
-      <el-step v-for="(item, index) in dataPage.nodeList" :key="index" :title="item.flowNodeName" :description="item.operationTime"></el-step>
+      <el-step v-for="(item, index) in dataPage.nodeList" :key="index" :title="item.flowNodeName"
+        :description="item.operationTime"></el-step>
     </el-steps>
   </div>
 </template>

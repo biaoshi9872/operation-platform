@@ -1,3 +1,4 @@
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import request from '@/utils/axios'
 class After_order_api {
   /**
@@ -78,11 +79,50 @@ class After_order_api {
   }
 
   /**
-   * 售后单导出
+   * 售后单物流信息
    */
   A_queryTrackInfo(data: any) {
     return request<any>({
       url: '/afterSale/queryTrackInfo',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 售后导出
+   */
+  A_AfterOrderExport(data: any) {
+    const { getSystemOptionType } = isStateCheckHooks()
+    console.log(getSystemOptionType.value, '111')
+    let url = ''
+    switch (getSystemOptionType.value) {
+      case '10':
+        url = '/export/afterSale/afterSaleTopAppExport'
+        break
+      case '20':
+        url = '/export/afterSale/afterSaleBranchAppExport'
+        break
+      case '101':
+        url = '/export/afterSale/afterSaleTopOrgExport'
+        break
+      case '201':
+        url = '/export/afterSale/afterSaleBranchOrgExport'
+        break
+    }
+    return request<any>({
+      url: url,
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 预售后订单详情
+   */
+  A_preAfterOrderDetail(data: any) {
+    return request<any>({
+      url: '/afterSale/orderDetail',
       method: 'post',
       data: data
     })

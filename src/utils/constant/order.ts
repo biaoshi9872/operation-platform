@@ -19,18 +19,6 @@ class order_enum extends baseEnum {
     {
       value: '6',
       label: '已完成'
-    },
-    {
-      value: '4',
-      label: '已取消'
-    },
-    {
-      value: '5',
-      label: '取消中'
-    },
-    {
-      value: '9',
-      label: '失败'
     }
   ]
 
@@ -65,7 +53,11 @@ class order_enum extends baseEnum {
     }
   ]
   public getAfter_order_statesTitle(key: string) {
-    return this.getDictNameByKey(this.after_order_states, key)
+    return (
+      this.after_order_states.find((item: any) => {
+        return item.value == key
+      })?.label || '未申请售后'
+    )
   }
   /**
    * 退款枚举

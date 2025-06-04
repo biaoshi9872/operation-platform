@@ -1,28 +1,22 @@
 <script setup lang='ts'>
 defineOptions({ name: 'orderList' })
-import { IPage } from '@/types/from-types'
-import pageHooks from '@/hooks/pageListHooks'
+import after_api from '@/api/afterOrder/index'
 import SkuDetail from '@/components/SkuDetail/index.vue'
-// import {
-//   A_getAfterOrderList,
-//   A_confirmRefund,
-//   A_afterSaleOrderOperationExport,
-//   A_confirmReceiveAndRefund,
-//   A_userConfirmReceive,
-//   A_confirmReceive
-// } from '@/api/orderManger'
+import pageHooks from '@/hooks/pageListHooks'
+import { IPage } from '@/types/from-types'
 import { ElButton } from 'element-plus'
-import { ref, resolveDirective, withDirectives } from 'vue'
+import { ref, resolveDirective } from 'vue'
 // import { AFTERSALETYPES, AFTERSALESTATELIST, getDictNameByKey } from '@/utils/constant'
-import order_enum from '@/utils/constant/order'
-import goodPoor from '@/utils/constant/goodPoor'
-import { tabsStore } from '@/stores'
-import { ElMessageBox, ElMessage } from 'element-plus'
-import useTCache from '@/hooks/cacheHooks'
 import StateCell from '@/components/Tooltip/StateCell.vue'
+import useTCache from '@/hooks/cacheHooks'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+import { tabsStore } from '@/stores'
+import goodPoor from '@/utils/constant/goodPoor'
+import order_enum from '@/utils/constant/order'
+import AuthModel from './modelComponents/AuthModel.vue'
+import RevokeModel from './modelComponents/RevokeModel.vue'
 const { getSystemConfigInfoByKey } = useTCache()
-const { isFromOrgLast } = isStateCheckHooks()
+const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 const $route = useRoute()
 const authDir = resolveDirective('auth')
@@ -34,9 +28,9 @@ const routeConversion = () => {
   }
 }
 const dataPage: IPage<any, any> = reactive({
-  selectPage: null,
+  selectPage: after_api.A_queryPage,
   defaultValueConversion: routeConversion,
-  toDownloadCenterApi: null,
+  toDownloadCenterApi: after_api.A_AfterOrderExport,
   dataList: [],
   multipleList: [],
   page: {
@@ -44,25 +38,26 @@ const dataPage: IPage<any, any> = reactive({
     limit: 10,
     totalCount: 0
   },
-  isOnload: false,
+  isOnload: true,
   facade: {
-    afterSaleType: [], //售后类型
-    applyStartTime: '', //申请时间(开始)
-    applyEndTime: '', ////申请时间(结束)
-    afterSaleOrderCode: '', //售后单边
-    currentFlowNodeCode: [], //售后状态
+    orgId: '',
+    appId: '',
+    afterSaleTypeList: [], //售后类型
+    statusList: [], //售后单状态
+    applyTimeStart: '', //申请时间起
+    applyTimeEnd: '', //申请时间止
+    channelOrderNo: '', //渠道订单号
+    channelAfterSaleNo: '', //渠道售后单号
     skuName: '', //商品名称
     skuCode: '', //商品编码
-    payOrderCode: '', //支付编码
-    thirdOrderNo: '',
-    merchantNo: [], //分销商
-    channelCodeListModel: null,
-    desensitizationStatus: null,
-    supplyId: [] //供应商编码
+    supplierIdList: [], //供应商
+    desensitizationStatus: null, //是否脱敏
   },
   facadeKz: {
     activeName: '1'
   },
+  showAuthModel: false,
+  showRevokeModel: false,
   curryInfo: null
 })
 onActivated(() => {
@@ -102,13 +97,22 @@ const toDetailHandler = (row: any) => {
   tabsStoreInfo.reload({
     path: '/orderManagement/afterSaleOrder/afterSaleOrderDetail',
     query: {
-      afterSaleOrderNo: row.afterSaleNo
+      afterSaleNo: row.afterSaleNo
     }
   })
 }
-const reviewHandler = (row: any) => {}
+// 审核
+const authHandler = (row: any) => {
+  dataPage.curryInfo = row
+  dataPage.showAuthModel = true
 
-const withdrawHandler = (row: any) => {}
+}
+
+//撤销
+const revocationHandler = (row: any) => {
+  dataPage.curryInfo = row
+  dataPage.showRevokeModel = true
+}
 
 const columns: any = ref([])
 onMounted(() => {
@@ -116,15 +120,6 @@ onMounted(() => {
 })
 const initColumns = () => {
   columns.value = []
-  columns.value.push({
-    width: '120px',
-    label: '是否脱敏发货',
-    align: 'center',
-    render: (row: any, column: any, index: any, parentRow: any) => {
-      const title = parentRow?.desensitizationStatus === 1 ? '是' : '否'
-      return h(StateCell, { title: title, isTrueState: parentRow?.desensitizationStatus == 1 })
-    }
-  })
   columns.value.push({
     width: '120px',
     label: '是否脱敏发货',
@@ -144,9 +139,9 @@ const initColumns = () => {
       newRow.titleSpec = row.skuName + ' ' + (row.spec || '')
       return h(SkuDetail, {
         goodDetail: newRow,
-        showExtraCode: true,
+        showExtraCode: false,
         customAttribute: {
-          url: 'skuImage',
+          url: 'images',
           name: 'titleSpec',
           id: 'skuCode'
         },
@@ -164,11 +159,11 @@ const initColumns = () => {
   if (!isFromOrgLast.value) {
     columns.value.push({
       label: '平台成本',
-      prop: 'taxPurchaseCost',
+      prop: 'platformPurchasePrice',
       align: 'center',
       width: '130px',
       render: (row: any) => {
-        return h('div', `￥${row.taxPurchaseCost ?? ''}`)
+        return h('div', `￥${row.platformPurchasePrice ?? ''}`)
       }
     })
   }
@@ -176,18 +171,18 @@ const initColumns = () => {
     label: '平台供应价',
     align: 'center',
     width: '130px',
-    prop: 'supplyPrice',
+    prop: 'platformSupplyPrice',
     render: (row: any) => {
-      return h('div', `￥${row.supplyPrice ?? ''}`)
+      return h('div', `￥${row.platformSupplyPrice ?? ''}`)
     }
   })
   columns.value.push({
     label: '分销价',
     align: 'center',
     width: '130px',
-    prop: 'supplyPrice',
+    prop: 'retailPrice',
     render: (row: any) => {
-      return h('div', `￥${row.supplyPrice ?? ''}`)
+      return h('div', `￥${row.retailPrice ?? ''}`)
     }
   })
   columns.value.push({
@@ -200,48 +195,79 @@ const initColumns = () => {
     label: '商品类型',
     align: 'center',
     width: '100px',
-    prop: 'unit',
+    prop: 'channelSource',
     render: (row: any) => {
-      return h('div', goodPoor.getSourceTypeNameByKey(row.sourceType))
+      return h('div', goodPoor.getSourceTypeNameByKey(row.channelSource))
     }
   })
   columns.value.push({
     label: '售后类型',
     align: 'center',
     width: '100px',
-    prop: 'afterSaleTypeName'
+    prop: 'afterSaleType',
+    render: (row: any) => {
+      return h('div', order_enum.getAfterSalesTypeTitle(row.afterSaleType))
+    }
   })
 
   columns.value.push({
     label: '售后状态',
     align: 'center',
-    prop: 'currentFlowNodeName'
+    prop: 'status',
+    render: (row: any) => {
+      return h('div', order_enum.getAfter_order_statesTitle(row.status))
+    }
   })
+
+  //顶级机构
+  if (getSystemOptionType.value == '101') {
+    columns.value.push({
+      label: '机构名称',
+      align: 'center',
+      width: '160px',
+      prop: 'appName'
+    })
+    columns.value.push({
+      label: '应用名称',
+      align: 'center',
+      width: '160px',
+      prop: 'orgName'
+    })
+  }
+  //分支机构
+  if (getSystemOptionType.value == '102') {
+    columns.value.push({
+      label: '应用名称',
+      align: 'center',
+      width: '160px',
+      prop: 'orgName'
+    })
+  }
+
   columns.value.push({
     label: '操作',
     align: 'center',
     render: (row: any) => {
-      const SH = withDirectives(
-        h(ElButton, {
-          type: 'text',
-          innerText: '审核',
-          onClick: () => {
-            reviewHandler(row)
-          }
-        }),
-        [[authDir, 'VO_PRODUCT_SH_REFUND']]
-      )
-      const CX = withDirectives(
-        h(ElButton, {
-          type: 'text',
-          innerText: '撤销',
-          onClick: () => {
-            reviewHandler(row)
-          }
-        }),
-        [[authDir, 'VO_PRODUCT_SH_REFUND']]
-      )
 
+      //审核
+      const authButton = h(ElButton, {
+        type: 'text',
+        innerText: '审核',
+        onClick: () => {
+          authHandler(row)
+        }
+      })
+      //撤销
+      const revocationButton = h(ElButton, {
+        type: 'text',
+        innerText: '撤销',
+        onClick: () => {
+          revocationHandler(row)
+        }
+      })
+
+
+      //详情
       const detailButton = h(ElButton, {
         type: 'text',
         innerText: '详情',
@@ -250,7 +276,7 @@ const initColumns = () => {
         }
       })
       const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
-      return h('div', { style }, [detailButton])
+      return h('div', { style }, [authButton, revocationButton, detailButton])
     }
   })
 }
@@ -258,70 +284,66 @@ const initColumns = () => {
 
 <template>
   <PageContainer v-loading="dataPage.loadingData">
-    <SearchForm
-      v-model:model="dataPage.facade"
-      v-model:current-page="dataPage.page.page"
-      class="el-search-item"
-      @search="searchQueryHarder"
-    >
+    <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
+      @search="searchQueryHarder">
       <el-form-item label="售后类型" class="formItem">
-        <SelectModel v-model.trim="dataPage.facade.afterSaleType" :selectList="order_enum.AfterSalesType"></SelectModel>
+        <SelectModel v-model.trim="dataPage.facade.afterSaleTypeList" :selectList="order_enum.AfterSalesType">
+        </SelectModel>
       </el-form-item>
       <el-form-item label="售后状态" class="formItem">
-        <SelectModel v-model.trim="dataPage.facade.currentFlowNodeCode" :multiple="true" :selectList="order_enum.after_order_states"></SelectModel>
+        <SelectModel v-model.trim="dataPage.facade.statusList" :multiple="true"
+          :selectList="order_enum.after_order_states"></SelectModel>
       </el-form-item>
       <el-form-item label="申请时间" class="el-form-item-inputGroup">
-        <DatePickerRange v-model:start="dataPage.facade.applyStartTime" v-model:end="dataPage.facade.applyEndTime"></DatePickerRange>
+        <DatePickerRange v-model:start="dataPage.facade.applyTimeStart" v-model:end="dataPage.facade.applyTimeEnd">
+        </DatePickerRange>
       </el-form-item>
-      <el-form-item label="售后单编号" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade.afterSaleOrderCode" placeholder="请输入售后单编号"></el-input>
+      <el-form-item label="渠道售后单编号" class="formItem" placeholder="请选择">
+        <el-input v-model.trim="dataPage.facade.channelAfterSaleNo" placeholder="请输入渠道售后单编号"></el-input>
       </el-form-item>
       <el-form-item label="商品名称" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuName" placeholder="请输入商品名称"></el-input>
       </el-form-item>
-      <el-form-item label="订单编号" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade.payOrderCode" placeholder="请输入订单编号"></el-input>
+      <el-form-item label="渠道订单编号" class="formItem" placeholder="请选择">
+        <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号"></el-input>
       </el-form-item>
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuCode" placeholder="请输入商品编码"></el-input>
       </el-form-item>
       <el-form-item label="供应商" class="formItem" placeholder="请选择">
-        <AffiliatedSupplier v-model.trim="dataPage.facade.supplyId" :hasJdChance="true"></AffiliatedSupplier>
+        <AffiliatedSupplier v-model.trim="dataPage.facade.supplierIdList" :hasJdChance="true"></AffiliatedSupplier>
       </el-form-item>
-      <!-- <el-form-item label="分支机构" class="formItem" placeholder="请选择">
-        <OrgSelect v-model.trim="dataPage.facade.supplyId"></OrgSelect>
+      <el-form-item v-if="['101'].includes(getSystemOptionType)" label="分支机构" class="formItem" placeholder="请选择">
+        <OrgSelect v-model.trim="dataPage.facade.orgId"></OrgSelect>
       </el-form-item>
-      <el-form-item label="应用名称" class="formItem" placeholder="请选择">
-        <ApplicationSelect v-model.trim="dataPage.facade.supplyId"></ApplicationSelect>
-      </el-form-item>-->
+      <el-form-item v-if="['101', '201'].includes(getSystemOptionType)" label="应用名称" class="formItem" placeholder="请选择">
+        <ApplicationSelect v-model.trim="dataPage.facade.appId"></ApplicationSelect>
+      </el-form-item>
       <el-form-item label="是否脱敏发货" class="formItem" placeholder="请选择">
-        <SelectModel v-model.trim="dataPage.facade.desensitizationStatus" :selectList="order_enum.C_isMaskList"></SelectModel>
+        <SelectModel v-model.trim="dataPage.facade.desensitizationStatus" :selectList="order_enum.C_isMaskList">
+        </SelectModel>
       </el-form-item>
     </SearchForm>
-    <OrderCustomTable
-      class="order-container"
-      :openERP="false"
-      :openFold="false"
-      :border="true"
-      :dataPage="dataPage"
-      :dataList="dataPage.dataList"
-      :columns="columns"
-    >
+    <OrderCustomTable class="order-container" :openERP="false" :openFold="false" :border="true" :dataPage="dataPage"
+      :dataList="dataPage.dataList" :columns="columns">
       <template #option>
-        <AuthButton authKey="VO_AFTERWORD_EXPORT" type="primary" @click="exportHandler" :loading="dataPage.loadingExport">导出</AuthButton>
+        <el-button authKey="VO_AFTERWORD_EXPORT" type="primary" @click="exportHandler"
+          :loading="dataPage.loadingExport">导出</el-button>
       </template>
       <template #customRow="{ row }">
         <div class="order_row">
           <div class="order_detail">
-            <span>售后单编号:{{ row.afterSaleNo }}</span>
-            <span>订单编号:{{ row.orderNo }}</span>
+            <span>渠道售后单编号:{{ row.channelAfterSaleNo }}</span>
+            <span>渠道订单编号:{{ row.channelOrderNo }}</span>
             <span>申请时间:{{ row.applyTime }}</span>
-            <span>供应商:{{ row.supplyName }}</span>
+            <span v-if="!isFromOrgLast && row.channelSource == 104">供应商:{{ row.supplyName }}</span>
           </div>
         </div>
       </template>
     </OrderCustomTable>
     <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page"></CustomPagination>
+    <AuthModel v-model="dataPage.showAuthModel" :curryInfo="dataPage.curryInfo"></AuthModel>
+    <RevokeModel v-model="dataPage.showRevokeModel" :curryInfo="dataPage.curryInfo"></RevokeModel>
   </PageContainer>
 </template>
 
@@ -350,6 +372,7 @@ const initColumns = () => {
       justify-content: flex-start;
       gap: 100px;
       color: #999;
+
       .thirdOrderNo {
         width: 280px;
         overflow: hidden;

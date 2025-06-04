@@ -2,17 +2,16 @@
 defineOptions({
   name: 'AfterSaleOrderDetail'
 })
-// import { A_queryAfterSaleOrderInfo } from '@/api/orderManger'
+import after_order_api from '@/api/afterOrder/index'
+import order_enum from '@/utils/constant/order'
+import { useRoute } from 'vue-router'
 import OrderInfoCell from './components/OrderInfoCell.vue'
-import OrderStateNode from './components/OrderStateNode.vue'
+import OrderLogisticCell from './components/OrderLogisticCell.vue'
 import OrderProductCell from './components/OrderProductCell.vue'
 import OrderReturnInfo from './components/OrderReturnInfo.vue'
 import OrderReturnLogistic from './components/OrderReturnLogistic.vue'
 import OrderReturnUserInfo from './components/OrderReturnUserInfo.vue'
-import OrderLogisticCell from './components/OrderLogisticCell.vue'
-import { useRoute } from 'vue-router'
-import useTCache from '@/hooks/cacheHooks'
-import order_enum from '@/utils/constant/order'
+import OrderStateNode from './components/OrderStateNode.vue'
 const route = useRoute()
 
 interface IData {
@@ -31,8 +30,12 @@ interface IData {
     currentFlowNodeCode: String
     cancelReason: String
     rejectReason: String
-    source: '1' | '2' //1.平台 2京东
+    channelSource: '1' | '2' //1.平台 2京东
     expressCode: ''
+    status: String
+    orderDeliverVOList: any //物流信息
+    receiveUserInfo: any //仓库信息
+    sendUserInfo: any
   }
   showReasonFlag: Boolean
   showAuditFlag: Boolean
@@ -55,8 +58,12 @@ const dataPage = reactive<IData>({
     currentFlowNodeName: '',
     cancelReason: '',
     rejectReason: '',
-    source: '1', //1京东 2平台
-    expressCode: ''
+    channelSource: '1', //1京东 2平台
+    expressCode: '',
+    status: '',
+    orderDeliverVOList: [],
+    receiveUserInfo: {},
+    sendUserInfo: {}
   },
   showReasonFlag: false,
   showAuditFlag: false,
@@ -73,20 +80,41 @@ const init = () => {
 
 //订单详情
 const queryAfterSaleOrderInfo = () => {
-  const { afterSaleOrderNo } = route.query
-  // A_queryAfterSaleOrderInfo({ afterSaleOrderNo }).then((res: any) => {
-  //   dataPage.detail = {
-  //     ...dataPage.detail,
-  //     ...res
-  //   }
-  // })
+  const { afterSaleNo }: any = route.query
+  after_order_api.A_detail({ afterSaleNo }).then((res: any) => {
+    dataPage.detail = {
+      ...dataPage.detail,
+      ...res
+    }
+    //自营换货需要显示物流信息
+    if (['1'].includes(String(dataPage.detail.afterSaleType)) && ['104'].includes(String(dataPage.detail.channelSource))) {
+      queryLogisticsInfo()
+    }
+  })
+}
+/**
+ * 物流信息
+ */
+const queryLogisticsInfo = () => {
+  const { afterSaleNo }: any = route.query
+  after_order_api.A_queryTrackInfo({ afterSaleNo }).then((res: any) => {
+    dataPage.detail.orderDeliverVOList = res
+  })
 }
 
+
+//售后类型
 const afterSaleTypeName = computed(() => {
-  return order_enum.after_order_states.find(item => item.value == dataPage.detail.afterSaleType)?.label
+  return order_enum.getAfterSalesTypeTitle(dataPage.detail.afterSaleType)
 })
+//售后状态
+const statusName = computed(() => {
+  return order_enum.getAfter_order_statesTitle(dataPage.detail.status)
+})
+
 //文案类型
 provide('afterSaleTypeName', afterSaleTypeName)
+provide('statusName', statusName)
 
 const openHandler = () => {
   dataPage.showReasonFlag = true
@@ -101,8 +129,8 @@ const closeHandler = () => {
     <CardModel :title="`${afterSaleTypeName || ''}详情`">
       <OrderStateNode></OrderStateNode>
     </CardModel>
-    <CardModel iconName="menu-order" :title="`售后状态:${dataPage.detail.currentFlowNodeName}`">
-      <template v-if="['2', '3'].includes(String(dataPage.detail.currentFlowNodeCode))" #option>
+    <CardModel iconName="menu-order" :title="`售后状态:${statusName}`">
+      <template v-if="['2', '3'].includes(String(dataPage.detail.status))" #option>
         <el-button type="danger" text="danger" @click="openHandler">查看原因</el-button>
       </template>
       <OrderInfoCell :orderInfo="dataPage.detail"></OrderInfoCell>
@@ -112,51 +140,41 @@ const closeHandler = () => {
     </CardModel>
     <!-- 换货，退货 上门取件 -->
     <CardModel
-      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && !['201'].includes(String(dataPage.detail.currentFlowNodeCode)) && !['2'].includes(String(dataPage.detail.source))"
-      title="仓库地址信息"
-    >
-      <OrderReturnInfo></OrderReturnInfo>
+      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && ['104'].includes(String(dataPage.detail.channelSource))"
+      title="仓库地址信息">
+      <OrderReturnInfo :receiveUserInfo="dataPage.detail.receiveUserInfo"></OrderReturnInfo>
     </CardModel>
     <!-- 退货 -->
     <CardModel
-      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && !['201'].includes(String(dataPage.detail.currentFlowNodeCode)) && dataPage.detail.expressCode && !['2'].includes(String(dataPage.detail.source))"
-      title="退货物流"
-    >
-      <OrderReturnLogistic :orderInfo="dataPage.detail"></OrderReturnLogistic>
+      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && dataPage.detail.receiveUserInfo.expressCode && ['104'].includes(String(dataPage.detail.channelSource))"
+      title="退货物流">
+      <OrderReturnLogistic :receiveUserInfo="dataPage.detail.receiveUserInfo"></OrderReturnLogistic>
     </CardModel>
     <!-- 换货， -->
     <CardModel
-      v-if="['1'].includes(String(dataPage.detail.afterSaleType)) && !['201'].includes(String(dataPage.detail.currentFlowNodeCode)) && !['2'].includes(String(dataPage.detail.source))"
-      title="客户地址信息"
-    >
-      <OrderReturnUserInfo></OrderReturnUserInfo>
+      v-if="['1'].includes(String(dataPage.detail.afterSaleType)) && ['104'].includes(String(dataPage.detail.channelSource))"
+      title="客户地址信息">
+      <OrderReturnUserInfo :sendUserInfo="dataPage.detail.sendUserInfo"></OrderReturnUserInfo>
     </CardModel>
     <!-- 换货 -->
     <template
-      v-if="['1'].includes(String(dataPage.detail.afterSaleType)) && !['201'].includes(String(dataPage.detail.currentFlowNodeCode)) && !['2'].includes(String(dataPage.detail.source))"
-    >
-      <OrderLogisticCell></OrderLogisticCell>
+      v-if="['1'].includes(String(dataPage.detail.afterSaleType)) && ['104'].includes(String(dataPage.detail.channelSource))">
+      <OrderLogisticCell :orderInfo="dataPage.detail" :orderDeliverVOList="dataPage.detail.orderDeliverVOList">
+      </OrderLogisticCell>
     </template>
     <!--取消原因-->
-    <el-dialog
-      v-model="dataPage.showReasonFlag"
-      :title="dataPage.detail.currentFlowNodeCode == '2' ? '取消原因' : '拒绝原因'"
-      width="400px"
-      draggable
-      destroy-on-close
-      :close-on-click-modal="false"
-      @closed="closeHandler"
-    >
+    <el-dialog v-model="dataPage.showReasonFlag" :title="dataPage.detail.status == '3' ? '取消原因' : '拒绝原因'" width="400px"
+      draggable destroy-on-close :close-on-click-modal="false" @closed="closeHandler">
       <div class="option">
         <div class="flex mb-8">
           <span class="w-100 text-right mr-4 desc_box">
             {{
-            dataPage.detail.currentFlowNodeCode == '2' ? '取消原因' : '拒绝原因'
+              dataPage.detail.status == '3' ? '取消原因' : '拒绝原因'
             }}:
           </span>
           <span>
             {{
-            dataPage.detail.currentFlowNodeCode == '2' ? dataPage.detail.cancelReason : dataPage.detail.rejectReason
+              dataPage.detail.status == '3' ? dataPage.detail.cancelReason : dataPage.detail.rejectReason
             }}
           </span>
         </div>
