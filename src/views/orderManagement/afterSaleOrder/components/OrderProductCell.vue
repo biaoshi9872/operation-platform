@@ -130,11 +130,7 @@ const afterSaleGoodsVO = computed(() => {
       </div>
       <h4 class="mb-16 mt-16">商品财务信息</h4>
       <el-table style="width: 100%" :data="afterSaleGoodsVO" border>
-        <YbtTableColumn prop="combineTitle" label="商品名称">
-          <template #default="{ row }">
-            <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }" width="100%"
-              comboNumName="singleComboNum" :goodDetail="row"></SkuDetail>
-          </template>
+        <YbtTableColumn prop="skuName" label="商品名称" show-overflow-tooltip>
         </YbtTableColumn>
         <YbtTableColumn prop="date" label="规格" width="150">
           <template #default="{ row }">
@@ -152,7 +148,7 @@ const afterSaleGoodsVO = computed(() => {
         </YbtTableColumn>
         <YbtTableColumn prop="price" label="进项发票类型">
           <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
       </el-table>
     </div>

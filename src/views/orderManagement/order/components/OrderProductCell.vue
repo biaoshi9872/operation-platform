@@ -27,7 +27,7 @@ const goToDetailHandler = (row: any) => {
   tabsStoreInfo.reload({
     path: '/orderManagement/afterSaleOrder/afterSaleOrderDetail',
     query: {
-      afterSaleOrderNo: row.afterSaleNo
+      afterSaleNo: row.afterSaleNo
     }
   })
 }
@@ -102,8 +102,7 @@ const dataInfo = reactive({
             <el-button
               v-if="![1, 4].includes(row.afterSaleStatus) && ![0, 4, 5, -1].includes(orderInfo.orderBaseInfo.orderStatus)"
               type="text" @click="applyRefundHandler(row)">申请售后</el-button>
-            <el-button v-if="row.afterSaleNo && row.level == 0" type="text"
-              @click="goToDetailHandler(row)">查看售后详情</el-button>
+            <el-button v-if="row.afterSaleNo" type="text" @click="goToDetailHandler(row)">查看售后详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -123,12 +122,8 @@ const dataInfo = reactive({
   <div class="mt-16 table_container">
     <h3 class="mb-8">商品财务信息</h3>
     <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
-      <el-table-column prop="title" label="商品名称">
-        <template #default="{ row }">
-          <SkuDetail :customAttribute="{ url: '', name: 'skuName', id: 'skuCode' }" width="100%"
-            comboNumName="singleComboNum" :goodDetail="row"></SkuDetail>
-        </template>
-      </el-table-column>
+      <YbtTableColumn prop="skuName" label="商品名称" show-overflow-tooltip>
+      </YbtTableColumn>
       <el-table-column prop="date" label="规格" width="150">
         <template #default="{ row }">
           <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row"
@@ -145,7 +140,7 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+        }}</template>
       </el-table-column>
     </el-table>
     <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">

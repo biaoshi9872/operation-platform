@@ -146,7 +146,7 @@ const closeHandler = () => {
     </CardModel>
     <!-- 退货 -->
     <CardModel
-      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && dataPage.detail.receiveUserInfo.expressCode && ['104'].includes(String(dataPage.detail.channelSource))"
+      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && dataPage.detail?.receiveUserInfo?.expressCode && ['104'].includes(String(dataPage.detail.channelSource))"
       title="退货物流">
       <OrderReturnLogistic :receiveUserInfo="dataPage.detail.receiveUserInfo"></OrderReturnLogistic>
     </CardModel>

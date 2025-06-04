@@ -13,6 +13,7 @@ type TisStateCheckHooks = {
   isFromOrgLast: any
   orgInfo: any
   isFromOrgLastNoApp: any
+  getSystemOptionType: any
   decryptApplicationSource: any
 }
 export default function (data: any = {}): TisStateCheckHooks {
@@ -116,6 +117,25 @@ export default function (data: any = {}): TisStateCheckHooks {
     }
   })
 
+  /**
+   * 系统类型角色
+   */
+  const getSystemOptionType = computed(() => {
+    if (import.meta.env.VITE_APP_TYPE == 'app') {
+      if ($useUserStore.userInfo?.orgType == 1) {
+        return '10' //顶级机构应用
+      } else {
+        return '20' //分支机构应用
+      }
+    } else {
+      if ($useUserStore.userInfo?.orgType == 1) {
+        return '101' //顶级机构
+      } else {
+        return '201' //分支机构
+      }
+    }
+  })
+
   return {
     isErpAccount: isErpAccount.value,
     isCombinationGoods: isCombinationGoods.value,
@@ -124,6 +144,7 @@ export default function (data: any = {}): TisStateCheckHooks {
     isOrgLast: isOrgLast,
     isFromOrgLast: isFromOrgLast,
     isFromOrgLastNoApp: isFromOrgLastNoApp,
+    getSystemOptionType: getSystemOptionType,
     orgInfo: orgInfo,
     decryptApplicationSource
   }

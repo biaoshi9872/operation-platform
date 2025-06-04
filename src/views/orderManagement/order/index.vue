@@ -295,22 +295,22 @@ const initColumns = () => {
       label: '机构名称',
       align: 'center',
       width: '160px',
-      prop: 'appName'
+      prop: 'orgName'
     })
     columns.value.push({
       label: '应用名称',
       align: 'center',
       width: '160px',
-      prop: 'orgName'
+      prop: 'appName'
     })
   }
   //分支机构
-  if (getSystemOptionType.value == '102') {
+  if (getSystemOptionType.value == '201') {
     columns.value.push({
       label: '应用名称',
       align: 'center',
       width: '160px',
-      prop: 'orgName'
+      prop: 'appName'
     })
   }
   columns.value.push({
@@ -420,10 +420,12 @@ const orderStatusList = computed(() => {
         </AffiliatedSupplier>
       </el-form-item>
       <el-form-item v-if="['101'].includes(getSystemOptionType)" label="分支机构" class="formItem" placeholder="请选择">
-        <OrgSelect v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orgIdList"></OrgSelect>
+        <OrgSelect v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orgIdList" :multiple="true"></OrgSelect>
       </el-form-item>
       <el-form-item v-if="['101', '201'].includes(getSystemOptionType)" label="应用名称" class="formItem" placeholder="请选择">
-        <ApplicationSelect v-model.trim="dataPage.facade[dataPage.facadeKz.tab].appIdList"></ApplicationSelect>
+        <ApplicationSelect v-model.trim="dataPage.facade[dataPage.facadeKz.tab].appIdList" valueKey="id"
+          :multiple="true">
+        </ApplicationSelect>
       </el-form-item>
       <el-form-item label="商品类型" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelSourceList"
@@ -452,13 +454,13 @@ const orderStatusList = computed(() => {
             <span class="order-overflow" ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               渠道订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>

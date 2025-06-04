@@ -40,8 +40,8 @@ const dataPage: IPage<any, any> = reactive({
   },
   isOnload: true,
   facade: {
-    orgId: '',
-    appId: '',
+    orgIdList: [],
+    appIdList: [],
     afterSaleTypeList: [], //售后类型
     statusList: [], //售后单状态
     applyTimeStart: '', //申请时间起
@@ -225,22 +225,22 @@ const initColumns = () => {
       label: '机构名称',
       align: 'center',
       width: '160px',
-      prop: 'appName'
+      prop: 'orgName'
     })
     columns.value.push({
       label: '应用名称',
       align: 'center',
       width: '160px',
-      prop: 'orgName'
+      prop: 'appName'
     })
   }
   //分支机构
-  if (getSystemOptionType.value == '102') {
+  if (getSystemOptionType.value == '201') {
     columns.value.push({
       label: '应用名称',
       align: 'center',
       width: '160px',
-      prop: 'orgName'
+      prop: 'appName'
     })
   }
 
@@ -250,7 +250,7 @@ const initColumns = () => {
     render: (row: any) => {
 
       //审核
-      const authButton = h(ElButton, {
+      const authButton = [1].includes(row.status) && h(ElButton, {
         type: 'text',
         innerText: '审核',
         onClick: () => {
@@ -258,7 +258,7 @@ const initColumns = () => {
         }
       })
       //撤销
-      const revocationButton = h(ElButton, {
+      const revocationButton = [1].includes(row.status) && h(ElButton, {
         type: 'text',
         innerText: '撤销',
         onClick: () => {
@@ -314,10 +314,10 @@ const initColumns = () => {
         <AffiliatedSupplier v-model.trim="dataPage.facade.supplierIdList" :hasJdChance="true"></AffiliatedSupplier>
       </el-form-item>
       <el-form-item v-if="['101'].includes(getSystemOptionType)" label="分支机构" class="formItem" placeholder="请选择">
-        <OrgSelect v-model.trim="dataPage.facade.orgId"></OrgSelect>
+        <OrgSelect v-model.trim="dataPage.facade.orgIdList" :multiple="true"></OrgSelect>
       </el-form-item>
       <el-form-item v-if="['101', '201'].includes(getSystemOptionType)" label="应用名称" class="formItem" placeholder="请选择">
-        <ApplicationSelect v-model.trim="dataPage.facade.appId"></ApplicationSelect>
+        <ApplicationSelect v-model.trim="dataPage.facade.appIdList" :multiple="true" valueKey="id"></ApplicationSelect>
       </el-form-item>
       <el-form-item label="是否脱敏发货" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade.desensitizationStatus" :selectList="order_enum.C_isMaskList">

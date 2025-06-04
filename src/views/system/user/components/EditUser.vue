@@ -1,9 +1,9 @@
 <script setup lang="ts" name="EditUser">
-import type { FormInstance, FormRules } from 'element-plus'
-import { ElMessage } from 'element-plus'
-import { validatePhone } from '@/utils/validator'
 import role_api from '@/api/system/role'
 import user_api from '@/api/system/user'
+import { validatePhone } from '@/utils/validator'
+import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   curUser: {
@@ -11,7 +11,7 @@ const props = defineProps({
     require: true
   },
   curDepartment: {
-    type: Object ,
+    type: Object,
     require: true
   }
 })
@@ -21,7 +21,7 @@ const emits = defineEmits<{
   (e: 'update'): void
 }>()
 
-const form:any = ref<FormInstance>()
+const form: any = ref<FormInstance>()
 
 const isAdd = computed(() => {
   return !props.curUser
@@ -38,6 +38,7 @@ const formData = reactive<any>({
   roleIds: null,
   status: 1,
   password: '',
+  ifAdminAccount: false,
   rePassword: ''
 })
 
@@ -89,7 +90,7 @@ const formRules = reactive<FormRules<any>>({
 const roleList = ref<any>()
 
 function fetchRoleList() {
-  role_api.A_addUserRoleList({orgId: props.curDepartment?.id}).then((data: any) => {
+  role_api.A_addUserRoleList({ orgId: props.curDepartment?.id }).then((data: any) => {
     roleList.value = data as any[]
   })
 }
@@ -112,13 +113,13 @@ function handleOpen() {
   fetchRoleList()
 }
 
-const A_detail=()=>{
-  user_api.A_detail(props.curUser?.id ).then(res=>{
+const A_detail = () => {
+  user_api.A_detail(props.curUser?.id).then(res => {
     console.log(res)
     Object.keys(formData).forEach(key => {
       if (Object.hasOwn(res, key)) formData[key] = res[key] ?? ''
     })
-    formData.roleIds = res.roleInfoList.map((el:any)=>el.id) ||[]
+    formData.roleIds = res.roleInfoList.map((el: any) => el.id) || []
   })
 }
 
@@ -141,20 +142,20 @@ function handleSubmit() {
         delete dataObj.password
       }
       delete dataObj.rePassword
-      submitLoading.value = true 
+      submitLoading.value = true
       const api = isAdd.value ? user_api.A_addUser : user_api.A_updateUser
-      api(dataObj).then(()=>{
+      api(dataObj).then(() => {
         ElMessage({
-        message: `${isAdd.value ? '新增' : '编辑'}用户成功`,
-        type: 'success'
-      })
-      handleClose()
-      emits('update')
+          message: `${isAdd.value ? '新增' : '编辑'}用户成功`,
+          type: 'success'
+        })
+        handleClose()
+        emits('update')
       }).finally(() => {
         submitLoading.value = false
       })
     })
-    
+
 }
 function handleClose() {
   emits('update:modelValue', false)
@@ -163,33 +164,30 @@ function handleClose() {
 </script>
 
 <template>
-  <el-dialog
-    v-bind="$attrs"
-    :title="`${isAdd ? '新增' : '编辑'}用户`"
-    destroy-on-close
-    :close-on-click-modal="false"
-    @open="handleOpen"
-    @closed="handleClose"
-    draggable
-    width="500px"
-  >
+  <el-dialog v-bind="$attrs" :title="`${isAdd ? '新增' : '编辑'}用户`" destroy-on-close :close-on-click-modal="false"
+    @open="handleOpen" @closed="handleClose" draggable width="500px">
     <el-form ref="form" label-width="140px" label-suffix="：" :model="formData" :rules="formRules">
       <el-form-item label="用户账号" prop="username">
-        <el-input v-model.trim="formData.username" maxlength="50" class="w-300" show-word-limit placeholder="请输入用户账号" clearable />
+        <el-input v-model.trim="formData.username" maxlength="50" class="w-300" show-word-limit placeholder="请输入用户账号"
+          clearable />
       </el-form-item>
       <el-form-item label="用户姓名" prop="name">
-        <el-input v-model.trim="formData.name" maxlength="50" class="w-300" show-word-limit placeholder="请输入用户姓名" clearable />
+        <el-input v-model.trim="formData.name" maxlength="50" class="w-300" show-word-limit placeholder="请输入用户姓名"
+          clearable />
       </el-form-item>
       <el-form-item label="手机号" prop="mobile">
-        <el-input v-model="formData.mobile" placeholder="请输入手机号" maxlength="11" show-word-limit class="w-300" clearable />
+        <el-input v-model="formData.mobile" placeholder="请输入手机号" maxlength="11" show-word-limit class="w-300"
+          clearable />
       </el-form-item>
       <el-form-item v-if="isAdd" label="登录密码" prop="password">
-        <el-input v-model.trim="formData.password" maxlength="50" class="w-300" placeholder="请输入6位数以上字母+数字密码" clearable />
+        <el-input v-model.trim="formData.password" maxlength="50" class="w-300" placeholder="请输入6位数以上字母+数字密码"
+          clearable />
       </el-form-item>
       <el-form-item v-if="isAdd" label="确认密码" prop="rePassword">
-        <el-input v-model.trim="formData.rePassword" maxlength="50" class="w-300" placeholder="请输入6位数以上字母+数字密码" clearable />
+        <el-input v-model.trim="formData.rePassword" maxlength="50" class="w-300" placeholder="请输入6位数以上字母+数字密码"
+          clearable />
       </el-form-item>
-      <el-form-item label="用户角色" prop="roleIds">
+      <el-form-item label="用户角色" v-if="!formData.ifAdminAccount" prop="roleIds">
         <el-select v-model="formData.roleIds" multiple filterable placeholder="请选择用户角色" class="w-300">
           <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>

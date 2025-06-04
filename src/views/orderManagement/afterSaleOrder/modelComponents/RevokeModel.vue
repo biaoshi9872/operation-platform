@@ -29,7 +29,7 @@ const data = reactive<IData>({
     formDataBK: {},
     formRules: {
         auditStatus: [{ required: true, message: '请选择审核类型', trigger: ['change', 'blur'] }],
-        rejectReason: [{ required: true, message: '请输入处理意见', trigger: ['change', 'blur'] }],
+        cancelReason: [{ required: true, message: '请输入处理意见', trigger: ['change', 'blur'] }],
         refundCustomerPrice: [{ required: true, message: '请输入退用户金额', trigger: ['change', 'blur'] }],
     },
     tableFromData: {},
@@ -77,8 +77,8 @@ const handleSubmit = () => {
             <el-alert title="售后处理意见用户可见，请谨慎填写" class="mb-12" type="warning" :closable="false" show-icon />
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
-                <el-form-item label="处理意见" prop="rejectReason">
-                    <el-input v-model="data.formData.rejectReason" placeholder="售后处理意见，展示给前端用户" type="textarea"
+                <el-form-item label="处理意见" prop="cancelReason">
+                    <el-input v-model="data.formData.cancelReason" placeholder="售后处理意见，展示给前端用户" type="textarea"
                         maxlength="200" show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="客服备注">
