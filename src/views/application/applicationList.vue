@@ -78,7 +78,7 @@ const toApplicationHandler = (row: any) => {
         <OrgSelect v-model="dataPage.facade.orgIdList" :multiple="true"></OrgSelect>
       </el-form-item>
       <el-form-item label="应用名称">
-        <el-input v-model="dataPage.facade.name" placeholder="请输入应用名称"></el-input>
+        <el-input v-model="dataPage.facade.appName" placeholder="请输入应用名称"></el-input>
       </el-form-item>
     </SearchForm>
     <div class="option_box">
