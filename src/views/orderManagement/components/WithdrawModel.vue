@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ElMessage, FormInstance, FormRules, ElMessageBox } from 'element-plus'
-import { cloneDeep } from 'lodash-es'
+import { ElMessageBox, FormInstance } from 'element-plus';
+import { cloneDeep } from 'lodash-es';
 interface IProp {
   curryInfo: any
 }
@@ -42,7 +42,7 @@ const handleClose = () => {
   searchQueryHandler()
   emits('update:modelValue', false)
 }
-const searchQueryHandler = inject('searchQueryHandler', () => {})
+const searchQueryHandler = inject('searchQueryHandler', () => { })
 onMounted(() => {
   data.formDataBK = cloneDeep(data.formData)
 })
@@ -58,31 +58,25 @@ const handleSubmit = () => {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {})
+      }).then(() => { })
     }
   })
 }
 </script>
 <template>
-  <el-dialog
-    v-bind="$attrs"
-    title="售后撤销"
-    width="500px"
-    append-to-body
-    @open="openHandler"
-    draggable
-    destroy-on-close
-    :close-on-click-modal="false"
-    @closed="handleReset"
-  >
+  <el-dialog v-bind="$attrs" title="售后撤销" width="500px" append-to-body @open="openHandler" draggable destroy-on-close
+    :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
-      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right" label-width="100px">
+      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
+        label-width="100px">
         <el-alert title="售后处理意见用户可见，请谨慎填写。" type="warning" show-icon :closable="false" />
         <el-form-item label="处理意见" prop="stockNum">
-          <el-input v-model="data.formData.stockNum" placeholder="售后处理意见，展示给前端用户" maxlength="200" show-word-limit></el-input>
+          <el-input v-model="data.formData.stockNum" placeholder="售后处理意见，展示给前端用户" maxlength="200"
+            show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="客服备注">
-          <el-input v-model="data.formData.stockNum" placeholder="客户其他备注，将留存在售后详情" maxlength="200" show-word-limit></el-input>
+          <el-input v-model="data.formData.stockNum" placeholder="客户其他备注，将留存在售后详情" maxlength="200"
+            show-word-limit></el-input>
         </el-form-item>
       </el-form>
     </div>

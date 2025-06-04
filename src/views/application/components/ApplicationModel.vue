@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus'
-import { cloneDeep } from 'lodash-es'
-import { validatePhone, validateEmail } from '@/utils/validator'
-import application_api from '@/api/system/application'
 import goods_api from '@/api/goods'
+import application_api from '@/api/system/application'
+import { validateEmail, validatePhone } from '@/utils/validator'
+import { ElMessage, FormInstance } from 'element-plus'
+import { cloneDeep } from 'lodash-es'
 interface IProp {
   curryInfo: any
 }
@@ -69,7 +69,7 @@ const handleClose = () => {
   searchQueryHandler()
   emits('update:modelValue', false)
 }
-const searchQueryHandler = inject('searchQueryHandler', () => {})
+const searchQueryHandler = inject('searchQueryHandler', () => { })
 onMounted(() => {
   data.formDataBK = cloneDeep(data.formData)
 })
@@ -88,7 +88,7 @@ const getDetail = () => {
     data.formData = {
       ...data.formDataBK,
       ...res,
-      goodsSourceTypeCodeList: res?.goodsSourceTypeCodeList?.split(',')
+      goodsSourceTypeCodeList: res?.goodsSourceTypeCodeList?.split(',').map((el: any) => Number(el))
     }
   })
 }
@@ -138,30 +138,25 @@ const getGoodTypeList = () => {
 }
 </script>
 <template>
-  <el-dialog
-    v-bind="$attrs"
-    :title="title"
-    width="500px"
-    append-to-body
-    @open="openHandler"
-    draggable
-    destroy-on-close
-    :close-on-click-modal="false"
-    @closed="handleReset"
-  >
+  <el-dialog v-bind="$attrs" :title="title" width="500px" append-to-body @open="openHandler" draggable destroy-on-close
+    :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
-      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right" label-width="140px">
+      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
+        label-width="140px">
         <el-form-item label="分支机构" prop="orgId">
-          <OrgSelect :disabled="props.curryInfo?.id" v-model="data.formData.orgId" :multiple="false" @change="changeHandler"></OrgSelect>
+          <OrgSelect :disabled="props.curryInfo?.id" v-model="data.formData.orgId" :multiple="false"
+            @change="changeHandler"></OrgSelect>
         </el-form-item>
         <el-form-item label="应用名称" prop="appName">
           <el-input v-model="data.formData.appName" placeholder="请输入应用名称" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="开发者邮箱" prop="developerEmail">
-          <el-input v-model="data.formData.developerEmail" placeholder="请输入开发者邮箱" maxlength="50" show-word-limit></el-input>
+          <el-input v-model="data.formData.developerEmail" placeholder="请输入开发者邮箱" maxlength="50"
+            show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="开发者手机" prop="developerPhone">
-          <el-input v-model="data.formData.developerPhone" placeholder="请输入开发者手机" maxlength="11" show-word-limit></el-input>
+          <el-input v-model="data.formData.developerPhone" placeholder="请输入开发者手机" maxlength="11"
+            show-word-limit></el-input>
         </el-form-item>
         <el-form-item v-if="data.goodsTypeList.length" label="可见商品类型" prop="goodsSourceTypeCodeList">
           <el-checkbox-group v-model="data.formData.goodsSourceTypeCodeList" @change="goodsSourceChangeHandler">
