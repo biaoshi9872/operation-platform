@@ -35,50 +35,38 @@ class order_enum extends baseEnum {
   ]
 
   /**
+   * 订单状态
+   * @param key
+   * @returns
+   */
+  public getOrder_statesTitle(key: string) {
+    return this.getDictNameByKey(this.order_states, key)
+  }
+
+  /**
    * 售后状态
    */
   public after_order_states = [
     {
-      value: '201',
-      label: '待供应商确认'
-    },
-    {
-      value: '101',
-      label: '待用户发货'
-    },
-    {
-      value: '202',
-      label: '待供应商确认收货'
-    },
-    {
-      value: '203',
-      label: '待供应商收货退款'
-    },
-    {
-      value: '204',
-      label: '待供应商发货'
-    },
-    {
-      value: '102',
-      label: '待用户确认收货'
-    },
-    {
       value: '1',
-      label: '已完成'
-    },
-    {
-      value: '3',
-      label: '供应商拒绝'
+      label: '售后中'
     },
     {
       value: '2',
-      label: '用户取消'
+      label: '售后拒绝 '
     },
     {
-      value: '205',
-      label: '待供应商退款'
+      value: '3',
+      label: '售后取消 '
+    },
+    {
+      value: '4',
+      label: '售后完成 '
     }
   ]
+  public getAfter_order_statesTitle(key: string) {
+    return this.getDictNameByKey(this.after_order_states, key)
+  }
   /**
    * 退款枚举
    *  */
@@ -129,7 +117,9 @@ class order_enum extends baseEnum {
       label: '无货退款'
     }
   ]
-
+  public getAfterSalesTypeTitle(key: string) {
+    return this.getDictNameByKey(this.AfterSalesType, key)
+  }
   /**
    * 发票类型
    */

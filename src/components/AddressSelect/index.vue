@@ -102,7 +102,13 @@ onMounted(() => {
 //省
 const getProvinceList = () => {
   systemUtils_api.A_address({ source: 1, channelId: '', type: 1 }).then(({ districtList }: any) => {
-    data.provinceList = districtList as any
+    data.provinceList = districtList.map((el => {
+      return {
+        ...el,
+        districtId: Number.parseInt(el.districtId),
+        name: el.name
+      }
+    })) as any
   })
 }
 
@@ -111,7 +117,13 @@ const getCityList = () => {
   const { provinceId } = props
   provinceId &&
     systemUtils_api.A_address({ source: 1, channelId: provinceId, type: 2 }).then(({ districtList }: any) => {
-      data.cityList = districtList as any
+      data.cityList = districtList.map((el => {
+        return {
+          ...el,
+          districtId: Number.parseInt(el.districtId),
+          name: el.name
+        }
+      })) as any
     })
 }
 
@@ -120,7 +132,13 @@ const getAreaList = () => {
   const { cityId } = props
   cityId &&
     systemUtils_api.A_address({ source: 1, channelId: cityId, type: 3 }).then(({ districtList }: any) => {
-      data.areaList = districtList as any
+      data.areaList = districtList.map((el => {
+        return {
+          ...el,
+          districtId: Number.parseInt(el.districtId),
+          name: el.name
+        }
+      })) as any
     })
 }
 

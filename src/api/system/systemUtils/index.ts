@@ -16,9 +16,20 @@ class systemUtils_api {
    */
   A_category(params: any) {
     return request<any>({
-      url: '/sys/systemUtils/category',
+      url: '/cate/listAll',
       method: 'get',
       params
+    })
+  }
+
+  /**
+   * 供应商下拉框
+   */
+  A_supplierSelect(data: any) {
+    return request<any>({
+      url: '/supplierManage/supplierSelect',
+      method: 'get',
+      data: data
     })
   }
 }

@@ -1,8 +1,8 @@
 import { useUserStore } from '@/stores'
+import { decrypted, strDecodeURIComponent } from '@/utils/encrypt'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { decrypted } from '@/utils/encrypt'
 
 type TisStateCheckHooks = {
   isErpAccount: boolean
@@ -12,6 +12,7 @@ type TisStateCheckHooks = {
   isOrgLast: any
   isFromOrgLast: any
   orgInfo: any
+  isFromOrgLastNoApp: any
   decryptApplicationSource: any
 }
 export default function (data: any = {}): TisStateCheckHooks {
@@ -72,17 +73,37 @@ export default function (data: any = {}): TisStateCheckHooks {
   })
 
   /**
-   * 是否分支机构
+   * 是否分支机构，顶级机构 【差异1】
    */
   const isOrgLast = computed(() => {
     return $useUserStore.userInfo.orgType != 1
   })
 
   /**
-   * 来源分支
+   * 解密当前应用数据
+   */
+  const decryptApplicationSource: any = computed(() => {
+    let projectId = $route.query.projectId as string
+    let deProjectId = strDecodeURIComponent(projectId)
+    let projectIStr = decrypted(deProjectId)
+    let projectInfo = {}
+    try {
+      projectInfo = JSON.parse(projectIStr)
+    } catch (error) {}
+    return projectInfo
+  })
+  /**
+   * 当前机构类型
    */
   const isFromOrgLast = computed(() => {
-    return $useUserStore.userInfo.orgType != 1
+    return $useUserStore.userInfo?.orgType != 1
+  })
+
+  /**
+   * 顶级机构非应用显示
+   */
+  const isFromOrgLastNoApp = computed(() => {
+    return $useUserStore.userInfo?.orgType == 1 && import.meta.env.VITE_APP_TYPE != 'app'
   })
 
   /**
@@ -95,19 +116,6 @@ export default function (data: any = {}): TisStateCheckHooks {
     }
   })
 
-  /**
-   * 解密当前应用数据
-   */
-  const decryptApplicationSource = computed(() => {
-    let projectId = $route.query.projectId as string
-    let projectIStr = decrypted(projectId)
-    let projectInfo = {}
-    try {
-      projectInfo = JSON.parse(projectIStr)
-    } catch (error) {}
-    return projectInfo
-  })
-
   return {
     isErpAccount: isErpAccount.value,
     isCombinationGoods: isCombinationGoods.value,
@@ -115,6 +123,7 @@ export default function (data: any = {}): TisStateCheckHooks {
     purchaseCostName: purchaseCostName.value,
     isOrgLast: isOrgLast,
     isFromOrgLast: isFromOrgLast,
+    isFromOrgLastNoApp: isFromOrgLastNoApp,
     orgInfo: orgInfo,
     decryptApplicationSource
   }

@@ -5,12 +5,16 @@ class goodPoor_enum extends baseEnum {
    */
   public storeStatus = [
     {
-      value: 0,
+      value: 1,
+      label: '有货'
+    },
+    {
+      value: 2,
       label: '无货'
     },
     {
-      value: 1,
-      label: '有货'
+      value: 3,
+      label: '库存紧张'
     }
   ]
 
@@ -24,12 +28,12 @@ class goodPoor_enum extends baseEnum {
    */
   public goodStatus = [
     {
-      value: 0,
-      label: '下架'
-    },
-    {
       value: 1,
       label: '上架'
+    },
+    {
+      value: 2,
+      label: '下架'
     }
   ]
   public getGoodStatusNameByKey(key: number | string) {
@@ -37,31 +41,48 @@ class goodPoor_enum extends baseEnum {
   }
 
   /**
+   * 渠道状态
+   */
+  public channelGoodsStatus = [
+    {
+      value: 1,
+      label: '可售'
+    },
+    {
+      value: 2,
+      label: '不可售'
+    }
+  ]
+  public getChannelGoodsStatusNameByKey(key: number | string) {
+    return this.getDictNameByKey(this.channelGoodsStatus, key)
+  }
+
+  /**
    * 排序
    */
   public sort = [
     {
-      value: 0,
+      value: 1,
       label: '供应价正序'
     },
     {
-      value: 1,
+      value: 2,
       label: '供应价倒序'
     },
     {
-      value: 2,
+      value: 3,
       label: '市场利润率从小到大'
     },
     {
-      value: 3,
+      value: 4,
       label: '市场利润率从大到小'
     },
     {
-      value: 4,
+      value: 5,
       label: '分销利润率从小到大'
     },
     {
-      value: 5,
+      value: 6,
       label: '分销利润率从大到小'
     }
   ]
@@ -71,15 +92,15 @@ class goodPoor_enum extends baseEnum {
    */
   public priceRelationTypeList = [
     {
-      value: 0,
+      value: 1,
       label: '平台供应价'
     },
     {
-      value: 1,
+      value: 2,
       label: '市场价'
     },
     {
-      value: 2,
+      value: 3,
       label: '分销价'
     }
   ]
@@ -88,37 +109,53 @@ class goodPoor_enum extends baseEnum {
    */
   public priceCompareTypeList = [
     {
-      value: 0,
+      value: 1,
       label: '小于'
     },
     {
-      value: 1,
+      value: 2,
       label: '等于'
     },
     {
-      value: 2,
+      value: 3,
       label: '大于'
     }
   ]
 
   /**
    * 渠道类型
+   * 1	京东
+11	京东生鲜
+55	天猫超市
+104	驿宝通精选
+105	渠道自营
+   * 
    */
   public sourceTypeList = [
     {
-      src: 'https://axure-file.lanhuapp.com/md5__1276ee0bba2a3f9c396189e2d0f9f4d0.png',
-      label: '驿宝通精选',
-      value: '1'
-    },
-    {
-      src: 'https://axure-file.lanhuapp.com/md5__82ff628faa3ab487df2363c52e03f613.png',
       label: '京东',
-      value: '2'
+      value: '1',
+      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/2efe916f3cef45c0b5b145f10dcd5714.png'
     },
     {
-      src: 'https://axure-file.lanhuapp.com/md5__fb0a7d465a77ba9c9cecf63a10d02a20.png',
       label: '京东生鲜',
-      value: '3'
+      value: '11',
+      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/94d8ddb3278b436abad8ae2d98ded12d.png'
+    },
+    {
+      label: '天猫超市',
+      value: '55',
+      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/32506076a18c4986881606143fe73031.png'
+    },
+    {
+      label: '驿宝通精选',
+      value: '104',
+      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/90486b07e16e499f86870c17a6c016bc.png'
+    },
+    {
+      label: '渠道自营',
+      value: '105',
+      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/7d796fc370ed41bfa718e5db24d91597.png'
     }
   ]
 

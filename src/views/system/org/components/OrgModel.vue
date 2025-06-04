@@ -138,6 +138,7 @@ const openHandler = async () => {
       ...data.formData,
       ...res
     }
+    data.activeName = '2'
   }
   productMarkUpSetRef.value?.initProductMarkUpSet(data.formData?.goodsOrgMarkupDTOList || [])
 }
@@ -150,7 +151,6 @@ const handleSubmit = async () => {
   const res = await productMarkUpSetRef.value?.validateInfo()
   formRef.value
     .validate((val: any) => {
-      debugger
       if (val) {
         const goodsOrgMarkupDTOList = productMarkUpSetRef.value?.getSubmitData() || []
         data.submitLoading = true
@@ -213,7 +213,7 @@ const title = computed(() => {
         </el-form-item>
         <div>
           <el-tabs v-model="data.activeName" type="card" class="demo-tabs">
-            <el-tab-pane label="账号管理" name="1">
+            <el-tab-pane v-if="props.type != 'edit'" label="账号管理" name="1">
               <el-form-item label="管理员账号" prop="username">
                 <el-input v-model="data.formData.username" placeholder="请输入管理员账号" maxlength="50"
                   show-word-limit></el-input>
