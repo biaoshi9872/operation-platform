@@ -148,7 +148,7 @@ const getGoodTypeList = () => {
             @change="changeHandler"></OrgSelect>
         </el-form-item>
         <el-form-item label="应用名称" prop="appName">
-          <el-input v-model="data.formData.appName" placeholder="请输入应用名称" maxlength="50" show-word-limit></el-input>
+          <el-input v-model="data.formData.appName" placeholder="请输入应用名称" maxlength="200" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="开发者邮箱" prop="developerEmail">
           <el-input v-model="data.formData.developerEmail" placeholder="请输入开发者邮箱" maxlength="50"
@@ -163,7 +163,7 @@ const getGoodTypeList = () => {
             <el-checkbox v-for="item in data.goodsTypeList" :label="item.sourceName" :value="item.id" />
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(2)" label="是否支持脱敏" prop="isSupportMask">
+        <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(104)" label="是否支持脱敏" prop="isSupportMask">
           <template #label>
             <Tooltip content="选择“是”，则API商品池仅展示支持脱敏的驿宝通精选商品;反之，则展示全量驿宝通精选商品。">是否支持脱敏</Tooltip>
           </template>

@@ -58,6 +58,7 @@ const toApplicationHandler = (row: any) => {
   let appId = row.id
   let projectStr = encrypted(JSON.stringify({ appId }))
   let enPro = strEncodeURIComponent(projectStr)
+  debugger
   setLocal('projectId', enPro)
   let url = window.location.origin
   let path = `${url}/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`

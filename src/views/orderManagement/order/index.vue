@@ -216,10 +216,9 @@ const initColumns = () => {
       })
       //申请售后
       const afterButton =
-        ![0, 4, 5, -1].includes(parentRow.orderStatus) &&
-        ![1, 4].includes(row.afterSaleStatus) &&
-        [104].includes(parentRow.channelSource) &&
-
+        // ![0, 4, 5, -1].includes(parentRow.orderStatus) &&
+        // ![1, 4].includes(row.afterSaleStatus) &&
+        // [104].includes(parentRow.channelSource) &&
         withDirectives(
           h(ElButton, {
             type: 'text',

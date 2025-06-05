@@ -45,7 +45,6 @@ const data = reactive({
 })
 const saveHandler = () => {
   formRef.value?.validate((valid: boolean) => {
-
     if (valid) {
       data.submitLoading = true
       const { orgId, appId, channelOrderNo } = data.detailInfo
@@ -53,6 +52,7 @@ const saveHandler = () => {
       let obj = { ...data.formData, orgId, appId, channelOrderNo, afterSaleGoodsList } as any
       after_order_api.A_backApply(obj).then((res: any) => {
         ElMessage.success('操作完成')
+        goBarkOrderList()
       }).finally(() => {
         data.submitLoading = false
       })
