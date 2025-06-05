@@ -72,8 +72,8 @@ const getFindAfterSalePrice = () => {
     })
 }
 const checkReturnStates = (callBack: any) => {
-    if (props.curryInfo.auditStatus === 1) {
-        if (data.formData.refundCustomerPrice > (data.returnInfo.returnPrice + data.returnInfo.freightAmount)) {
+    if (data.formData.auditStatus == 1) {
+        if (data.formData.refundCustomerPrice > (data.returnInfo.preRetailPrice + data.returnInfo.freightAmount)) {
             ElMessageBox.confirm(
                 `输入的退用户金额大于售后商品金额+订单运费之和，是否确认进行该操作?`,
                 '警告',

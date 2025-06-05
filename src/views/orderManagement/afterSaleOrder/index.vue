@@ -2,17 +2,16 @@
 defineOptions({ name: 'orderList' })
 import after_api from '@/api/afterOrder/index'
 import SkuDetail from '@/components/SkuDetail/index.vue'
-import pageHooks from '@/hooks/pageListHooks'
-import { IPage } from '@/types/from-types'
-import { ElButton } from 'element-plus'
-import { ref, resolveDirective } from 'vue'
-// import { AFTERSALETYPES, AFTERSALESTATELIST, getDictNameByKey } from '@/utils/constant'
 import StateCell from '@/components/Tooltip/StateCell.vue'
 import useTCache from '@/hooks/cacheHooks'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+import pageHooks from '@/hooks/pageListHooks'
 import { tabsStore } from '@/stores'
+import { IPage } from '@/types/from-types'
 import goodPoor from '@/utils/constant/goodPoor'
 import order_enum from '@/utils/constant/order'
+import { ElButton } from 'element-plus'
+import { ref, resolveDirective, withDirectives } from 'vue'
 import AuthModel from './modelComponents/AuthModel.vue'
 import RevokeModel from './modelComponents/RevokeModel.vue'
 const { getSystemConfigInfoByKey } = useTCache()
@@ -248,23 +247,48 @@ const initColumns = () => {
     label: '操作',
     align: 'center',
     render: (row: any) => {
-
       //审核
-      const authButton = [1].includes(row.status) && h(ElButton, {
-        type: 'text',
-        innerText: '审核',
-        onClick: () => {
-          authHandler(row)
-        }
-      })
+      const authButton = [1].includes(row.status) && ![104].includes(row.channelSource) &&
+        withDirectives(
+          h(ElButton, {
+            type: 'text',
+            innerText: '审核',
+            onClick: () => {
+              authHandler(row)
+            }
+          }),
+          [
+            [
+              authDir,
+              {
+                authKey: 'AFTER_ORDER_SH',
+                detail: row
+              }
+            ]
+          ]
+        )
       //撤销
-      const revocationButton = [1].includes(row.status) && h(ElButton, {
-        type: 'text',
-        innerText: '撤销',
-        onClick: () => {
-          revocationHandler(row)
-        }
-      })
+      const revocationButton = [1].includes(row.status) && ![104].includes(row.channelSource) &&
+        withDirectives(
+          h(ElButton, {
+            type: 'text',
+            innerText: '撤销',
+            onClick: () => {
+              revocationHandler(row)
+            }
+          }),
+          [
+            [
+              authDir,
+              {
+                authKey: 'AFTER_ORDER_CX',
+                detail: row
+              }
+            ]
+          ]
+        )
+
+
 
 
       //详情
@@ -342,8 +366,10 @@ const initColumns = () => {
       </template>
     </OrderCustomTable>
     <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page"></CustomPagination>
-    <AuthModel v-model="dataPage.showAuthModel" :curryInfo="dataPage.curryInfo"></AuthModel>
-    <RevokeModel v-model="dataPage.showRevokeModel" :curryInfo="dataPage.curryInfo"></RevokeModel>
+    <AuthModel v-model="dataPage.showAuthModel" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHarder">
+    </AuthModel>
+    <RevokeModel v-model="dataPage.showRevokeModel" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHarder">
+    </RevokeModel>
   </PageContainer>
 </template>
 

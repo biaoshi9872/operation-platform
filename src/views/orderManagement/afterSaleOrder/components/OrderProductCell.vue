@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-// import { A_queryAfterSaleOrderGoodsInfo } from '@/api/orderManger'
-// import { C_taxList, C_invoiceTypeList, getDictNameByKey } from '@/utils/constant'
+
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import order_enum from '@/utils/constant/order'
-const { isFromOrgLast } = isStateCheckHooks()
+const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const route = useRoute()
 interface IProp {
   orderInfo?: any
@@ -108,20 +107,23 @@ const afterSaleGoodsVO = computed(() => {
               <span>{{ row.freightAmount ?? '-' }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn v-if="!['1'].includes(String(orderInfo.afterSaleType))" width="160"
+          <YbtTableColumn
+            v-if="!['1'].includes(String(orderInfo.afterSaleType)) && ['101'].includes(getSystemOptionType)" width="160"
             prop="supplierAfterSalePrice" label="退款金额(成本)">
             <template #default="{ row }">
               <span>{{ row.afterSalePurchasePrice ?? '-' }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn v-if="!['1'].includes(String(orderInfo.afterSaleType))" width="160"
-            prop="afterSaleSupplyPrice" label="退款金额(供应价)">
+          <YbtTableColumn
+            v-if="!['1'].includes(String(orderInfo.afterSaleType)) && ['101', '201'].includes(getSystemOptionType)"
+            width="160" prop="afterSaleSupplyPrice" label="退款金额(供应价)">
             <template #default="{ row }">
               <span>{{ row.afterSaleSupplyPrice ?? '-' }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn v-if="!['1'].includes(String(orderInfo.afterSaleType))" width="160"
-            prop="afterSaleRetailPrice" label="退款金额(分销价)">
+          <YbtTableColumn
+            v-if="!['1'].includes(String(orderInfo.afterSaleType)) && ['101', '201'].includes(getSystemOptionType)"
+            width="160" prop="afterSaleRetailPrice" label="退款金额(分销价)">
             <template #default="{ row }">
               <span>{{ row.afterSaleRetailPrice ?? '-' }}</span>
             </template>
@@ -148,7 +150,7 @@ const afterSaleGoodsVO = computed(() => {
         </YbtTableColumn>
         <YbtTableColumn prop="price" label="进项发票类型">
           <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-            }}</template>
+          }}</template>
         </YbtTableColumn>
       </el-table>
     </div>

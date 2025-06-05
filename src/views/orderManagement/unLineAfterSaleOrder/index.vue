@@ -22,7 +22,8 @@ const data = reactive({
     reasonCode: '',
     reasonName: '',
     afterSaleNum: 1,
-    reasonImages: ''
+    reasonImages: '',
+    reasonDescription: ''
   },
   detailInfo: {
     applyUserName: '',
@@ -61,7 +62,7 @@ const saveHandler = () => {
 
 const goBarkOrderList = () => {
   tabsStoreInfo.reload({
-    path: '/orderManagement/order/orderList',
+    path: '/orderManagement/order/index',
     query: {}
   })
 }

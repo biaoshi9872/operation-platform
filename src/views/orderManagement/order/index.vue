@@ -11,7 +11,7 @@ import goodPoor from '@/utils/constant/goodPoor'
 import order_enum from '@/utils/constant/order'
 import { ElButton } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
-import { ref, resolveDirective } from 'vue'
+import { ref, resolveDirective, withDirectives } from 'vue'
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 const authDir = resolveDirective('auth')
@@ -218,14 +218,27 @@ const initColumns = () => {
       const afterButton =
         ![0, 4, 5, -1].includes(parentRow.orderStatus) &&
         ![1, 4].includes(row.afterSaleStatus) &&
-        h(ElButton, {
-          type: 'text',
-          innerText: '申请售后',
-          style: { 'margin-left': '95px' },
-          onClick: () => {
-            afterApplyHandler(row, parentRow)
-          }
-        })
+        [104].includes(parentRow.channelSource) &&
+
+        withDirectives(
+          h(ElButton, {
+            type: 'text',
+            innerText: '申请售后',
+            style: { 'margin-left': '95px' },
+            onClick: () => {
+              afterApplyHandler(row, parentRow)
+            }
+          }),
+          [
+            [
+              authDir,
+              {
+                authKey: 'ORDER_SQSH',
+                detail: row
+              }
+            ]
+          ]
+        )
       return h('div', {}, [goodsDetail, afterButton])
     },
     openMarginCell: true
@@ -454,13 +467,13 @@ const orderStatusList = computed(() => {
             <span class="order-overflow" ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               渠道订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>
