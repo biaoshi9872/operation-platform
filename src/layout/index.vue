@@ -84,7 +84,7 @@ provide('rollingReset', rollingReset)
           <svg-icon :name="isCollapse ? 'packUp' : 'fold'"></svg-icon>
         </span>
         <img src="@/assets/images/logo.png" class="logo-img" />
-        <span class="menu_text">供应链开放平台 {{curryRoute.autoParams.projectId}}</span>
+        <span class="menu_text">供应链开放平台 </span>
       </div>
       <TopBar />
     </el-header>
@@ -94,10 +94,8 @@ provide('rollingReset', rollingReset)
           <menu-item v-for="menu in menuRoutes" :key="menu.path" :menu="menu"></menu-item>
         </el-menu>
       </div>
-      <div
-        class="main-wrapper"
-        :style="{ maxWidth: !showNavigation ? '100vw' : isCollapse ? 'calc(100vw - 70px)' : 'calc(100vw - 180px)' }"
-      >
+      <div class="main-wrapper"
+        :style="{ maxWidth: !showNavigation ? '100vw' : isCollapse ? 'calc(100vw - 70px)' : 'calc(100vw - 180px)' }">
         <div class="view_tags_container">
           <ViewTags />
         </div>
@@ -170,10 +168,12 @@ provide('rollingReset', rollingReset)
     overflow-y: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
+
     ::-webkit-scrollbar {
       width: 0 !important;
       display: none !important;
     }
+
     ::-moz-scrollbar {
       width: 0 !important;
       display: none !important;
@@ -184,6 +184,7 @@ provide('rollingReset', rollingReset)
     width: 0 !important;
     display: none !important;
   }
+
   .layout-sidebar::-moz-scrollbar {
     width: 0 !important;
     display: none !important;

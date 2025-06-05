@@ -8,6 +8,7 @@ import pageHooks from '@/hooks/pageListHooks'
 import { useUserStore } from '@/stores'
 import { IPage } from '@/types/from-types'
 import { encrypted, strEncodeURIComponent } from '@/utils/encrypt'
+import { setLocal } from '@/utils/storage'
 import { ElButton } from 'element-plus'
 import ApplicationModel from './components/ApplicationModel.vue'
 const { isOrgLast } = isStateCheckHooks()
@@ -57,6 +58,7 @@ const toApplicationHandler = (row: any) => {
   let appId = row.id
   let projectStr = encrypted(JSON.stringify({ appId }))
   let enPro = strEncodeURIComponent(projectStr)
+  setLocal('projectId', enPro)
   let url = window.location.origin
   let path = `${url}/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
   window.open(path, '_blank')

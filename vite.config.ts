@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => {
             drop: ['console', 'debugger']
           },
     server: {
-      port: 7081,
+      port: 7070,
       host: true,
       proxy: {
         '/open-platform': {

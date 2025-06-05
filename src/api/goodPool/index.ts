@@ -81,7 +81,6 @@ class goodPool_api {
    * 我的商品池-批量移除（含单个移除）
    */
   A_batchDelete(data: any) {
-    debugger
     return request<any>({
       url: '/myGoodsPool/batchDelete',
       method: 'post',

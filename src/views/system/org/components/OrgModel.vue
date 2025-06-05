@@ -167,7 +167,6 @@ const handleSubmit = async () => {
             data.submitLoading = false
           })
       } else {
-        debugger
         ElMessage.error('请检查填写内容')
       }
     })

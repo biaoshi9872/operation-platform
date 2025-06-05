@@ -58,8 +58,6 @@ const init = () => {
 const getAllDictionaries = () => {
   let obj: any = {}
   console.log(decryptApplicationSource)
-  debugger
-
   application_api.A_list(obj).then((res: any) => {
     data.applicationList = res || []
   })
@@ -67,7 +65,8 @@ const getAllDictionaries = () => {
 </script>
 <template>
   <el-select v-model="value" placeholder="请选择应用" filterable clearable collapse-tags multiple collapse-tags-tooltip>
-    <el-option v-for="(item, index) in data.applicationList" :key="index" :value="item[props.valueKey]" :label="item[props.valueLabel]"></el-option>
+    <el-option v-for="(item, index) in data.applicationList" :key="index" :value="item[props.valueKey]"
+      :label="item[props.valueLabel]"></el-option>
   </el-select>
 </template>
 
