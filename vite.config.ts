@@ -18,7 +18,7 @@ const HOST = 'https://supply-test.ycb51.cn' // 测试环境
 //const HOST = 'http://192.168.10.251:9001' // 刘康
 //const HOST = 'http://192.168.10.96:7080' //晶晶
 //const HOST = 'http://192.168.10.234:7007' //旺翔
-//const HOST = 'http://192.168.10.203:7080' //双源
+//const HOST = 'http://192.168.10.249:9001' //双源
 //const HOST = 'http://192.168.31.60:8089' //任
 export default defineConfig(({ mode }) => {
   console.log(mode, 'mode')

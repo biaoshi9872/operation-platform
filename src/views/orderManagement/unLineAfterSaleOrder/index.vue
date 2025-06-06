@@ -67,13 +67,9 @@ const goBarkOrderList = () => {
   })
 }
 
-
-
 const reasonForRefundList = computed(() => {
   return order_enum.reasonForRefundListObj[data.formData.afterSaleType]
 })
-
-
 
 onMounted(() => {
   getDetailInfo()
@@ -87,7 +83,7 @@ const getDetailInfo = () => {
       ...data.detailInfo,
       ...res
     }
-    data.afterSaleGoods = [res.afterSaleGoodsVO]
+    data.afterSaleGoods = [{ ...res.afterSaleGoodsVO, afterSaleNum: res.afterSaleGoodsVO.totalNum }]
   })
 }
 //退款总金额
