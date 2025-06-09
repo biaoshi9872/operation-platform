@@ -181,7 +181,7 @@ const title = computed(() => {
     :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
       <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
-        label-width="150px">
+        label-width="160px">
         <el-form-item label="机构名称" prop="name">
           <el-input v-model="data.formData.name" placeholder="请输入机构名称" maxlength="50" show-word-limit></el-input>
         </el-form-item>
@@ -207,7 +207,7 @@ const title = computed(() => {
           <el-input v-model="data.formData.remark" :rows="2" type="textarea" placeholder="请输入备注" maxlength="200"
             show-word-limit></el-input>
         </el-form-item>
-        <el-form-item label="可见商品及加价设置">
+        <el-form-item label="可见商品及加价设置" required>
           <ProductMarkUpSet ref="productMarkUpSetRef"></ProductMarkUpSet>
         </el-form-item>
         <div>

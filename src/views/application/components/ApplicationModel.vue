@@ -124,7 +124,7 @@ watch(
   }
 )
 const goodsSourceChangeHandler = (val: any) => {
-  if (!val.includes(2)) {
+  if (!val.includes(104)) {
     data.formData.isSupportMask = null
   }
 }

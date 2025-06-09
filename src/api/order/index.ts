@@ -41,18 +41,6 @@ class order_api {
   }
 
   /**
-   * 订单导出
-   * @param data
-   * @returns
-   */
-  A_orderExport(data: any) {
-    return request<API.T_DingDanFenYeJieKouListRecords[]>({
-      url: '/order/page',
-      method: 'post',
-      data: data
-    })
-  }
-  /**
    * 物流轨迹
    * @param data
    * @returns
@@ -64,6 +52,19 @@ class order_api {
       requestOptions: {
         formData: true
       },
+      data: data
+    })
+  }
+
+  /**
+   * 导出
+   * @param data
+   * @returns
+   */
+  A_orderExport(data: any) {
+    return request<any>({
+      url: '/export/order/export',
+      method: 'post',
       data: data
     })
   }

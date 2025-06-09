@@ -361,7 +361,7 @@ const initColumns = () => {
             <span>渠道售后单编号:{{ row.channelAfterSaleNo }}</span>
             <span>渠道订单编号:{{ row.channelOrderNo }}</span>
             <span>申请时间:{{ row.applyTime }}</span>
-            <span v-if="!isFromOrgLast && row.channelSource == 104">供应商:{{ row.supplyName }}</span>
+            <span v-if="!isFromOrgLast">供应商:{{ row.supplyName }}</span>
           </div>
         </div>
       </template>

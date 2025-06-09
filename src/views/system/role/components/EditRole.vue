@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import role_api from '@/api/system/role'
-import { reactive, ref, onMounted } from 'vue'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import system_num from '@/utils/constant/system'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
-import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+import { onMounted, reactive, ref } from 'vue'
 const { isOrgLast } = isStateCheckHooks()
 
 
@@ -32,7 +32,7 @@ const data = reactive<IData>({
     id: '',
     parentId: '',
     roleName: '',
-    orgType:'',
+    orgType: '',
   },
   formDataBK: {},
   formRules: {
@@ -54,7 +54,7 @@ const handleClose = () => {
   searchQueryHandler()
   emits('update:modelValue', false)
 }
-const searchQueryHandler = inject('searchQueryHandler', () => {})
+const searchQueryHandler = inject('searchQueryHandler', () => { })
 onMounted(() => {
   data.formDataBK = cloneDeep(data.formData)
 })
@@ -62,28 +62,29 @@ const openHandler = () => {
   data.formData = {
     ...data.formDataBK
   }
-  if(props.curryInfo?.id){
+  if (props.curryInfo?.id) {
     data.formData = {
       ...data.formDataBK,
     }
     data.formData.roleName = props.curryInfo.name
     data.formData.orgType = props.curryInfo.createRoleType
-  } 
+  }
 }
 const handleSubmit = () => {
-  formRef.value.validate().then(() => {   
+  formRef.value.validate().then(() => {
     data.submitLoading = true
-       role_api.A_roleSave({
-        ...data.formData
-      }).then((res: any) => {
-        ElMessage({
+    role_api.A_roleSave({
+      ...data.formData,
+      id: props.curryInfo?.id
+    }).then((res: any) => {
+      ElMessage({
         message: `操作成功`,
         type: 'success'
       })
       handleClose()
-      }).finally(()=>{
-        data.submitLoading = false
-      })
+    }).finally(() => {
+      data.submitLoading = false
+    })
   })
 }
 
@@ -93,25 +94,19 @@ const title = computed(() => {
 
 </script>
 <template>
-  <el-dialog
-    v-bind="$attrs"
-    :title="title"
-    width="500px"
-    append-to-body
-    @open="openHandler"
-    draggable
-    destroy-on-close
-    :close-on-click-modal="false"
-    @closed="handleReset"
-  >
+  <el-dialog v-bind="$attrs" :title="title" width="500px" append-to-body @open="openHandler" draggable destroy-on-close
+    :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
-      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right" label-width="100px">
+      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
+        label-width="100px">
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model.trim="data.formData.roleName" placeholder="请输入角色名称" maxlength="20" show-word-limit clearable class="w-248" />
+          <el-input v-model.trim="data.formData.roleName" placeholder="请输入角色名称" maxlength="20" show-word-limit clearable
+            class="w-248" />
         </el-form-item>
-        <el-form-item label="机构类型" v-if="!isOrgLast" prop="orgType">
+        <el-form-item label="机构类型" v-if="!isOrgLast && !props.curryInfo?.id" prop="orgType">
           <el-select v-model="data.formData.orgType" class="w-248" placeholder="请选择机构类型">
-            <el-option v-for=" (item, index) in system_num.orgType " :key="index" :label="item.label" :value="item.value" />
+            <el-option v-for="(item, index) in system_num.orgType" :key="index" :label="item.label"
+              :value="item.value" />
           </el-select>
         </el-form-item>
       </el-form>

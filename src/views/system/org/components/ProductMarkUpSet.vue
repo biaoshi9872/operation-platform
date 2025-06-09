@@ -46,6 +46,7 @@ const initProductMarkUpSet = async (goodsOrgMarkupDTOList: any) => {
 //校验必填
 const validateInfo = () => {
     return new Promise(async (resolve, reject) => {
+
         let arr: any = []
         goodFormRef.value.forEach((el: any) => {
             arr.push(el.validate())
@@ -56,6 +57,15 @@ const validateInfo = () => {
             ElMessage.error('请检查可见商品及加价设置是否填写正确')
             reject(false)
         })
+
+        let selectArr = dataInfo.detailArr.filter((el: any) => {
+            return el.isChecked && el.priceMarkupType
+        })
+        if (!selectArr.length) {
+            ElMessage.error('请至少填写一项')
+            reject(false)
+            return
+        }
     })
 
 }
@@ -74,6 +84,7 @@ const getSubmitData = () => {
     })
     return data
 }
+
 
 defineExpose({
     initProductMarkUpSet,

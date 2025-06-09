@@ -202,7 +202,8 @@ const initColumns = () => {
     render: (row: any, column: any, index: any, parentRow: any) => {
       console.log(row, 'row,row')
       let newRow = row
-      newRow.titleSpec = row.skuName + ' ' + (row.attributeValue1 + row.attributeValue2 || '')
+      let spec = row.channelSource == 104 ? (row.attributeValue1 || '') + (row.attributeValue2 || '') : ''
+      newRow.titleSpec = row.skuName + spec
       //商品详情
       const goodsDetail = h(SkuDetail, {
         goodDetail: newRow,
@@ -466,17 +467,17 @@ const orderStatusList = computed(() => {
             <span class="order-overflow" ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               渠道订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>
-            <span v-if="!isFromOrgLast && row.channelSource == 104">供应商:{{ row.supplyName }}</span>
+            <span v-if="!isFromOrgLast">供应商:{{ row.supplyName }}</span>
             <span>订单总金额:￥{{ row.totalAmount }}</span>
           </div>
           <div>

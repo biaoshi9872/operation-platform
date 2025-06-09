@@ -97,12 +97,13 @@ const dataInfo = reactive({
             <span>{{ order_enum.getAfterSalesTypeTitle(row.afterSaleType) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180" align="right">
+        <el-table-column label="操作" width="200" align="right">
           <template #default="{ row }">
             <AuthButton authKey="ORDER_SQSH" v-if="![1, 4].includes(row?.afterSaleStatus) && ![0, 4, 5, -1].includes(orderInfo?.orderBaseInfo?.orderStatus)
               && ![104].includes(orderInfo?.channelSource)" type="text" @click="applyRefundHandler(row)">申请售后
             </AuthButton>
-            <el-button v-if="row.afterSaleNo" type="text" @click="goToDetailHandler(row)">查看售后详情</el-button>
+            <el-button v-if="row.afterSaleNo" class="ml-12" type="text"
+              @click="goToDetailHandler(row)">查看售后详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -140,7 +141,7 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-        }}</template>
+          }}</template>
       </el-table-column>
     </el-table>
     <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">

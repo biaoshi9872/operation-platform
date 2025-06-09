@@ -1,7 +1,7 @@
 <script setup lang="ts" name="EditUser">
 import role_api from '@/api/system/role'
 import user_api from '@/api/system/user'
-import { validatePhone } from '@/utils/validator'
+import { hasNumberAndWord, validatePhone } from '@/utils/validator'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 
@@ -45,6 +45,8 @@ const formData = reactive<any>({
 function passwordValidator(rule: any, value: any, callback: any) {
   if (value === '') {
     callback(new Error('请输入登录密码'))
+  } else if (!hasNumberAndWord.test(value)) {
+    callback(new Error('密码必须包含字母加数字，且处于6-20位之间!'))
   } else {
     if (formData.rePassword !== '') {
       form.value.validateField('rePassword')
@@ -55,6 +57,8 @@ function passwordValidator(rule: any, value: any, callback: any) {
 function rePasswordValidator(rule: any, value: any, callback: any) {
   if (value === '') {
     callback(new Error('请再次输入登录密码'))
+  } else if (!hasNumberAndWord.test(value)) {
+    callback(new Error('密码必须包含字母加数字，且处于6-20位之间!'))
   } else if (String(value) !== formData.password) {
     callback(new Error('两次输入密码不一致!'))
   } else {

@@ -10,6 +10,7 @@ import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
 
 const $useRote = useRoute()
+
 const tabsStoreInfo: any = tabsStore()
 
 const formRef = ref<FormInstance>()
@@ -61,9 +62,8 @@ const saveHandler = () => {
 }
 
 const goBarkOrderList = () => {
-  tabsStoreInfo.reload({
-    path: '/orderManagement/order/index',
-    query: {}
+  tabsStoreInfo.close($useRote, {
+    path: '/orderManagement/order/index'
   })
 }
 
@@ -167,7 +167,7 @@ const verifyHandler = () => {
       <YbtTableColumn prop="afterSaleNum" label="售后数量">
         <template #default="{ row }">
           <el-input-number v-model="row.afterSaleNum" :disabled="['3'].includes(data.formData.afterSaleType)" :min="1"
-            :max="row.skuGoodsNum" :precision="0" />
+            :max="row.goodsNum" :precision="0" />
         </template>
       </YbtTableColumn>
       <YbtTableColumn v-if="![1, 2].includes(data.formData.afterSaleType)" prop="goodsNum" label="运费">
