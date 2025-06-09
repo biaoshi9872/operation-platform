@@ -80,7 +80,7 @@ provide('rollingReset', rollingReset)
   <el-container class="layout-wrapper">
     <el-header class="layout-header" height="56px">
       <div class="logo-wrap">
-        <span @click="isCollapse = !isCollapse">
+        <span @click="isCollapse = !isCollapse" class="fold-icon">
           <svg-icon :name="isCollapse ? 'packUp' : 'fold'"></svg-icon>
         </span>
         <img src="@/assets/images/logo.png" class="logo-img" />
@@ -119,10 +119,24 @@ provide('rollingReset', rollingReset)
 </template>
 
 <style lang="scss" scoped>
+.fold-icon {
+  font-size: 20px;
+}
+
+.logo-img {
+  width: 22px !important;
+  height: 22px !important;
+  margin-right: 8px;
+  margin-left: 8px;
+
+}
+
 .layout-wrapper {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+
+
 
   .logo-wrap {
     height: 100%;

@@ -86,9 +86,9 @@ const afterSaleGoodsVO = computed(() => {
               <span>{{ `￥${row.retailPrice}` }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn prop="totalNum" label="数量">
+          <YbtTableColumn prop="goodsNum" label="数量">
             <template #default="{ row }">
-              <span>{{ `${row.totalNum ?? '-'} ` }}</span>
+              <span>{{ `${row.goodsNum ?? '-'} ` }}</span>
             </template>
           </YbtTableColumn>
           <YbtTableColumn prop="afterSaleNum" min-width="120" label="售后数量">

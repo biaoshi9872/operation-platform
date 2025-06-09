@@ -83,7 +83,7 @@ const getDetailInfo = () => {
       ...data.detailInfo,
       ...res
     }
-    data.afterSaleGoods = [{ ...res.afterSaleGoodsVO, afterSaleNum: res.afterSaleGoodsVO.totalNum }]
+    data.afterSaleGoods = [{ ...res.afterSaleGoodsVO, afterSaleNum: res.afterSaleGoodsVO.goodsNum }]
   })
 }
 //退款总金额
@@ -163,14 +163,14 @@ const verifyHandler = () => {
           <span>{{ `￥${row.retailPrice}` }}</span>
         </template>
       </YbtTableColumn>
-      <YbtTableColumn prop="totalNum" label="总量" />
+      <YbtTableColumn prop="goodsNum" label="总量" />
       <YbtTableColumn prop="afterSaleNum" label="售后数量">
         <template #default="{ row }">
           <el-input-number v-model="row.afterSaleNum" :disabled="['3'].includes(data.formData.afterSaleType)" :min="1"
             :max="row.skuGoodsNum" :precision="0" />
         </template>
       </YbtTableColumn>
-      <YbtTableColumn v-if="![1, 2].includes(data.formData.afterSaleType)" prop="totalNum" label="运费">
+      <YbtTableColumn v-if="![1, 2].includes(data.formData.afterSaleType)" prop="goodsNum" label="运费">
         <template #default="{ row }">
           <span>￥0</span>
         </template>
