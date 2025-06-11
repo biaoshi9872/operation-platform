@@ -2,94 +2,64 @@
 defineOptions({
     name: 'Authority'
 })
+import supplier_api from '@/api/supplier'
 import menu_api from '@/api/system/menu'
-import type { ElTree } from 'element-plus'
+import role_api from '@/api/system/role'
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
-
 const data = reactive({
+    supplierRoleList: [],
     treeList: [{}],
     checkedList: [],
     submitLoading: false,
     permissionIds: '' as any
 })
-const { treeList, checkedList, submitLoading } = toRefs(data)
 
-const allTree = ref<InstanceType<typeof ElTree>>()
-function getAllChecked() {
-    //@ts-ignore
-    const keys = allTree.value.getCheckedKeys()
-    //@ts-ignore
-    const halfKeys = allTree.value.getHalfCheckedKeys()
-    return [...keys, ...halfKeys]
-}
 
-// 菜单结构
-function filterTreeFullSelect(tree: any, selected: any) {
-    const setStore = new Set(selected)
-    const fullSelectList: any = []
+onMounted(() => {
+    getAllAutoTreeList()
+    getSupplierRoleList()
+})
 
-    if (Array.isArray(tree)) {
-        tree.forEach(item => checkIsChecked(item))
-    }
-
-    function checkIsChecked(node: any) {
-        let isChecked
-        if (Array.isArray(node.children) && node.children.length) {
-            let checkedCount = 0
-            for (let i = 0; i < node.children.length; i++) {
-                checkIsChecked(node.children[i]) && checkedCount++
-            }
-            isChecked = checkedCount === node.children.length
-        } else {
-            isChecked = setStore.has(node.id)
-        }
-        isChecked && fullSelectList.push(node.id)
-        return isChecked
-    }
-    return fullSelectList
-}
-
-// 菜单结构
-async function getAllAutoTreeList() {
-    const res: any = await menu_api.A_menuManageTree({ menuType: 4, menuName: '' })
-    data.treeList = res
-    const checkNode = [] as any
-    res.forEach((item: any) => {
-        if (item.selected == 1) checkNode.push(item.id)
-        getPermission(checkNode, item)
+//角色树
+const getAllAutoTreeList = () => {
+    const roleId = data.supplierRoleList?.[0]?.id
+    Promise.all([
+        menu_api.A_menuManageTree({ menuType: 4, menuName: '' }),
+        role_api.A_permissionList({ roleId })
+    ]).then(res => {
+        data.treeList = res[0] as any
+        data.checkedList = res[1] as any
     })
-    console.log([...new Set(checkNode)], 'checkNode')
-    data.checkedList = filterTreeFullSelect(res, [...new Set(checkNode)])
 }
 
-const getPermission = (checkNode: any, curryData: any) => {
-    if (curryData.selected == 1) checkNode.push(curryData.id)
-    if (curryData.children) {
-        curryData.children.forEach((item: any) => {
-            getPermission(checkNode, item)
-        })
-    }
+//角色列表
+const getSupplierRoleList = () => {
+    supplier_api.A_getRoleList({}).then(res => {
+        data.supplierRoleList = res as any
+        getAllAutoTreeList()
+    })
 }
-
-onMounted(getAllAutoTreeList)
-
+let webPermission = ref(null)
 function handleSubmit() {
-    const permissionIds = getAllChecked()
-    if (!permissionIds) {
-        return ElMessage.warning('页面权限设置不能为空！')
+    //@ts-ignore
+    const menuIdList = webPermission.value.getCheckedNodes().map(item => item.id)
+    const roleId = data.supplierRoleList?.[0]?.id
+    if (!menuIdList.length) {
+        return ElMessage.warning('权限设置不能为空！')
     }
     ElMessageBox.confirm('请确认是否修改完毕，保存权限！', '保存权限', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-        submitLoading.value = true
-        menu_api.A_signSelected({ selectMenuIds: permissionIds, menuType: 4 })
+        data.submitLoading = true
+        role_api
+            .A_setPermission({ roleId, menuIdList })
             .then(res => {
                 ElMessage.success('设置成功')
             })
             .finally(() => {
-                submitLoading.value = false
+                data.submitLoading = true
             })
     })
 }
@@ -97,39 +67,21 @@ function handleSubmit() {
 
 <template>
     <div class="permission-tree">
-        <ModalContent title="页面权限">
-            <el-tree ref="allTree" :data="treeList" show-checkbox highlight-current node-key="id"
-                :props="{ children: 'children', label: 'name' }" :default-checked-keys="checkedList"
-                default-expand-all="true" />
-        </ModalContent>
+        <div class="permission-tree-box">
+
+        </div>
+        <div>
+            <el-tree :data="data.treeList" ref="webPermission" :props="{
+                label: 'name',
+                children: 'children'
+
+            }" :default-checked-keys="data.checkedList" show-checkbox node-key="id">
+            </el-tree>
+        </div>
         <div class="mt-20 text-center permission-bottom">
-            <el-button type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
+            <el-button type="primary" :loading="data.submitLoading" @click="handleSubmit">保存权限</el-button>
         </div>
     </div>
 </template>
 
-<style lang="scss">
-.permission-tree {
-    position: relative;
-    background-color: var(--el-searchForm-bg-color);
-    min-height: calc(100vh - 110px);
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-
-    .permission-bottom {
-        position: fixed;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        background-color: var(--el-searchForm-bg-color);
-        z-index: 999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 60px;
-        box-shadow: 0px -1px 4px rgba(10, 50, 97, 0.1);
-    }
-}
-</style>
+<style lang="scss"></style>

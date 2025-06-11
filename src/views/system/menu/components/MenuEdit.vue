@@ -1,7 +1,7 @@
 <script setup lang="ts" name="EditRole">
+import menu_api from '@/api/system/menu'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import menu_api from '@/api/system/menu'
 import { cloneDeep } from 'lodash-es'
 
 const props = defineProps({
@@ -45,6 +45,7 @@ const MENU_DEFAULT = {
   status: 1,
   isCache: 0,
   isColumnCache: 0,
+  selfFlag: 0,
   openType: 1,
 }
 const formData = reactive<any>({
@@ -56,6 +57,7 @@ const formData = reactive<any>({
   sort: 0,
   icon: '',
   perms: '',
+  selfFlag: 0,
   status: 1
 })
 
@@ -102,7 +104,7 @@ function handleSubmit() {
     .then(() => {
       const subForm = markRaw(formData) as any
       submitLoading.value = true
-       menu_api.A_menuSave({
+      menu_api.A_menuSave({
         ...subForm,
         url: subForm.level === 2 ? '' : subForm.url,
         menuType: props.menuType
@@ -126,15 +128,8 @@ function handleClose() {
 </script>
 
 <template>
-  <el-dialog
-    v-bind="$attrs"
-    :title="`${isAdd ? '新增' : '编辑'}${isGroup ? '分组' : '菜单'}`"
-    destroy-on-close
-    :close-on-click-modal="false"
-    @open="handleOpen"
-    @closed="handleClose"
-    draggable
-  >
+  <el-dialog v-bind="$attrs" :title="`${isAdd ? '新增' : '编辑'}${isGroup ? '分组' : '菜单'}`" destroy-on-close
+    :close-on-click-modal="false" @open="handleOpen" @closed="handleClose" draggable>
     <el-form ref="form" :model="formData" :rules="formRules" label-width="120px">
       <!-- 分组 -->
       <template v-if="isGroup">
@@ -151,6 +146,12 @@ function handleClose() {
           <el-radio-group v-model="formData.isCache">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="2">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="selfFlag" label="是否自营菜单">
+          <el-radio-group v-model="formData.selfFlag">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item prop="sort" label="排序">
@@ -180,6 +181,12 @@ function handleClose() {
           <el-radio-group v-model="formData.status">
             <el-radio-button :label="1">否</el-radio-button>
             <el-radio-button :label="2">是</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="selfFlag" label="是否自营菜单">
+          <el-radio-group v-model="formData.selfFlag">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="formData.level == 1" prop="isCache" label="是否缓存">

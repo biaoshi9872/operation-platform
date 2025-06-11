@@ -1,5 +1,5 @@
 <template>
-    <commodityPage type="add"></commodityPage>
+    <commodityPage type="detail"></commodityPage>
 </template>
 
 <script setup lang="ts">

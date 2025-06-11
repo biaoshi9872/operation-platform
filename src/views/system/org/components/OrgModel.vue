@@ -58,6 +58,7 @@ const data = reactive<IData>({
     username: null,
     password: null,
     mobile: null,
+    channelSelfGoodsEnable: null,
     goodsOrgMarkupDTOList: []
   },
   formDataBK: {},
@@ -104,7 +105,8 @@ const data = reactive<IData>({
         validator: validatePhone,
         trigger: 'blur'
       }
-    ]
+    ],
+    channelSelfGoodsEnable: [{ required: true, message: '请选择是否开放渠道自营供应商体系', trigger: ['change', 'blur'] }],
   },
   activeName: '1',
   tableFromData: {},
@@ -177,11 +179,11 @@ const title = computed(() => {
 })
 </script>
 <template>
-  <el-dialog v-bind="$attrs" :title="title" width="800px" append-to-body @open="openHandler" draggable destroy-on-close
+  <el-dialog v-bind="$attrs" :title="title" width="900px" append-to-body @open="openHandler" draggable destroy-on-close
     :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
       <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
-        label-width="160px">
+        label-width="210px">
         <el-form-item label="机构名称" prop="name">
           <el-input v-model="data.formData.name" placeholder="请输入机构名称" maxlength="50" show-word-limit></el-input>
         </el-form-item>
@@ -209,6 +211,12 @@ const title = computed(() => {
         </el-form-item>
         <el-form-item label="可见商品及加价设置" required>
           <ProductMarkUpSet ref="productMarkUpSetRef"></ProductMarkUpSet>
+        </el-form-item>
+        <el-form-item label="是否开放渠道自营供应商体系" prop="channelSelfGoodsEnable">
+          <el-radio-group v-model="data.formData.channelSelfGoodsEnable">
+            <el-radio :value="1" :name="1">是</el-radio>
+            <el-radio :value="0" :name="0">否</el-radio>
+          </el-radio-group>
         </el-form-item>
         <div>
           <el-tabs v-model="data.activeName" type="card" class="demo-tabs">

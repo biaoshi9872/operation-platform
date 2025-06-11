@@ -119,8 +119,32 @@ class order_enum extends baseEnum {
     { value: 1, label: '增值税普通发票' },
     { value: 2, label: '增值税专用发票' }
   ]
+  public getInvoiceListByType(key: string): any {
+    if (key == '1') {
+      return this.getNoteTypeTitle(key)
+    } else {
+      return this.getSpeciallyInvoiceTypeTitle(key)
+    }
+  }
+  //普票
+  public getNoteTypeTitle(key: string) {
+    return [
+      { value: 0, label: '0%' },
+      { value: -1, label: '免税' }
+    ]
+  }
+  //专票
+  public getSpeciallyInvoiceTypeTitle(key: string) {
+    return [
+      { value: 13, label: '13%' },
+      { value: 9, label: '9%' },
+      { value: 6, label: '6%' },
+      { value: 3, label: '3%' },
+      { value: 1, label: '1%' }
+    ]
+  }
 
-  //税率
+  //票类型
   public C_taxList = [
     { value: 13, label: '13%' },
     { value: 9, label: '9%' },

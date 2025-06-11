@@ -71,6 +71,20 @@ class supplier_enum {
     }
   ]
 
+  public accountStatus = [
+    {
+      value: 1,
+      label: '启用'
+    },
+    {
+      value: 0,
+      label: '禁用'
+    }
+  ]
+  public getAccountStatus(value: string) {
+    return this.accountStatus.find(item => item.value == value)?.label || '--'
+  }
+
   // 获取供应商类型标签
   public getSupplierType(value: any) {
     return this.supplierType.find(item => item.value == value)?.label || '--'
@@ -90,7 +104,6 @@ class supplier_enum {
   public getSettlementType(value: any) {
     return this.settlementType.find(item => item.value == value)?.label || '--'
   }
-
   // 获取开票类型标签
   public getInvoiceType(value: any) {
     return this.invoiceType.find(item => item.value == value)?.label || '--'

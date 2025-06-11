@@ -65,6 +65,63 @@ class supplier_api {
       data: data
     })
   }
+
+  /**
+   * 供应商下拉
+   */
+  A_supplierManageGetByOrgId(params: any) {
+    return request({
+      url: '/supplierManage/getByOrgId',
+      method: 'get',
+      params: params
+    })
+  }
+
+  /**
+   * 供应商状态
+   */
+  A_updateStatus(data: any) {
+    return request<any>({
+      url: '/supplierManage/account/enable',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   *
+   * 供应商账号导出
+   */
+  A_supplierAccountExcel(data: any) {
+    return request<any>({
+      url: '/export/supply/supplierAccountExcel',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   *
+   * 供应商资料导出
+   */
+  A_supplierExcel(data: any) {
+    return request<any>({
+      url: '/export/supply/supplierExcel',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 供应商角色
+   */
+  A_getRoleList(data: any) {
+    return request({
+      url: '/sys/role/supply/list',
+      method: 'get',
+      data: data
+    })
+  }
 }
 
 export default new supplier_api()

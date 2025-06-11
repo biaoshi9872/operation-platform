@@ -26,7 +26,7 @@ const dataInfo = reactive({
         "businessScope": [],
         "settlementType": "", // 修改为空字符串作为初始值
         "invoiceType": [], // 修改为数组类型
-        "settlementRemark": ""
+        "supplementRemarks": ""
     }
 })
 
@@ -55,11 +55,14 @@ const saveDataHandler = async () => {
 
     try {
         await formRef.value.validate()
-
+        const { provinceId, cityId, countyId, townId } = dataInfo.form
         const params = {
-            ...dataInfo.form
+            ...dataInfo.form,
+            provinceId: provinceId || null,
+            cityId: cityId || null,
+            countyId: countyId || null,
+            townId: townId || null
         }
-
         // 根据是否有id判断是新增还是编辑
         const api = isEdit.value ? supplierApi.A_update : supplierApi.A_save
         await api(params)
@@ -99,7 +102,7 @@ const isDetail = computed(() => {
     <div class="supplier-page">
         <div class="content">
             <el-form :model="dataInfo.form" ref="formRef" label-width="120px" :rules="rules" :disabled="isDetail">
-                <el-card shadow="never">
+                <el-card shadow="never" class="mb-8">
                     <template #header>
                         <div class="el-card__title">基础信息</div>
                     </template>
@@ -133,11 +136,9 @@ const isDetail = computed(() => {
                         <el-input v-model="dataInfo.form.contractName" placeholder="请输入联系人" maxlength="50"
                             show-word-limit />
                     </el-form-item>
-
                     <el-form-item label="联系方式" prop="contractTel">
                         <el-input v-model="dataInfo.form.contractTel" placeholder="请输入11位手机号" />
                     </el-form-item>
-
                     <el-form-item label="开户银行">
                         <el-input v-model="dataInfo.form.bankName" placeholder="请输入开户银行" maxlength="50"
                             show-word-limit />
@@ -160,7 +161,7 @@ const isDetail = computed(() => {
                             show-word-limit />
                     </el-form-item>
                 </el-card>
-                <el-card shadow="never">
+                <el-card shadow="never" class="mb-8">
                     <template #header>
                         <div class="el-card__title">资质管理</div>
                     </template>
@@ -171,7 +172,7 @@ const isDetail = computed(() => {
                             tip="文件不能超过5MB,支持扩展名：bmp,png,jpg,jpeg,pdf(最多可上传10个"></ImgUpload>
                     </el-form-item>
                 </el-card>
-                <el-card shadow="never">
+                <el-card shadow="never" class="mb-8">
                     <template #header>
                         <div class="el-card__title">经营信息</div>
                     </template>
@@ -184,7 +185,7 @@ const isDetail = computed(() => {
                         </el-checkbox-group>
                     </el-form-item>
                 </el-card>
-                <el-card shadow="never">
+                <el-card shadow="never" class="mb-8">
                     <template #header>
                         <div class="el-card__title">结算信息</div>
                     </template>
@@ -202,7 +203,7 @@ const isDetail = computed(() => {
                         </el-checkbox-group>
                     </el-form-item>
                     <el-form-item label="补充说明">
-                        <el-input v-model="dataInfo.form.settlementRemark" type="textarea" placeholder="请输入补充说明"
+                        <el-input v-model="dataInfo.form.supplementRemarks" type="textarea" placeholder="请输入补充说明"
                             maxlength="200" show-word-limit />
                     </el-form-item>
                 </el-card>

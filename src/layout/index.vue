@@ -128,7 +128,6 @@ provide('rollingReset', rollingReset)
   height: 22px !important;
   margin-right: 8px;
   margin-left: 8px;
-
 }
 
 .layout-wrapper {
