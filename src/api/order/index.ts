@@ -68,6 +68,63 @@ class order_api {
       data: data
     })
   }
+
+  /**
+   * 商品订单 - 发货商品明细
+   */
+  A_deliverOrder(data: API.T_ShangPinDingDanFaHuoShangPinMingXiRequest) {
+    return request<API.T_ShangPinDingDanFaHuoShangPinMingXiResponses>({
+      url: '/order/deliver/goods/detail',
+      method: 'get',
+      params: data
+    })
+  }
+
+  /**
+   * 商品订单 - 发货
+   */
+  A_deliverOrderSave(data: any) {
+    return request<any>({
+      url: '/order/deliver/save',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 商品订单 - 批量发货
+   */
+  A_deliverImport(data: any) {
+    return request<API.T_ShangPinDingDanPiLiangFaHuoResponses>({
+      url: '/order/deliver/import',
+      method: 'post',
+      requestOptions: {
+        formData: true
+      },
+      data: data
+    })
+  }
+
+  /**
+   * 商品订单 - 下载发货失败数据
+   */
+  A_deliverFailData(data: any) {
+    return request<any>({
+      url: '/order/deliver/download/failData',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 待发货数量
+   */
+  A_waitDeliverCount() {
+    return request({
+      url: '/order/waitDeliverCount',
+      method: 'post'
+    })
+  }
 }
 
 export default new order_api()

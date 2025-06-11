@@ -25,7 +25,7 @@ const dataInfo = reactive({
     form: {
         submitType: 1,
         "id": null,
-        "goodsType": null,
+        "goodsType": 1,
         "categoryCode": "",
         "skuCode": "",
         "skuName": "",
@@ -47,12 +47,20 @@ const dataInfo = reactive({
         "taxRate": null,
         "taxPrice": null,
         "limitSaleFlag": 0,
-        "limitTemplateId": null
+        "limitTemplateId": null,
+        businessLink: ''
     }
 })
 
 const rules = {
-    skuCode: [{ required: true, message: '请输入商品编码', trigger: 'blur' }],
+    skuCode: [{ required: true, message: '请输入商品编码', trigger: 'blur' },
+    {
+        pattern: /^[a-zA-Z0-9]{6,20}$/,
+        message: '商品编码需由字母+数字组成，至少6个字符，最大20个字符。',
+        trigger: 'blur'
+    }
+    ],
+    goodsType: [{ required: true, message: '请选择商品类型', trigger: 'change' }],
     skuName: [{ required: true, message: '请输入商品名称', trigger: 'blur' }],
     brand: [{ required: true, message: '请输入品牌', trigger: 'blur' }],
     unit: [{ required: true, message: '请输入销售单位', trigger: 'blur' }],
@@ -66,32 +74,34 @@ const rules = {
     invoiceType: [{ required: true, message: '请选择发票类型', trigger: 'change' }],
     taxCode: [{ required: true, message: '请输入税收编码', trigger: 'blur' }],
     taxRate: [{ required: true, message: '请选择税率', trigger: 'change' }],
+    categoryCode: [{ required: true, message: '请选择商品分类', trigger: 'change' }],
     limitSaleFlag: [{ required: true, message: '请选择商品是否限售', trigger: 'change' }],
-    limitTemplateId: [{ required: true, message: '请选择限售模板', trigger: 'change' }]
+    limitTemplateId: [{ required: true, message: '请选择限售模板', trigger: 'change' }],
+    businessLink: [{ required: true, message: '请填写电商链接', trigger: 'change' }]
 }
 const formRef = ref()
 const route = useRoute()
 const router = useRouter()
 
 // 判断是否为编辑模式
-const isEdit = computed(() => {
-    return props.type == 'add'
+const isDisabled = computed(() => {
+    return props.type == 'detail'
 })
 
 // 保存数据
 const saveDataHandler = async () => {
-    formRef.value.validate().then(async () => {
-        dataInfo.saveLoading = true
-        const obj = dataInfo.form
-        obj.submitType = 1
-        const api = dataInfo.form.id ? goods_api.A_update : goods_api.A_save
-        api({ ...obj }).then((res) => {
-            ElMessage.success('保存成功')
-            toListHandler()
-        }).finally(() => {
-            dataInfo.saveLoading = false
-        })
+
+    dataInfo.saveLoading = true
+    const obj = dataInfo.form
+    obj.submitType = 1
+    const api = dataInfo.form.id ? goods_api.A_update : goods_api.A_save
+    api({ ...obj }).then((res) => {
+        ElMessage.success('保存成功')
+        toListHandler()
+    }).finally(() => {
+        dataInfo.saveLoading = false
     })
+
 }
 const saveDataHandlerUp = async () => {
     formRef.value.validate().then(async () => {
@@ -119,8 +129,8 @@ const initData = () => {
 }
 
 const getDetailInfo = () => {
-    const skuCode = route.query.skuCode
-    if (skuCode) {
+    const skuCode = (route.query.skuCode || '') as string
+    if (decodeURIComponent(skuCode)) {
         goods_api.A_getDetail(skuCode).then((res: any) => {
             dataInfo.form = res
         })
@@ -150,10 +160,12 @@ watch(
     (newValue) => {
         if (newValue) {
             const computedTax = (dataInfo.form.taxRate === -1 ? 0 : dataInfo.form.taxRate) || 0
-            const taxPrice = new MyDecimal(newValue[0])
+            const taxPurchaseCost = new MyDecimal(dataInfo.form.taxPurchaseCost)
             const taxRateNum = new MyDecimal(1).add((new MyDecimal(computedTax).div(new MyDecimal(100))))
-            const noTaxPurchaseCost = taxPrice.mul(taxRateNum).toFixed(2) as any
+            const noTaxPurchaseCost = taxPurchaseCost.mul(taxRateNum).toFixed(2) as any
+            const taxPrice = taxPurchaseCost.mul(new MyDecimal(computedTax).div(new MyDecimal(100))).toFixed(2) as any
             dataInfo.form.noTaxPurchaseCost = noTaxPurchaseCost
+            dataInfo.form.taxPrice = taxPrice
         }
     }
 )
@@ -168,11 +180,16 @@ const toListHandler = () => {
 <template>
     <div class="supplier-page">
         <div class="content">
-            <el-form :model="dataInfo.form" ref="formRef" label-width="120px" :rules="rules" :disabled="!isEdit">
+            <el-form :model="dataInfo.form" ref="formRef" label-width="120px" :rules="rules" :disabled="isDisabled">
                 <el-card shadow="never" class="mb-8">
                     <template #header>
                         <div class="el-card__title">基础信息</div>
                     </template>
+                    <el-form-item label="商品类型">
+                        <el-radio-group v-model="dataInfo.form.goodsType">
+                            <el-radio :value="1">实物商品</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
                     <el-form-item label="商品编码" prop="skuCode" required>
                         <el-input v-model="dataInfo.form.skuCode" maxlength="20" show-word-limit
                             placeholder="商品编码需由字母+数字组成，至少6个字符，最大20个字符。" />
@@ -185,7 +202,7 @@ const toListHandler = () => {
                         <el-input v-model="dataInfo.form.brand" maxlength="30" show-word-limit />
                     </el-form-item>
                     <el-form-item label="分类" prop="categoryCode" required>
-                        <ClassificationSelect v-model:firstCateId="dataInfo.form.firstCateId"
+                        <ClassificationSelect class="w-full" v-model:firstCateId="dataInfo.form.firstCateId"
                             v-model:secondCateId="dataInfo.form.secondCateId"
                             v-model:thirdCateId="dataInfo.form.thirdCateId"
                             v-model:categoryCode="dataInfo.form.categoryCode">
@@ -214,7 +231,7 @@ const toListHandler = () => {
                         <MyTinymce v-model="dataInfo.form.description" @verify="() => {
                             verifyHandler('baseInfoDto.description')
                         }
-                        " :readonly="!isEdit"></MyTinymce>
+                        " :readonly="isDisabled"></MyTinymce>
                     </el-form-item>
                 </el-card>
                 <el-card shadow="never" class="mb-8">
@@ -233,8 +250,16 @@ const toListHandler = () => {
                         <el-input-number v-model="dataInfo.form.noTaxPurchaseCost" :controls="false" :min="0"
                             :precision="2" :step="0.1" disabled />
                     </el-form-item>
+                    <el-form-item label="税额">
+                        <el-input-number v-model="dataInfo.form.taxPrice" :controls="false" :min="0" :precision="2"
+                            :step="0.1" disabled />
+                    </el-form-item>
                     <el-form-item label="库存数量" prop="stock" required>
                         <el-input-number v-model="dataInfo.form.stock" :controls="false" :min="0" :precision="0" />
+                    </el-form-item>
+                    <el-form-item label="电商链接" prop="businessLink" required>
+                        <JinDLink class="w-full" type="edit" v-model="dataInfo.form.businessLink" :row="dataInfo.form">
+                        </JinDLink>
                     </el-form-item>
                 </el-card>
 
@@ -267,10 +292,15 @@ const toListHandler = () => {
             </el-form>
         </div>
         <div class="footer">
-            <el-card shadow="never" class="mb-8">
-                <el-button type="primary" :loading="dataInfo.saveLoading" @click="saveDataHandler">保存草稿</el-button>
+            <!-- 详情 编辑-->
+            <el-card v-if="!isDisabled" shadow="never" class="mb-8">
+                <el-button type="primary" v-if="dataInfo.form.operStatus != 2" :loading="dataInfo.saveLoading"
+                    @click="saveDataHandler">保存草稿</el-button>
                 <el-button type="primary" :loading="dataInfo.saveUpLoading" @click="saveDataHandlerUp">提交并上架</el-button>
                 <el-button @click="toListHandler">取消</el-button>
+            </el-card>
+            <el-card v-if="isDisabled" shadow="never" class="mb-8">
+                <el-button type="primary" @click="toListHandler">返回</el-button>
             </el-card>
         </div>
     </div>

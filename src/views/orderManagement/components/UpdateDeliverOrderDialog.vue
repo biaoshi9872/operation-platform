@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus'
-import { cloneDeep } from 'lodash-es'
+import { FormInstance } from 'element-plus';
+import { cloneDeep } from 'lodash-es';
 // import { A_updateExpress } from '@/api/orderManger'
-import { validatePhone } from '@/utils/validator'
+import { validatePhone } from '@/utils/validator';
 interface IProp {
   deliverInfo: any
 }
@@ -50,7 +50,7 @@ const handleClose = () => {
   searchQueryHandler()
   emits('update:modelValue', false)
 }
-const searchQueryHandler = inject('searchQueryHandler', () => {})
+const searchQueryHandler = inject('searchQueryHandler', () => { })
 
 onMounted(() => {
   data.formDataBK = cloneDeep(data.formDelivery)
@@ -108,31 +108,15 @@ const { submitLoading, formDelivery, formDeliveryList, formRules } = toRefs(data
 </script>
 
 <template>
-  <el-dialog
-    :title="deliveryType == '1' ? '修改物流' : '修改手机号'"
-    v-bind="$attrs"
-    width="400px"
-    :close-on-click-modal="false"
-    @close="handleClose"
-    @open="openHandler"
-  >
+  <el-dialog :title="deliveryType == '1' ? '修改物流' : '修改手机号'" v-bind="$attrs" width="400px" :close-on-click-modal="false"
+    @close="handleClose" @open="openHandler">
     <el-form ref="formRef" :model="formDelivery" class="formPanel" :rules="formRules">
       <template v-if="deliveryType == '1'">
         <el-form-item label="物流公司" class="formItem" prop="expressCompanyCode" label-width="80px">
-          <el-select
-            clearable
-            v-model="formDelivery.expressCompanyCode"
-            class="w-150"
-            filterable
-            placeholder="全部"
-            @change="getExpressHandler"
-          >
-            <el-option
-              v-for="(item, index) in formDeliveryList"
-              :key="index"
-              :label="item.expressCompanyName"
-              :value="item.expressCompanyCode"
-            />
+          <el-select clearable v-model="formDelivery.expressCompanyCode" class="w-150" filterable placeholder="全部"
+            @change="getExpressHandler">
+            <el-option v-for="(item, index) in formDeliveryList" :key="index" :label="item.expressCompanyName"
+              :value="item.expressCompanyCode" />
           </el-select>
         </el-form-item>
         <el-form-item label="快递单号" prop="expressCode" label-width="80px">
@@ -144,7 +128,8 @@ const { submitLoading, formDelivery, formDeliveryList, formRules } = toRefs(data
       <template v-else>
         <el-form-item label="配送电话:" prop="mobile" label-width="110px">
           <div class="tip">
-            <el-input clearable v-model="formDelivery.mobile" maxlength="11" show-word-limit class="w-150" placeholder="请填配送电话" />
+            <el-input clearable v-model="formDelivery.mobile" maxlength="11" show-word-limit class="w-150"
+              placeholder="请填配送电话" />
           </div>
         </el-form-item>
       </template>

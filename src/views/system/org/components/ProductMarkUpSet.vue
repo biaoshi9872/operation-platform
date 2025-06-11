@@ -22,7 +22,9 @@ const defaultPriceMark = {
 //初始化结构
 const initProductMarkUpSet = async (goodsOrgMarkupDTOList: any) => {
     dataInfo.goodsOrgMarkupDTOList = goodsOrgMarkupDTOList
-    const sourceList = await org_api.A_goodsSourceAll()
+    const sourceList = (await org_api.A_goodsSourceAll()).filter((el: any) => {
+        return el.displayEnum != 1
+    })
     let arr: any = []
     sourceList.forEach((item: any) => {
         let curry = goodsOrgMarkupDTOList.find((el: any) => {

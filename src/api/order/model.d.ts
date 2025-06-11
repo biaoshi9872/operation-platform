@@ -1,5 +1,111 @@
 declare namespace API {
   /**
+   * 商品订单 - 发货商品明细Request
+   */
+  type T_ShangPinDingDanFaHuoShangPinMingXiRequest = {
+    /**
+     *
+     */
+    channelOrderNo?: string
+
+    /**
+     *  扩展属性
+     */
+    [T: string]: any
+  }
+
+  /**
+   * 商品订单 - 发货商品明细Responses
+   */
+  type T_ShangPinDingDanFaHuoShangPinMingXiResponses = {
+    /**
+     *
+     */
+    provinceId: string
+    /**
+     *
+     */
+    cityId: string
+    /**
+     *
+     */
+    countyId: string
+    /**
+     *
+     */
+    townId: string
+    /**
+     *
+     */
+    address: string
+    /**
+     *
+     */
+    receiverPhone: string
+    /**
+     *
+     */
+    receiverName: string
+    /**
+     *
+     */
+    goodsVOList: {
+      /**
+       *
+       */
+      skuName: string
+      /**
+       *
+       */
+      skuCode: string
+      /**
+       *
+       */
+      images: string
+      /**
+       *
+       */
+      deliverNum: number
+      /**
+       *
+       */
+      outgoingStatus: any
+
+      /**
+       *  扩展属性
+       */
+      [T: string]: any
+    }[]
+
+    /**
+     *  扩展属性
+     */
+    [T: string]: any
+  }
+
+  /**
+   * 商品订单 - 批量发货Responses
+   */
+  type T_ShangPinDingDanPiLiangFaHuoResponses = {
+    /**
+     * 总数量
+     */
+    totalNum: string
+    /**
+     * 成功数量
+     */
+    successNum: string
+    /**
+     * 失败数量
+     */
+    failNum: string
+
+    /**
+     *  扩展属性
+     */
+    [T: string]: any
+  }
+  /**
    * 订单分页接口查找
    */
   type T_DingDanFenYeJieKouSearchForm = {

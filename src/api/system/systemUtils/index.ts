@@ -32,5 +32,16 @@ class systemUtils_api {
       data: data
     })
   }
+
+  /**
+   * 快递公司
+   *
+   */
+  A_getLogisticList() {
+    return request<any>({
+      url: '/address/express/companyList',
+      method: 'post'
+    })
+  }
 }
 export default new systemUtils_api()

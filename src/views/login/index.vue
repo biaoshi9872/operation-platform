@@ -14,7 +14,8 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="pwd" class="pwd">
-          <el-input v-model.trim="formData.pwd" class="input" show-password clearable type="passWord" placeholder="请输入密码">
+          <el-input v-model.trim="formData.pwd" class="input" show-password clearable type="passWord"
+            placeholder="请输入密码">
             <template #prefix>
               <svg-icon name="password" class="prefix-icon" />
             </template>
@@ -30,6 +31,7 @@
         </el-form-item>
       </el-form>
     </div>
+    <CaptchaBoxDialog v-model="captchaShow" @validSuccess="handleCaptchaSuccess"></CaptchaBoxDialog>
   </div>
 </template>
 
@@ -39,6 +41,7 @@ import isEevCheckHooks from '@/hooks/isEevCheckHooks'
 import { useUserStore } from '@/stores'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
+import CaptchaBoxDialog from './CaptchaBoxDialog.vue'
 const { isDevelopment } = isEevCheckHooks({})
 const userStore = useUserStore()
 const $router = useRouter()
@@ -106,7 +109,6 @@ const handleCaptchaSuccess = async () => {
   loading.value = true
   try {
     const res: any = await login_api.A_login({ ...formData })
-
     // 登录成功后 更新用户信息
     userStore.updateUserInfo(res)
     userStore.initInfo()
@@ -154,12 +156,14 @@ window.addEventListener('resize', setRootFontSize)
   justify-content: center;
   align-items: center;
   gap: 10.31rem;
+
   .logo {
     img {
       width: 41.3rem;
       height: 38.07rem;
     }
   }
+
   .user-info {
     width: 25.05rem;
     height: 23.96rem;
@@ -167,6 +171,7 @@ window.addEventListener('resize', setRootFontSize)
     box-shadow: 0rem 0rem 1rem 0rem rgba(182, 211, 255, 0.59);
     border-radius: 0.42rem;
     padding: 0 2.55rem;
+
     .title {
       font-family: MiSans;
       font-weight: 500;
@@ -177,21 +182,26 @@ window.addEventListener('resize', setRootFontSize)
       margin-bottom: 2.08rem;
       text-align: center;
     }
+
     ::v-deep(.el-form-item) {
       margin-bottom: 1.41rem;
     }
+
     .input {
       height: 2.55rem;
     }
+
     .submit-btn-option {
       margin-top: 2.29rem !important;
       margin-bottom: 0.99rem;
     }
+
     .prefix-icon {
       margin-left: 0.6rem;
       font-size: 1rem;
       color: #517aee;
     }
+
     .submit-btn {
       width: 100%;
       height: 2.92rem;
@@ -201,6 +211,7 @@ window.addEventListener('resize', setRootFontSize)
       color: #ffffff;
       line-height: 2.92rem;
     }
+
     .ford {
       font-family: MiSans;
       font-weight: 400;

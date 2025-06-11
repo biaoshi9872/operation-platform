@@ -12,6 +12,7 @@ import order_enum from '@/utils/constant/order'
 import { ElButton } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import { ref, resolveDirective, withDirectives } from 'vue'
+import DeliverGood from '../components/DeliverGood/index.vue'
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 const authDir = resolveDirective('auth')
@@ -42,7 +43,6 @@ const searchForm = {
 const pageInfo = {
   page: 1,
   limit: 10,
-  toreceiveCount: 0,
   totalCount: 0
 }
 const dataRestCallback = (res: any) => {
@@ -86,19 +86,20 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
     '3': cloneDeep(searchForm),
     '4': cloneDeep(searchForm)
   },
+  waitDeliverCount: 0,
+  showDeliverGood: false,
   facadeKz: {
     tab: '-1'
   }
 })
 
 const waitingCount = () => {
-  // A_waitingCount({}).then((res: any) => {
-  //   dataPage.page.toreceiveCount = res || 0
-  // })
+  order_api.A_waitDeliverCount().then((res: any) => {
+    dataPage.waitDeliverCount = res || 0
+  })
 }
 
 onMounted(() => {
-  console.log('onMounted')
   waitingCount()
 })
 
@@ -183,6 +184,21 @@ const columns: any = ref([])
 onMounted(() => {
   initColumns()
 })
+
+//批量发货
+const batchDeliverHandler = (row: any) => {
+  tabsStoreInfo.reload({
+    path: '/ImportingTemplate/OrderBatchDelivery',
+    query: {
+      channelOrderNo: row.channelOrderNo
+    }
+  })
+}
+const devilryHandler = (row: any) => {
+  dataPage.curryInfo = row
+  dataPage.showDeliverGood = true
+}
+
 const initColumns = () => {
   columns.value = []
   columns.value.push({
@@ -348,6 +364,30 @@ const initColumns = () => {
     },
     openMarginCell: true
   })
+  columns.value.push(
+    {
+      label: '操作',
+      align: 'center',
+      render: (row: any, parentRow: any) => {
+        //备注:自营体系才支持发货
+        const viewButton =
+          [105].includes(row.channelSource) &&
+          [1, 2].includes(row.orderStatus) &&
+          withDirectives(
+            h(ElButton, {
+              type: 'primary',
+              innerText: row.orderStatus == 1 ? '发货' : '部分发货',
+              onClick: () => {
+                devilryHandler(row)
+              }
+            }),
+            [[authDir, 'VO_PRODUCT_DEVIL']]
+          )
+        const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
+        return h('div', { style }, [viewButton])
+      }
+    }
+  )
 }
 
 //状态定制化
@@ -396,7 +436,7 @@ const orderStatusList = computed(() => {
           <el-tab-pane v-for="item in orderTabs" :label="item.label" :name="item.value" :key="item.value">
             <template #label>
               <span class="badge">
-                <el-badge :value="dataPage.page.toreceiveCount" :hidden="item.value !== '1'">
+                <el-badge :value="dataPage.waitDeliverCount" :hidden="item.value !== '1'">
                   <span class="pr-5">{{ item.label }}</span>
                 </el-badge>
               </span>
@@ -460,6 +500,7 @@ const orderStatusList = computed(() => {
       <template #option>
         <AuthButton authKey="VO_ORDER_EXPORT" type="primary" @click="exportOrderHandler"
           :loading="dataPage.loadingExport">导出</AuthButton>
+        <AuthButton authKey="VO_ORDER_BATCH_EXPORT" type="primary" @click="batchDeliverHandler">批量发货</AuthButton>
       </template>
       <template #customRow="{ row }">
         <div class="order_row">
@@ -487,6 +528,9 @@ const orderStatusList = computed(() => {
       </template>
     </OrderCustomTable>
     <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page[dataPage.facadeKz.tab]"></CustomPagination>
+    <DeliverGood v-model="dataPage.showDeliverGood" :outgoingType="1" :curryInfo="dataPage.curryInfo"
+      @refresh="searchQueryHarder">
+    </DeliverGood>
   </PageContainer>
 </template>
 

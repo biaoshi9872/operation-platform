@@ -79,7 +79,9 @@ const showOption = computed(() => {
         <el-input v-model.trim="dataPage.facade.roleName" placeholder="请输角色名称" clearable />
       </el-form-item>
       <el-form-item v-if="!isOrgLast" label="分支机构">
-        <OrgSelect v-model="dataPage.facade.orgIdList" :multiple="true"></OrgSelect>
+        <el-select v-model="dataPage.facade.orgType" placeholder="请选择机构类型" clearable>
+          <el-option v-for="item in system_num.orgType" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
       </el-form-item>
     </SearchForm>
     <TableModel :page="dataPage.page" v-loading="dataPage.loadingData" :listTableData="dataPage.dataList"

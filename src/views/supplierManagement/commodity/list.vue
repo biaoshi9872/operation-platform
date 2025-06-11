@@ -8,6 +8,8 @@ import pageHooks from '@/hooks/pageListHooks'
 import { IPage } from '@/types/from-types'
 import goods_enum from '@/utils/constant/goods'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import UpdateStockNumDialog from './components/UpdateStockNumDialog.vue'
+
 const router = useRouter()
 
 const dataPage: IPage<any, any> = reactive({
@@ -39,6 +41,7 @@ const dataPage: IPage<any, any> = reactive({
     showResetPassword: false,
     showSupplier: false,
     supplerList: [],
+    updateStockShow: false,
     toDownloadCenterApi: goods_api.A_goodsExport,
     selectPage: goods_api.A_page,
 })
@@ -68,7 +71,7 @@ const batchUpOrDownDateHandler = (type: 'up' | 'down') => {
     const title = type == 'up' ? '上架' : '下架'
     let obj = {
         "skuCode": dataPage.multipleList.map(item => item.skuCode),
-        "operStatus": type == 'up' ? 3 : 2
+        "operStatus": type == 'up' ? 1 : 2
     }
     ElMessageBox.confirm(
         `是否批量${title}?`,
@@ -93,7 +96,7 @@ const upOrDownDateHandler = (row: any, type: 'up' | 'down') => {
     const title = type == 'up' ? '上架' : '下架'
     let obj = {
         "skuCode": [row.skuCode],
-        "operStatus": type == 'up' ? 3 : 2
+        "operStatus": type == 'up' ? 1 : 2
     }
     ElMessageBox.confirm(
         `是否${title}?`,
@@ -130,7 +133,7 @@ const editGoodHandler = (row: any) => {
     router.push({
         path: '/supplierManagement/commodity/edit',
         query: {
-            id: row.id
+            skuCode: encodeURIComponent(row.skuCode)
         }
     })
 }
@@ -141,11 +144,24 @@ const viewGoodHandler = (row: any) => {
     router.push({
         path: '/supplierManagement/commodity/detail',
         query: {
-            id: row.id
+            skuCode: encodeURIComponent(row.skuCode)
         }
     })
 }
 
+const toFreightHandler = (row: any) => {
+    router.push({
+        path: '/system/restrictedSalesArea/index',
+        query: {
+            id: row.limitTemplateId
+        }
+    })
+}
+const updataStockHandler = (row: any) => {
+    dataPage.curryInfo = row
+    dataPage.updateStockShow = true
+
+}
 </script>
 <template>
     <PageContainer class="main_box">
@@ -214,7 +230,16 @@ const viewGoodHandler = (row: any) => {
                 <el-table-column label="商品分类" prop="skuCategory" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="供应商" prop="supplyName" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="市场价" prop="markPrice" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="库存数量" prop="stock" min-width="120px" align="left"></el-table-column>
+                <el-table-column label="库存数量" prop="stock" min-width="120px" align="left">
+                    <template #default="{ row }">
+                        <div class="stock-box">
+                            <div> {{ row.stock }}</div>
+                            <el-icon @click="updataStockHandler(row)">
+                                <Edit />
+                            </el-icon>
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column label="含税供应价" prop="taxPurchaseCost" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="不含税供应价" prop="noTaxPurchaseCost" min-width="120px"
                     align="left"></el-table-column>0
@@ -225,21 +250,41 @@ const viewGoodHandler = (row: any) => {
                     </template>
                 </el-table-column>
                 <el-table-column label="添加时间" prop="createDate" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="电商链接" prop="stock" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="限售模版" prop="freightTemplateId" min-width="120px" align="left"></el-table-column>
+                <el-table-column label="电商链接" prop="stock" min-width="120px" align="left">
+                    <template #default="{ row }">
+                        <JinDLink type="view" :row="{ jdLink: row.businessLink, ...row }"></JinDLink>
+                    </template>
+                </el-table-column>
+                <el-table-column label="限售模版" prop="limitTemplateId" min-width="120px" align="left">
+                    <template #default="{ row }">
+                        <el-link v-if="row.limitTemplateName" type="primary" @click="toFreightHandler(row)">{{
+                            row.limitTemplateName }}</el-link>
+                        <span v-else>-</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" prop="accountValidStart" min-width="180px" align="right">
                     <template #default="{ row }">
-                        <el-button type="primary" v-if="[0].includes(row.operStatus)" link
+                        <el-button type="primary" v-if="[0, 2].includes(row.operStatus)" link
                             @click="editGoodHandler(row)">编辑</el-button>
-                        <el-button v-if="row.status == 1" type="primary" link
+                        <el-button v-if="[2].includes(row.operStatus)" type="primary" link
                             @click="upOrDownDateHandler(row, 'up')">上架</el-button>
-                        <el-button v-if="row.operStatus == 3" type="primary" link
+                        <el-button v-if="row.operStatus == 1" type="primary" link
                             @click="upOrDownDateHandler(row, 'down')">下架</el-button>
                         <el-button type="primary" link @click="viewGoodHandler(row)">详情</el-button>
                     </template>
                 </el-table-column>
             </TableModel>
         </div>
+        <UpdateStockNumDialog v-model="dataPage.updateStockShow" :curryInfo="dataPage.curryInfo"
+            @refresh="searchQueryHarder">
+        </UpdateStockNumDialog>
     </PageContainer>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.stock-box {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+}
+</style>

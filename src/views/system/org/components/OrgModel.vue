@@ -220,47 +220,47 @@ const title = computed(() => {
         </el-form-item>
         <div>
           <el-tabs v-model="data.activeName" type="card" class="demo-tabs">
-            <el-tab-pane v-if="props.type != 'edit'" label="账号管理" name="1">
-              <el-form-item label="管理员账号" prop="username">
+            <el-tab-pane label="账号管理" name="1">
+              <el-form-item label="管理员账号" prop="username" label-width="100px">
                 <el-input v-model="data.formData.username" placeholder="请输入管理员账号" maxlength="50"
                   show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="登录密码" prop="password">
+              <el-form-item v-if="props.type != 'edit'" label="登录密码" label-width="100px" prop="password">
                 <el-input v-model="data.formData.password" placeholder="请输入6位数以上字母+数字密码" maxlength="100"></el-input>
               </el-form-item>
-              <el-form-item label="手机号" prop="mobile">
+              <el-form-item label="手机号" prop="mobile" label-width="100px">
                 <el-input v-model="data.formData.mobile" placeholder="请输入手机号" maxlength="11" show-word-limit></el-input>
               </el-form-item>
             </el-tab-pane>
             <el-tab-pane label="联系方式" name="2">
-              <el-form-item label="联系人" prop="relationPerson">
+              <el-form-item label="联系人" prop="relationPerson" label-width="80px">
                 <el-input v-model="data.formData.relationPerson" placeholder="请输入联系人" maxlength="20"
                   show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="手机号" prop="relationPhone">
+              <el-form-item label="手机号" prop="relationPhone" label-width="80px">
                 <el-input v-model="data.formData.relationPhone" placeholder="请输入手机号" maxlength="11"
                   show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="省市区" prop="relationProvinceId">
+              <el-form-item label="省市区" prop="relationProvinceId" label-width="80px">
                 <AddressSelect v-model:provinceId="data.formData.relationProvinceId"
                   v-model:cityId="data.formData.relationCityId" v-model:countyId="data.formData.relationCountryId">
                 </AddressSelect>
               </el-form-item>
-              <el-form-item label="详细地址">
+              <el-form-item label="详细地址" label-width="80px">
                 <el-input v-model="data.formData.relationDetailAddress" :rows="2" type="textarea" placeholder="请输入详细地址"
                   maxlength="200" show-word-limit></el-input>
               </el-form-item>
             </el-tab-pane>
             <el-tab-pane label="资质附件" name="3">
-              <el-form-item label="营业执照号">
+              <el-form-item label="营业执照号" label-width="100px">
                 <el-input v-model="data.formData.licenseNumber" placeholder="请输入营业执照号" maxlength="20"
                   show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="公司法人">
+              <el-form-item label="公司法人" label-width="100px">
                 <el-input v-model="data.formData.companyLegalPerson" placeholder="请输入公司法人" maxlength="20"
                   show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="资质附件">
+              <el-form-item label="资质附件" label-width="80px">
                 <ImgUpload v-model="data.formData.attachment" :limit="5"
                   :acceptList="['bmp', 'png', 'jpg', 'jpeg', 'pdf']" :maxSize="5" :isArray="false"
                   tip="图片不能超过5MB,支持扩展名：bmp,png,jpg,jpeg,pdf(最多可上传5张)"></ImgUpload>

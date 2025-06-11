@@ -160,7 +160,8 @@ const getGoodTypeList = () => {
         </el-form-item>
         <el-form-item v-if="data.goodsTypeList.length" label="可见商品类型" prop="goodsSourceTypeCodeList">
           <el-checkbox-group v-model="data.formData.goodsSourceTypeCodeList" @change="goodsSourceChangeHandler">
-            <el-checkbox v-for="item in data.goodsTypeList" :label="item.sourceName" :value="item.id" />
+            <el-checkbox v-for="item in data.goodsTypeList" :disabled="item.displayEnum == 1" :label="item.sourceName"
+              :value="item.id" />
           </el-checkbox-group>
         </el-form-item>
         <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(104)" label="是否支持脱敏" prop="isSupportMask">
