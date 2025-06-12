@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import after_order_api from '@/api/afterOrder/index';
+import isStateCheckHooks from '@/hooks/isStateCheckHooks';
 import { ElMessage, ElMessageBox, FormInstance } from 'element-plus';
 import { cloneDeep } from 'lodash-es';
+const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 interface IProp {
     curryInfo: any,
 }
@@ -122,7 +124,8 @@ const saveData = () => {
                         <el-radio :value="2">不通过</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item v-if="data.formData.auditStatus === 1" label="分销价">
+                <el-form-item v-if="data.formData.auditStatus === 1"
+                    :label="getSystemOptionType == 401 ? '含税供应价' : '分销价'">
                     <span>{{ curryInfo.retailPrice }}</span>
                 </el-form-item>
                 <el-form-item v-if="data.formData.auditStatus === 1" label="退用户" prop="refundCustomerPrice">

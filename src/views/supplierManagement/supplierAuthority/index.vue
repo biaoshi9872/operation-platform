@@ -68,7 +68,8 @@ function handleSubmit() {
 <template>
     <div class="permission-tree">
         <div class="permission-tree-box">
-
+            <h3>角色:渠道自营供应商</h3>
+            <div class="color-#666 mb-12 mt-4">此用户角色及其权限为所有渠道自营供应商共用</div>
         </div>
         <div>
             <el-tree :data="data.treeList" ref="webPermission" :props="{
@@ -84,4 +85,11 @@ function handleSubmit() {
     </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.permission-tree {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+
+}
+</style>

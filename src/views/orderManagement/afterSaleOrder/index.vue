@@ -3,7 +3,6 @@ defineOptions({ name: 'orderList' })
 import after_api from '@/api/afterOrder/index'
 import SkuDetail from '@/components/SkuDetail/index.vue'
 import StateCell from '@/components/Tooltip/StateCell.vue'
-import useTCache from '@/hooks/cacheHooks'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import pageHooks from '@/hooks/pageListHooks'
 import { tabsStore } from '@/stores'
@@ -14,7 +13,6 @@ import { ElButton } from 'element-plus'
 import { ref, resolveDirective, withDirectives } from 'vue'
 import AuthModel from './modelComponents/AuthModel.vue'
 import RevokeModel from './modelComponents/RevokeModel.vue'
-const { getSystemConfigInfoByKey } = useTCache()
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 const $route = useRoute()
@@ -175,15 +173,17 @@ const initColumns = () => {
       return h('div', `￥${row.platformSupplyPrice ?? ''}`)
     }
   })
-  columns.value.push({
-    label: '分销价',
-    align: 'center',
-    width: '130px',
-    prop: 'retailPrice',
-    render: (row: any) => {
-      return h('div', `￥${row.retailPrice ?? ''}`)
-    }
-  })
+  if ([10, 101, 20, 201].includes(getSystemOptionType.value)) {
+    columns.value.push({
+      label: '分销价',
+      align: 'center',
+      width: '130px',
+      prop: 'retailPrice',
+      render: (row: any) => {
+        return h('div', `￥${row.retailPrice ?? ''}`)
+      }
+    })
+  }
   columns.value.push({
     label: '销售单位',
     align: 'center',
@@ -289,10 +289,6 @@ const initColumns = () => {
             ]
           ]
         )
-
-
-
-
       //详情
       const detailButton = h(ElButton, {
         type: 'text',
@@ -324,14 +320,16 @@ const initColumns = () => {
         <DatePickerRange v-model:start="dataPage.facade.applyTimeStart" v-model:end="dataPage.facade.applyTimeEnd">
         </DatePickerRange>
       </el-form-item>
-      <el-form-item label="渠道售后单编号" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade.channelAfterSaleNo" placeholder="请输入渠道售后单编号"></el-input>
+      <el-form-item :label="getSystemOptionType == 401 ? '售后编号' : '渠道售后编号'" class="formItem" placeholder="请选择">
+        <el-input v-model.trim="dataPage.facade.channelAfterSaleNo"
+          :placeholder="getSystemOptionType == 401 ? '请输入售后单编号' : '请输入渠道售后单编号'"></el-input>
       </el-form-item>
       <el-form-item label="商品名称" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuName" placeholder="请输入商品名称"></el-input>
       </el-form-item>
-      <el-form-item label="渠道订单编号" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号"></el-input>
+      <el-form-item :label="getSystemOptionType == 401 ? '订单编号' : '渠道订单编号'" class="formItem" placeholder="请选择">
+        <el-input v-model.trim="dataPage.facade.channelOrderNo"
+          :placeholder="getSystemOptionType == 401 ? '请输入订单编号' : '请输入渠道订单编号'"></el-input>
       </el-form-item>
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuCode" placeholder="请输入商品编码"></el-input>
@@ -363,7 +361,7 @@ const initColumns = () => {
             <span v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))"> {{ getSystemOptionType == 401 ?
               '售后单编号:' : '渠道售后单编号:' }} {{ row.channelAfterSaleNo
               }}</span>
-            <span> {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}:{{ row.channelOrderNo }}</span>
+            <span> {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}{{ row.channelOrderNo }}</span>
             <span>申请时间:{{ row.applyTime }}</span>
             <span v-if="!isFromOrgLast">供应商:{{ row.supplyName }}</span>
           </div>
