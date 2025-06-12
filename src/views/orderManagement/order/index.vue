@@ -278,7 +278,7 @@ const initColumns = () => {
     })
   }
   columns.value.push({
-    label: '平台供应价',
+    label: getSystemOptionType.value == 401 ? '含税供应价' : '平台供应价',
     prop: 'platformSupplyPrice',
     align: 'center',
     width: '140px',
@@ -287,16 +287,18 @@ const initColumns = () => {
     },
     openMarginCell: true
   })
-  columns.value.push({
-    label: '分销价',
-    prop: 'retailPrice',
-    align: 'center',
-    width: '140px',
-    render: (row: any) => {
-      return h('div', `￥${row.retailPrice ?? ''}`)
-    },
-    openMarginCell: true
-  })
+  if ([10, 101, 20, 201].includes(getSystemOptionType.value)) {
+    columns.value.push({
+      label: '分销价',
+      prop: 'retailPrice',
+      align: 'center',
+      width: '140px',
+      render: (row: any) => {
+        return h('div', `￥${row.retailPrice ?? ''}`)
+      },
+      openMarginCell: true
+    })
+  }
   columns.value.push({
     label: '销售单位',
     align: 'center',
@@ -309,15 +311,17 @@ const initColumns = () => {
     'min-width': '120px',
     prop: 'receiverName'
   })
-  columns.value.push({
-    label: '商品类型',
-    align: 'center',
-    width: '100px',
-    prop: 'channelSource',
-    render: (row: any) => {
-      return h('div', goodPoor.getSourceTypeNameByKey(row.channelSource))
-    }
-  })
+  if ([10, 101, 20, 201].includes(getSystemOptionType.value)) {
+    columns.value.push({
+      label: '商品类型',
+      align: 'center',
+      width: '100px',
+      prop: 'channelSource',
+      render: (row: any) => {
+        return h('div', goodPoor.getSourceTypeNameByKey(row.channelSource))
+      }
+    })
+  }
   //顶级机构
   if (getSystemOptionType.value == '101') {
     columns.value.push({
@@ -468,7 +472,8 @@ const orderStatusList = computed(() => {
       <el-form-item label="收货人姓名" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverName" placeholder="请输入收货人姓名"></el-input>
       </el-form-item>
-      <el-form-item label="供应商" class="formItem" placeholder="请选择">
+      <el-form-item v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))" label="供应商" class="formItem"
+        placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyIds" :hasJdChance="true">
         </AffiliatedSupplier>
       </el-form-item>
@@ -480,7 +485,8 @@ const orderStatusList = computed(() => {
           :multiple="true">
         </ApplicationSelect>
       </el-form-item>
-      <el-form-item label="商品类型" class="formItem" placeholder="请选择">
+      <el-form-item v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))" label="商品类型" class="formItem"
+        placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelSourceList"
           :selectList="goodPoor.sourceTypeList">
         </SelectModel>

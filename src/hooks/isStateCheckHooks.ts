@@ -124,14 +124,18 @@ export default function (data: any = {}): TisStateCheckHooks {
     if (import.meta.env.VITE_APP_TYPE == 'app') {
       if ($useUserStore.userInfo?.orgType == 1) {
         return '10' //顶级机构应用
-      } else {
+      } else if ($useUserStore.userInfo?.orgType == 2) {
         return '20' //分支机构应用
       }
     } else {
       if ($useUserStore.userInfo?.orgType == 1) {
         return '101' //顶级机构
-      } else {
-        return '201' //分支机构
+      } else if ($useUserStore.userInfo?.orgType == 2) {
+        if ($useUserStore.userInfo?.supplyId) {
+          return '401'
+        } else {
+          return '201'
+        }
       }
     }
   })

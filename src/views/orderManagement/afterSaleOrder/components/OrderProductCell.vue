@@ -76,12 +76,14 @@ const afterSaleGoodsVO = computed(() => {
               <span>{{ `￥${row.platformPurchasePrice}` }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn prop="platformSupplyPrice" min-width="150" label="平台供应价">
+          <YbtTableColumn prop="platformSupplyPrice" min-width="150"
+            :label="getSystemOptionType == '401' ? '含税供应价' : '平台供应价'">
             <template #default="{ row }">
               <span>{{ `￥${row.platformSupplyPrice}` }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn prop="retailPrice" min-width="130" label="分销价">
+          <YbtTableColumn v-if="[10, 101, 20, 201].includes(getSystemOptionType)" prop="retailPrice" min-width="130"
+            label="分销价">
             <template #default="{ row }">
               <span>{{ `￥${row.retailPrice}` }}</span>
             </template>
@@ -110,6 +112,13 @@ const afterSaleGoodsVO = computed(() => {
           <YbtTableColumn
             v-if="!['1'].includes(String(orderInfo.afterSaleType)) && ['101'].includes(getSystemOptionType)" width="160"
             prop="supplierAfterSalePrice" label="退款金额(成本)">
+            <template #default="{ row }">
+              <span>{{ row.afterSalePurchasePrice ?? '-' }}</span>
+            </template>
+          </YbtTableColumn>
+          <YbtTableColumn
+            v-if="!['1'].includes(String(orderInfo.afterSaleType)) && ['401'].includes(getSystemOptionType)" width="160"
+            prop="supplierAfterSalePrice" label="退款金额(含税供应价)">
             <template #default="{ row }">
               <span>{{ row.afterSalePurchasePrice ?? '-' }}</span>
             </template>
@@ -150,7 +159,7 @@ const afterSaleGoodsVO = computed(() => {
         </YbtTableColumn>
         <YbtTableColumn prop="price" label="进项发票类型">
           <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
       </el-table>
     </div>

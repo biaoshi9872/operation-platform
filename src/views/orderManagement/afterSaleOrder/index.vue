@@ -167,7 +167,7 @@ const initColumns = () => {
     })
   }
   columns.value.push({
-    label: '平台供应价',
+    label: getSystemOptionType.value == 401 ? '含税供应价' : '平台供应价',
     align: 'center',
     width: '130px',
     prop: 'platformSupplyPrice',
@@ -190,7 +190,7 @@ const initColumns = () => {
     width: '100px',
     prop: 'unit'
   })
-  columns.value.push({
+  if ([10, 101, 20, 201].includes(getSystemOptionType.value)) (columns.value.push({
     label: '商品类型',
     align: 'center',
     width: '100px',
@@ -199,6 +199,7 @@ const initColumns = () => {
       return h('div', goodPoor.getSourceTypeNameByKey(row.channelSource))
     }
   })
+  )
   columns.value.push({
     label: '售后类型',
     align: 'center',
@@ -335,7 +336,8 @@ const initColumns = () => {
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuCode" placeholder="请输入商品编码"></el-input>
       </el-form-item>
-      <el-form-item label="供应商" class="formItem" placeholder="请选择">
+      <el-form-item v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))" label="供应商" class="formItem"
+        placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade.supplierIdList" :hasJdChance="true"></AffiliatedSupplier>
       </el-form-item>
       <el-form-item v-if="['101'].includes(getSystemOptionType)" label="分支机构" class="formItem" placeholder="请选择">

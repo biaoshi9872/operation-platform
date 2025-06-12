@@ -112,6 +112,10 @@ class order_api {
     return request<any>({
       url: '/order/deliver/download/failData',
       method: 'post',
+      responseType: 'blob',
+      requestOptions: {
+        noCheck: true
+      },
       data: data
     })
   }

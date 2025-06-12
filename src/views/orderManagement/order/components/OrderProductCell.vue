@@ -4,7 +4,7 @@ import { tabsStore } from '@/stores'
 import order_enum from '@/utils/constant/order'
 import ApplyRefundModel from '../../components/ApplyRefundModel.vue'
 
-const { isFromOrgLast } = isStateCheckHooks()
+const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 
 interface IProp {
@@ -67,12 +67,14 @@ const dataInfo = reactive({
             <span>{{ `￥${row.platformPurchasePrice}` }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="platformSupplyPrice" min-width="150" label="平台供应价">
+        <el-table-column prop="platformSupplyPrice" min-width="150"
+          :label="getSystemOptionType == '401' ? '含税供应价' : '平台供应价'">
           <template #default="{ row }">
             <span>{{ `￥${row.platformSupplyPrice}` }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="retailPrice" min-width="130" label="分销价">
+        <el-table-column v-if="[10, 101, 20, 201].includes(getSystemOptionType)" prop="retailPrice" min-width="130"
+          label="分销价">
           <template #default="{ row }">
             <span>{{ `￥${row.retailPrice}` }}</span>
           </template>
@@ -141,7 +143,7 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+        }}</template>
       </el-table-column>
     </el-table>
     <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">

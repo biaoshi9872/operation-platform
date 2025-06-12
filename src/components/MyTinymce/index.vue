@@ -151,6 +151,7 @@ const state = reactive({
     importcss_append: false,
     //自定义文件选择器的回调内容
     file_picker_callback(callback: any, value: any, meta: any) {
+      debugger
       console.log('file_picker_callback: ')
       var input = document.createElement('input')
       input.setAttribute('type', 'file')
@@ -158,7 +159,7 @@ const state = reactive({
       input.click()
       input.onchange = function () {
         const file = this.files[0]
-        files_api.A_upload(file)
+        files_api.A_upload({ file })
           .then((res: any) => {
             const url = res?.[0].ossUrl
             const fileName = res?.[0].fileName
@@ -171,9 +172,10 @@ const state = reactive({
     },
     images_upload_base_path: '',
     images_upload_handler: function (blobInfo: any, succFun: any, failFun: any) {
+      debugger
       const blob = blobInfo.blob()
       const file = new File([blob], '1.png', { type: blob.type })
-      files_api.A_upload(file)
+      files_api.A_upload({ file })
         .then((res: any) => {
           const url = res?.[0].ossUrl
           const fileName = res?.[0].fileName
@@ -189,6 +191,7 @@ const state = reactive({
       // uploadFileClick()
     },
     urlconverter_callback: function (url: any, node: any, on_save: any, name: any) {
+
       if (node === 'img' && url.startsWith('blob:')) {
         tinymce.activeEditor && tinymce.activeEditor.uploadImages()
       }
@@ -215,7 +218,7 @@ const uploadChange = (e: any) => {
   const chooseFiles = e.target.files
   for (let item of chooseFiles) {
     if (checkFilesSize(item)) {
-      files_api.A_upload(item)
+      files_api.A_upload({ file: item })
         .then((res: any) => {
           const url = res?.[0].ossUrl
           const fileName = res?.[0].fileName

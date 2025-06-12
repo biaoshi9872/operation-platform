@@ -109,6 +109,9 @@ class After_order_api {
       case '201':
         url = '/export/afterSale/afterSaleBranchOrgExport'
         break
+      case '401':
+        url = '/export/afterSale/supplyExport'
+        break
     }
     return request<any>({
       url: url,

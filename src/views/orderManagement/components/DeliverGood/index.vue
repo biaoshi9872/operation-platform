@@ -164,7 +164,7 @@ const showDefaultDetail = () => {
     children.skuCode = item.skuCode
     children.skuName = item.skuName
     children.deliverNum = item.deliverNum
-    children.images = item.images
+    children.skuImage = item.images
 
     arr.push(children)
   })
@@ -193,8 +193,7 @@ const addHandler = () => {
         children.skuCode = item.skuCode
         children.skuName = item.skuName
         children.deliverNum = item.deliverNum - item.numChoose
-        children.images = item.images
-        children.subchannelOrderNo = item.subchannelOrderNo
+        children.skuImage = item.images
         arr.push(children)
         obj.goodsInfoList = arr
       })
@@ -215,7 +214,7 @@ const deleteHandler = (index: number) => {
 
 const queryComList = () => {
   systemUtils_api.A_getLogisticList().then((res: any) => {
-    data.formDeliveryList = res.list
+    data.formDeliveryList = res
   })
 }
 

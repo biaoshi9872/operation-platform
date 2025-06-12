@@ -282,8 +282,8 @@ const toListHandler = () => {
                     <el-form-item label="选择模板" prop="limitTemplateId" required v-if="dataInfo.form.limitSaleFlag === 1">
                         <div class="limitTemplate-box">
                             <el-select class="w-200" v-model="dataInfo.form.limitTemplateId">
-                                <el-option v-for="item in dataInfo.templateList" :label="item.templateName"
-                                    :value="item.id" />
+                                <el-option v-for="item in dataInfo.templateList" :label="item.limitTemplateName"
+                                    :value="item.limitTemplateId" />
                             </el-select>
                             <el-button type="primary" @click="addTemplateHandler">新建模板</el-button>
                         </div>

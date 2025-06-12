@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import { validatePhone } from '@/utils/validator'
+import { FormInstance } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import GoodItem from './GoodItem.vue'
 import { skuInfoDefault } from './config'
-import { validatePhone } from '@/utils/validator'
 
 interface IProp {
   detail: any,

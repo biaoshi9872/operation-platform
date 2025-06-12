@@ -3,5 +3,5 @@ export const skuInfoDefault = {
   skuCode: '',
   skuName: '',
   deliverNum: 0,
-  images: ''
+  skuImage: ''
 }

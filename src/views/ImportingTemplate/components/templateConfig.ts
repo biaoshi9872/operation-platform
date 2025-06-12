@@ -65,7 +65,7 @@ const exportApiConfig: any = {
 const exportErrorApiConfig: any = {
   orderExport: {
     api: order_api.A_deliverFailData,
-    isToCenter: true,
+    isToCenter: false,
     exportName: '批量导入物流模板失败详情.xlsx'
   }
 }

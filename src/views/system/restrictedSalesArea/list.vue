@@ -68,7 +68,7 @@ const viewHandler = (row: any) => {
         path: '/system/restrictedSalesArea/index',
         query: {
             type: 'view',
-            id: row.id
+            id: row.limitTemplateId
         }
     })
 }
@@ -83,7 +83,7 @@ const viewHandler = (row: any) => {
                 </template>
                 <el-table-column label="序号" type="index" min-width="80px" align="left"></el-table-column>
                 <el-table-column label="添加时间" prop="createDate" min-width="80px" align="left"></el-table-column>
-                <el-table-column label="模板名称" prop="templateName" min-width="120px" align="left"></el-table-column>
+                <el-table-column label="模板名称" prop="limitTemplateName" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="操作" prop="accountValidStart" min-width="120px" align="right">
                     <template #default="{ row }">
                         <el-button type="primary" link @click="deleteHandler(row)">删除</el-button>

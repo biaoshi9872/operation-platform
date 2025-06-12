@@ -39,7 +39,7 @@ const hiddenStatus = computed(() => {
         </span>
       </template>
       <template v-else>
-        <span class="ml-8">物流方式:自营</span> |
+        <span class="ml-8">物流方式:自行配送</span> |
         <span class="ml-8">配送员手机号:{{ deliverInfo.mobile }}</span> |
         <span v-if="hiddenStatus" class="ml-8">
           <AuthButton authKey="ORDER_UPDATA_PSSJH" :detail="detail" type="text" @click="updateLogisticHandler">修改手机号
