@@ -360,8 +360,10 @@ const initColumns = () => {
       <template #customRow="{ row }">
         <div class="order_row">
           <div class="order_detail">
-            <span>渠道售后单编号:{{ row.channelAfterSaleNo }}</span>
-            <span>渠道订单编号:{{ row.channelOrderNo }}</span>
+            <span v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))"> {{ getSystemOptionType == 401 ?
+              '售后单编号:' : '渠道售后单编号:' }} {{ row.channelAfterSaleNo
+              }}</span>
+            <span> {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}:{{ row.channelOrderNo }}</span>
             <span>申请时间:{{ row.applyTime }}</span>
             <span v-if="!isFromOrgLast">供应商:{{ row.supplyName }}</span>
           </div>

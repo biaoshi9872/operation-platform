@@ -37,7 +37,8 @@ const afterSaleGoodsVO = computed(() => {
         <span class="item_title">{{ `${afterSaleTypeName}原因` }}:</span>
         <span class="item_value">{{ orderInfo.reasonName }}</span>
       </div>
-      <div class="item" v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType))">
+      <div class="item"
+        v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType)) && [10, 101, 20, 201].includes(getSystemOptionType)">
         <span class="item_title">{{ `退款金额（分销价）` }}:</span>
         <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.retailPrice}` }}</span>
       </div>

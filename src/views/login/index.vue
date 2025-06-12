@@ -87,14 +87,14 @@ const rules = reactive<FormRules>({
 })
 
 async function handleFinish() {
-  // try {
-  //   await formRef.value!.validate().then(() => {
-  //     captchaShow.value = true
-  //   })
-  // } catch (error) {
-  //   return
-  // }
-  handleCaptchaSuccess()
+  try {
+    await formRef.value!.validate().then(() => {
+      captchaShow.value = true
+    })
+  } catch (error) {
+    return
+  }
+  //handleCaptchaSuccess()
 }
 const updateShow = ref(false)
 

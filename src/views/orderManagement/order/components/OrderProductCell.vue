@@ -102,7 +102,7 @@ const dataInfo = reactive({
         <el-table-column label="操作" width="200" align="right">
           <template #default="{ row }">
             <AuthButton authKey="ORDER_SQSH" v-if="![1, 4].includes(row?.afterSaleStatus) && ![0, 4, 5, -1].includes(orderInfo?.orderBaseInfo?.orderStatus)
-              && ![104].includes(orderInfo?.channelSource)" type="text" @click="applyRefundHandler(row)">申请售后
+              && ![104, 105].includes(orderInfo?.channelSource)" type="text" @click="applyRefundHandler(row)">申请售后
             </AuthButton>
             <el-button v-if="row.afterSaleNo" class="ml-12" type="text"
               @click="goToDetailHandler(row)">查看售后详情</el-button>

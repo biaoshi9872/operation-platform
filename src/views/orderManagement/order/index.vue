@@ -235,12 +235,12 @@ const initColumns = () => {
       const afterButton =
         ![0, 4, 5, -1].includes(parentRow.orderStatus) &&
         ![1, 4].includes(row.afterSaleStatus) &&
-        [104].includes(parentRow.channelSource) &&
+        [104, 105].includes(parentRow.channelSource) &&
         withDirectives(
           h(ElButton, {
             type: 'text',
             innerText: '申请售后',
-            style: { 'margin-left': '95px' },
+            style: { 'margin-left': '65px' },
             onClick: () => {
               afterApplyHandler(row, parentRow)
             }
@@ -456,7 +456,8 @@ const orderStatusList = computed(() => {
         <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].confirmTimeStart"
           v-model:end="dataPage.facade[dataPage.facadeKz.tab].confirmTimeEnd"></DatePickerRange>
       </el-form-item>
-      <el-form-item label="订单编号" class="formItem" placeholder="请选择">
+      <el-form-item v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))" label="订单编号" class="formItem"
+        placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderNo" placeholder="请输入订单编号"></el-input>
       </el-form-item>
       <el-form-item v-show="['-1', '2', '4'].includes(dataPage.facadeKz.tab)" label="订单状态" class="formItem">
@@ -496,9 +497,9 @@ const orderStatusList = computed(() => {
           :selectList="order_enum.C_isMaskList">
         </SelectModel>
       </el-form-item>
-      <el-form-item label="渠道订单编号" class="formItem" placeholder="请选择">
+      <el-form-item :label="getSystemOptionType == 401 ? '订单编号' : '渠道订单编号'" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelOrderNo"
-          placeholder="请输入渠道订单编号"></el-input>
+          :placeholder="getSystemOptionType == 401 ? '请输入订单编号' : '请输入渠道订单编号'"></el-input>
       </el-form-item>
     </SearchForm>
     <OrderCustomTable class="order-container" :openFold="false" :openERP="false" :border="true" :dataPage="dataPage"
@@ -511,13 +512,13 @@ const orderStatusList = computed(() => {
       <template #customRow="{ row }">
         <div class="order_row">
           <div class="order_detail">
-            <span class="order-overflow" ref="orderNo">
+            <span v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))" class="order-overflow" ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
               }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
-              渠道订单编号：
+              {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
               }}</el-tooltip>

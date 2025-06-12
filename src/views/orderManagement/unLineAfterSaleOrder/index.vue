@@ -3,12 +3,13 @@ defineOptions({
   name: 'unLineAfterSaleOrder'
 })
 import after_order_api from '@/api/afterOrder/index'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import { tabsStore } from '@/stores'
 import order_enum from '@/utils/constant/order'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
-
+const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const $useRote = useRoute()
 
 const tabsStoreInfo: any = tabsStore()
@@ -89,7 +90,8 @@ const getDetailInfo = () => {
 //退款总金额
 const afterSaleAmount = computed(() => {
   const total = data.afterSaleGoods.reduce((total: any, curry: any) => {
-    return (total += curry.afterSaleNum * curry.retailPrice)
+    let retailPrice = getSystemOptionType.value == 401 ? curry.platformPurchasePrice : curry.retailPrice
+    return (total += curry.afterSaleNum * retailPrice)
   }, 0)
   return total.toFixed(2)
 })
@@ -158,9 +160,14 @@ const verifyHandler = () => {
             :goodDetail="row"></SkuDetail>
         </template>
       </YbtTableColumn>
-      <YbtTableColumn prop="retailPrice" label="平台分销价">
+      <YbtTableColumn v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))" prop="retailPrice" label="平台分销价">
         <template #default="{ row }">
           <span>{{ `￥${row.retailPrice}` }}</span>
+        </template>
+      </YbtTableColumn>
+      <YbtTableColumn v-if="getSystemOptionType == 401" prop="platformPurchasePrice" label="含税供应价">
+        <template #default="{ row }">
+          <span>{{ `￥${row.platformPurchasePrice}` }}</span>
         </template>
       </YbtTableColumn>
       <YbtTableColumn prop="goodsNum" label="总量" />
