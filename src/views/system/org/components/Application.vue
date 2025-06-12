@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { IPage } from '@/types/from-types'
-import pageHooks from '@/hooks/pageListHooks'
-import { ElMessageBox, ElMessage } from 'element-plus'
-import { ElButton } from 'element-plus'
 import application_api from '@/api/system/application'
+import pageHooks from '@/hooks/pageListHooks'
+import { IPage } from '@/types/from-types'
+import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
 const props = defineProps({
   curryOrgInfo: {
     type: Object,
@@ -99,37 +98,30 @@ const enableHandler = (row: any) => {
     <el-card>
       <template #header>
         <div class="card-header">
-          <h3>{{curryOrgInfo?.name}}</h3>
-          <span>机构ID: {{curryOrgInfo?.id}}</span>
+          <h3>{{ curryOrgInfo?.name }}</h3>
+          <span>机构ID: {{ curryOrgInfo?.id }}</span>
         </div>
       </template>
       <div>
         <PageContainer class="main_box">
-          <SearchForm
-            v-model:model="dataPage.facade"
-            v-model:current-page="dataPage.page.page"
-            class="el-search-item"
-            @search="searchQueryHarder"
-          >
+          <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
+            @search="searchQueryHarder">
             <el-form-item label="应用">
               <el-input v-model="dataPage.facade.appName" placeholder="应用编码/应用名称" clearable />
             </el-form-item>
           </SearchForm>
           <div class="option_box">
-            <TableModel
-              :page="dataPage.page"
-              :listTableData="dataPage.dataList"
-              @pagingQuery="searchQueryHarder"
-              @selection-change="handleSelectionChange"
-            >
+            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
+              @selection-change="handleSelectionChange">
               <el-table-column prop="orgName" label="分支机构"></el-table-column>
               <el-table-column prop="appName" label="应用名称"></el-table-column>
               <el-table-column prop="appCode" label="应用编码"></el-table-column>
-              <el-table-column prop label="上架商品"></el-table-column>
+              <el-table-column prop="goodsNum" label="上架商品"></el-table-column>
               <el-table-column prop="createDate" label="创建时间"></el-table-column>
               <el-table-column prop="status" label="状态">
                 <template #default="scope">
-                  <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{ scope.row.status === 1 ? '正常' : '禁用' }}</el-tag>
+                  <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{ scope.row.status === 1 ? '正常' : '禁用'
+                  }}</el-tag>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="120px" align="right">
@@ -148,6 +140,7 @@ const enableHandler = (row: any) => {
 <style lang="scss" scoped>
 .application-container {
   flex: 1;
+
   .card-header {
     display: flex;
     gap: 24px;

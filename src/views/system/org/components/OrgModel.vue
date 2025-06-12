@@ -140,7 +140,6 @@ const openHandler = async () => {
       ...data.formData,
       ...res
     }
-    data.activeName = '2'
   }
   productMarkUpSetRef.value?.initProductMarkUpSet(data.formData?.goodsOrgMarkupDTOList || [])
 }
@@ -222,14 +221,15 @@ const title = computed(() => {
           <el-tabs v-model="data.activeName" type="card" class="demo-tabs">
             <el-tab-pane label="账号管理" name="1">
               <el-form-item label="管理员账号" prop="username" label-width="100px">
-                <el-input v-model="data.formData.username" placeholder="请输入管理员账号" maxlength="50"
-                  show-word-limit></el-input>
+                <el-input :disabled="props.type == 'edit'" v-model="data.formData.username" placeholder="请输入管理员账号"
+                  maxlength="50" show-word-limit></el-input>
               </el-form-item>
               <el-form-item v-if="props.type != 'edit'" label="登录密码" label-width="100px" prop="password">
                 <el-input v-model="data.formData.password" placeholder="请输入6位数以上字母+数字密码" maxlength="100"></el-input>
               </el-form-item>
               <el-form-item label="手机号" prop="mobile" label-width="100px">
-                <el-input v-model="data.formData.mobile" placeholder="请输入手机号" maxlength="11" show-word-limit></el-input>
+                <el-input :disabled="props.type == 'edit'" v-model="data.formData.mobile" placeholder="请输入手机号"
+                  maxlength="11" show-word-limit></el-input>
               </el-form-item>
             </el-tab-pane>
             <el-tab-pane label="联系方式" name="2">

@@ -25,10 +25,10 @@ const dataPage: IPage<any, any> = reactive({
         "operStatus": null,
         "categoryCode": "",
         "supplyIds": [],
-        "supplyPriceStart": null,
-        "supplyPriceEnd": null,
-        "markPriceStart": null,
-        "markPriceEnd": null,
+        "platformSupplyPriceMin": null,
+        "platformSupplyPriceMax": null,
+        "marketPriceMin": null,
+        "marketPriceMax": null,
         "stockStart": null,
         "stockEnd": null
     },
@@ -183,28 +183,29 @@ const updataStockHandler = (row: any) => {
             <el-form-item label="供应商">
                 <el-select v-model="dataPage.facade.supplyIds" multiple placeholder="请选择供应商" clearable>
                     <el-option v-for="item in dataPage.supplerList" :key="item.id" :label="item.supplyName"
-                        :value="item.id">
+                        :value="item.supplyId">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="状态">
                 <SelectModel v-model="dataPage.facade.operStatus" placeholder="请选择状态"
-                    :selectList="goods_enum.operStatus"></SelectModel>
+                    :selectList="goods_enum.operStatus" :isShowAll="true"></SelectModel>
             </el-form-item>
             <el-form-item label="添加时间">
                 <DatePickerRange v-model:start="dataPage.facade.addStartTime" v-model:end="dataPage.facade.addEndTime">
                 </DatePickerRange>
             </el-form-item>
             <el-form-item label="含税供应价">
-                <DoubleInput v-model:start="dataPage.facade.supplyPriceStart"
-                    v-model:end="dataPage.facade.supplyPriceEnd"></DoubleInput>
+                <DoubleInput v-model:start="dataPage.facade.platformSupplyPriceMin"
+                    v-model:end="dataPage.facade.platformSupplyPriceMax"></DoubleInput>
             </el-form-item>
             <el-form-item label="库存数量">
                 <DoubleInput v-model:start="dataPage.facade.stockStart" v-model:end="dataPage.facade.stockEnd">
                 </DoubleInput>
             </el-form-item>
             <el-form-item label="市场价">
-                <DoubleInput v-model:start="dataPage.facade.markPriceStart" v-model:end="dataPage.facade.markPriceEnd">
+                <DoubleInput v-model:start="dataPage.facade.marketPriceMin"
+                    v-model:end="dataPage.facade.marketPriceMax">
                 </DoubleInput>
             </el-form-item>
         </SearchForm>
@@ -213,10 +214,13 @@ const updataStockHandler = (row: any) => {
                 @selection-change="handleSelectionChange" :loading="dataPage.loadingData"
                 @pagingQuery="searchQueryHarder">
                 <template #option>
-                    <el-button type="primary" @click="handleAdd">新增</el-button>
-                    <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
-                    <el-button type="primary" @click="batchUpOrDownDateHandler('up')">批量上架</el-button>
-                    <el-button type="primary" @click="batchUpOrDownDateHandler('down')">批量下架</el-button>
+                    <AuthButton authKey="Good_ADD" type="primary" @click="handleAdd">新增</AuthButton>
+                    <AuthButton authKey="GOOD_EXPOERT" type="primary" :loading="dataPage.loadingExport"
+                        @click="exportHandler">导出</AuthButton>
+                    <AuthButton authKey="Good_BATCH_UP" type="primary" @click="batchUpOrDownDateHandler('up')">批量上架
+                    </AuthButton>
+                    <AuthButton authKey="Good_BATCH_DOWN" type="primary" @click="batchUpOrDownDateHandler('down')">批量下架
+                    </AuthButton>
                 </template>
                 <el-table-column type="selection" width="80px" align="left"></el-table-column>
                 <el-table-column label="商品信息" prop="skuName" width="200px" align="left">
@@ -234,7 +238,7 @@ const updataStockHandler = (row: any) => {
                     <template #default="{ row }">
                         <div class="stock-box">
                             <div> {{ row.stock }}</div>
-                            <el-icon @click="updataStockHandler(row)">
+                            <el-icon v-auth="'Good_EDIT_STOCK'" @click="updataStockHandler(row)">
                                 <Edit />
                             </el-icon>
                         </div>
@@ -262,14 +266,14 @@ const updataStockHandler = (row: any) => {
                         <span v-else>-</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" prop="accountValidStart" min-width="180px" align="right">
+                <el-table-column label="操作" prop="accountValidStart" min-width="180px" fixed="right" align="right">
                     <template #default="{ row }">
-                        <el-button type="primary" v-if="[0, 2].includes(row.operStatus)" link
-                            @click="editGoodHandler(row)">编辑</el-button>
-                        <el-button v-if="[2].includes(row.operStatus)" type="primary" link
-                            @click="upOrDownDateHandler(row, 'up')">上架</el-button>
-                        <el-button v-if="row.operStatus == 1" type="primary" link
-                            @click="upOrDownDateHandler(row, 'down')">下架</el-button>
+                        <AuthButton authKey="Good_EDIT" type="primary" v-if="[0, 2].includes(row.operStatus)" link
+                            @click="editGoodHandler(row)">编辑</AuthButton>
+                        <AuthButton authKey="Good_UP" v-if="[2].includes(row.operStatus)" type="primary" link
+                            @click="upOrDownDateHandler(row, 'up')">上架</AuthButton>
+                        <AuthButton authKey="Good_DOWN" v-if="row.operStatus == 1" type="primary" link
+                            @click="upOrDownDateHandler(row, 'down')">下架</AuthButton>
                         <el-button type="primary" link @click="viewGoodHandler(row)">详情</el-button>
                     </template>
                 </el-table-column>
