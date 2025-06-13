@@ -173,7 +173,7 @@ const initColumns = () => {
       return h('div', `￥${row.platformSupplyPrice ?? ''}`)
     }
   })
-  if ([10, 101, 20, 201].includes(getSystemOptionType.value)) {
+  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '分销价',
       align: 'center',
@@ -190,7 +190,7 @@ const initColumns = () => {
     width: '100px',
     prop: 'unit'
   })
-  if ([10, 101, 20, 201].includes(getSystemOptionType.value)) (columns.value.push({
+  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) (columns.value.push({
     label: '商品类型',
     align: 'center',
     width: '100px',
@@ -334,7 +334,7 @@ const initColumns = () => {
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuCode" placeholder="请输入商品编码"></el-input>
       </el-form-item>
-      <el-form-item v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))" label="供应商" class="formItem"
+      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType.value))" label="供应商" class="formItem"
         placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade.supplierIdList" :hasJdChance="true"></AffiliatedSupplier>
       </el-form-item>

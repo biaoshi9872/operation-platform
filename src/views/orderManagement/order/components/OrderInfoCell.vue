@@ -14,7 +14,7 @@ const emits = defineEmits<{
 const FIELDS = computed(() => {
   let arr = []
 
-  if ([10, 101, 20, 201].includes(getSystemOptionType.value)) {
+  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     arr.push({
       label: '订单编号',
       prop: 'orderNo'

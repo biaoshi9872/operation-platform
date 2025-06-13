@@ -160,7 +160,8 @@ const verifyHandler = () => {
             :goodDetail="row"></SkuDetail>
         </template>
       </YbtTableColumn>
-      <YbtTableColumn v-if="([10, 101, 20, 201].includes(getSystemOptionType.value))" prop="retailPrice" label="平台分销价">
+      <YbtTableColumn v-if="(['10', '101', '20', '201'].includes(getSystemOptionType.value))" prop="retailPrice"
+        label="平台分销价">
         <template #default="{ row }">
           <span>{{ `￥${row.retailPrice}` }}</span>
         </template>
