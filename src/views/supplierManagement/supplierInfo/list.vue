@@ -45,10 +45,9 @@ const searchQueryHarder = () => {
 // 编辑处理函数
 const handleEdit = (row: any) => {
     router.push({
-        path: '/supplierManagement/supplierInfo/index',
+        path: '/supplierManagement/supplierInfo/edit',
         query: {
-            id: row.id,
-            type: 'edit'
+            id: row.i
         }
     })
 }
@@ -56,10 +55,9 @@ const handleEdit = (row: any) => {
 // 查看详情处理函数
 const handleView = (row: any) => {
     router.push({
-        path: '/supplierManagement/supplierInfo/index',
+        path: '/supplierManagement/supplierInfo/detail',
         query: {
-            id: row.id,
-            type: 'detail'
+            id: row.id
         }
     })
 }
@@ -68,10 +66,7 @@ const handleView = (row: any) => {
  */
 const handleAdd = () => {
     router.push({
-        path: '/supplierManagement/supplierInfo/index',
-        query: {
-            type: 'edit'
-        }
+        path: '/supplierManagement/supplierInfo/index'
     })
 }
 

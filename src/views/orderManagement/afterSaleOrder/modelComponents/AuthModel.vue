@@ -126,7 +126,7 @@ const saveData = () => {
                 </el-form-item>
                 <el-form-item v-if="data.formData.auditStatus === 1"
                     :label="getSystemOptionType == 401 ? '含税供应价' : '分销价'">
-                    <span>{{ curryInfo.retailPrice }}</span>
+                    <span>{{ data.returnInfo.preRetailPrice }}</span>
                 </el-form-item>
                 <el-form-item v-if="data.formData.auditStatus === 1" label="退用户" prop="refundCustomerPrice">
                     <el-input-number v-model="data.formData.refundCustomerPrice" :controls="false" max="999999999"

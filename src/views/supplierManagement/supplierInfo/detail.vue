@@ -1,5 +1,5 @@
 <template>
-    <SupplierInfoPage type="add"></SupplierInfoPage>
+    <SupplierInfoPage type="detail"></SupplierInfoPage>
 </template>
 
 <script setup lang="ts">
