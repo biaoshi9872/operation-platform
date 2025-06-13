@@ -126,7 +126,8 @@ class order_api {
   A_waitDeliverCount() {
     return request({
       url: '/order/waitDeliverCount',
-      method: 'post'
+      method: 'post',
+      data: {}
     })
   }
 }
