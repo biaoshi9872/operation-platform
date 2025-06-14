@@ -87,7 +87,6 @@ export default async function getConfigInfo(source: string) {
     const info = await obj.getExportTemple()
     obj.url = info.ossUrl
   }
-
   return {
     nodeConfig: nodeConfig[source],
     exportConfig: obj,
