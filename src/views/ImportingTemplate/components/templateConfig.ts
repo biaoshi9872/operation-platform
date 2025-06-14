@@ -47,6 +47,7 @@ const exportNodeResultDecListConfig: any = {
 const exportConfig: any = {
   orderExport: {
     url: '',
+    isDownLoadUrl: true,
     exportName: '批量导入物流模板.xlsx',
     getExportTemple: () => {
       return 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20241128/23c19db5dded47f8aa1ba9aa66c321d9.xlsx'
@@ -80,8 +81,12 @@ const exportReturnRouteConfig: any = {
 //获取模版
 export default async function getConfigInfo(source: string) {
   let obj = cloneDeep(exportConfig[source])
-  const info = await obj.getExportTemple()
-  obj.url = info.ossUrl
+  if (obj.isDownLoadUrl) {
+    obj.url = obj.getExportTemple()
+  } else {
+    const info = await obj.getExportTemple()
+    obj.url = info.ossUrl
+  }
 
   return {
     nodeConfig: nodeConfig[source],
