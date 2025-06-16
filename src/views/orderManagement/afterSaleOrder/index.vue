@@ -102,7 +102,6 @@ const toDetailHandler = (row: any) => {
 const authHandler = (row: any) => {
   dataPage.curryInfo = row
   dataPage.showAuthModel = true
-
 }
 
 //撤销

@@ -2,8 +2,8 @@
 defineOptions({
   name: 'Authority'
 })
-import type { FormInstance, FormRules, ElTree } from 'element-plus'
 import menu_api from '@/api/system/menu'
+import type { ElTree } from 'element-plus'
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
 
 const data = reactive({
@@ -51,7 +51,7 @@ function filterTreeFullSelect(tree: any, selected: any) {
 
 // 菜单结构
 async function getAllAutoTreeList() {
-  const res: any = await menu_api.A_menuManageTree({ menuType:3, menuName: '' })
+  const res: any = await menu_api.A_menuManageTree({ menuType: 3, menuName: '' })
   data.treeList = res
   const checkNode = [] as any
   res.forEach((item: any) => {
@@ -97,46 +97,37 @@ function handleSubmit() {
 
 <template>
   <div class="permission-tree">
-    <ModalContent title="页面权限">
-      <el-tree
-        ref="allTree"
-        :data="treeList"
-        show-checkbox
-        highlight-current
-        node-key="id"
-        :props="{ children: 'children', label: 'name' }"
-        :default-checked-keys="checkedList"
-        default-expand-all="true"
-      />
-    </ModalContent>
-    <div class="mt-20 text-center permission-bottom">
+    <div class="permission_content">
+      <TreeAuth v-model:selectedIds="data.checkedList" ref='webPermission' :treeList="data.treeList">
+      </TreeAuth>
+    </div>
+    <div class="text-center permission-bottom——box">
       <el-button type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
     </div>
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .permission-tree {
-  position: relative;
-  background-color: var(--el-searchForm-bg-color);
-  min-height: calc(100vh - 110px);
   display: flex;
-  flex: 1;
-  overflow: hidden;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  overflow: scroll;
+  background-color: #fff;
+  padding: 24px;
 
-  .permission-bottom {
-    position: fixed;
-    position: absolute;
+
+  .permission-bottom——box {
+    position: sticky;
+    padding: 8px 0;
+    height: 100px;
     bottom: 0;
-    right: 0;
-    width: 100%;
-    background-color: var(--el-searchForm-bg-color);
-    z-index: 999;
+    left: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 60px;
-    box-shadow: 0px -1px 4px rgba(10, 50, 97, 0.1);
+    background-color: #fff;
+    z-index: 999;
+    box-shadow: 0 0 2px #ccc;
   }
 }
 </style>

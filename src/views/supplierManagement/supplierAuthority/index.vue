@@ -59,7 +59,7 @@ function handleSubmit() {
                 ElMessage.success('设置成功')
             })
             .finally(() => {
-                data.submitLoading = true
+                data.submitLoading = false
             })
     })
 }
@@ -69,19 +69,17 @@ const options = []
 
 <template>
     <div class="permission-tree">
-        <div class="permission-tree-box">
-            <h3>角色:渠道自营供应商</h3>
-            <div class="color-#666 mb-12 mt-4">此用户角色及其权限为所有渠道自营供应商共用</div>
+        <div class="permission_content">
+            <div class="permission-tree-box">
+                <h3>角色:渠道自营供应商</h3>
+                <div class="color-#666 mb-12 mt-4">此用户角色及其权限为所有渠道自营供应商共用</div>
+            </div>
+            <div>
+                <TreeAuth v-model:selectedIds="data.checkedList" ref='webPermission' :treeList="data.treeList">
+                </TreeAuth>
+            </div>
         </div>
-        <div>
-            <el-tree :data="data.treeList" ref="webPermission" :props="{
-                label: 'name',
-                children: 'children'
-
-            }" :default-checked-keys="data.checkedList" show-checkbox node-key="id">
-            </el-tree>
-        </div>
-        <div class="mt-20 text-center permission-bottom">
+        <div class=" text-center permission-bottom——box">
             <el-button type="primary" :loading="data.submitLoading" @click="handleSubmit">保存权限</el-button>
         </div>
     </div>
@@ -91,34 +89,24 @@ const options = []
 .permission-tree {
     display: flex;
     flex-direction: column;
+    height: calc(100vh - 120px);
+    overflow: scroll;
+    background-color: #fff;
     padding: 24px;
 
-    .header {
+
+
+    .permission-bottom——box {
+        position: sticky;
+        padding: 8px 0;
+        height: 100px;
+        bottom: 0;
+        left: 0;
         display: flex;
-        gap: 12px;
-    }
-
-    .content {
-
-
-        .content_item {
-            display: flex;
-            gap: 12px;
-        }
-
-        .content_item_child1 {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .content_item_child2 {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .content_item_three {
-            display: flex;
-        }
+        justify-content: center;
+        background-color: #fff;
+        z-index: 999;
+        box-shadow: 0 0 2px #ccc;
     }
 }
 </style>
