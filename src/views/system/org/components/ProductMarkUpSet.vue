@@ -64,7 +64,7 @@ const validateInfo = () => {
             return el.isChecked && el.priceMarkupType
         })
         if (!selectArr.length) {
-            ElMessage.error('请至少填写一项')
+            ElMessage.error('请填写可见商品及加价设置')
             reject(false)
             return
         }

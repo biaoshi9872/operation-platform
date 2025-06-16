@@ -133,7 +133,8 @@ const initColumns = () => {
     align: 'left',
     render: (row: any, props: any) => {
       let newRow = row
-      newRow.titleSpec = row.skuName + ' ' + (row.spec || '')
+      let spec = row.channelSource == 104 ? (row.attributeValue1 || '') + (row.attributeValue2 || '') : ''
+      newRow.titleSpec = row.skuName + spec
       return h(SkuDetail, {
         goodDetail: newRow,
         showExtraCode: false,

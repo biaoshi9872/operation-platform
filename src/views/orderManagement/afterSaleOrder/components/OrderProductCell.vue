@@ -68,8 +68,8 @@ const afterSaleGoodsVO = computed(() => {
           </YbtTableColumn>
           <YbtTableColumn prop="date" label="规格" width="150">
             <template #default="{ row }">
-              <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row" :attributeValue1="row.spec"
-                :attributeValue2="row.attributeValue2"></AttributeModule>
+              <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row"
+                :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2"></AttributeModule>
             </template>
           </YbtTableColumn>
           <YbtTableColumn v-if="!isFromOrgLast" prop="platformPurchasePrice" min-width="130" label="平台成本">
@@ -146,8 +146,8 @@ const afterSaleGoodsVO = computed(() => {
         </YbtTableColumn>
         <YbtTableColumn prop="date" label="规格" width="150">
           <template #default="{ row }">
-            <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row" :attributeValue1="row.spec"
-              :attributeValue2="row.attributeValue2"></AttributeModule>
+            <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row"
+              :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2"></AttributeModule>
           </template>
         </YbtTableColumn>
         <YbtTableColumn prop="skuCode" label="商品编码">
@@ -160,7 +160,7 @@ const afterSaleGoodsVO = computed(() => {
         </YbtTableColumn>
         <YbtTableColumn prop="price" label="进项发票类型">
           <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
       </el-table>
     </div>
