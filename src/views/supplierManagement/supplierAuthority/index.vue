@@ -63,6 +63,8 @@ function handleSubmit() {
             })
     })
 }
+
+const options = []
 </script>
 
 <template>
@@ -91,5 +93,32 @@ function handleSubmit() {
     flex-direction: column;
     padding: 24px;
 
+    .header {
+        display: flex;
+        gap: 12px;
+    }
+
+    .content {
+
+
+        .content_item {
+            display: flex;
+            gap: 12px;
+        }
+
+        .content_item_child1 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content_item_child2 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content_item_three {
+            display: flex;
+        }
+    }
 }
 </style>

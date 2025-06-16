@@ -151,8 +151,7 @@ provide('rollingReset', rollingReset)
       font-size: 18px;
       transform: skewX(-10deg);
       font-weight: bold;
-      background-image: linear-gradient(to right, var(--el-color-primary-light-5), var(--el-color-primary));
-      color: transparent;
+      color: var(--el-color-primary);
       -webkit-background-clip: text;
     }
   }

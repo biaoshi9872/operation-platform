@@ -2,7 +2,7 @@
   <template v-if="menu.children.length > 0">
     <el-sub-menu :index="menu.path" v-if="hideMenu(menu.children)">
       <template #title>
-        <svg-icon class="route-icon mr-10" :name="menu.meta.icon" />
+        <span class="iconfont" :class="menu.meta.icon"></span>
         <span>{{ menu.meta.title }}</span>
       </template>
       <menu-item v-for="sub in menu.children" :key="sub.path" :menu="sub" v-show="!sub.hidden"></menu-item>
@@ -11,15 +11,15 @@
   <el-menu-item :index="menu.path" v-else @click="handleClickMenu(menu)" :class="menu.path == '/home' ? 'home' : ''">
     <svg-icon class="route-icon mr-10" :name="menu.meta.icon" v-if="menu.meta.icon" />
     <template #title>
-      <span :title="menu.meta.title " class="title">{{ menu.meta.title }}</span>
+      <span :title="menu.meta.title" class="title">{{ menu.meta.title }}</span>
     </template>
   </el-menu-item>
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from '@/stores/index'
 import { computed, PropType } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAppStore } from '@/stores/index'
 const $appStore = useAppStore()
 defineProps({
   menu: {
@@ -46,7 +46,7 @@ const handleClickMenu = (menu: any) => {
 }
 
 const hideMenu = computed(() => {
-  return function(children: any) {
+  return function (children: any) {
     if (!children) return false
     return children.some((item: any) => {
       return !item.hidden
@@ -60,11 +60,16 @@ const hideMenu = computed(() => {
   padding-left: 20px !important;
 }
 
+.iconfont {
+  margin-right: 4px;
+}
+
 .route-icon {
   //width: 1px;
   font-size: 16px;
   flex-shrink: 0;
 }
+
 .title {
   overflow: hidden;
   text-overflow: ellipsis;
