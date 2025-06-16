@@ -456,8 +456,8 @@ const orderStatusList = computed(() => {
         <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].confirmTimeStart"
           v-model:end="dataPage.facade[dataPage.facadeKz.tab].confirmTimeEnd"></DatePickerRange>
       </el-form-item>
-      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType.value))" label="订单编号"
-        class="formItem" placeholder="请选择">
+      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="订单编号" class="formItem"
+        placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderNo" placeholder="请输入订单编号"></el-input>
       </el-form-item>
       <el-form-item v-show="['-1', '2', '4'].includes(dataPage.facadeKz.tab)" label="订单状态" class="formItem">
@@ -473,7 +473,7 @@ const orderStatusList = computed(() => {
       <el-form-item label="收货人姓名" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverName" placeholder="请输入收货人姓名"></el-input>
       </el-form-item>
-      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType.value))" label="供应商" class="formItem"
+      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="供应商" class="formItem"
         placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyIds" :hasJdChance="true">
         </AffiliatedSupplier>
@@ -486,8 +486,8 @@ const orderStatusList = computed(() => {
           :multiple="true">
         </ApplicationSelect>
       </el-form-item>
-      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType.value))" label="商品类型"
-        class="formItem" placeholder="请选择">
+      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="商品类型" class="formItem"
+        placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelSourceList"
           :selectList="goodPoor.sourceTypeList">
         </SelectModel>
@@ -512,7 +512,7 @@ const orderStatusList = computed(() => {
       <template #customRow="{ row }">
         <div class="order_row">
           <div class="order_detail">
-            <span v-if="(['10', '101', '20', '201'].includes(getSystemOptionType.value))" class="order-overflow"
+            <span v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" class="order-overflow"
               ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
