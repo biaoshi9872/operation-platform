@@ -9,7 +9,8 @@ import { IPage } from '@/types/from-types'
 import goods_enum from '@/utils/constant/goods'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import UpdateStockNumDialog from './components/UpdateStockNumDialog.vue'
-
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const router = useRouter()
 
 const dataPage: IPage<any, any> = reactive({
@@ -180,7 +181,7 @@ const updataStockHandler = (row: any) => {
                     v-model:categoryCode="dataPage.facade.categoryCode">
                 </ClassificationSelect>
             </el-form-item>
-            <el-form-item label="供应商">
+            <el-form-item v-if="getSystemOptionType !=401 "  label="供应商">
                 <el-select v-model="dataPage.facade.supplyIds" multiple placeholder="请选择供应商" clearable>
                     <el-option v-for="item in dataPage.supplerList" :key="item.id" :label="item.supplyName"
                         :value="item.supplyId">
@@ -232,7 +233,7 @@ const updataStockHandler = (row: any) => {
                 </el-table-column>
                 <el-table-column label="商品编码" prop="skuCode" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="商品分类" prop="skuCategory" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="供应商" prop="supplyName" min-width="120px" align="left"></el-table-column>
+                <el-table-column v-if="getSystemOptionType !=401 "  label="供应商" prop="supplyName" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="市场价" prop="markPrice" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="库存数量" prop="stock" min-width="120px" align="left">
                     <template #default="{ row }">

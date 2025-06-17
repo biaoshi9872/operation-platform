@@ -121,8 +121,12 @@ const initColumns = () => {
     label: '是否脱敏发货',
     align: 'center',
     render: (row: any, column: any, index: any, parentRow: any) => {
-      const title = parentRow?.desensitizationStatus === 1 ? '是' : '否'
-      return h(StateCell, { title: title, isTrueState: parentRow?.desensitizationStatus == 1 })
+      if(parentRow.channelSource == 104){
+        const title = parentRow?.desensitizationStatus === 1 ? '是' : '否'
+        return h(StateCell, { title: title, isTrueState: parentRow?.desensitizationStatus == 1 })
+      }else{
+        return h('div', '-')
+      }
     }
   })
   columns.value.push({

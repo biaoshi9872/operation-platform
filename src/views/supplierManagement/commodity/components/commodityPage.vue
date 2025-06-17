@@ -162,8 +162,8 @@ watch(
             const computedTax = (dataInfo.form.taxRate === -1 ? 0 : dataInfo.form.taxRate) || 0
             const taxPurchaseCost = new MyDecimal(dataInfo.form.taxPurchaseCost)
             const taxRateNum = new MyDecimal(1).add((new MyDecimal(computedTax).div(new MyDecimal(100))))
-            const noTaxPurchaseCost = taxPurchaseCost.mul(taxRateNum).toFixed(2) as any
-            const taxPrice = taxPurchaseCost.mul(new MyDecimal(computedTax).div(new MyDecimal(100))).toFixed(2) as any
+            const noTaxPurchaseCost = taxPurchaseCost.div(taxRateNum).toFixed(2) as any
+            const taxPrice = taxPurchaseCost.sub(new MyDecimal(noTaxPurchaseCost)).toFixed(2) as any
             dataInfo.form.noTaxPurchaseCost = noTaxPurchaseCost
             dataInfo.form.taxPrice = taxPrice
         }

@@ -46,7 +46,8 @@ const rules = {
     cooperationEndDate: [{ required: true, message: '请选择合作结束时间', trigger: 'change' }],
     settlementType: [{ required: true, message: '请选择结算方式', trigger: 'change' }],
     invoiceType: [{ required: true, message: '请选择开票类型', trigger: 'change' }],
-    contractTel: [{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }]
+    contractTel: [{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }],
+    orgId: [{ required: true, message: '请选择所属机构', trigger: 'change' }],
 }
 const formRef = ref()
 const route = useRoute()
@@ -114,7 +115,7 @@ const isDetail = computed(() => {
                     <template #header>
                         <div class="el-card__title">基础信息</div>
                     </template>
-                    <el-form-item label="所属分支机构">
+                    <el-form-item label="所属分支机构" prop="orgId">
                         <OrgSelect v-model="dataInfo.form.orgId"></OrgSelect>
                     </el-form-item>
                     <el-form-item label="供应商名称" prop="supplyName">
@@ -184,7 +185,7 @@ const isDetail = computed(() => {
                     <template #header>
                         <div class="el-card__title">经营信息</div>
                     </template>
-                    <el-form-item label="经营范围">
+                    <el-form-item label="经营范围" prop="businessScope"> 
                         <el-checkbox-group v-model="dataInfo.form.businessScope">
                             <el-checkbox v-for="item in supplierEnum.businessScope" :key="item.value"
                                 :value="item.value">

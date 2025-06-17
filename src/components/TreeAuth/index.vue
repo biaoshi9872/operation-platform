@@ -2,10 +2,10 @@
     <div class="treeAuth_container">
         <!--第一级--->
         <div class="header">
-            <div class="item1 cell">一级</div>
+            <div class="item1 cell flex items-center">一级</div>
             <div class="item2_header_box">
-                <div class="item2_box_item1 cell">二级</div>
-                <div class="item2_box_item2 cell">功能</div>
+                <div class="item2_box_item1 cell flex items-center">二级</div>
+                <div class="item2_box_item2 cell flex items-center">功能</div>
             </div>
         </div>
         <div class="treeAuth_content">
