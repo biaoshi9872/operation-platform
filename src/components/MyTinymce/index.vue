@@ -125,7 +125,7 @@ const state = reactive({
     plugins:
       'paste print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount imagetools textpattern  autoresize',
     external_plugins: {
-      customimage: '/vsupplier_admin/tinymce/plugins/customimage.js'
+      customimage: '/api_platform/tinymce/plugins/customimage.js'
     },
     toolbar: [
       'code undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough link anchor | alignleft aligncenter alignright alignjustify outdent indent | \
@@ -187,8 +187,8 @@ const state = reactive({
     autosave_ask_before_unload: false,
     customImageCallback() {
       dataUrl.value = ['']
-      dialogTableVisible.value = true
-      // uploadFileClick()
+      //dialogTableVisible.value = true
+      uploadFileClick()
     },
     urlconverter_callback: function (url: any, node: any, on_save: any, name: any) {
 

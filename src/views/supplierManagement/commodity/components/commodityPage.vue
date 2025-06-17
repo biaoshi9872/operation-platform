@@ -239,12 +239,12 @@ const toListHandler = () => {
                         <div class="el-card__title">价格与库存</div>
                     </template>
                     <el-form-item label="市场价" prop="markPrice" required>
-                        <el-input-number v-model="dataInfo.form.markPrice" :controls="false" :min="0" :precision="2"
+                        <el-input-number v-model="dataInfo.form.markPrice"  max="99999999.99" :controls="false" :min="0" :precision="2"
                             :step="0.1" />
                     </el-form-item>
                     <el-form-item label="含税供货价" prop="taxPurchaseCost" required>
                         <el-input-number v-model="dataInfo.form.taxPurchaseCost" :controls="false" :min="0"
-                            :precision="2" :step="0.1" />
+                            :precision="2" max="99999999.99"  :step="0.1" />
                     </el-form-item>
                     <el-form-item label="不含税供货价" prop="noTaxPurchaseCost" required>
                         <el-input-number v-model="dataInfo.form.noTaxPurchaseCost" :controls="false" :min="0"
@@ -255,7 +255,7 @@ const toListHandler = () => {
                             :step="0.1" disabled />
                     </el-form-item>
                     <el-form-item label="库存数量" prop="stock" required>
-                        <el-input-number v-model="dataInfo.form.stock" :controls="false" :min="0" :precision="0" />
+                        <el-input-number v-model="dataInfo.form.stock" :controls="false" :min="0" :max="999999999" :precision="0" />
                     </el-form-item>
                     <el-form-item label="电商链接" prop="businessLink" required>
                         <JinDLink class="w-full" type="edit" v-model="dataInfo.form.businessLink" :row="dataInfo.form">

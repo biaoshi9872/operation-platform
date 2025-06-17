@@ -2,7 +2,7 @@
   <template v-if="menu.children.length > 0">
     <el-sub-menu :index="menu.path" v-if="hideMenu(menu.children)">
       <template #title>
-        <span class="iconfont" :class="menu.meta.icon"></span>
+        <div class="iconfont" :class="menu.meta.icon"></div>
         <span>{{ menu.meta.title }}</span>
       </template>
       <menu-item v-for="sub in menu.children" :key="sub.path" :menu="sub" v-show="!sub.hidden"></menu-item>
