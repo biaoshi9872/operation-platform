@@ -53,15 +53,28 @@ const editApplicationHandler = (row: any) => {
   dataPage.curryInfo = row
   dataPage.showApplication = true
 }
-
-const toApplicationHandler = (row: any) => {
+const getProjectId = (row:any) => {
   let appId = row.id
   let projectStr = encrypted(JSON.stringify({ appId }))
   let enPro = strEncodeURIComponent(projectStr)
+  try {
+    navigator.clipboard.writeText(enPro);
+  } catch (error) {
+    console.log(error)
+  }
+  return enPro
+}
+const toApplicationHandler = (row: any) => {
+  const enPro = getProjectId(row)
   setLocal('projectId', enPro)
   let url = window.location.origin
+  if(url.indexOf('localhost') > -1){
+    let path = `http://localhost:7071/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
+    window.open(path, '_blank')
+  }else{
   let path = `${url}/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
   window.open(path, '_blank')
+  }
 }
 </script>
 <template>
@@ -90,7 +103,7 @@ const toApplicationHandler = (row: any) => {
         </template>
         <el-table-column prop="appName" label="应用名称">
           <template #default="{ row }">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2" @dblclick="getProjectId(row)">
               <img style="width: 30px; height:30px" src="@/assets/images/app.png" />
               <OverflowTooltipCell :text="row.appName">{{ row.appName }}</OverflowTooltipCell>
             </div>
