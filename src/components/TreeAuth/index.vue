@@ -239,11 +239,14 @@ defineExpose({
 
 <style lang="scss" scoped>
 .treeAuth_container {
+
     .header {
         display: flex;
         width: 100%;
         background-color: var(--el-color-primary-light-9);
-
+        position: sticky;
+        top: 0;
+        z-index: 999;
         .item1:first-child {
             border-top: 1px solid #ccc;
         }

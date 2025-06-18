@@ -87,26 +87,26 @@ const options = []
 
 <style lang="scss" scoped>
 .permission-tree {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 140px);
+  overflow: scroll;
+  background-color: #fff;
+  position: relative;
+  padding:   0 24px ;
+  margin-top: 24px;
+
+  .permission-bottom——box {
+    position: sticky;
+    padding: 8px 0;
+    height: 100px;
+    bottom: 0;
+    left: 0;
     display: flex;
-    flex-direction: column;
-    height: calc(100vh - 120px);
-    overflow: scroll;
+    justify-content: center;
     background-color: #fff;
-    padding: 24px;
-
-
-
-    .permission-bottom——box {
-        position: sticky;
-        padding: 8px 0;
-        height: 100px;
-        bottom: 0;
-        left: 0;
-        display: flex;
-        justify-content: center;
-        background-color: #fff;
-        z-index: 999;
-        box-shadow: 0 0 2px #ccc;
-    }
+    z-index: 999;
+    box-shadow: 0 0 2px #ccc;
+  }
 }
 </style>

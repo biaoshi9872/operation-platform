@@ -111,11 +111,12 @@ function handleSubmit() {
 .permission-tree {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 140px);
   overflow: scroll;
   background-color: #fff;
-  padding: 24px;
-
+  position: relative;
+  padding:   0 24px ;
+  margin-top: 24px;
 
   .permission-bottom——box {
     position: sticky;
@@ -130,4 +131,5 @@ function handleSubmit() {
     box-shadow: 0 0 2px #ccc;
   }
 }
+
 </style>
