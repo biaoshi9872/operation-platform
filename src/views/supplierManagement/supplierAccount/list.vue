@@ -20,8 +20,8 @@ const dataPage: IPage<any, any> = reactive({
     },
     facade: {
         accountCode: '',
-        LocalDateTimeStartDate: '',
-        LocalDateTimeEndDate: '',
+        startDate: '',
+        endDate: '',
         supplyName: '',
         orgId: '',
         status: ''
@@ -97,8 +97,7 @@ const updataPwdHandler = (row: any) => {
                 <el-input v-model="dataPage.facade.accountCode" placeholder="请输入编号" clearable />
             </el-form-item>
             <el-form-item label="账号有效期">
-                <DatePickerRange v-model:start="dataPage.facade.LocalDateTimeStartDate"
-                    v-model:end="dataPage.facade.LocalDateTimeEndDate">
+                <DatePickerRange v-model:start="dataPage.facade.startDate" v-model:end="dataPage.facade.endDate">
                 </DatePickerRange>
             </el-form-item>
             <el-form-item label="供应商">

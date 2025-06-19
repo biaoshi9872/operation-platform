@@ -104,15 +104,15 @@ const afterSaleGoodsVO = computed(() => {
               <span>{{ `${row.afterSaleNum ?? '-'}` }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn v-if="!['1'].includes(String(orderInfo.afterSaleType))" align="left" prop="freightAmount"
-            label="运费">
+          <YbtTableColumn v-if="!['1'].includes(String(orderInfo.afterSaleType))" align="left"
+            prop="afterSaleFreightAmount" label="运费">
             <template #header>
               <Tooltip content="售后审核后，将会根据实际情况更新售后运费字段值">
                 <span>运费</span>
               </Tooltip>
             </template>
             <template #default="{ row }">
-              <span>{{ row.freightAmount ?? '-' }}</span>
+              <span>{{ row.afterSaleFreightAmount ?? '-' }}</span>
             </template>
           </YbtTableColumn>
           <YbtTableColumn
