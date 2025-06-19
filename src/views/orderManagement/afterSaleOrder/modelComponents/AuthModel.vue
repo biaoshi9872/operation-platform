@@ -29,13 +29,15 @@ const data = reactive<IData>({
         "auditStatus": 1,
         "rejectReason": "",
         "serviceRemark": "",
-        "refundCustomerPrice": null
+        freightAmount: 0,
+        "refundCustomerPrice": 0
     },
     formDataBK: {},
     formRules: {
         auditStatus: [{ required: true, message: '请选择审核类型', trigger: ['change', 'blur'] }],
         rejectReason: [{ required: true, message: '请输入处理意见', trigger: ['change', 'blur'] }],
         refundCustomerPrice: [{ required: true, message: '请输入退用户金额', trigger: ['change', 'blur'] }],
+        freightAmount: [{ required: true, message: '请输入退运费金额', trigger: ['change', 'blur'] }],
     },
     returnInfo: {
         freightAmount: null,
@@ -96,7 +98,8 @@ const checkReturnStates = (callBack: any) => {
     }
 }
 const handleSubmit = () => {
-    checkReturnStates(saveData)
+    // checkReturnStates(saveData)
+    saveData()
 }
 const saveData = () => {
     formRef.value.validate().then(() => {
@@ -129,8 +132,12 @@ const saveData = () => {
                     <span>{{ data.returnInfo.preRetailPrice }}</span>
                 </el-form-item>
                 <el-form-item v-if="data.formData.auditStatus === 1" label="退用户" prop="refundCustomerPrice">
-                    <el-input-number v-model="data.formData.refundCustomerPrice" :controls="false" max="999999999"
-                        :precision="2"></el-input-number>
+                    <el-input-number v-model="data.formData.refundCustomerPrice" :controls="false"
+                        :max="data.returnInfo.preRetailPrice" :precision="2"></el-input-number>
+                </el-form-item>
+                <el-form-item v-if="data.formData.auditStatus === 1" label="退运费" prop="freightAmount">
+                    <el-input-number v-model="data.formData.freightAmount" :controls="false"
+                        :max="data.returnInfo.freightAmount" :precision="2"></el-input-number>
                 </el-form-item>
                 <el-form-item label="处理意见" prop="rejectReason">
                     <el-input v-model="data.formData.rejectReason" placeholder="售后处理意见，展示给前端用户" type="textarea"
