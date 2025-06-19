@@ -109,6 +109,7 @@ div {
     .item {
       background-color: var(--el-searchForm-bg-color);
       padding: 8px;
+      width: 300px;
       display: flex;
       justify-content: space-between;
       align-items: center;

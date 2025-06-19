@@ -206,10 +206,10 @@ const initColumns = () => {
     label: '是否脱敏发货',
     align: 'center',
     render: (row: any, column: any, index: any, parentRow: any) => {
-      if(parentRow.channelSource == 104){
+      if (parentRow.channelSource == 104) {
         const title = parentRow?.desensitizationStatus === 1 ? '是' : '否'
         return h(StateCell, { title: title, isTrueState: parentRow?.desensitizationStatus == 1 })
-      }else{
+      } else {
         return h('div', '-')
       }
     }
@@ -520,17 +520,18 @@ const orderStatusList = computed(() => {
               ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>
-            <span v-if="!isFromOrgLast">供应商:{{ row.supplyName }}</span>
+            <span v-if="getSystemOptionType == 101">供应商:{{ row.supplyName }}</span>
+            <span v-else-if="getSystemOptionType == 401 && row.channelSource == 105">供应商:{{ row.supplyName }}</span>
             <span>订单总金额:￥{{ row.totalAmount }}</span>
           </div>
           <div>

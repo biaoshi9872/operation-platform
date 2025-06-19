@@ -4,15 +4,17 @@ defineOptions({
 })
 import goods_api from '@/api/goods'
 import supplier_api from '@/api/supplier'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import pageHooks from '@/hooks/pageListHooks'
+import { useUserStore } from '@/stores'
 import { IPage } from '@/types/from-types'
 import goods_enum from '@/utils/constant/goods'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import UpdateStockNumDialog from './components/UpdateStockNumDialog.vue'
-import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
-const router = useRouter()
 
+const router = useRouter()
+const $useUserStore = useUserStore()
 const dataPage: IPage<any, any> = reactive({
     isOnload: true,
     page: {
@@ -52,7 +54,8 @@ const getQueryParams = () => {
     return { ...page, ...facade, ...facadeKz }
 }
 onMounted(() => {
-    supplier_api.A_supplierManageGetByOrgId({ orgId: '' }).then(res => {
+    const { orgId, orgType } = $useUserStore.userInfo
+    supplier_api.A_supplierManageGetByOrgId({ orgId: orgType == 1 ? '' : orgId }).then(res => {
         dataPage.supplerList = res
     })
 })
@@ -152,7 +155,7 @@ const viewGoodHandler = (row: any) => {
 
 const toFreightHandler = (row: any) => {
     router.push({
-        path: '/system/restrictedSalesArea/index',
+        path: '/system/restrictedSalesArea/view',
         query: {
             id: row.limitTemplateId
         }
@@ -172,7 +175,7 @@ const updataStockHandler = (row: any) => {
                 <el-input v-model="dataPage.facade.skuName" placeholder="请输入商品名称" clearable />
             </el-form-item>
             <el-form-item label="商品编码">
-                <el-input v-model="dataPage.facade.skuCode" placeholder="请输入商品名称" clearable />
+                <el-input v-model="dataPage.facade.skuCode" placeholder="请输入商品编码" clearable />
             </el-form-item>
             <el-form-item label="商品分类">
                 <ClassificationSelect v-model:firstCateId="dataPage.facade.firstCateId"
@@ -181,7 +184,7 @@ const updataStockHandler = (row: any) => {
                     v-model:categoryCode="dataPage.facade.categoryCode">
                 </ClassificationSelect>
             </el-form-item>
-            <el-form-item v-if="getSystemOptionType !=401 "  label="供应商">
+            <el-form-item v-if="getSystemOptionType != 401" label="供应商">
                 <el-select v-model="dataPage.facade.supplyIds" multiple placeholder="请选择供应商" clearable>
                     <el-option v-for="item in dataPage.supplerList" :key="item.id" :label="item.supplyName"
                         :value="item.supplyId">
@@ -233,7 +236,8 @@ const updataStockHandler = (row: any) => {
                 </el-table-column>
                 <el-table-column label="商品编码" prop="skuCode" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="商品分类" prop="skuCategory" min-width="120px" align="left"></el-table-column>
-                <el-table-column v-if="getSystemOptionType !=401 "  label="供应商" prop="supplyName" min-width="120px" align="left"></el-table-column>
+                <el-table-column v-if="getSystemOptionType != 401" label="供应商" prop="supplyName" min-width="120px"
+                    align="left"></el-table-column>
                 <el-table-column label="市场价" prop="markPrice" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="库存数量" prop="stock" min-width="120px" align="left">
                     <template #default="{ row }">

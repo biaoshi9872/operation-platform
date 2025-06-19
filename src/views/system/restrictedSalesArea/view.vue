@@ -1,5 +1,5 @@
 <template>
-    <PageInfo type='edit'></PageInfo>
+    <PageInfo type='view'></PageInfo>
 </template>
 
 <script setup lang="ts">

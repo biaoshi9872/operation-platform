@@ -72,9 +72,9 @@ const getPermission = (checkNode: any, curryData: any) => {
 }
 
 onMounted(getAllAutoTreeList)
-
+const webPermission: any = ref(null)
 function handleSubmit() {
-  const permissionIds = getAllChecked()
+  const permissionIds = webPermission.value.getCheckedNodes().map(item => item.id)
   if (!permissionIds) {
     return ElMessage.warning('页面权限设置不能为空！')
   }
@@ -115,7 +115,7 @@ function handleSubmit() {
   overflow: scroll;
   background-color: #fff;
   position: relative;
-  padding:   0 24px ;
+  padding: 0 24px;
   margin-top: 24px;
 
   .permission-bottom——box {

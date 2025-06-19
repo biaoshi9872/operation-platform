@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import { tabsStore, useAppStore, useRouterStore, useUserStore } from '@/stores/index'
+import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import MenuItem from './Menu/MenuItem.vue'
 import TopBar from './TopBar/index.vue'
 import ViewTags from './ViewTags/index.vue'
-
+const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const useUserStoreInfo = useUserStore()
 const $routerStore = useRouterStore()
 const $route = useRoute()
@@ -72,7 +74,17 @@ const rollingReset = (position: number = 0) => {
     pageRef.value.scrollTop = position
   }
 }
-
+const logoHandler = () => {
+  let title = ''
+  if(getSystemOptionType.value ==101){
+    title = '顶级机构'
+  }else if(getSystemOptionType.value ==201){
+    title = '分支机构'
+  }else if(getSystemOptionType.value == 401){
+    title = '供应商角色'
+  }
+  ElMessage.warning(title)
+}
 provide('rollingReset', rollingReset)
 </script>
 
@@ -84,7 +96,7 @@ provide('rollingReset', rollingReset)
           <svg-icon :name="isCollapse ? 'packUp' : 'fold'"></svg-icon>
         </span>
         <img src="@/assets/images/logo.png" class="logo-img" />
-        <span class="menu_text">供应链开放平台 </span>
+        <span class="menu_text" @dblclick="logoHandler">供应链开放平台 </span>
       </div>
       <TopBar />
     </el-header>

@@ -121,10 +121,10 @@ const initColumns = () => {
     label: '是否脱敏发货',
     align: 'center',
     render: (row: any, column: any, index: any, parentRow: any) => {
-      if(parentRow.channelSource == 104){
+      if (parentRow.channelSource == 104) {
         const title = parentRow?.desensitizationStatus === 1 ? '是' : '否'
         return h(StateCell, { title: title, isTrueState: parentRow?.desensitizationStatus == 1 })
-      }else{
+      } else {
         return h('div', '-')
       }
     }
@@ -252,7 +252,26 @@ const initColumns = () => {
     label: '操作',
     align: 'center',
     render: (row: any) => {
-
+      //审核
+      const zyAuthButton = [1].includes(row.status) && [105].includes(row.channelSource) &&
+        withDirectives(
+          h(ElButton, {
+            type: 'text',
+            innerText: '审核',
+            onClick: () => {
+              authHandler(row)
+            }
+          }),
+          [
+            [
+              authDir,
+              {
+                authKey: 'AFTER_ORDER_SH_ZY',
+                detail: row
+              }
+            ]
+          ]
+        )
       //审核
       const authButton = [1].includes(row.status) && ![104].includes(row.channelSource) &&
         withDirectives(
@@ -302,7 +321,7 @@ const initColumns = () => {
         }
       })
       const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
-      return h('div', { style }, [authButton, revocationButton, detailButton])
+      return h('div', { style }, [authButton, zyAuthButton, revocationButton, detailButton])
     }
   })
 }
@@ -331,9 +350,8 @@ const initColumns = () => {
       <el-form-item label="商品名称" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuName" placeholder="请输入商品名称"></el-input>
       </el-form-item>
-      <el-form-item :label="getSystemOptionType == 401 ? '订单编号' : '渠道订单编号'" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade.channelOrderNo"
-          :placeholder="getSystemOptionType == 401 ? '请输入订单编号' : '请输入渠道订单编号'"></el-input>
+      <el-form-item v-if="getSystemOptionType != 401" label=" '渠道订单编号" class="formItem" placeholder="请选择">
+        <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号"></el-input>
       </el-form-item>
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuCode" placeholder="请输入商品编码"></el-input>
@@ -365,9 +383,10 @@ const initColumns = () => {
             <span> {{ getSystemOptionType == 401 ?
               '售后单编号:' : '渠道售后单编号:' }} {{ row.channelAfterSaleNo
               }}</span>
-            <span> {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}{{ row.channelOrderNo }}</span>
+            <span v-if="getSystemOptionType != 401">渠道订单编号:{{ row.channelOrderNo }}</span>
             <span>申请时间:{{ row.applyTime }}</span>
-            <span v-if="!isFromOrgLast">供应商:{{ row.supplyName }}</span>
+            <span v-if="getSystemOptionType == 101">供应商:{{ row.supplyName }}</span>
+            <span v-else-if="getSystemOptionType == 401 && row.channelSource == 105">供应商:{{ row.supplyName }}</span>
           </div>
         </div>
       </template>

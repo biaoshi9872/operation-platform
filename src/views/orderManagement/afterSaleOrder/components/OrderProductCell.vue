@@ -43,9 +43,14 @@ const afterSaleGoodsVO = computed(() => {
         <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.retailPrice}` }}</span>
       </div>
       <div class="item" v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType))">
-        <span class="item_title">{{ `退款金额(供应价)` }}:</span>
+        <span class="item_title">{{ ['10', '101', '20', '201'].includes(getSystemOptionType) ? `退款金额(供应价)` :
+          "退款金额(含税供应价)"
+        }}:</span>
         <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.afterSaleSupplyPrice}` }}</span>
       </div>
+
+
+
       <div class="item flex">
         <span class="item_title">{{ `${afterSaleTypeName}说明` }}:</span>
         <span class="item_value">
@@ -160,7 +165,7 @@ const afterSaleGoodsVO = computed(() => {
         </YbtTableColumn>
         <YbtTableColumn prop="price" label="进项发票类型">
           <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-            }}</template>
+          }}</template>
         </YbtTableColumn>
       </el-table>
     </div>
@@ -175,6 +180,10 @@ const afterSaleGoodsVO = computed(() => {
 .sku_box {
   padding-bottom: 24px;
   border-bottom: dashed 1px #ccc;
+}
+
+.item_title {
+  min-width: 150px;
 }
 
 .table_container {
