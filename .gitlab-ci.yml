@@ -76,33 +76,33 @@ deploy dev:
 
 
 ################################################### 生产环境 #######################################################
-#Build prod:
-#  stage: Build
-#  script:
-#    - pnpm i --registry=http://npm.ycb51.cn
-#    - pnpm run build
-#    - docker build -t $IMAGE_FULL_NAME:prod .
-#    - docker push $IMAGE_FULL_NAME:prod
-#    - echo $IMAGE_FULL_NAME:prod
-#  only:
-#    refs:
-#      - master
-#  except:
-#    changes:
-#      - .gitlab-ci.yml
-#  tags:
-#    - ci
-#  
-#deploy prod:
-#  stage: Deploy
-#  script:
-#    - kubectl replace --force -f /root/helm_repo/supplychain/operate_admin_page_v3/prod-deployment.yml
-#  only:
-#    refs:
-#      - master
-#  except:
-#    changes:
-#      - .gitlab-ci.yml
-#  tags:
-#    - kube-master1-test
-#  when: manual
+Build prod:
+  stage: Build
+  script:
+    - pnpm i --registry=http://npm.ycb51.cn
+    - pnpm run build
+    - docker build -t $IMAGE_FULL_NAME:prod .
+    - docker push $IMAGE_FULL_NAME:prod
+    - echo $IMAGE_FULL_NAME:prod
+  only:
+    refs:
+      - master
+  except:
+    changes:
+      - .gitlab-ci.yml
+  tags:
+    - ci
+  
+deploy prod:
+  stage: Deploy
+  script:
+    - kubectl replace --force -f /root/helm_repo/supplychain/supplychainapi_platform/prod-deployment.yml
+  only:
+    refs:
+      - master
+  except:
+    changes:
+      - .gitlab-ci.yml
+  tags:
+    - kube-master1-test
+  when: manual
