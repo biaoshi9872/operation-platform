@@ -107,6 +107,9 @@ const data = reactive<IData>({
       }
     ],
     channelSelfGoodsEnable: [{ required: true, message: '请选择是否开放渠道自营供应商体系', trigger: ['change', 'blur'] }],
+    amountCreditLine: [
+      { required: true, message: '请输入授信额度', trigger: ['change', 'blur'] }
+    ],
   },
   activeName: '1',
   tableFromData: {},
@@ -216,6 +219,10 @@ const title = computed(() => {
             <el-radio :value="1" :name="1">是</el-radio>
             <el-radio :value="0" :name="0">否</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item label="授信额度" prop="amountCreditLine">
+          <el-input-number v-model="data.formData.amountCreditLine" max="99999999.99" :controls="false" :min="0"
+            :precision="2" :step="0.1" />
         </el-form-item>
         <div>
           <el-tabs v-model="data.activeName" type="card" class="demo-tabs">

@@ -153,8 +153,11 @@ const handleRemove: UploadProps['onRemove'] = (uploadFiles: any) => {
 
 const handleRemoveHandler = (file: any) => {
   const arr = fileList.value
+  let index = arr.findIndex((el: any) => {
+    return el.url == file.url
+  })
   fileList.value.splice(
-    fileList.value.indexOf((el: any) => el.url == file.url),
+    index,
     1
   )
   fileList.value = arr
