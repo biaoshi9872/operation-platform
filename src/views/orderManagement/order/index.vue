@@ -477,8 +477,7 @@ const orderStatusList = computed(() => {
       <el-form-item label="收货人姓名" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverName" placeholder="请输入收货人姓名"></el-input>
       </el-form-item>
-      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="供应商" class="formItem"
-        placeholder="请选择">
+      <el-form-item v-if="(['10', '101'].includes(getSystemOptionType))" label="供应商" class="formItem" placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyIds" :hasJdChance="true">
         </AffiliatedSupplier>
       </el-form-item>
@@ -520,18 +519,18 @@ const orderStatusList = computed(() => {
               ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>
             <span v-if="getSystemOptionType == 101">供应商:{{ row.supplyName }}</span>
-            <span v-else-if="getSystemOptionType == 401 && row.channelSource == 105">供应商:{{ row.supplyName }}</span>
+            <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105">供应商:{{ row.supplyName }}</span>
             <span>订单总金额:￥{{ row.totalAmount }}</span>
           </div>
           <div>
