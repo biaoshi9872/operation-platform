@@ -356,8 +356,7 @@ const initColumns = () => {
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuCode" placeholder="请输入商品编码"></el-input>
       </el-form-item>
-      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="供应商" class="formItem"
-        placeholder="请选择">
+      <el-form-item v-if="(['10', '101'].includes(getSystemOptionType))" label="供应商" class="formItem" placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade.supplierIdList" :hasJdChance="true"></AffiliatedSupplier>
       </el-form-item>
       <el-form-item v-if="['101'].includes(getSystemOptionType)" label="分支机构" class="formItem" placeholder="请选择">
@@ -386,7 +385,7 @@ const initColumns = () => {
             <span v-if="getSystemOptionType != 401">渠道订单编号:{{ row.channelOrderNo }}</span>
             <span>申请时间:{{ row.applyTime }}</span>
             <span v-if="getSystemOptionType == 101">供应商:{{ row.supplyName }}</span>
-            <span v-else-if="getSystemOptionType == 401 && row.channelSource == 105">供应商:{{ row.supplyName }}</span>
+            <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105">供应商:{{ row.supplyName }}</span>
           </div>
         </div>
       </template>
