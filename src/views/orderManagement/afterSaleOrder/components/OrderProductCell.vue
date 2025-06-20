@@ -40,13 +40,13 @@ const afterSaleGoodsVO = computed(() => {
       <div class="item"
         v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType)) && ['10', '101', '20', '201'].includes(getSystemOptionType)">
         <span class="item_title">{{ `退款金额（分销价）` }}:</span>
-        <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.retailPrice}` }}</span>
+        <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.afterSaleRetailPrice ?? '-'}` }}</span>
       </div>
       <div class="item" v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType))">
         <span class="item_title">{{ ['10', '101', '20', '201'].includes(getSystemOptionType) ? `退款金额(供应价)` :
           "退款金额(含税供应价)"
-        }}:</span>
-        <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.afterSaleSupplyPrice}` }}</span>
+          }}:</span>
+        <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.afterSaleSupplyPrice ?? '-'}` }}</span>
       </div>
 
 
@@ -79,19 +79,19 @@ const afterSaleGoodsVO = computed(() => {
           </YbtTableColumn>
           <YbtTableColumn v-if="!isFromOrgLast" prop="platformPurchasePrice" min-width="130" label="平台成本">
             <template #default="{ row }">
-              <span>{{ `￥${row.platformPurchasePrice}` }}</span>
+              <span>{{ `￥${row.platformPurchasePrice ?? '-'}` }}</span>
             </template>
           </YbtTableColumn>
           <YbtTableColumn prop="platformSupplyPrice" min-width="150"
             :label="getSystemOptionType == '401' ? '含税供应价' : '平台供应价'">
             <template #default="{ row }">
-              <span>{{ `￥${row.platformSupplyPrice}` }}</span>
+              <span>{{ `￥${row.platformSupplyPrice ?? '-'}` }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" prop="retailPrice"
+          <YbtTableColumn v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" prop="afterSaleRetailPrice"
             min-width="130" label="分销价">
             <template #default="{ row }">
-              <span>{{ `￥${row.retailPrice}` }}</span>
+              <span>{{ `￥${row.afterSaleRetailPrice ?? '-'}` }}</span>
             </template>
           </YbtTableColumn>
           <YbtTableColumn prop="goodsNum" label="数量">
@@ -165,7 +165,7 @@ const afterSaleGoodsVO = computed(() => {
         </YbtTableColumn>
         <YbtTableColumn prop="price" label="进项发票类型">
           <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
       </el-table>
     </div>

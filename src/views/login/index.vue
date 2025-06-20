@@ -215,7 +215,7 @@ window.addEventListener('resize', setRootFontSize)
     .ford {
       font-family: MiSans;
       font-weight: 400;
-      font-size: 1rem;
+      font-size: 0.8rem;
       color: #7b7e8b;
       line-height: 2.5rem;
     }

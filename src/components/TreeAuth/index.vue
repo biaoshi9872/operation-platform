@@ -16,7 +16,7 @@
                 </div>
                 <div class="item2_content_item2">
                     <div v-if="treeList?.[index]?.children?.length"
-                        v-for="(item1, index1) in treeList?.[index]?.children" class="content_item_child1">
+                        v-for="(item1, index1) in renderList(treeList?.[index])" class="content_item_child1">
                         <div class="item2_box_item1 cell">
                             <el-checkbox v-model="item1.isChecked" @change="changeTowHandler($event, item1)"
                                 :indeterminate="item1.isIndeterminate" :label="item1.name" :value="item1.id" />
@@ -31,6 +31,22 @@
                     <div v-else class="content_item_child1">
                         <div class="item2_box_item1 cell"></div>
                         <div class="item2_box_item2 cell"></div>
+                    </div>
+                    <div class="shrink_box cell color-#ccc" v-if="item.children?.length > 3"
+                        @click="foldHandler('', item)">
+                        <div v-if="item.fold" class="fold_content">
+                            更多(<span class="value">{{ moreFoldNum(item)
+                            }}</span>)
+                            <el-icon class="ml-8">
+                                <ArrowDown />
+                            </el-icon>
+                        </div>
+                        <div v-else class="fold_content">
+                            收起
+                            <el-icon class="ml-8">
+                                <ArrowUp />
+                            </el-icon>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -53,6 +69,25 @@ const props = withDefaults(defineProps<IProp>(), {
 const emits = defineEmits<{
     (e: 'update:modelValue', value: any): void
 }>()
+const foldHandler = (type: any, row: any) => {
+    row.fold = !row.fold
+}
+const moreFoldNum = computed(() => {
+    return function (row: any) {
+        return row?.children?.length >= 3 ? row?.children?.length - 3 : 0
+    }
+})
+
+const renderList = computed(() => {
+    return function (row: any) {
+        if (row.fold) {
+            return row?.children?.slice(0, 3)
+        } else {
+            return row?.children
+        }
+    }
+})
+
 const changeFistHandler = ($event: any, item: any) => {
     // 一级选中状态改变时，同步更新二级和三级的选中状态
     if (item.children) {
@@ -247,6 +282,7 @@ defineExpose({
         position: sticky;
         top: 0;
         z-index: 999;
+
         .item1:first-child {
             border-top: 1px solid #ccc;
         }
@@ -264,6 +300,7 @@ defineExpose({
         border-right: 1px solid #ccc;
         display: flex;
         align-items: center;
+        flex-shrink: 0;
     }
 
     .item1:first-child {
@@ -282,6 +319,7 @@ defineExpose({
 
     .item2_box_item1 {
         flex: 1;
+        flex-shrink: 0;
         max-width: 250px;
         border-bottom: 1px solid #ccc;
         border-right: 1px solid #ccc;
@@ -292,16 +330,34 @@ defineExpose({
         flex: 1;
         border-bottom: 1px solid #ccc;
         border-right: 1px solid #ccc;
-        gap: 12px;
+        flex-wrap: wrap;
     }
 
     .content_item_child1 {
         display: flex;
     }
 
+    .shrink_box {
+        display: flex;
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--el-color-primary-light-9);
+
+        .fold_content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #E6A23C;
+        }
+    }
+
     .cell {
         padding: 8px;
-        min-height: 50px;
+        min-height: 30px;
+
     }
 }
 </style>

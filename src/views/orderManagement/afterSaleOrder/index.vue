@@ -12,6 +12,7 @@ import order_enum from '@/utils/constant/order'
 import { ElButton } from 'element-plus'
 import { ref, resolveDirective, withDirectives } from 'vue'
 import AuthModel from './modelComponents/AuthModel.vue'
+import AuthModelZY from './modelComponents/AuthModelZY.vue'
 import RevokeModel from './modelComponents/RevokeModel.vue'
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
@@ -103,7 +104,10 @@ const authHandler = (row: any) => {
   dataPage.curryInfo = row
   dataPage.showAuthModel = true
 }
-
+const authZyHandler = (row: any) => {
+  dataPage.curryInfo = row
+  dataPage.showAuthModelZy = true
+}
 //撤销
 const revocationHandler = (row: any) => {
   dataPage.curryInfo = row
@@ -259,7 +263,7 @@ const initColumns = () => {
             type: 'text',
             innerText: '审核',
             onClick: () => {
-              authHandler(row)
+              authZyHandler(row)
             }
           }),
           [
@@ -273,7 +277,7 @@ const initColumns = () => {
           ]
         )
       //审核
-      const authButton = [1].includes(row.status) && ![104].includes(row.channelSource) &&
+      const authButton = [1].includes(row.status) && ![104, 105].includes(row.channelSource) &&
         withDirectives(
           h(ElButton, {
             type: 'text',
@@ -350,7 +354,7 @@ const initColumns = () => {
       <el-form-item label="商品名称" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuName" placeholder="请输入商品名称"></el-input>
       </el-form-item>
-      <el-form-item v-if="getSystemOptionType != 401" label=" '渠道订单编号" class="formItem" placeholder="请选择">
+      <el-form-item v-if="getSystemOptionType != 401" label="渠道订单编号" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号"></el-input>
       </el-form-item>
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
@@ -393,6 +397,8 @@ const initColumns = () => {
     <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page"></CustomPagination>
     <AuthModel v-model="dataPage.showAuthModel" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHarder">
     </AuthModel>
+    <AuthModelZY v-model="dataPage.showAuthModelZy" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHarder">
+    </AuthModelZY>
     <RevokeModel v-model="dataPage.showRevokeModel" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHarder">
     </RevokeModel>
   </PageContainer>
