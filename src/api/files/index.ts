@@ -4,6 +4,7 @@ class files_api {
    * 单个上传文件
    */
   A_upload(data: any) {
+    debugger
     return request<any>({
       url: '/system/oss/upload',
       method: 'post',

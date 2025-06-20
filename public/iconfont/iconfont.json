@@ -1,0 +1,58 @@
+{
+  "id": "4950253",
+  "name": "开发平台",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "开发平台",
+  "glyphs": [
+    {
+      "icon_id": "351765",
+      "name": "商品",
+      "font_class": "menu-commodity",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "683385",
+      "name": "积分商城",
+      "font_class": "app",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "7463951",
+      "name": "订单",
+      "font_class": "menu-order",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "18644564",
+      "name": "分销商",
+      "font_class": "menu-agency",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "18971640",
+      "name": "商品池",
+      "font_class": "menu-pool",
+      "unicode": "e697",
+      "unicode_decimal": 59031
+    },
+    {
+      "icon_id": "33851540",
+      "name": "系统设置",
+      "font_class": "menu-setting",
+      "unicode": "e760",
+      "unicode_decimal": 59232
+    },
+    {
+      "icon_id": "42303340",
+      "name": "供应商管理",
+      "font_class": "menu-operation",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    }
+  ]
+}

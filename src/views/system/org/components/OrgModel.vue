@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus'
-import { validatePhone } from '@/utils/validator'
-import { hasNumberAndWord } from '@/utils/validator'
-import { cloneDeep } from 'lodash-es'
 import org_api from '@/api/system/org'
+import { hasNumberAndWord, validatePhone } from '@/utils/validator'
+import { ElMessage, FormInstance } from 'element-plus'
+import { cloneDeep } from 'lodash-es'
+import ProductMarkUpSet from './ProductMarkUpSet.vue'
 
 interface IProp {
   curryInfo: any
@@ -57,7 +57,9 @@ const data = reactive<IData>({
     attachment: '',
     username: null,
     password: null,
-    mobile: null
+    mobile: null,
+    channelSelfGoodsEnable: null,
+    goodsOrgMarkupDTOList: []
   },
   formDataBK: {},
   formRules: {
@@ -71,6 +73,16 @@ const data = reactive<IData>({
       }
     ],
     validateStartTime: [{ required: true, message: '请输入有效期', trigger: ['change', 'blur'] }],
+    relationProvinceId: [{
+      required: true, message: '请选择省市区', trigger: ['change', 'blur'],
+      validator: (rule: any, value: any, callback: any) => {
+        if (data.formData.relationProvinceId && data.formData.relationCityId && data.formData.relationCountryId) {
+          callback()
+        } else {
+          callback(new Error('请选择省市区'))
+        }
+      }
+    }],
     username: [{ required: true, message: '请输入管理员账号', trigger: ['change', 'blur'] }],
     password: [
       { required: true, message: '请输入登录密码', trigger: ['change', 'blur'] },
@@ -93,7 +105,11 @@ const data = reactive<IData>({
         validator: validatePhone,
         trigger: 'blur'
       }
-    ]
+    ],
+    channelSelfGoodsEnable: [{ required: true, message: '请选择是否开放渠道自营供应商体系', trigger: ['change', 'blur'] }],
+    amountCreditLine: [
+      { required: true, message: '请输入授信额度', trigger: ['change', 'blur'] }
+    ],
   },
   activeName: '1',
   tableFromData: {},
@@ -112,79 +128,78 @@ const handleClose = () => {
   searchQueryHandler()
   emits('update:modelValue', false)
 }
-const searchQueryHandler = inject('searchQueryHandler', () => {})
+const searchQueryHandler = inject('searchQueryHandler', () => { })
 onMounted(() => {
   data.formDataBK = cloneDeep(data.formData)
 })
-const openHandler = () => {
+const productMarkUpSetRef: any = ref(null)
+const openHandler = async () => {
   data.formData = {
     ...data.formDataBK
   }
   if (props.type == 'edit') {
-    getOrgDetail()
-  }
-}
-
-const getOrgDetail = () => {
-  org_api.A_getOrgDetail(props.curryInfo?.id).then((res: any) => {
+    const res: any = await getOrgDetail()
     data.formData = {
       ...data.formData,
       ...res
     }
-  })
+  }
+  productMarkUpSetRef.value?.initProductMarkUpSet(data.formData?.goodsOrgMarkupDTOList || [])
 }
 
-const handleSubmit = () => {
+const getOrgDetail = () => {
+  return org_api.A_getOrgDetail(props.curryInfo?.id)
+}
+
+const handleSubmit = async () => {
+  const res = await productMarkUpSetRef.value?.validateInfo()
   formRef.value
-    .validate()
-    .then(() => {
-      data.submitLoading = true
-      org_api
-        .A_save({ ...data.formData, id: props.type == 'edit' ? props.curryInfo?.id : null })
-        .then(res => {
-          ElMessage.success('操作成功')
-          handleClose()
-        })
-        .catch(() => {
-          data.submitLoading = false
-        })
-        .finally(() => {
-          data.submitLoading = false
-        })
+    .validate((val: any) => {
+      if (val) {
+        const goodsOrgMarkupDTOList = productMarkUpSetRef.value?.getSubmitData() || []
+        data.submitLoading = true
+        org_api
+          .A_save({ ...data.formData, goodsOrgMarkupDTOList, id: props.type == 'edit' ? props.curryInfo?.id : null })
+          .then(res => {
+            ElMessage.success('操作成功')
+            handleClose()
+          })
+          .catch(() => {
+            data.submitLoading = false
+          })
+          .finally(() => {
+            data.submitLoading = false
+          })
+      } else {
+        ElMessage.error('请检查填写内容')
+      }
     })
-    .catch(() => {
-      ElMessage.error('请检查填写内容')
-    })
+
 }
 const title = computed(() => {
   return props.type == 'edit' ? '修改机构' : '新增机构'
 })
 </script>
 <template>
-  <el-dialog
-    v-bind="$attrs"
-    :title="title"
-    width="600px"
-    append-to-body
-    @open="openHandler"
-    draggable
-    destroy-on-close
-    :close-on-click-modal="false"
-    @closed="handleReset"
-  >
+  <el-dialog v-bind="$attrs" :title="title" width="900px" append-to-body @open="openHandler" draggable destroy-on-close
+    :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
-      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right" label-width="120px">
+      <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
+        label-width="210px">
         <el-form-item label="机构名称" prop="name">
           <el-input v-model="data.formData.name" placeholder="请输入机构名称" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
-          <el-input v-model="data.formData.customerName" placeholder="请输入客户名称" maxlength="50" show-word-limit></el-input>
+          <el-input v-model="data.formData.customerName" placeholder="请输入客户名称" maxlength="50"
+            show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="项目经理电话" prop="projectManagerPhone">
-          <el-input v-model="data.formData.projectManagerPhone" placeholder="请输入项目经理电话" maxlength="11" show-word-limit></el-input>
+          <el-input v-model="data.formData.projectManagerPhone" placeholder="请输入项目经理电话" maxlength="11"
+            show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="有效期" prop="validateStartTime">
-          <DatePickerRange v-model:start="data.formData.validateStartTime" v-model:end="data.formData.validateEndTime"></DatePickerRange>
+          <DatePickerRange v-model:start="data.formData.validateStartTime" v-model:end="data.formData.validateEndTime">
+          </DatePickerRange>
         </el-form-item>
         <el-form-item label="机构状态">
           <el-radio-group v-model="data.formData.status">
@@ -193,56 +208,69 @@ const title = computed(() => {
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="data.formData.remark" :rows="2" type="textarea" placeholder="请输入备注" maxlength="200" show-word-limit></el-input>
+          <el-input v-model="data.formData.remark" :rows="2" type="textarea" placeholder="请输入备注" maxlength="200"
+            show-word-limit></el-input>
+        </el-form-item>
+        <el-form-item label="可见商品及加价设置" required>
+          <ProductMarkUpSet ref="productMarkUpSetRef"></ProductMarkUpSet>
+        </el-form-item>
+        <el-form-item label="是否开放渠道自营供应商体系" prop="channelSelfGoodsEnable">
+          <el-radio-group v-model="data.formData.channelSelfGoodsEnable">
+            <el-radio :value="1" :name="1">是</el-radio>
+            <el-radio :value="0" :name="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="授信额度" prop="amountCreditLine">
+          <el-input-number v-model="data.formData.amountCreditLine" max="99999999.99" :controls="false" :min="0"
+            :precision="2" :step="0.1" />
         </el-form-item>
         <div>
           <el-tabs v-model="data.activeName" type="card" class="demo-tabs">
             <el-tab-pane label="账号管理" name="1">
-              <el-form-item label="管理员账号" prop="username">
-                <el-input v-model="data.formData.username" placeholder="请输入管理员账号" maxlength="50" show-word-limit></el-input>
+              <el-form-item label="管理员账号" prop="username" label-width="100px">
+                <el-input :disabled="props.type == 'edit'" v-model="data.formData.username" placeholder="请输入管理员账号"
+                  maxlength="50" show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="登录密码" prop="password">
+              <el-form-item v-if="props.type != 'edit'" label="登录密码" label-width="100px" prop="password">
                 <el-input v-model="data.formData.password" placeholder="请输入6位数以上字母+数字密码" maxlength="100"></el-input>
               </el-form-item>
-              <el-form-item label="手机号" prop="mobile">
-                <el-input v-model="data.formData.mobile" placeholder="请输入手机号" maxlength="11" show-word-limit></el-input>
+              <el-form-item label="手机号" prop="mobile" label-width="100px">
+                <el-input :disabled="props.type == 'edit'" v-model="data.formData.mobile" placeholder="请输入手机号"
+                  maxlength="11" show-word-limit></el-input>
               </el-form-item>
             </el-tab-pane>
             <el-tab-pane label="联系方式" name="2">
-              <el-form-item label="联系人" prop="relationPerson">
-                <el-input v-model="data.formData.relationPerson" placeholder="请输入联系人" maxlength="20" show-word-limit></el-input>
+              <el-form-item label="联系人" prop="relationPerson" label-width="80px">
+                <el-input v-model="data.formData.relationPerson" placeholder="请输入联系人" maxlength="20"
+                  show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="手机号" prop="relationPhone">
-                <el-input v-model="data.formData.relationPhone" placeholder="请输入手机号" maxlength="11" show-word-limit></el-input>
+              <el-form-item label="手机号" prop="relationPhone" label-width="80px">
+                <el-input v-model="data.formData.relationPhone" placeholder="请输入手机号" maxlength="11"
+                  show-word-limit></el-input>
               </el-form-item>
-              <!-- <el-form-item label="省市区" prop="stockNum"></el-form-item> -->
-              <el-form-item label="详细地址">
-                <el-input
-                  v-model="data.formData.relationDetailAddress"
-                  :rows="2"
-                  type="textarea"
-                  placeholder="请输入详细地址"
-                  maxlength="200"
-                  show-word-limit
-                ></el-input>
+              <el-form-item label="省市区" prop="relationProvinceId" label-width="80px">
+                <AddressSelect v-model:provinceId="data.formData.relationProvinceId"
+                  v-model:cityId="data.formData.relationCityId" v-model:countyId="data.formData.relationCountryId">
+                </AddressSelect>
+              </el-form-item>
+              <el-form-item label="详细地址" label-width="80px">
+                <el-input v-model="data.formData.relationDetailAddress" :rows="2" type="textarea" placeholder="请输入详细地址"
+                  maxlength="200" show-word-limit></el-input>
               </el-form-item>
             </el-tab-pane>
             <el-tab-pane label="资质附件" name="3">
-              <el-form-item label="营业执照号">
-                <el-input v-model="data.formData.licenseNumber" placeholder="请输入营业执照号" maxlength="20" show-word-limit></el-input>
+              <el-form-item label="营业执照号" label-width="100px">
+                <el-input v-model="data.formData.licenseNumber" placeholder="请输入营业执照号" maxlength="20"
+                  show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="公司法人">
-                <el-input v-model="data.formData.companyLegalPerson" placeholder="请输入公司法人" maxlength="20" show-word-limit></el-input>
+              <el-form-item label="公司法人" label-width="100px">
+                <el-input v-model="data.formData.companyLegalPerson" placeholder="请输入公司法人" maxlength="20"
+                  show-word-limit></el-input>
               </el-form-item>
-              <el-form-item label="资质附件">
-                <ImgUpload
-                  v-model="data.formData.attachment"
-                  :limit="5"
-                  :acceptList="['bmp', 'png', 'jpg', 'jpeg', 'pdf']"
-                  :maxSize="5"
-                  :isArray="false"
-                  tip="图片不能超过5MB,支持扩展名：bmp,png,jpg,jpeg,pdf(最多可上传5张)"
-                ></ImgUpload>
+              <el-form-item label="资质附件" label-width="80px">
+                <ImgUpload v-model="data.formData.attachment" :limit="5"
+                  :acceptList="['bmp', 'png', 'jpg', 'jpeg', 'pdf']" :maxSize="5" :isArray="false"
+                  tip="图片不能超过5MB,支持扩展名：bmp,png,jpg,jpeg,pdf(最多可上传5张)"></ImgUpload>
               </el-form-item>
             </el-tab-pane>
           </el-tabs>

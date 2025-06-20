@@ -10,7 +10,7 @@
 defineOptions({
   name: 'ApplicationSelect'
 })
-// import { A_getAllDictionaries } from '@/api/proudectManger'
+import systemUtils_api from '@/api/system/systemUtils/index'
 
 interface IProp {
   modelValue: string
@@ -57,14 +57,21 @@ const init = () => {
 }
 
 const getAllDictionaries = () => {
-  // A_getAllDictionaries({ supplyType: props.supplyType }).then((res: any) => {
-  //   data.supplierList = res?.list || res
-  // })
+  systemUtils_api.A_supplierSelect({}).then((res: any) => {
+    let list = Object.keys(res).map((key) => {
+      return {
+        id: key,
+        supplyName: res[key]
+      }
+    })
+    data.supplierList = list
+  })
 }
 </script>
 <template>
   <el-select v-model="value" placeholder="请选择供应商" filterable clearable collapse-tags multiple collapse-tags-tooltip>
-    <el-option v-for="(item, index) in data.supplierList" :key="index" :value="item[props.valueKey]" :label="item[props.valueLabel]"></el-option>
+    <el-option v-for="(item, index) in data.supplierList" :key="index" :value="item[props.valueKey]"
+      :label="item[props.valueLabel]"></el-option>
   </el-select>
 </template>
 

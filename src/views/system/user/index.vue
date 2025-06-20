@@ -2,14 +2,15 @@
 defineOptions({
   name: 'user'
 })
-import { IPage } from '@/types/from-types'
+import org_api from '@/api/system/org/index'
+import user_api from '@/api/system/user/index'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import pageHooks from '@/hooks/pageListHooks'
-import { ElButton, ElMessageBox, ElTree, ElMessage } from 'element-plus'
+import { IPage } from '@/types/from-types'
+import { ElButton, ElMessage, ElMessageBox, ElTree } from 'element-plus'
 import EditUser from './components/EditUser.vue'
 import ResetPassword from './components/ResetPassword.vue'
-import user_api from '@/api/system/user/index'
-import org_api from '@/api/system/org/index'
-import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+
 const { isOrgLast, orgInfo } = isStateCheckHooks()
 const tree = ref<InstanceType<typeof ElTree>>()
 const defaultValueConversionHandler = () => {
@@ -117,26 +118,19 @@ const searchQueryHandler = () => {
   <PageContainer v-loading="dataPage.loadingData">
     <el-container>
       <el-aside v-if="!isOrgLast" class="w-220 border-rd-2 common-bg p-16 common-shadow">
-        <el-tree
-          ref="tree"
-          :data="departmentData"
-          :props="{ children: 'child', label: 'name' }"
-          node-key="id"
-          :default-checked-keys="defaultCheckedKeys"
-          default-expand-all
-          highlight-current
-          :expand-on-click-node="false"
-          @current-change="handleCurrentChange"
-          class="departmentTree"
-        />
+        <el-tree ref="tree" :data="departmentData" :props="{ children: 'child', label: 'name' }" node-key="id"
+          :default-checked-keys="defaultCheckedKeys" default-expand-all highlight-current :expand-on-click-node="false"
+          @current-change="handleCurrentChange" class="departmentTree" />
       </el-aside>
       <el-main class="pt-0">
-        <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" @search="searchQueryHandler">
+        <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page"
+          @search="searchQueryHandler">
           <el-form-item label="账号/手机号" title="账号/手机号">
             <el-input v-model="dataPage.facade.usernameOrPhone" placeholder="请输入账号/手机号" clearable />
           </el-form-item>
         </SearchForm>
-        <TableModel :page="dataPage.page" :loading="dataPage.loadingData" :listTableData="dataPage.dataList" :dataPage="dataPage">
+        <TableModel :page="dataPage.page" :loading="dataPage.loadingData" :listTableData="dataPage.dataList"
+          :dataPage="dataPage">
           <template #option>
             <el-button type="primary" @click="handleAdd()">新增</el-button>
           </template>
@@ -145,14 +139,19 @@ const searchQueryHandler = () => {
           <YbtTableColumn label="手机号" prop="mobile" />
           <YbtTableColumn label="角色" prop="roleNameList">
             <template #default="scope">
-              <OverflowTooltipCell :text="scope.row.roleNameList?.join('、')">
-                <el-tag v-for="(item, index) in scope.row.roleNameList" :key="index" class="mr-4" type="success">{{ item }}</el-tag>
-              </OverflowTooltipCell>
+              <el-tag type="success" v-if="scope.row.ifAdminAccount">超级管理员</el-tag>
+              <div v-else>
+                <OverflowTooltipCell :text="scope.row.roleNameList?.join('、')">
+                  <el-tag v-for="(item, index) in scope.row.roleNameList" :key="index" class="mr-4" type="success">{{
+                    item }}</el-tag>
+                </OverflowTooltipCell>
+              </div>
             </template>
           </YbtTableColumn>
           <YbtTableColumn label="状态">
             <template #default="scope">
-              <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{ scope.row.status === 1 ? '正常' : '禁用' }}</el-tag>
+              <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{ scope.row.status === 1 ? '正常' : '禁用'
+              }}</el-tag>
             </template>
           </YbtTableColumn>
           <YbtTableColumn label="创建时间" prop="createDate" width="200" />
@@ -161,7 +160,7 @@ const searchQueryHandler = () => {
               <div class="btnStatus">
                 <el-button type="text" @click="handleEditUser(row)">编辑</el-button>
                 <el-button type="text" @click="handleRestPassword(row)">重置密码</el-button>
-                <el-button type="text" @click="handleDelete(row)">删除</el-button>
+                <el-button type="text" v-if="!row.ifAdminAccount" @click="handleDelete(row)">删除</el-button>
               </div>
             </template>
           </YbtTableColumn>
@@ -170,13 +169,8 @@ const searchQueryHandler = () => {
     </el-container>
   </PageContainer>
   <!-- 新增/编辑用户 -->
-  <EditUser
-    v-if="dataPage.curDepartment"
-    :curUser="curUser"
-    :curDepartment="dataPage.curDepartment"
-    v-model="dataPage.showEditUser"
-    @update="searchQueryHandler"
-  />
+  <EditUser v-if="dataPage.curDepartment" :curUser="curUser" :curDepartment="dataPage.curDepartment"
+    v-model="dataPage.showEditUser" @update="searchQueryHandler" />
   <!-- 修改密码 -->
   <ResetPassword :userId="curUser?.id" v-model="dataPage.showResetPassword" />
 </template>

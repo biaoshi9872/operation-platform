@@ -8,11 +8,9 @@
 -->
 
 <script setup lang="ts" name="RoleList">
-import role_api from '@/api/system/role'
 import org_api from '@/api/system/org'
-import system_num from '@/utils/constant/system'
-import OrgModel from './OrgModel.vue'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+import OrgModel from './OrgModel.vue'
 const { isOrgLast, orgInfo } = isStateCheckHooks()
 const props = defineProps({
   curryOrgInfo: {
@@ -34,6 +32,7 @@ onMounted(() => {
   getList()
 })
 const editHandler = (node: any, data: any) => {
+  emits('update:curryOrgInfo', data)
   dataInfo.type = 'edit'
   dataInfo.showOrgModel = true
 }
@@ -63,27 +62,21 @@ const getList = () => {
       <el-button type="primary" class="ml-5" @click="getList">查询</el-button>
     </div>
     <div class="mt-12">
-      <el-tree
-        style="max-width: 600px"
-        :data="dataInfo.dataSource"
-        node-key="id"
-        default-expand-all
-        :expand-on-click-node="false"
-        :props="{ label: 'name' ,children: 'child' }"
-        @node-click="nodeClick"
-      >
+      <el-tree style="max-width: 600px" :data="dataInfo.dataSource" node-key="id" default-expand-all
+        :expand-on-click-node="false" :props="{ label: 'name', children: 'child' }" @node-click="nodeClick">
         <template #default="{ node, data }">
           <div class="custom-tree-node">
             <span>{{ node.label }}</span>
             <div>
-              <el-button type="primary" class="edit-org" link @click="editHandler(node,data)">修改</el-button>
+              <el-button type="primary" class="edit-org" link @click="editHandler(node, data)">修改</el-button>
             </div>
           </div>
         </template>
       </el-tree>
     </div>
   </div>
-  <OrgModel v-model="dataInfo.showOrgModel" :curryInfo="curryOrgInfo" :type="dataInfo.type" @refresh="getList"></OrgModel>
+  <OrgModel v-model="dataInfo.showOrgModel" :curryInfo="curryOrgInfo" :type="dataInfo.type" @refresh="getList">
+  </OrgModel>
 </template>
 
 <style lang="scss" scoped>
@@ -91,6 +84,7 @@ const getList = () => {
   background-color: var(--el-searchForm-bg-color);
   padding: 12px;
   height: 100%;
+
   .header-container {
     display: flex;
     justify-content: space-between;
@@ -99,15 +93,18 @@ const getList = () => {
     margin-bottom: 24px;
     padding: 0 0 12px 0;
   }
+
   .custom-tree-node {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
   }
+
   .edit-org {
     display: none;
   }
+
   .custom-tree-node:hover {
     .edit-org {
       display: block;

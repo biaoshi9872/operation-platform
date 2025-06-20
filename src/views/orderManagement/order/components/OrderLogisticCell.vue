@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LogisticCell from '../../components/LogisticCell.vue'
+import LogisticCell from '../../components/LogisticCell.vue';
 interface IProp {
   orderDeliverVOList: any
   orderInfo: any

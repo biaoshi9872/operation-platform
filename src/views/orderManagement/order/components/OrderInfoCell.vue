@@ -1,59 +1,51 @@
 <script setup lang="ts">
 interface IProp {
-  orderInfo: any
+  orderBaseInfo: any
 }
+import isStateCheckHooks from '@/hooks/isStateCheckHooks';
+const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const props = withDefaults(defineProps<IProp>(), {
-  orderInfo: {}
+  orderBaseInfo: {}
 })
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
 }>()
-const FIELDS = [
-  // {
-  //   label: '父订单号',
-  //   prop: 'parentOrderNo'
-  // },
-  {
-    label: '订单号',
-    prop: 'orderNo'
-  },
-  {
-    label: '渠道订单编号',
-    prop: 'thirdOrderNo'
-  },
-  // {
-  //   label: '电商订单编号',
-  //   prop: 'outOrderNo'
-  // },
-  {
+
+const FIELDS = computed(() => {
+  let arr = []
+
+  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+    arr.push({
+      label: '订单编号',
+      prop: 'orderNo'
+    })
+  }
+  arr.push({
+    label: getSystemOptionType.value == 401 ? '订单编号' : '渠道订单编号',
+    prop: 'channelOrderNo'
+  })
+  arr.push({
     label: '提交订单时间',
-    prop: 'orderTime'
-  },
-  {
+    prop: 'submitTime'
+  })
+  arr.push({
     label: '确认下单时间',
     prop: 'confirmTime'
-  },
-  {
-    label: '申请取消时间',
-    prop: 'cancelTime'
-  },
-  {
+  })
+  arr.push({
     label: '下单人',
     prop: 'buyer'
-  },
-  {
+  })
+  arr.push({
     label: '下单人手机号',
     prop: 'buyerPhone'
-  }
-  // {
-  //   label: '分销渠道',
-  //   prop: 'merchantName'
-  // }
-]
+  })
+  return arr
+})
 
 const getTitle = computed(() => {
-  return function(find: any) {
-    return props.orderInfo[find.prop] || '-'
+  return function (find: any) {
+    return props.orderBaseInfo[find.prop] || '-'
   }
 })
 </script>
@@ -62,7 +54,7 @@ const getTitle = computed(() => {
   <div class="content_box">
     <div class="item flex" v-for="(item, index) in FIELDS" :key="index">
       <span class="item_title">{{ item.label }}:</span>
-      <span class="item_value">{{ getTitle(item) ||'-' }}</span>
+      <span class="item_value">{{ getTitle(item) || '-' }}</span>
     </div>
   </div>
 </template>

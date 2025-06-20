@@ -5,7 +5,7 @@ class verify_api {
    */
   A_verifyGen() {
     return request({
-      url: '/backend-v2/system/gen',
+      url: '/system/gen',
       method: 'post'
     })
   }
@@ -15,7 +15,7 @@ class verify_api {
   //  */
   A_verifyCheck(data: any) {
     return request({
-      url: '/backend-v2/system/check',
+      url: '/system/check',
       method: 'post',
       data
     })

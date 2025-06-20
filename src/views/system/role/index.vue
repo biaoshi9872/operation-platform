@@ -1,13 +1,12 @@
 <script setup lang="ts" name="roleSet">
 defineOptions({ name: 'role' })
+import role_api from '@/api/system/role/index'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+import pageHooks from '@/hooks/pageListHooks'
+import { IPage } from '@/types/from-types'
+import system_num from '@/utils/constant/system'
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus'
 import EditRole from './components/EditRole.vue'
-import { IPage } from '@/types/from-types'
-import pageHooks from '@/hooks/pageListHooks'
-import { Edit, Download } from '@element-plus/icons-vue'
-import role_api from '@/api/system/role/index'
-import system_num from '@/utils/constant/system'
-import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 const { isOrgLast } = isStateCheckHooks()
 
 //@ts-ignore
@@ -60,7 +59,7 @@ async function handleDelete({ id }: { id: number }) {
 }
 
 const showOption = computed(() => {
-  return function(row: any) {
+  return function (row: any) {
     if (!isOrgLast.value) return true
     else {
       if (row.createRoleType == 2 && isOrgLast.value) {
@@ -79,16 +78,14 @@ const showOption = computed(() => {
       <el-form-item label="角色名称">
         <el-input v-model.trim="dataPage.facade.roleName" placeholder="请输角色名称" clearable />
       </el-form-item>
+      <el-form-item v-if="!isOrgLast" label="分支机构">
+        <el-select v-model="dataPage.facade.orgType" placeholder="请选择机构类型" clearable>
+          <el-option v-for="item in system_num.orgType" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
     </SearchForm>
-    <TableModel
-      :page="dataPage.page"
-      v-loading="dataPage.loadingData"
-      :listTableData="dataPage.dataList"
-      :dataPage="dataPage"
-      :isShowPagination="false"
-      :tree-props="{ children: 'children' }"
-      default-expand-all
-    >
+    <TableModel :page="dataPage.page" v-loading="dataPage.loadingData" :listTableData="dataPage.dataList"
+      :dataPage="dataPage" :isShowPagination="false" :tree-props="{ children: 'children' }" default-expand-all>
       <template #option>
         <el-button authKey="sys:role:add" type="primary" @click="handleAdd()">新增</el-button>
       </template>
@@ -97,7 +94,7 @@ const showOption = computed(() => {
         <template #default="{ row }">
           <div class="role-name">
             <div>{{ row.name }}</div>
-            <div class="role-type">{{ row.createRoleType == '2'?'(公用)':'' }}</div>
+            <div class="role-type">{{ row.createRoleType == '2' ? '(公用)' : '' }}</div>
           </div>
         </template>
       </YbtTableColumn>
@@ -125,6 +122,7 @@ const showOption = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   .role-type {
     color: var(--el-color-success);
   }

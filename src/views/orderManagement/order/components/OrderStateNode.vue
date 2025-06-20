@@ -1,7 +1,6 @@
 <script setup lang="ts">
-// import { A_queryOrderOperationLog } from '@/api/orderManger'
+import order_api from '@/api/order'
 import { useRoute } from 'vue-router'
-
 const route = useRoute()
 onMounted(() => {
   getOperationLog()
@@ -9,11 +8,11 @@ onMounted(() => {
 
 //节点状态
 const getOperationLog = () => {
-  const { orderNo } = route.query
-  // A_queryOrderOperationLog({ orderNo }).then((res: any) => {
-  //   dataPage.nodeList = res as any[]
-  //   dataPage.activeIndex = tranFromActive()
-  // })
+  const { channelOrderNo } = route.query
+  order_api.A_getOrderProcess({ channelOrderNo }).then((res: any) => {
+    dataPage.nodeList = res as any[]
+    dataPage.activeIndex = tranFromActive()
+  })
 }
 
 const tranFromActive = () => {
@@ -33,7 +32,8 @@ const dataPage = reactive({
 <template>
   <div class="order-state-container">
     <el-steps :active="dataPage.activeIndex" align-center finish-status="success">
-      <el-step v-for="(item, index) in dataPage.nodeList" :key="index" :title="item.flowNodeName" :description="item.operationTime">
+      <el-step v-for="(item, index) in dataPage.nodeList" :key="index" :title="item.flowNodeName"
+        :description="item.operationTime">
         <template #description>
           <div>{{ item.operationTime }}</div>
           <div v-if="item.remark" class="remark_container">备注:{{ item.remark }}</div>

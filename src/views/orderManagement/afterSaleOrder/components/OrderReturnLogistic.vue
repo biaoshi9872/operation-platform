@@ -1,9 +1,9 @@
 <script setup lang="ts">
 interface IProp {
-  orderInfo?: any
+  receiveUserInfo?: any
 }
 const props = withDefaults(defineProps<IProp>(), {
-  orderInfo: {}
+  receiveUserInfo: {}
 })
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
@@ -14,11 +14,11 @@ const emits = defineEmits<{
   <div class="content_box">
     <div class="item">
       <span class="item_title">退货物流信息:</span>
-      <span class="item_value">{{ orderInfo.expressCompanyName }}</span>
+      <span class="item_value">{{ receiveUserInfo.expressCompanyName }}</span>
     </div>
     <div class="item">
       <span class="item_title">物流单号:</span>
-      <span class="item_value">{{ orderInfo.expressCode }}</span>
+      <span class="item_value">{{ receiveUserInfo.expressCode }}</span>
     </div>
   </div>
 </template>

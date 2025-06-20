@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UpdateDeliverOrderDialog from './UpdateDeliverOrderDialog.vue'
+import UpdateDeliverOrderDialog from './UpdateDeliverOrderDialog.vue';
 
 interface IProp {
   deliverInfo?: any
@@ -34,62 +34,58 @@ const hiddenStatus = computed(() => {
         <span class="ml-8">物流信息:{{ deliverInfo.expressCompanyName }}</span> |
         <span>{{ deliverInfo.expressCode }}</span>
         <span v-if="hiddenStatus" class="ml-8">
-          <AuthButton authKey="ORDER_UPDATA_WLDH" :detail="detail" type="text" @click="updateLogisticHandler">修改单号</AuthButton>
+          <AuthButton authKey="ORDER_UPDATA_WLDH" :detail="detail" type="text" @click="updateLogisticHandler">修改单号
+          </AuthButton>
         </span>
       </template>
       <template v-else>
-        <span class="ml-8">物流方式:自营</span> |
+        <span class="ml-8">物流方式:自行配送</span> |
         <span class="ml-8">配送员手机号:{{ deliverInfo.mobile }}</span> |
         <span v-if="hiddenStatus" class="ml-8">
-          <AuthButton authKey="ORDER_UPDATA_PSSJH" :detail="detail" type="text" @click="updateLogisticHandler">修改手机号</AuthButton>
+          <AuthButton authKey="ORDER_UPDATA_PSSJH" :detail="detail" type="text" @click="updateLogisticHandler">修改手机号
+          </AuthButton>
         </span>
       </template>
     </div>
     <div class="content_box">
       <div class="content_box_left">
         <div class="mb-8 item" v-for="item in deliverInfo.deliverGoodsList">
-          <SkuDetail :customAttribute="{ url: 'images', name: 'goodsName', id: 'skuCode' }" width="100%" :goodDetail="item"></SkuDetail>
+          <SkuDetail :customAttribute="{ url: 'images', name: 'goodsName', id: 'skuCode' }" width="100%"
+            :goodDetail="item">
+          </SkuDetail>
           <span>x{{ item.goodsNum }}</span>
         </div>
       </div>
       <div class="content_box_right">
         <el-timeline>
-          <el-timeline-item
-            v-for="(activity, index) in deliverInfo.trackList"
-            placement="top"
-            :key="index"
-            :timestamp="activity.expressTime"
-          >{{ activity.optName }} | {{ activity.expressDetail }}</el-timeline-item>
+          <el-timeline-item v-for="(activity, index) in deliverInfo.trackList" placement="top" :key="index"
+            :timestamp="activity.expressTime">{{ activity.optName }} | {{ activity.expressDetail }}</el-timeline-item>
         </el-timeline>
       </div>
     </div>
   </div>
-  <UpdateDeliverOrderDialog v-model="showUpdateDeliver" :deliveryType="deliverInfo.deliveryType" :deliverInfo="deliverInfo"></UpdateDeliverOrderDialog>
+  <UpdateDeliverOrderDialog v-model="showUpdateDeliver" :deliveryType="deliverInfo.deliveryType"
+    :deliverInfo="deliverInfo"></UpdateDeliverOrderDialog>
 </template>
 
 <style lang="scss" scoped>
 div {
   .header_container {
-    .ml-8 {
-    }
+    .ml-8 {}
 
-    span {
-    }
+    span {}
   }
 
   .content_box {
     .content_box_left {
       .mb-8 {
-        span {
-        }
+        span {}
       }
 
-      .item {
-      }
+      .item {}
     }
 
-    .content_box_right {
-    }
+    .content_box_right {}
   }
 }
 
@@ -113,6 +109,7 @@ div {
     .item {
       background-color: var(--el-searchForm-bg-color);
       padding: 8px;
+      width: 300px;
       display: flex;
       justify-content: space-between;
       align-items: center;

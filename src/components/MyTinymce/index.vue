@@ -1,7 +1,9 @@
 <template>
   <div class="timmy_container">
-    <TinymcVue :id="state.editorId" v-model="state.content" :init="state.options" :disabled="props.disabled" @change="onChange"></TinymcVue>
-    <input ref="uploadFileRef" style="display: none" type="file" multiple :accept="props.accept" name="file" @change="uploadChange" />
+    <TinymcVue :id="state.editorId" v-model="state.content" :init="state.options" :disabled="props.disabled"
+      @change="onChange"></TinymcVue>
+    <input ref="uploadFileRef" style="display: none" type="file" multiple :accept="props.accept" name="file"
+      @change="uploadChange" />
     <el-dialog v-model="dialogTableVisible" title="上传文件" width="300">
       <div class="flex justify-center items-center">
         <!-- <PictureInformation v-model="dataUrl" @callBack="changeHandler" :accept="['png', 'jpg', 'jpeg', 'bmp']" :limit="1"></PictureInformation> -->
@@ -9,48 +11,48 @@
     </el-dialog>
   </div>
 </template>
-  
-  <script setup lang="ts" name="MyTinymce">
-// import PictureInformation from '../SelectModel/pictureInformation/index.vue'
-import { ref, unref, watch, toRefs, reactive, onMounted, onBeforeUnmount } from 'vue'
 
-import tinymce from 'tinymce'
-import 'tinymce/themes/silver/theme'
+<script setup lang="ts" name="MyTinymce">
+// import PictureInformation from '../SelectModel/pictureInformation/index.vue'
+import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+
 import TinymcVue from '@tinymce/tinymce-vue'
+import tinymce from 'tinymce'
 import 'tinymce/icons/default/icons'
-import 'tinymce/plugins/image'
-import 'tinymce/plugins/link'
-import 'tinymce/plugins/code'
-import 'tinymce/plugins/table'
-import 'tinymce/plugins/lists'
-import 'tinymce/plugins/contextmenu'
-import 'tinymce/plugins/wordcount'
-import 'tinymce/plugins/colorpicker'
-import 'tinymce/plugins/textcolor'
-import 'tinymce/plugins/print'
-import 'tinymce/plugins/preview'
-import 'tinymce/plugins/searchreplace'
+import 'tinymce/plugins/advlist'
+import 'tinymce/plugins/anchor'
 import 'tinymce/plugins/autolink'
+import 'tinymce/plugins/autoresize'
+import 'tinymce/plugins/autosave'
+import 'tinymce/plugins/charmap'
+import 'tinymce/plugins/code'
+import 'tinymce/plugins/codesample'
+import 'tinymce/plugins/colorpicker'
+import 'tinymce/plugins/contextmenu'
 import 'tinymce/plugins/directionality'
+import 'tinymce/plugins/fullscreen'
+import 'tinymce/plugins/hr'
+import 'tinymce/plugins/image'
+import 'tinymce/plugins/imagetools'
+import 'tinymce/plugins/insertdatetime'
+import 'tinymce/plugins/link'
+import 'tinymce/plugins/lists'
+import 'tinymce/plugins/media'
+import 'tinymce/plugins/nonbreaking'
+import 'tinymce/plugins/pagebreak'
+import 'tinymce/plugins/preview'
+import 'tinymce/plugins/print'
+import 'tinymce/plugins/searchreplace'
+import 'tinymce/plugins/table'
+import 'tinymce/plugins/template'
+import 'tinymce/plugins/textcolor'
+import 'tinymce/plugins/textpattern'
 import 'tinymce/plugins/visualblocks'
 import 'tinymce/plugins/visualchars'
-import 'tinymce/plugins/media'
-import 'tinymce/plugins/fullscreen'
-import 'tinymce/plugins/template'
-import 'tinymce/plugins/codesample'
-import 'tinymce/plugins/charmap'
-import 'tinymce/plugins/hr'
-import 'tinymce/plugins/pagebreak'
-import 'tinymce/plugins/nonbreaking'
-import 'tinymce/plugins/anchor'
-import 'tinymce/plugins/insertdatetime'
-import 'tinymce/plugins/advlist'
-import 'tinymce/plugins/imagetools'
-import 'tinymce/plugins/textpattern'
-import 'tinymce/plugins/autosave'
-import 'tinymce/plugins/autoresize'
+import 'tinymce/plugins/wordcount'
+import 'tinymce/themes/silver/theme'
 
-import { A_upload } from '@/api/proudectManger'
+import files_api from '@/api/files'
 import { getUUID } from '@/utils/tools'
 
 const VITE_BASE_PATH = import.meta.env.VITE_BASE_PATH
@@ -123,7 +125,7 @@ const state = reactive({
     plugins:
       'paste print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount imagetools textpattern  autoresize',
     external_plugins: {
-      customimage: '/vsupplier_admin/tinymce/plugins/customimage.js'
+      customimage: '/api_platform/tinymce/plugins/customimage.js'
     },
     toolbar: [
       'code undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough link anchor | alignleft aligncenter alignright alignjustify outdent indent | \
@@ -149,14 +151,15 @@ const state = reactive({
     importcss_append: false,
     //自定义文件选择器的回调内容
     file_picker_callback(callback: any, value: any, meta: any) {
+      debugger
       console.log('file_picker_callback: ')
       var input = document.createElement('input')
       input.setAttribute('type', 'file')
       input.setAttribute('accept', '.jpg,.png,.jpeg')
       input.click()
-      input.onchange = function() {
+      input.onchange = function () {
         const file = this.files[0]
-        A_upload(file)
+        files_api.A_upload({ file })
           .then((res: any) => {
             const url = res?.[0].ossUrl
             const fileName = res?.[0].fileName
@@ -168,10 +171,11 @@ const state = reactive({
       }
     },
     images_upload_base_path: '',
-    images_upload_handler: function(blobInfo: any, succFun: any, failFun: any) {
+    images_upload_handler: function (blobInfo: any, succFun: any, failFun: any) {
+      debugger
       const blob = blobInfo.blob()
       const file = new File([blob], '1.png', { type: blob.type })
-      A_upload(file)
+      files_api.A_upload({ file })
         .then((res: any) => {
           const url = res?.[0].ossUrl
           const fileName = res?.[0].fileName
@@ -183,16 +187,17 @@ const state = reactive({
     autosave_ask_before_unload: false,
     customImageCallback() {
       dataUrl.value = ['']
-      dialogTableVisible.value = true
-      // uploadFileClick()
+      //dialogTableVisible.value = true
+      uploadFileClick()
     },
-    urlconverter_callback: function(url: any, node: any, on_save: any, name: any) {
+    urlconverter_callback: function (url: any, node: any, on_save: any, name: any) {
+
       if (node === 'img' && url.startsWith('blob:')) {
         tinymce.activeEditor && tinymce.activeEditor.uploadImages()
       }
       return url
     },
-    paste_preprocess: function(plugin: any, args: any) {
+    paste_preprocess: function (plugin: any, args: any) {
       console.log(args.content)
       args.content = 'helloworld'
     }
@@ -213,7 +218,7 @@ const uploadChange = (e: any) => {
   const chooseFiles = e.target.files
   for (let item of chooseFiles) {
     if (checkFilesSize(item)) {
-      A_upload(item)
+      files_api.A_upload({ file: item })
         .then((res: any) => {
           const url = res?.[0].ossUrl
           const fileName = res?.[0].fileName
@@ -273,10 +278,9 @@ defineExpose({
   setContent
 })
 </script>
-  
+
 <style>
 .tox-menu-nav__js.tox-collection__item[title='图片...'] {
   display: none;
 }
 </style>
-  

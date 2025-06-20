@@ -1,11 +1,11 @@
-import { URL, fileURLToPath } from 'node:url'
-import path from 'node:path'
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
+import path from 'node:path'
+import { URL, fileURLToPath } from 'node:url'
 import Unocss from 'unocss/vite'
+import AutoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+import { defineConfig } from 'vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 // // import package1 from './package.'
@@ -16,9 +16,9 @@ const chunksMap = ['element-plus', 'lodash-es', 'axios', 'vue-router', 'vuedragg
 const HOST = 'https://supply-test.ycb51.cn' // 测试环境
 //const HOST = 'https://vsc.ebaoton.cn' // 测试环境
 //const HOST = 'http://192.168.10.251:9001' // 刘康
-//const HOST = 'http://192.168.10.96:7080' //晶晶
+//const HOST = 'http://192.168.10.49:9001' //晶晶
 //const HOST = 'http://192.168.10.234:7007' //旺翔
-//const HOST = 'http://192.168.10.203:7080' //双源
+//const HOST = 'http://192.168.10.249:9001' //双源
 //const HOST = 'http://192.168.31.60:8089' //任
 export default defineConfig(({ mode }) => {
   console.log(mode, 'mode')
@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => {
             drop: ['console', 'debugger']
           },
     server: {
-      port: 7081,
+      port: 7070,
       host: true,
       proxy: {
         '/open-platform': {

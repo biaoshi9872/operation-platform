@@ -6,24 +6,17 @@
  * @LastEditors: biao.shi
  * @LastEditTime: 2023-06-21 09:25:27
 -->
-<script lang="ts">
-export default {
-  inheritAttrs: false
-}
-</script>
-
 <script lang="ts" setup>
 defineOptions({
   name: 'Upload'
 })
 import files_api from '@/api/files'
-import { getImgFileWidthAndHeight, getFileType } from '@/utils/upload'
+import { isNullOrUnDefOrisEmpty } from '@/utils/is'
+import { getLocal } from '@/utils/storage'
+import { getFileType, getImgFileWidthAndHeight } from '@/utils/upload'
+import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
-import { getLocal } from '@/utils/storage'
-import { isNullOrUnDefOrisEmpty } from '@/utils/is'
-//
 
 const VITE_TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY
 const headersToken = getLocal(VITE_TOKEN_KEY)
@@ -160,8 +153,11 @@ const handleRemove: UploadProps['onRemove'] = (uploadFiles: any) => {
 
 const handleRemoveHandler = (file: any) => {
   const arr = fileList.value
+  let index = arr.findIndex((el: any) => {
+    return el.url == file.url
+  })
   fileList.value.splice(
-    fileList.value.indexOf((el: any) => el.url == file.url),
+    index,
     1
   )
   fileList.value = arr
@@ -182,7 +178,7 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile: any) => 
 
 const uploadSectionFile = (param: any) => {
   var file = param.file
-  files_api.A_upload({file})
+  files_api.A_upload({ file })
     .then((res: any) => {
       handleSuccess(res)
     })
@@ -251,7 +247,7 @@ const handleSuccess = (response: any) => {
 }
 
 const fileUrl = computed(() => {
-  return function(item: any) {
+  return function (item: any) {
     console.log(item, 'item')
     return item?.url?.endsWith('.pdf')
       ? 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20240110/5d4916c08d454b0ba9ce9c6c08cb1257.png'
@@ -261,25 +257,11 @@ const fileUrl = computed(() => {
 </script>
 <template>
   <div :class="['multiple-upload', { 'multiple-upload_exceeded': exceeded }]">
-    <el-upload
-      ref="upload"
-      v-bind="$attrs"
-      :class="{ hide: hideUpload }"
-      :disabled="disabled"
-      :file-list="fileList"
-      list-type="picture-card"
-      :on-preview="handlePictureCardPreview"
-      :http-request="uploadSectionFile"
-      :on-remove="handleRemove"
-      :limit="limit"
-      :accept="accept"
-      multiple
-      :on-exceed="handleExceed"
-      :before-upload="beforeAvatarUpload"
-      action="/gateway-v2/backend-v2/system/oss/upload"
-      :headers="headersData"
-      name="file"
-    >
+    <el-upload ref="upload" v-bind="$attrs" :class="{ hide: hideUpload }" :disabled="disabled" :file-list="fileList"
+      list-type="picture-card" :on-preview="handlePictureCardPreview" :http-request="uploadSectionFile"
+      :on-remove="handleRemove" :limit="limit" :accept="accept" multiple :on-exceed="handleExceed"
+      :before-upload="beforeAvatarUpload" action="/gateway-v2/backend-v2/system/oss/upload" :headers="headersData"
+      name="file">
       <template #tip>
         <Auxiliary :title="tip"></Auxiliary>
       </template>

@@ -1,11 +1,10 @@
-import axios from 'axios'
-import qs from 'qs'
-import { ElMessage } from 'element-plus'
-import type { InternalRequestConfig, RequestConfig } from '#/axios'
-import type { AxiosInstance } from 'axios'
+import type { InternalRequestConfig } from '#/axios'
 import store, { useUserStore } from '@/stores'
 import { getLocal } from '@/utils/storage'
-import { useRouter } from 'vue-router'
+import type { AxiosInstance } from 'axios'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
+import qs from 'qs'
 const CancelToken = axios.CancelToken
 const cancelMap = new Map() // cancelMap
 /**
@@ -27,7 +26,6 @@ export const getService = (config: AxiosConfig = { timeout: 45000, baseURL: impo
   service.interceptors.request.use(
     (config: InternalRequestConfig) => {
       config.headers.token = getLocal(import.meta.env.VITE_TOKEN_KEY)
-
       const configData = config.data
       const configParams = config.params
 

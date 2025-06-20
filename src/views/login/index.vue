@@ -1,10 +1,46 @@
-<script setup lang="ts" name="Login">
-import { ElMessage } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
+<template>
+  <div class="layout">
+    <div class="logo">
+      <img src="./img/logo.png" alt="logo" />
+    </div>
+    <div class="user-info">
+      <el-form ref="formRef" :model="formData" :rules="rules" class="form-wrap">
+        <h2 class="title">供应链开放平台</h2>
+        <el-form-item prop="username">
+          <el-input v-model.trim="formData.username" class="input" clearable placeholder="请输入登录账号">
+            <template #prefix>
+              <svg-icon name="user" class="prefix-icon" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="pwd" class="pwd">
+          <el-input v-model.trim="formData.pwd" class="input" show-password clearable type="passWord"
+            placeholder="请输入密码">
+            <template #prefix>
+              <svg-icon name="password" class="prefix-icon" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item class="submit-btn-option">
+          <el-button type="primary" :loading="loading" class="submit-btn" @click="handleFinish">登 录</el-button>
+        </el-form-item>
+        <el-form-item>
+          <div class="flex flex-center w-100%">
+            <el-link type="primary" class="ford" :underline="false" @click="handleForgetPwd">忘记密码?</el-link>
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
+    <CaptchaBoxDialog v-model="captchaShow" @validSuccess="handleCaptchaSuccess"></CaptchaBoxDialog>
+  </div>
+</template>
+
+<script setup lang="ts">
 import login_api from '@/api/system/login'
-import { getUUID } from '@/utils'
-import { useUserStore } from '@/stores'
 import isEevCheckHooks from '@/hooks/isEevCheckHooks'
+import { useUserStore } from '@/stores'
+import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import CaptchaBoxDialog from './CaptchaBoxDialog.vue'
 const { isDevelopment } = isEevCheckHooks({})
 const userStore = useUserStore()
@@ -51,14 +87,14 @@ const rules = reactive<FormRules>({
 })
 
 async function handleFinish() {
-  // try {
-  //   await formRef.value!.validate().then(() => {
-  //     captchaShow.value = true
-  //   })
-  // } catch (error) {
-  //   return
-  // }
-  handleCaptchaSuccess()
+  try {
+    await formRef.value!.validate().then(() => {
+      captchaShow.value = true
+    })
+  } catch (error) {
+    return
+  }
+  //handleCaptchaSuccess()
 }
 const updateShow = ref(false)
 
@@ -73,7 +109,6 @@ const handleCaptchaSuccess = async () => {
   loading.value = true
   try {
     const res: any = await login_api.A_login({ ...formData })
-    
     // 登录成功后 更新用户信息
     userStore.updateUserInfo(res)
     userStore.initInfo()
@@ -86,95 +121,103 @@ const handleCaptchaSuccess = async () => {
     loading.value = false
   }
 }
+
+const designWidth = 1920
+// 基准字体大小（建议取设计稿宽度的1/100，便于计算）
+const baseFontSize = 19.2
+function setRootFontSize() {
+  const clientWidth = document.documentElement.clientWidth
+  // 计算当前根字体大小
+  let fontSize = (clientWidth / designWidth) * baseFontSize
+
+  // 限制最小字体（避免过小）和最大容器宽度（避免过大屏拉伸）
+  fontSize = Math.max(fontSize, 12) // 最小12px
+  if (clientWidth > 1920) {
+    fontSize = 19.2 // 大屏保持基准大小
+  }
+
+  document.documentElement.style.fontSize = `${fontSize}px`
+}
+// 初始化执行
+setRootFontSize()
+// 监听窗口变化
+window.addEventListener('resize', setRootFontSize)
 </script>
 
-<template>
-  <div class="login-page" @keyup.enter="handleFinish">
-    <div class="login-form-container">
-      <div class="login-form">
-        <el-form ref="formRef" :model="formData" :rules="rules" class="form-wrap">
-          <h2 class="lh-33 fs-21 fw-400 text-center color-#8E9198 mb-20">您好！欢迎登录</h2>
-          <h2 class="lh-33 fs-35 fw-500 text-center mb-30">供应链开放平台</h2>
-          <el-form-item prop="username">
-            <el-input v-model.trim="formData.username" clearable placeholder="请输入登录账号">
-              <template #prefix>
-                <svg-icon name="user" class="prefix-icon" />
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="pwd">
-            <el-input v-model.trim="formData.pwd" show-password clearable type="passWord" placeholder="请输入密码">
-              <template #prefix>
-                <svg-icon name="password" class="prefix-icon" />
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" :loading="loading" class="submit-btn" @click="handleFinish">登 录</el-button>
-          </el-form-item>
-          <el-form-item>
-            <div class="flex flex-center w-100%">
-              <el-link type="primary" :underline="false" @click="handleForgetPwd">忘记密码?</el-link>
-            </div>
-          </el-form-item>
-        </el-form>
-      </div>
-    </div>
-    <ForgetPwd v-model="updateShow" />
-    <CaptchaBoxDialog v-model="captchaShow" @validSuccess="handleCaptchaSuccess"></CaptchaBoxDialog>
-  </div>
-</template>
-
 <style lang="scss" scoped>
-.login-page {
-  height: 100vh;
-  width: 100%;
-  background: url('./img/bgImg2.png') no-repeat center / cover;
+.layout {
   display: flex;
-  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+  min-height: 100vh;
+  min-width: 100vw;
+  background: url('./img/bg.png') no-repeat 100% 100% / cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10.31rem;
 
-  .login-form-container {
-    width: 38%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .logo {
+    img {
+      width: 41.3rem;
+      height: 38.07rem;
+    }
+  }
 
-    .login-form {
-      width: 384px;
-      display: flex;
-      justify-content: center;
-      justify-items: center;
-      flex-direction: column;
+  .user-info {
+    width: 25.05rem;
+    height: 23.96rem;
+    background: linear-gradient(0deg, #ffffff 0%, #ffffff 100%);
+    box-shadow: 0rem 0rem 1rem 0rem rgba(182, 211, 255, 0.59);
+    border-radius: 0.42rem;
+    padding: 0 2.55rem;
+
+    .title {
+      font-family: MiSans;
+      font-weight: 500;
+      font-size: 1.35rem;
+      color: #333333;
+      line-height: 2.5rem;
+      margin-top: 2.76rem;
+      margin-bottom: 2.08rem;
+      text-align: center;
     }
 
-    .form-wrap {
-      width: 384px;
-      // background: #ffffff;
-      // border-radius: 2px 2px 2px 2px;
-      box-sizing: border-box;
-      padding: 56px 35px;
-      border-radius: 10px;
+    ::v-deep(.el-form-item) {
+      margin-bottom: 1.41rem;
+    }
 
-      .prefix-icon {
-        font-size: 20px;
-        color: #0076ff;
-      }
+    .input {
+      height: 2.55rem;
+    }
 
-      .code-input {
-        width: 182px;
-      }
+    .submit-btn-option {
+      margin-top: 2.29rem !important;
+      margin-bottom: 0.99rem;
+    }
 
-      .submit-btn {
-        margin-top: 16px;
-        width: 100%;
-        height: 48px;
-        border-radius: 2px;
-      }
+    .prefix-icon {
+      margin-left: 0.6rem;
+      font-size: 1rem;
+      color: #517aee;
+    }
 
-      :deep(.el-input__inner) {
-        height: 48px;
-      }
+    .submit-btn {
+      width: 100%;
+      height: 2.92rem;
+      font-family: MiSans;
+      font-weight: 400;
+      font-size: 1.25rem;
+      color: #ffffff;
+      line-height: 2.92rem;
+    }
+
+    .ford {
+      font-family: MiSans;
+      font-weight: 400;
+      font-size: 1rem;
+      color: #7b7e8b;
+      line-height: 2.5rem;
     }
   }
 }
