@@ -98,8 +98,10 @@ const checkReturnStates = (callBack: any) => {
     }
 }
 const handleSubmit = () => {
-    // checkReturnStates(saveData)
     saveData()
+}
+const changeHandler = () => {
+    data.formData.rejectReason = ''
 }
 const saveData = () => {
     formRef.value.validate().then(() => {
@@ -122,7 +124,7 @@ const saveData = () => {
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
                 <el-form-item label="审核" prop="auditStatus">
-                    <el-radio-group v-model="data.formData.auditStatus">
+                    <el-radio-group v-model="data.formData.auditStatus" @change="changeHandler">
                         <el-radio :value="1">通过</el-radio>
                         <el-radio :value="2">不通过</el-radio>
                     </el-radio-group>
@@ -141,8 +143,8 @@ const saveData = () => {
                     <el-input-number v-model="data.formData.freightAmount" :controls="false"
                         :max="data.returnInfo.freightAmount" :precision="2"></el-input-number>
                 </el-form-item>
-                <el-form-item label="处理意见" prop="rejectReason">
-                    <el-input v-model="data.formData.rejectReason" placeholder="售后处理意见，展示给前端用户" type="textarea"
+                <el-form-item v-if="data.formData.auditStatus === 2" label="拒绝原因" prop="rejectReason">
+                    <el-input v-model="data.formData.rejectReason" placeholder="拒绝原因，展示给前端用户" type="textarea"
                         maxlength="200" show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="备注">

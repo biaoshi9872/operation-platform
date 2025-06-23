@@ -58,6 +58,7 @@ const data = reactive<IData>({
     username: null,
     password: null,
     mobile: null,
+    async: null,
     channelSelfGoodsEnable: null,
     goodsOrgMarkupDTOList: []
   },
@@ -110,6 +111,7 @@ const data = reactive<IData>({
     amountCreditLine: [
       { required: true, message: '请输入授信额度', trigger: ['change', 'blur'] }
     ],
+    async: [{ required: true, message: '请选择是否预存款限制', trigger: ['change', 'blur'] }],
   },
   activeName: '1',
   tableFromData: {},
@@ -220,10 +222,7 @@ const title = computed(() => {
             <el-radio :value="0" :name="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="授信额度" prop="amountCreditLine">
-          <el-input-number v-model="data.formData.amountCreditLine" max="99999999.99" :controls="false" :min="0"
-            :precision="2" :step="0.1" />
-        </el-form-item>
+
         <div>
           <el-tabs v-model="data.activeName" type="card" class="demo-tabs">
             <el-tab-pane label="账号管理" name="1">
@@ -237,6 +236,18 @@ const title = computed(() => {
               <el-form-item label="手机号" prop="mobile" label-width="100px">
                 <el-input :disabled="props.type == 'edit'" v-model="data.formData.mobile" placeholder="请输入手机号"
                   maxlength="11" show-word-limit></el-input>
+              </el-form-item>
+            </el-tab-pane>
+            <el-tab-pane label="财务管理" name="4">
+              <el-form-item label="是否预存款限制" prop="async" label-width="140px">
+                <el-radio-group v-model="data.formData.async" :disabled="props.type == 'edit'">
+                  <el-radio :value="true" :name="true">是</el-radio>
+                  <el-radio :value="false" :name="false">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="授信额度" prop="amountCreditLine" label-width="140px">
+                <el-input-number v-model="data.formData.amountCreditLine" max="99999999.99" :controls="false" :min="0"
+                  :precision="2" :step="0.1" />
               </el-form-item>
             </el-tab-pane>
             <el-tab-pane label="联系方式" name="2">
