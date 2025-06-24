@@ -21,7 +21,7 @@ const dataPage: IPage<any, any> = reactive({
     plantOrderNo: null
   },
   facadeKz: {
-    active: '1'
+    queryType: '1'
   },
   otherData: {
     showRecharge: false,

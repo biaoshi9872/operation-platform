@@ -3,7 +3,7 @@
     <!-- 资金总栏 -->
     <div class="deposit-card-container mr-8">
       <div class="home">
-        <div>应用编码：{{ dataPage.merchantInfo.orgId }}</div>
+        <div>机构ID：{{ dataPage.merchantInfo.orgId }}</div>
         <div class="deposit-title flex justify-between">
           <svg-icon icon-class="zhiJin" class name="zhiJin"></svg-icon>
           <span class="text-right">账户可用余额(元):</span>

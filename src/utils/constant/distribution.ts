@@ -54,7 +54,25 @@ class distributionConstant {
     }
   ]
 
+  //操作类型
+  C_moneyManagementOperationType1 = [
+    {
+      label: '销售订单结算',
+      value: '0'
+    },
+    {
+      label: '取消销售订单',
+      value: '1'
+    },
+    {
+      label: '售后订单退款',
+      value: '2'
+    }
+  ]
   getMoneyManagementOperationType(value: any) {
+    return this.getDictionaryName(this.C_moneyManagementOperationType, value)
+  }
+  getMoneyManagementOperationType1(value: any) {
     return this.getDictionaryName(this.C_moneyManagementOperationType, value)
   }
   //处理状态

@@ -31,7 +31,7 @@ const dataPage: IPage<any, any> = reactive({
         plantOrderNo: null
     },
     facadeKz: {
-        active: '1'
+        queryType: '2'
     },
     otherData: {
         showRecharge: false,
@@ -71,7 +71,7 @@ const exportHandler = () => {
             </el-form-item>
             <el-form-item label="操作类型">
                 <SelectModel v-model.trim="dataPage.facade.actionType" :multiple="true"
-                    :selectList="distributionConstant.C_moneyManagementOperationType"></SelectModel>
+                    :selectList="distributionConstant.C_moneyManagementOperationType1"></SelectModel>
             </el-form-item>
             <el-form-item label="创建时间">
                 <DatePickerRange v-model:start="dataPage.facade.startTime" v-model:end="dataPage.facade.endTime">
@@ -100,14 +100,16 @@ const exportHandler = () => {
                 <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip mix-width="140"></YbtTableColumn>
                 <YbtTableColumn prop="id" label="日志ID" mix-width="120"></YbtTableColumn>
                 <YbtTableColumn prop="actionType" label="操作类型" mix-width="120">
-                    <template #default="{ row }">{{ distributionConstant.getMoneyManagementOperationType(row.actionType)
-                    }}</template>
+                    <template #default="{ row }">{{
+                        distributionConstant.getMoneyManagementOperationType1(row.actionType)
+                        }}</template>
                 </YbtTableColumn>
                 <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
-                <YbtTableColumn prop="amount" label="变更金额" mix-width="160">
+                <YbtTableColumn prop="retailAmount" label="变更金额" mix-width="160">
                     <template #default="{ row }">
-                        <span :class="row.amount > 0 ? 'color-green' : 'color-red'">{{ `${row.amount > 0 ? '+' :
-                            '-'}￥${Math.abs(row.amount)}` }}</span>
+                        <span :class="row.retailAmount > 0 ? 'color-green' : 'color-red'">{{ `${row.retailAmount > 0 ?
+                            '+' :
+                            '-'}￥${Math.abs(row.retailAmount)}` }}</span>
                     </template>
                 </YbtTableColumn>
                 <YbtTableColumn prop="plantOrderNo" label="订单号" width="240"></YbtTableColumn>

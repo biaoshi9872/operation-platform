@@ -28,7 +28,7 @@ const dataPage: IPage<any, any> = reactive({
     plantOrderNo: null
   },
   facadeKz: {
-    active: '1'
+    queryType: '1'
   },
   otherData: {
     showRecharge: false,
@@ -95,7 +95,7 @@ const exportHandler = () => {
         <YbtTableColumn prop="id" label="日志ID" mix-width="120"></YbtTableColumn>
         <YbtTableColumn prop="actionType" label="操作类型" mix-width="120">
           <template #default="{ row }">{{ distributionConstant.getMoneyManagementOperationType(row.actionType)
-            }}</template>
+          }}</template>
         </YbtTableColumn>
         <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
         <YbtTableColumn prop="amount" label="变更金额" mix-width="160">
