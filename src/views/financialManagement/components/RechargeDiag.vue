@@ -72,8 +72,8 @@ const openHandler = () => {
 }
 const queryPrepaidDepositRechargeLog = () => {
   const { page } = data
-  const { orgId: merchantNo } = props.curryInfo
-  moneyManagement_api.A_queryPrepaidDepositRechargeLog({ ...page, merchantNo }).then(({ page }: any) => {
+  const { orgId } = props.curryInfo
+  moneyManagement_api.A_queryPrepaidDepositRechargeLog({ ...page, orgId }).then(({ page }: any) => {
     data.tableFromData = page.records
     data.page.totalCount = page.totalRow
   })
@@ -144,7 +144,7 @@ const changeHandler = (value: any) => {
           <YbtTableColumn label="充值金额" prop="amount" />
           <YbtTableColumn label="充值类型" prop="businessType">
             <template #default="{ row }">{{ distributionConstant.getTheTypeOfTopUpService(row.businessType)
-              }}</template>
+            }}</template>
           </YbtTableColumn>
           <YbtTableColumn label="充值备注" show-overflow-tooltip prop="remark" />
           <YbtTableColumn label="充值时间" prop="createDate" />
