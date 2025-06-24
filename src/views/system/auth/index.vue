@@ -86,7 +86,7 @@ function handleRoleChange(val: any) {
 }
 function handleSubmit() {
   //@ts-ignore
-  const menuIdList = webPermission.value.getAllChecked()
+  const menuIdList = webPermission.value.getCheckedNodes().map(item => item.id)
   const roleId = curRole.value?.id
   if (!menuIdList.length) {
     return ElMessage.warning('权限设置不能为空！')
@@ -117,14 +117,12 @@ function handleSubmit() {
     </div>
     <div class="manage-wrap">
       <div v-show="curRole" v-loading="loading" class="mb-16">
-
-        <AuthItem ref="webPermission" :tree="webList" :initial-checked="webChecked" :curRole="curRole"
+        <h3 class="mb-12 mt-12">权限设置</h3>
+        <TreeAuth v-model:selectedIds="webChecked" ref='webPermission' :treeList="webList" :curRole="curRole"
           :showOption="showOption" />
       </div>
       <div class="permission-bottom" v-if="!isNullOrUnDefOrisEmpty(curRole?.id)">
-        <OptionModel>
-          <el-button v-if="showOption" type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
-        </OptionModel>
+        <el-button v-if="showOption" type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
       </div>
     </div>
   </PageContainer>
@@ -132,28 +130,29 @@ function handleSubmit() {
 
 <style lang="scss" scoped>
 .auth-page {
-  min-height: calc(100vh - 110px);
+  height: calc(100vh - 120px);
   display: flex;
-  gap: 6px;
+  gap: 12px;
 }
 
 .manage-wrap {
   flex: 1;
+  background-color: #fff;
   position: relative;
-  background-color: var(--el-searchForm-bg-color);
+  padding: 0 24px;
+  height: 100%;
+  overflow-y: auto;
 
   .permission-bottom {
-    position: absolute;
+    position: sticky;
+    padding: 8px 0;
     bottom: 0;
-    right: 0;
-    width: 100%;
-    background-color: var(--el-searchForm-bg-color);
-    z-index: 999;
+    left: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 60px;
-    box-shadow: 0px -1px 4px rgba(10, 50, 97, 0.1);
+    background-color: #fff;
+    z-index: 999;
+    box-shadow: 0 0 2px #ccc;
   }
 }
 </style>
