@@ -39,7 +39,7 @@ const dataPage: IPage<any, any> = reactive({
   },
   dataList: [],
   defaultValueConversion: routeConversion,
-  selectPage: moneyManagement_api.A_queryPrepaidDepositRechargeApply
+  selectPage: moneyManagement_api.A_queryMerchantPrepaidDepositRechargeApply
 })
 const { searchQuery, toDownloadCenter } = pageHooks(dataPage)
 const getQueryParams = () => {
@@ -103,7 +103,7 @@ const exportHandler = () => {
         <YbtTableColumn prop="createUserName" label="申请人"></YbtTableColumn>
         <YbtTableColumn prop label="处理状态">
           <template #default="{ row }">{{ distributionConstant.getApplyOperationStatus(row.operationStatus)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
       </TableModel>
     </div>
