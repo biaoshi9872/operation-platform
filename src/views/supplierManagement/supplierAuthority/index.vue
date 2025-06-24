@@ -71,7 +71,7 @@ const options = []
     <div class="permission-tree">
         <div class="permission_content">
             <div class="permission-tree-box">
-                <h3>角色:渠道自营供应商</h3>
+                <h3 class="mt-12">角色:渠道自营供应商</h3>
                 <div class="color-#666 mb-12 mt-4">此用户角色及其权限为所有渠道自营供应商共用</div>
             </div>
             <div>
@@ -87,26 +87,25 @@ const options = []
 
 <style lang="scss" scoped>
 .permission-tree {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 140px);
-  overflow: scroll;
-  background-color: #fff;
-  position: relative;
-  padding:   0 24px ;
-  margin-top: 24px;
-
-  .permission-bottom——box {
-    position: sticky;
-    padding: 8px 0;
-    height: 100px;
-    bottom: 0;
-    left: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    height: calc(100vh - 140px);
+    overflow: scroll;
     background-color: #fff;
-    z-index: 999;
-    box-shadow: 0 0 2px #ccc;
-  }
+    position: relative;
+    padding: 0 24px;
+
+    .permission-bottom——box {
+        position: sticky;
+        padding: 8px 0;
+        height: 100px;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        background-color: #fff;
+        z-index: 999;
+        box-shadow: 0 0 2px #ccc;
+    }
 }
 </style>

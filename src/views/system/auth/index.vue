@@ -117,7 +117,9 @@ function handleSubmit() {
     </div>
     <div class="manage-wrap">
       <div v-show="curRole" v-loading="loading" class="mb-16">
-        <AuthItem ref="webPermission" :tree="webList" :initial-checked="webChecked" :curRole="curRole" :showOption="showOption" />
+
+        <AuthItem ref="webPermission" :tree="webList" :initial-checked="webChecked" :curRole="curRole"
+          :showOption="showOption" />
       </div>
       <div class="permission-bottom" v-if="!isNullOrUnDefOrisEmpty(curRole?.id)">
         <OptionModel>
@@ -134,10 +136,12 @@ function handleSubmit() {
   display: flex;
   gap: 6px;
 }
+
 .manage-wrap {
   flex: 1;
   position: relative;
   background-color: var(--el-searchForm-bg-color);
+
   .permission-bottom {
     position: absolute;
     bottom: 0;
