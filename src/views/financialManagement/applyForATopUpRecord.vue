@@ -127,8 +127,9 @@ const disposeHandler = (row: API.applyForATopUpRecordRecording) => {
             </div>
           </template>
           <template #default="{ row }">
-            <el-image style="width: 50px; height: 50px" :src="row.images" :zoom-rate="1.2" :max-scale="7"
-              :min-scale="0.2" :preview-src-list="[row.images]" :initial-index="4" fit="cover" />
+            <el-image style="width: 50px; height: 50px" :src="row.images?.split(',')?.[0]" :zoom-rate="1.2"
+              :max-scale="7" :min-scale="0.2" :preview-src-list="row.images?.split(',') || []" :initial-index="4"
+              fit="cover" />
           </template>
         </YbtTableColumn>
         <YbtTableColumn prop="operationStatus" label="处理状态" width="100">

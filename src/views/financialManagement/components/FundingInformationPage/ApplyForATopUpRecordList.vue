@@ -95,9 +95,9 @@ const exportHandler = () => {
             </div>
           </template>
           <template #default="{ row }">
-            <SkuDetail :goodDetail="row" :customAttribute="{
-              url: 'images'
-            }"></SkuDetail>
+            <el-image style="width: 50px; height: 50px" :src="row.images?.split(',')?.[0]" :zoom-rate="1.2"
+              :max-scale="7" :min-scale="0.2" :preview-src-list="row.images?.split(',') || []" :initial-index="4"
+              fit="cover" />
           </template>
         </YbtTableColumn>
         <YbtTableColumn prop="createUserName" label="申请人"></YbtTableColumn>
