@@ -100,7 +100,7 @@ router.beforeEach(async (to, from, next) => {
 })
 router.afterEach(to => {
   if (to.meta.title) {
-    document.title = `V链API开发平台-${to.meta.title}`
+    document.title = `V链API开放平台-${to.meta.title}`
   }
 })
 

@@ -36,7 +36,7 @@
                         @click="foldHandler('', item)">
                         <div v-if="item.fold" class="fold_content">
                             更多(<span class="value">{{ moreFoldNum(item)
-                            }}</span>)
+                                }}</span>)
                             <el-icon class="ml-8">
                                 <ArrowDown />
                             </el-icon>

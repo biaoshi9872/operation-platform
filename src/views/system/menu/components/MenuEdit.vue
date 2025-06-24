@@ -80,6 +80,10 @@ function handleOpen() {
     })
     formData.parentId = <number>props.current?.id
     formData.level = props.current ? formData.level : 3
+    formData.selfFlag = props.menuType == 4 ? 1 : 0
+    if (props?.current?.selfFlag == 1) {
+      formData.selfFlag = 1
+    }
     nextTick(() => {
       handleReset()
     })

@@ -66,10 +66,10 @@ export default function filedConfigHooks() {
   })
   //获取配置信息
   async function getConfigData(mainKey: string, subKey: string) {
-    filedConfigData.mainKey = mainKey
-    filedConfigData.subKey = subKey
-    const res = (await Promise.all([getFiledConfigData(), getFiledCacheData()])) as any
-    mergeFiledConfigData(res[0], res[1])
+    // filedConfigData.mainKey = mainKey
+    // filedConfigData.subKey = subKey
+    // const res = (await Promise.all([getFiledConfigData(), getFiledCacheData()])) as any
+    // mergeFiledConfigData(res[0], res[1])
   }
   //保存配置信息
   async function saveFiledConfigData(filedInfoList: any) {

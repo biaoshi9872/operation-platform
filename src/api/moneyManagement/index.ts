@@ -1,4 +1,5 @@
 import request from '@/utils/axios'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 // 分销商管理>财务充值
 
 class moneyManagement_api {
@@ -43,8 +44,15 @@ class moneyManagement_api {
 
   //消费记录查询
   A_queryPrepaidDepositLog(data: API.ConsumptionHistoryParams) {
+    const { getSystemOptionType } = isStateCheckHooks()
+    let api = ''
+    if (getSystemOptionType.value == '101') {
+      api = '/merchant/prepaidDepositLog/operation/queryPrepaidDepositLog'
+    } else {
+      api = '/merchant/prepaidDepositLog/merchant/queryPrepaidDepositLog'
+    }
     return request<API.ConsumptionHistoryList>({
-      url: '/merchant/prepaidDepositLog/operation/queryPrepaidDepositLog',
+      url: api,
       method: 'post',
       data
     })
@@ -129,6 +137,15 @@ class moneyManagement_api {
   A_updatePrepaidDepositRechargeWarnConfig(data: any) {
     return request({
       url: '/merchant/prepaidDeposit/merchant/updatePrepaidDepositRechargeWarnConfig',
+      method: 'post',
+      data
+    })
+  }
+
+  //查询查询预存款申请充值记录列表
+  A_queryMerchantPrepaidDepositRechargeApply(data: any) {
+    return request({
+      url: '/merchant/prepaidDepositRechargeApply/merchant/queryPrepaidDepositRechargeApply',
       method: 'post',
       data
     })

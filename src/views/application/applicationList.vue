@@ -53,7 +53,7 @@ const editApplicationHandler = (row: any) => {
   dataPage.curryInfo = row
   dataPage.showApplication = true
 }
-const getProjectId = (row:any) => {
+const getProjectId = (row: any) => {
   let appId = row.id
   let projectStr = encrypted(JSON.stringify({ appId }))
   let enPro = strEncodeURIComponent(projectStr)
@@ -68,12 +68,12 @@ const toApplicationHandler = (row: any) => {
   const enPro = getProjectId(row)
   setLocal('projectId', enPro)
   let url = window.location.origin
-  if(url.indexOf('localhost') > -1){
+  if (url.indexOf('localhost') > -1) {
     let path = `http://localhost:7071/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
     window.open(path, '_blank')
-  }else{
-  let path = `${url}/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
-  window.open(path, '_blank')
+  } else {
+    let path = `${url}/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
+    window.open(path, '_blank')
   }
 }
 </script>
@@ -111,7 +111,7 @@ const toApplicationHandler = (row: any) => {
         </el-table-column>
         <el-table-column prop="orgName" label="分支机构"></el-table-column>
         <el-table-column prop="createDate" label="创建时间"></el-table-column>
-        <el-table-column prop="createDate" label="创建人"></el-table-column>
+        <el-table-column prop="createUserName" label="创建人"></el-table-column>
         <el-table-column label="操作" width="200px" align="right">
           <template #default="{ row }">
             <el-button type="primary" link @click="toApplicationHandler(row)">应用管理</el-button>

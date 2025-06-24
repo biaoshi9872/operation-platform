@@ -241,8 +241,8 @@ const title = computed(() => {
             <el-tab-pane label="财务管理" name="4">
               <el-form-item label="是否预存款限制" prop="async" label-width="140px">
                 <el-radio-group v-model="data.formData.async" :disabled="props.type == 'edit'">
-                  <el-radio :value="true" :name="true">是</el-radio>
-                  <el-radio :value="false" :name="false">否</el-radio>
+                  <el-radio :value="false" :name="false">是</el-radio>
+                  <el-radio :value="true" :name="true">否</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="授信额度" prop="amountCreditLine" label-width="140px">
