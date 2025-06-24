@@ -99,6 +99,7 @@ function handleSubmit() {
 <template>
   <div class="permission-tree">
     <div class="permission_content">
+      <h3 class="mt-12 mb-12">权限设置</h3>
       <TreeAuth v-model:selectedIds="data.checkedList" ref='webPermission' :treeList="data.treeList">
       </TreeAuth>
     </div>
@@ -117,7 +118,7 @@ function handleSubmit() {
   background-color: #fff;
   position: relative;
   padding: 0 24px;
-  margin-top: 24px;
+
 
   .permission-bottom——box {
     position: sticky;

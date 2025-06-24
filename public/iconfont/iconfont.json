@@ -6,6 +6,13 @@
   "description": "开发平台",
   "glyphs": [
     {
+      "icon_id": "6184963",
+      "name": "账户管理",
+      "font_class": "zhanghuguanli",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
       "icon_id": "351765",
       "name": "商品",
       "font_class": "menu-commodity",
