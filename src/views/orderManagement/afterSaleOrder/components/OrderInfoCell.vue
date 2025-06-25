@@ -138,10 +138,12 @@ const FIELDS = computed(() => {
       label: '联系电话',
       prop: 'applyUserMobile'
     })
-    arr.push({
-      label: '供应商',
-      prop: 'supplyName'
-    })
+    if (getSystemOptionType.value == 101 || (getSystemOptionType.value == 201 && props.orderInfo.channelSource == 105)) {
+      arr.push({
+        label: '供应商',
+        prop: 'supplyName'
+      })
+    }
   }
   return arr
 })
