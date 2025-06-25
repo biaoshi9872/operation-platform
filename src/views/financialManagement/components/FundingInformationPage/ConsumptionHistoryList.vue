@@ -28,7 +28,7 @@ const dataPage: IPage<any, any> = reactive({
     curryInfo: {}
   },
   dataList: [],
-  toDownloadCenterApi: moneyManagement_api.A_exportRepaidDepositLog,
+  toDownloadCenterApi: moneyManagement_api.A_exportMerchantPrepaidDepositList,
   selectPage: moneyManagement_api.A_queryPrepaidDepositLog
 })
 const { searchQuery, toDownloadCenter } = pageHooks(dataPage)
@@ -77,8 +77,8 @@ const exportHandler = () => {
       <TableModel :page="dataPage.page" v-loading="dataPage.loadingData" :listTableData="dataPage.dataList"
         :dataPage="dataPage" @pagingQuery="searchQueryHarder">
         <template #option>
-          <AuthButton type="primary" authKey="XFJL_EXPORT" :loading="dataPage.loadingExport" @click="exportHandler">导出
-          </AuthButton>
+          <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出
+          </el-button>
         </template>
         <YbtTableColumn prop="appCode" label="应用编码" show-overflow-tooltip mix-width="140"></YbtTableColumn>
         <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip mix-width="140"></YbtTableColumn>

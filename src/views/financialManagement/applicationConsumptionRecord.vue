@@ -38,7 +38,7 @@ const dataPage: IPage<any, any> = reactive({
         curryInfo: {}
     },
     dataList: [],
-    toDownloadCenterApi: moneyManagement_api.A_exportRepaidDepositLog,
+    toDownloadCenterApi: moneyManagement_api.A_exportMerchantPrepaidDepositList,
     selectPage: moneyManagement_api.A_queryPrepaidDepositLog
 })
 const { searchQuery, toDownloadCenter } = pageHooks(dataPage)
@@ -102,7 +102,7 @@ const exportHandler = () => {
                 <YbtTableColumn prop="actionType" label="操作类型" mix-width="120">
                     <template #default="{ row }">{{
                         distributionConstant.getMoneyManagementOperationType1(row.actionType)
-                        }}</template>
+                    }}</template>
                 </YbtTableColumn>
                 <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
                 <YbtTableColumn prop="retailAmount" label="变更金额" mix-width="160">

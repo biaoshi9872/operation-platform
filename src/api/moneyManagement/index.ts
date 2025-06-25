@@ -79,7 +79,7 @@ class moneyManagement_api {
   //查询申请充值记录导出
   A_exportPrepaidDepositRechargeApply(data: any) {
     return request({
-      url: '/download/center/prepaidDepositRechargeApplyExport',
+      url: '/merchant/prepaidDepositRechargeApply/prepaidDepositRechargeApplyExport',
       method: 'post',
       data
     })
@@ -146,6 +146,17 @@ class moneyManagement_api {
   A_queryMerchantPrepaidDepositRechargeApply(data: any) {
     return request({
       url: '/merchant/prepaidDepositRechargeApply/merchant/queryPrepaidDepositRechargeApply',
+      method: 'post',
+      data
+    })
+  }
+
+  /**
+   * 机构流水导出
+   */
+  A_exportMerchantPrepaidDepositList(data: any) {
+    return request({
+      url: '/merchant/prepaidDeposit/prepaidDepositLogExport',
       method: 'post',
       data
     })

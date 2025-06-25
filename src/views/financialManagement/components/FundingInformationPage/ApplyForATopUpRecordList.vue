@@ -39,6 +39,7 @@ const dataPage: IPage<any, any> = reactive({
   },
   dataList: [],
   defaultValueConversion: routeConversion,
+  toDownloadCenterApi: moneyManagement_api.A_exportPrepaidDepositRechargeApply,
   selectPage: moneyManagement_api.A_queryMerchantPrepaidDepositRechargeApply
 })
 const { searchQuery, toDownloadCenter } = pageHooks(dataPage)
@@ -79,6 +80,10 @@ const exportHandler = () => {
     <div class="option_box">
       <TableModel :page="dataPage.page" v-loading="dataPage.loadingData" :listTableData="dataPage.dataList"
         :dataPage="dataPage" @pagingQuery="searchQueryHarder">
+        <template #option>
+          <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出
+          </el-button>
+        </template>
         <YbtTableColumn prop="rechargeNo" label="交易流水号"></YbtTableColumn>
         <YbtTableColumn prop="createDate" label="交易时间" width="160"></YbtTableColumn>
         <YbtTableColumn prop="amount" label="申请充值金额"></YbtTableColumn>

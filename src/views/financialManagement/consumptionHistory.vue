@@ -35,7 +35,7 @@ const dataPage: IPage<any, any> = reactive({
     curryInfo: {}
   },
   dataList: [],
-  toDownloadCenterApi: moneyManagement_api.A_exportRepaidDepositLog,
+  toDownloadCenterApi: moneyManagement_api.A_exportMerchantPrepaidDepositList,
   selectPage: moneyManagement_api.A_queryPrepaidDepositLog
 })
 const { searchQuery, toDownloadCenter } = pageHooks(dataPage)
