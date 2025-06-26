@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<IProp>(), {
   modelValue: '',
   multiple: false,
   valueKey: 'id',
-  valueLabel: 'orgName'
+  valueLabel: 'name'
 })
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
