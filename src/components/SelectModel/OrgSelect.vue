@@ -43,9 +43,20 @@ const init = () => {
     orgList.value = res
   })
 }
+
+const placeholder = computed(() => {
+  if (props.valueLabel == 'name') {
+    return '请选择机构名称'
+  } else if (props.valueLabel == 'customerName') {
+    return '请选择客户名称'
+  } else if (props.valueLabel == 'id') {
+    return '请选择机构ID'
+  } else
+    return '请选择'
+})
 </script>
 <template>
-  <el-select v-model="value" placeholder="请选择分支机构" filterable clearable collapse-tags :multiple="multiple"
+  <el-select v-model="value" :placeholder="placeholder" filterable clearable collapse-tags :multiple="multiple"
     collapse-tags-tooltip>
     <el-option v-for="(item, index) in orgList" :key="item[props.valueKey]" :value="item[props.valueKey]"
       :label="item[props.valueLabel]"></el-option>
