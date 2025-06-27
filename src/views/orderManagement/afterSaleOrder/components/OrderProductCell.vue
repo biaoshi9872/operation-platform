@@ -88,10 +88,10 @@ const afterSaleGoodsVO = computed(() => {
               <span>{{ `￥${row.platformSupplyPrice ?? '-'}` }}</span>
             </template>
           </YbtTableColumn>
-          <YbtTableColumn v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" prop="afterSaleRetailPrice"
+          <YbtTableColumn v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" prop="retailPrice"
             min-width="130" label="分销价">
             <template #default="{ row }">
-              <span>{{ `￥${row.afterSaleRetailPrice ?? '-'}` }}</span>
+              <span>{{ `￥${row.retailPrice ?? '-'}` }}</span>
             </template>
           </YbtTableColumn>
           <YbtTableColumn prop="goodsNum" label="数量">
