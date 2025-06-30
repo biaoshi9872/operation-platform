@@ -81,23 +81,21 @@ class user_api {
    * 退出登录
    */
   A_logout() {
-    // return request<any>({
-    //     url: '/sys/user/logout',
-    //     method: 'post',
-    // })
-    return Promise.resolve()
+    return request<any>({
+      url: '/system/loginOut',
+      method: 'post'
+    })
   }
 
   /**
    * 发送验证码
    */
   A_sendVerificationCode(data: any) {
-    // return request<any>({
-    //     url: '/sys/user/sendVerificationCode',
-    //     method: 'post',
-    //     data: data,
-    // })
-    return Promise.resolve()
+    return request<any>({
+      url: '/sys/user/sendVerificationCode',
+      method: 'post',
+      data: data
+    })
   }
 }
 
