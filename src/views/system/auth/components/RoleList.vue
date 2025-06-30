@@ -45,15 +45,16 @@ onMounted(() => {
       <el-input v-model="roleName" placeholder="请输入角色名称" clearable />
       <el-button type="primary" class="ml-5" @click="getList">查询</el-button>
     </div>
-    <el-table v-loading="loading" :data="roleList" highlight-current-row height="650px" @current-change="handleRoleChange">
+    <el-table v-loading="loading" :data="roleList" highlight-current-row height="650px"
+      @current-change="handleRoleChange">
       <YbtTableColumn v-if="!isOrgLast" label="机构类型" prop="name">
         <template #default="{ row }">{{ system_num.getRoleType(row.createRoleType) }}</template>
       </YbtTableColumn>
-      <YbtTableColumn label="角色" prop="name">
+      <YbtTableColumn label="角色" prop="name" minWidth="200">
         <template #default="{ row }">
           <div class="role-name">
             <div>{{ row.name }}</div>
-            <div class="role-type">{{ row.createRoleType == '2'?'(公用)':'' }}</div>
+            <div class="role-type">{{ row.createRoleType == '2' ? '(公用)' : '' }}</div>
           </div>
         </template>
       </YbtTableColumn>
@@ -65,13 +66,16 @@ onMounted(() => {
 .main_box {
   background-color: var(--el-searchForm-bg-color);
   min-width: 300px;
+
   .search-row {
     display: flex;
   }
+
   .role-name {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .role-type {
       color: var(--el-color-success);
     }
