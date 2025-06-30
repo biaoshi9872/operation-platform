@@ -104,7 +104,7 @@ const toApplicationHandler = (row: any) => {
         <el-table-column prop="appName" label="应用名称">
           <template #default="{ row }">
             <div class="flex items-center gap-2" @dblclick="getProjectId(row)">
-              <img style="width: 30px; height:30px" src="@/assets/images/app.png" />
+              <img style="width: 20px; height:20px" src="@/assets/images/login/app.png" />
               <OverflowTooltipCell :text="row.appName">{{ row.appName }}</OverflowTooltipCell>
             </div>
           </template>
