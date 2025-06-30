@@ -56,7 +56,7 @@ const deleteHandler = (row: any) => {
         }
     )
         .then(() => {
-            restrictedSalesArea_api.A_delTemplate(row.id).then(() => {
+            restrictedSalesArea_api.A_delTemplate(row.limitTemplateId).then(() => {
                 ElMessage.success('删除成功')
                 searchQueryHarder()
             })
