@@ -17,6 +17,33 @@ const emit = defineEmits<{
 const editorRef = ref<HTMLDivElement>()
 let editorView: EditorView | null = null
 
+// JSON 错误信息中文映射
+const errorMessages: Record<string, string> = {
+    'Expected property name or "}"': '需要属性名或 "}"',
+    'Expected "," or "}"': '需要 "," 或 "}"',
+    'Expected "," or "]"': '需要 "," 或 "]"',
+    'Expected value': '需要一个值',
+    'Expected property name': '需要属性名',
+    'Unexpected end of input': '意外的输入结束',
+    'Unexpected end of JSON input': 'JSON 意外结束',
+    'Unexpected token': '意外的符号',
+    'Invalid character': '无效的字符',
+    'Duplicate key': '重复的键名',
+    'Invalid number': '无效的数字',
+    'Invalid string': '无效的字符串',
+    'Invalid value': '无效的值'
+}
+
+// 转换错误信息为中文
+const translateError = (error: string): string => {
+    for (const [key, value] of Object.entries(errorMessages)) {
+        if (error.includes(key)) {
+            return value
+        }
+    }
+    return error
+}
+
 const createEditor = () => {
     if (!editorRef.value) return
 
@@ -34,7 +61,7 @@ const createEditor = () => {
                             JSON.parse(value)
                             emit('error', '')
                         } catch (e) {
-                            emit('error', (e as Error).message)
+                            emit('error', translateError((e as Error).message))
                         }
                     }
                 })
@@ -46,7 +73,7 @@ const createEditor = () => {
             parent: editorRef.value
         })
     } catch (error) {
-        console.error('CodeMirror initialization error:', error)
+        console.error('CodeMirror 初始化错误:', error)
     }
 }
 

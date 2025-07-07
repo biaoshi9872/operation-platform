@@ -322,6 +322,10 @@ const view = new EditorView({
 
                 <el-card class="mb-8">
                     <template #header>响应示例</template>
+                    <JsonEditor v-model="data.requestExample" @error="(err) => data.requestError = err" />
+                    <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
+                        {{ data.requestError }}
+                    </div>
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>公共参数</template>
@@ -344,14 +348,17 @@ const view = new EditorView({
                         <el-table-column label="类型" />
                         <el-table-column label="描述" />
                     </el-table>
-                    <h5>异常示例</h5>
-
                     <h5>错误说明</h5>
                     <el-table style="width: 100%">
                         <el-table-column label="错误码" prop="Date" />
                         <el-table-column label="错误信息" prop="Name" />
                         <el-table-column label="排查方法" prop="示例值" />
                     </el-table>
+                    <h5>异常示例</h5>
+                    <JsonEditor v-model="data.requestExample" @error="(err) => data.requestError = err" />
+                    <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
+                        {{ data.requestError }}
+                    </div>
                 </el-card>
 
             </el-form>
