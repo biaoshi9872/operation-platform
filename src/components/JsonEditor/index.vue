@@ -76,6 +76,11 @@ const createEditor = () => {
         console.error('CodeMirror 初始化错误:', error)
     }
 }
+// watch(() => props.modelValue, (value) => {
+//     if (editorView) {
+//         createEditor()
+//     }
+// })
 
 onMounted(() => {
     createEditor()
