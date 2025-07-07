@@ -59,20 +59,32 @@ const refreshAllRedisCacheHandler = () => {
 }
 const jsonValue = computed(() => {
   return function (val: any) {
+    if (!val) return val;
     try {
-      let res = JSON.parse(val)
-      if (Array.isArray(res)) {
-        return {
-          value: res
-        }
-      }
-      return res
+      return JSON.parse(val)
     } catch (e) {
-      // 转换出错，抛出异常
       return val
     }
   }
 })
+
+const isValidJson = (str: any) => {
+  if (typeof str !== 'string') return false;
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+const parseJson = (str: string) => {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return str;
+  }
+}
 </script>
 <template>
   <PageContainer class="main_box">
@@ -100,8 +112,13 @@ const jsonValue = computed(() => {
               <el-collapse>
                 <el-collapse-item :title="row.paramKey" name="1">
                   <div class="json_content">
-                    <json-viewer :value="jsonValue(row.paramValue)" :expand-depth="5" copyable boxed sort
-                      class="w-100% bg-#999"></json-viewer>
+                    <template v-if="isValidJson(row.paramValue)">
+                      <json-viewer :value="parseJson(row.paramValue)" :expand-depth="5" copyable boxed sort
+                        class="w-100% bg-#999"></json-viewer>
+                    </template>
+                    <template v-else>
+                      <pre>{{ row.paramValue }}</pre>
+                    </template>
                   </div>
                 </el-collapse-item>
               </el-collapse>

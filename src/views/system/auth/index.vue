@@ -112,7 +112,7 @@ function handleSubmit() {
 
 <template>
   <PageContainer class="auth-page">
-    <div class="border-rd-2 common-bg p-16">
+    <div class=" border-rd-2 common-bg p-16">
       <RoleList @change="handleRoleChange" />
     </div>
     <div class="manage-wrap">

@@ -48,37 +48,36 @@ onMounted(() => {
   })
 })
 
-const jsonValue = computed(() => {
-  return function (val: any) {
-    try {
-      let obj = JSON.parse(val)
-      return obj
-    } catch (e) {
-      // 转换出错，抛出异常
-      return val
-    }
+const isValidJson = (str: any) => {
+  if (typeof str !== 'string') return false;
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (e) {
+    return false;
   }
-})
+}
+
+const parseJson = (str: string) => {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return str;
+  }
+}
 </script>
 <template>
   <PageContainer class="main_box">
-    <SearchForm
-      v-model:model="dataPage.facade"
-      v-model:current-page="dataPage.page.page"
-      class="el-search-item"
-      @search="searchQueryHarder"
-    >
+    <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
+      @search="searchQueryHarder">
       <el-form-item label="主题">
         <el-select v-model.trim="dataPage.facade.topic">
           <el-option v-for="(item, index) in dataPage.topicList" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
-        <DatePickerRange
-          v-model:start="dataPage.facade.createDateStart"
-          dateRangeType="daterange"
-          v-model:end="dataPage.facade.createDateEnd"
-        ></DatePickerRange>
+        <DatePickerRange v-model:start="dataPage.facade.createDateStart" dateRangeType="daterange"
+          v-model:end="dataPage.facade.createDateEnd"></DatePickerRange>
       </el-form-item>
       <el-form-item label="是否消费">
         <el-select v-model.trim="dataPage.facade.deleteFlag">
@@ -87,11 +86,8 @@ const jsonValue = computed(() => {
         </el-select>
       </el-form-item>
       <el-form-item label="消费时间">
-        <DatePickerRange
-          v-model:start="dataPage.facade.deleteTimeStart"
-          dateRangeType="daterange"
-          v-model:end="dataPage.facade.deleteTimeEnd"
-        ></DatePickerRange>
+        <DatePickerRange v-model:start="dataPage.facade.deleteTimeStart" dateRangeType="daterange"
+          v-model:end="dataPage.facade.deleteTimeEnd"></DatePickerRange>
       </el-form-item>
       <el-form-item label="业务编号">
         <el-input v-model.trim="dataPage.facade.businessId" placeholder="请输入" clearable></el-input>
@@ -101,13 +97,8 @@ const jsonValue = computed(() => {
       </el-form-item>
     </SearchForm>
     <div class="option_box">
-      <TableModel
-        :page="dataPage.page"
-        :listTableData="dataPage.dataList"
-        :dataPage="dataPage"
-        :loading="dataPage.loadingData"
-        @pagingQuery="searchQueryHarder"
-      >
+      <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" :dataPage="dataPage"
+        :loading="dataPage.loadingData" @pagingQuery="searchQueryHarder">
         <YbtTableColumn prop="_id" label="消息id" width="180"></YbtTableColumn>
         <YbtTableColumn prop="businessId" label="业务编号" min-width="170"></YbtTableColumn>
         <YbtTableColumn prop="appCode" label="渠道编码" width="150"></YbtTableColumn>
@@ -117,8 +108,17 @@ const jsonValue = computed(() => {
             <div class="p-8">
               <el-collapse>
                 <el-collapse-item :title="dataPage.topic[row.topic]" name="1">
-                  <div class="json_content">
+                  <!-- <div class="json_content">
                     <json-viewer :value="jsonValue(row.body)" :expand-depth="5" copyable boxed sort class="w-100%"></json-viewer>
+                  </div> -->
+                  <div class="json_content">
+                    <template v-if="isValidJson(row.body)">
+                      <json-viewer :value="parseJson(row.body)" :expand-depth="5" copyable boxed sort
+                        class="w-100% bg-#999"></json-viewer>
+                    </template>
+                    <template v-else>
+                      <pre>{{ row.body }}</pre>
+                    </template>
                   </div>
                 </el-collapse-item>
               </el-collapse>
@@ -126,7 +126,7 @@ const jsonValue = computed(() => {
           </template>
         </YbtTableColumn>
         <YbtTableColumn prop="deleteFlag" label="是否消费" width="120">
-          <template #default="{ row }">{{row.deleteFlag == 1 ?"已消费":"未消费"}}</template>
+          <template #default="{ row }">{{ row.deleteFlag == 1 ? "已消费" : "未消费" }}</template>
         </YbtTableColumn>
         <YbtTableColumn prop="createTime" label="创建时间" width="170"></YbtTableColumn>
         <YbtTableColumn prop="createBy" label="创建者" width="170"></YbtTableColumn>

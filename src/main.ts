@@ -9,12 +9,15 @@ import 'uno.css'
 import router from './router'
 import store from './stores'
 import 'virtual:svg-icons-register'
+import '@codemirror/theme-one-dark'
+import JsonViewer from 'vue3-json-viewer'
+import 'vue3-json-viewer/dist/index.css'
 
 try {
   const app = createApp(App)
   vueGlobalProperties(app), elementPlus(app)
   directive(app)
-  app.use(router).use(store).mount('#app')
+  app.use(router).use(JsonViewer).use(store).mount('#app')
 } catch (err) {
   console.log(err)
 }
