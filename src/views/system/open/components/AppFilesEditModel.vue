@@ -87,6 +87,9 @@ const openHandler = () => {
     }
     getPublicParam()
 }
+const cellMouseLeave = () => {
+
+}
 const handleSubmit = () => {
     formRef.value.validate().then(() => {
         const cateId = props.nodeCurryInfo.id
