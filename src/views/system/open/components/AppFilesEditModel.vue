@@ -3,7 +3,8 @@ import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid';
 import apiFiles from '@/api/apiFiles/index'
-
+import { oneDark } from '@codemirror/theme-one-dark'
+import { vue } from '@codemirror/lang-vue'
 interface IProps {
     nodeCurryInfo: any,
     curryInfo: any
@@ -39,6 +40,7 @@ const data = reactive<any>({
         "res": [],
         "sort": 0
     },
+    json: '',
     formDataBK: {},
     formRules: {
         apiName: [{ required: true, message: '请输入接口名称', trigger: ['change', 'blur'] }],
@@ -84,6 +86,9 @@ const openHandler = () => {
         })
     }
     getPublicParam()
+}
+const cellMouseLeave = () => {
+
 }
 const handleSubmit = () => {
     formRef.value.validate().then(() => {
@@ -198,7 +203,35 @@ const tableRowClassName = ({ row, rowIndex }: { row: any; rowIndex: number }) =>
         if (data.curryRow?.['customerId_index'] == rowIndex) return 'success-row'
     }
 }
+const resExample = computed({
+    get() {
+        let val = {}
+        try {
+            val = JSON.parse(data.formData.resExample)
+        } catch (error) {
+            val = {}
+        }
+        return val
+    },
+    set(val) {
+        data.formData.resExample = JSON.stringify(val)
+    }
+})
 
+const reqExample = computed({
+    get() {
+        let val = {}
+        try {
+            val = JSON.parse(data.formData.reqExample)
+        } catch (error) {
+            val = {}
+        }
+        return val
+    },
+    set(val) {
+        data.formData.reqExample = JSON.stringify(val)
+    }
+})
 const getPublicParam = () => {
     apiFiles.A_getPublicParam().then((res) => {
         try {
@@ -220,6 +253,8 @@ const getPublicParam = () => {
     <el-drawer v-bind="$attrs" :close-on-click-modal="false" title="API文档编辑" size="60%" @closed="handleReset"
         @open="openHandler">
         <div class="api_container">
+            <codemirror v-model="data.json" placeholder="Code goes here..." :autofocus="true" :indent-with-tab="true"
+                :tab-size="2" :style="{ minHeight: '300px', maxHeight: '600px' }" />
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
                 <el-card title="基础信息" class="mb-8">
@@ -384,14 +419,14 @@ const getPublicParam = () => {
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>请求示例</template>
-                    <JsonEditor v-model="data.formData.reqExample" @error="(err) => data.requestError = err" />
+                    <!-- <json-editor-vue class="editor" v-model="reqExample" /> -->
                     <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
                         {{ data.requestError }}
                     </div>
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>响应示例</template>
-                    <JsonEditor v-model="data.formData.resExample" @error="(err) => data.resError = err" />
+                    <!-- <json-editor-vue class="editor" v-model="resExample" /> -->
                     <div v-if="data.resError" class="text-red-500 mt-2 text-sm">
                         {{ data.resError }}
                     </div>
@@ -456,6 +491,42 @@ const getPublicParam = () => {
 
     ::v-deep(.el-table__cell) {
         height: 65px !important;
+    }
+
+    ::v-deep(.jsoneditor-poweredBy, .jsoneditor-modes) {
+        display: none;
+    }
+
+    ::v-deep(.jsoneditor-modes) {
+        display: none !important;
+    }
+
+    ::v-deep(.jsoneditor-transform) {
+        display: none !important;
+    }
+
+    ::v-deep(.jsoneditor-transform) {
+        display: none !important;
+    }
+
+    ::v-deep(.jsoneditor-sort) {
+        display: none !important;
+    }
+
+    ::v-deep(.jsoneditor-repair) {
+        display: none !important;
+    }
+
+    ::v-deep(.full-screen) {
+        right: 8px;
+    }
+
+    ::v-deep(.jsoneditor-menu) {
+        background-color: var(--el-color-primary);
+    }
+
+    ::v-deep(.jsoneditor) {
+        border-color: var(--el-border-color-light);
     }
 }
 </style>
