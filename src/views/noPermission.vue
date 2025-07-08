@@ -1,7 +1,7 @@
 <template>
   <div class="layout-error">
     <div class="mb-24">
-      <img :style="{ width: '300px' }" src="@/assets/images/noPermission.png" alt=""></img>
+      <img :style="{ width: '300px' }" src="@/assets/images/noPermission.png" alt="" />
     </div>
     <div class="mb-24">暂无权限</div>
     <div class="mb-24">
