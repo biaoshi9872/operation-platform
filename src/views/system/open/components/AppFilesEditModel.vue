@@ -3,7 +3,8 @@ import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid';
 import apiFiles from '@/api/apiFiles/index'
-// import JsonEditorVue from 'json-editor-vue3'
+import { oneDark } from '@codemirror/theme-one-dark'
+import { vue } from '@codemirror/lang-vue'
 interface IProps {
     nodeCurryInfo: any,
     curryInfo: any
@@ -249,6 +250,8 @@ const getPublicParam = () => {
     <el-drawer v-bind="$attrs" :close-on-click-modal="false" title="API文档编辑" size="60%" @closed="handleReset"
         @open="openHandler">
         <div class="api_container">
+            <codemirror v-model="data.json" placeholder="Code goes here..." :autofocus="true" :indent-with-tab="true"
+                :tab-size="2" :style="{ minHeight: '300px', maxHeight: '600px' }" />
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
                 <el-card title="基础信息" class="mb-8">

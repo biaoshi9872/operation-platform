@@ -7,7 +7,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+
 // // import package1 from './package.'
 // console.log(package1.dependencies)
 
@@ -73,7 +73,6 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       vue(),
-      viteCommonjs(),
       AutoImport({
         include: [
           /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
