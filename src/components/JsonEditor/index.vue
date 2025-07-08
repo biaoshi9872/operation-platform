@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { EditorView } from '@codemirror/view'
+import { EditorView, keymap } from '@codemirror/view'
 import { EditorState } from '@codemirror/state'
 import { json } from '@codemirror/lang-json'
 import { basicSetup } from 'codemirror'
@@ -46,10 +46,9 @@ const translateError = (error: string): string => {
 
 const createEditor = () => {
     if (!editorRef.value) return
-
     try {
         const startState = EditorState.create({
-            doc: props.modelValue || '',
+            doc: props?.modelValue || '',
             extensions: [
                 basicSetup,
                 json(),
@@ -76,11 +75,16 @@ const createEditor = () => {
         console.error('CodeMirror 初始化错误:', error)
     }
 }
-// watch(() => props.modelValue, (value) => {
-//     if (editorView) {
-//         createEditor()
-//     }
-// })
+
+// 添加对 modelValue 的监听
+watch(() => props.modelValue, (newValue) => {
+    if (editorView && newValue !== editorView.state.doc.toString()) {
+        const transaction = editorView.state.update({
+            changes: { from: 0, to: editorView.state.doc.length, insert: newValue || '' }
+        })
+        editorView.dispatch(transaction)
+    }
+})
 
 onMounted(() => {
     createEditor()
@@ -89,6 +93,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
     editorView?.destroy()
 })
+
+
 </script>
 
 <template>

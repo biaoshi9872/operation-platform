@@ -21,7 +21,7 @@ const deFaultColumn = {
     columnName: '',
     columnId: null,
     columnType: '',
-    columnRequired: 0,
+    columnRequired: false,
     columnExample: '',
     columnDescription: '',
     child: []
@@ -136,6 +136,9 @@ const typeList = ref([
 const addParam = (type: string) => {
     let obj: any = cloneDeep(deFaultColumn)
     obj.columnId = uuidv4()
+    if (!data.formData[type]) {
+        data.formData[type] = []
+    }
     data.formData[type].push({
         ...obj
     })
@@ -228,7 +231,7 @@ const getPublicParam = () => {
                         :row-class-name="tableRowClassName" @row-click="(row: any) => {
                             handleRowClick(row, 'req')
                         }" @cell-mouse-leave="cellMouseLeave" @cell-mouse-enter="cellMouseEnter"
-                        :data="data.formData.req">
+                        :data="data.formData.req" border>
                         <el-table-column label="" width="55"></el-table-column>
                         <el-table-column type="index" label="序号" width="55"></el-table-column>
                         <el-table-column label="名称" show-overflow-tooltip>
@@ -253,11 +256,11 @@ const getPublicParam = () => {
                         <el-table-column label="是否必填" width="120px">
                             <template #default="scope">
                                 <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnRequired }}
+                                    {{ scope.row.columnRequired ? '是' : '否' }}
                                 </div>
                                 <el-select v-else v-model="scope.row.columnRequired" placeholder="请选择">
-                                    <el-option label="是" :value="1" />
-                                    <el-option label="否" :value="0" />
+                                    <el-option label="是" :value="true" />
+                                    <el-option label="否" :value="false" />
                                 </el-select>
                             </template>
                         </el-table-column>
@@ -295,7 +298,7 @@ const getPublicParam = () => {
                         :row-class-name="tableRowClassName" @row-click="(row: any) => {
                             handleRowClick(row, 'res')
                         }" @cell-mouse-leave="cellMouseLeave" @cell-mouse-enter="cellMouseEnter"
-                        :data="data.formData.res">
+                        :data="data.formData.res" border>
                         <el-table-column label="" width="55"></el-table-column>
                         <el-table-column type="index" label="序号" width="55"></el-table-column>
                         <el-table-column label="名称" show-overflow-tooltip>
@@ -320,11 +323,11 @@ const getPublicParam = () => {
                         <el-table-column label="是否必填" width="120px">
                             <template #default="scope">
                                 <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnRequired }}
+                                    {{ scope.row.columnRequired ? '是' : '否' }}
                                 </div>
                                 <el-select v-else v-model="scope.row.columnRequired" placeholder="请选择">
-                                    <el-option label="是" :value="1" />
-                                    <el-option label="否" :value="0" />
+                                    <el-option label="是" :value="true" />
+                                    <el-option label="否" :value="false" />
                                 </el-select>
                             </template>
                         </el-table-column>
@@ -354,7 +357,6 @@ const getPublicParam = () => {
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>请求示例</template>
-                    {{ data.formData.reqExample }}
                     <JsonEditor v-model="data.formData.reqExample" @error="(err) => data.requestError = err" />
                     <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
                         {{ data.requestError }}
@@ -402,7 +404,8 @@ const getPublicParam = () => {
                         <el-table-column label="错误信息" prop="errDescription" show-overflow-tooltip />
                     </el-table>
                     <h5>异常示例</h5>
-                    <JsonEditor v-model="data.publicParam.errExample" />
+                    <json-viewer :value="data.publicParam.errExample" :expand-depth="5" copyable boxed sort
+                        class="w-100% bg-#999"></json-viewer>
                 </el-card>
             </el-form>
         </div>
