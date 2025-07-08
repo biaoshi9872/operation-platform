@@ -1,7 +1,7 @@
 <template>
   <div class="layout-error">
     <div class="mb-24">
-        <img :style="{width: '300px'}" src="@/assets/images/noPermission.png" alt=""></img>
+      <img :style="{ width: '300px' }" src="@/assets/images/noPermission.png" alt="" />
     </div>
     <div class="mb-24">暂无权限</div>
     <div class="mb-24">
@@ -10,9 +10,8 @@
     </div>
   </div>
 </template>
-  
-  <script setup lang="ts">
-import { useRouter,useRoute } from 'vue-router'
+
+<script setup lang="ts">
 import { useRouterStore, useUserStore } from '@/stores'
 const router = useRouter()
 const $routerStore = useRouterStore()
@@ -29,14 +28,14 @@ const onBack = () => {
   router.back()
 }
 const onToHome = () => {
-  const firstRouter = getFistRouters( $routerStore?.routes)
+  const firstRouter = getFistRouters($routerStore?.routes)
   router.replace(firstRouter)
 }
 </script>
-  
-  <style lang="scss" scoped>
+
+<style lang="scss" scoped>
 .layout-error {
-height: 100%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -44,4 +43,3 @@ height: 100%;
   justify-content: center;
 }
 </style>
-  
