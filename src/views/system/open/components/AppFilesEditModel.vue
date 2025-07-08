@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid';
 import apiFiles from '@/api/apiFiles/index'
 import { oneDark } from '@codemirror/theme-one-dark'
-import { vue } from '@codemirror/lang-vue'
+
 interface IProps {
     nodeCurryInfo: any,
     curryInfo: any
@@ -203,7 +203,9 @@ const tableRowClassName = ({ row, rowIndex }: { row: any; rowIndex: number }) =>
         if (data.curryRow?.['customerId_index'] == rowIndex) return 'success-row'
     }
 }
+const extensions = [
 
+]
 const getPublicParam = () => {
     apiFiles.A_getPublicParam().then((res) => {
         try {
@@ -392,7 +394,7 @@ const getPublicParam = () => {
                     <template #header>请求示例</template>
                     <!-- <json-editor-vue class="editor" v-model="reqExample" /> -->
                     <codemirror v-model="data.formData.reqExample" placeholder="" :autofocus="true"
-                        :indent-with-tab="true" :tab-size="2" />
+                        :indent-with-tab="true" :tab-size="2" :extensions="extensions" />
                     <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
                         {{ data.requestError }}
                     </div>
@@ -400,7 +402,7 @@ const getPublicParam = () => {
                 <el-card class="mb-8">
                     <template #header>响应示例</template>
                     <codemirror v-model="data.formData.resExample" placeholder="" :autofocus="true"
-                        :indent-with-tab="true" :tab-size="2" />
+                        :indent-with-tab="true" :tab-size="2" :extensions="extensions" />
                     <div v-if="data.resError" class="text-red-500 mt-2 text-sm">
                         {{ data.resError }}
                     </div>
@@ -467,40 +469,10 @@ const getPublicParam = () => {
         height: 65px !important;
     }
 
-    ::v-deep(.jsoneditor-poweredBy, .jsoneditor-modes) {
-        display: none;
+    ::v-deep(.cm-scroller) {
+        border: 1px solid var(--el-border-color-light);
+        min-height: 100px;
     }
 
-    ::v-deep(.jsoneditor-modes) {
-        display: none !important;
-    }
-
-    ::v-deep(.jsoneditor-transform) {
-        display: none !important;
-    }
-
-    ::v-deep(.jsoneditor-transform) {
-        display: none !important;
-    }
-
-    ::v-deep(.jsoneditor-sort) {
-        display: none !important;
-    }
-
-    ::v-deep(.jsoneditor-repair) {
-        display: none !important;
-    }
-
-    ::v-deep(.full-screen) {
-        right: 8px;
-    }
-
-    ::v-deep(.jsoneditor-menu) {
-        background-color: var(--el-color-primary);
-    }
-
-    ::v-deep(.jsoneditor) {
-        border-color: var(--el-border-color-light);
-    }
 }
 </style>
