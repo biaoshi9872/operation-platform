@@ -3,7 +3,7 @@ import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid';
 import apiFiles from '@/api/apiFiles/index'
-import JsonEditorVue from 'json-editor-vue3'
+// import JsonEditorVue from 'json-editor-vue3'
 interface IProps {
     nodeCurryInfo: any,
     curryInfo: any
@@ -413,14 +413,14 @@ const getPublicParam = () => {
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>请求示例</template>
-                    <json-editor-vue class="editor" v-model="reqExample" />
+                    <!-- <json-editor-vue class="editor" v-model="reqExample" /> -->
                     <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
                         {{ data.requestError }}
                     </div>
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>响应示例</template>
-                    <json-editor-vue class="editor" v-model="resExample" />
+                    <!-- <json-editor-vue class="editor" v-model="resExample" /> -->
                     <div v-if="data.resError" class="text-red-500 mt-2 text-sm">
                         {{ data.resError }}
                     </div>
