@@ -136,6 +136,7 @@ const typeList = ref([
 const addParam = (type: string) => {
     let obj: any = cloneDeep(deFaultColumn)
     obj.columnId = uuidv4()
+    obj.columnParentId = 0
     if (!data.formData[type]) {
         data.formData[type] = []
     }
@@ -147,28 +148,42 @@ const handleRowClick = (row: any, type: string) => {
     data.curryRow = row
     data.type = type
 }
-const addChildrenParam = (type: string) => {
-    if (!data.curryRow) {
-        return ElMessage.error('请选择行')
-    }
+const addChildrenParam = (row: any, type: string) => {
     let obj: any = cloneDeep(deFaultColumn)
     obj.columnId = uuidv4()
-    data.curryRow.child.push({
+    obj.columnParentId = row.columnId
+    row.child.push({
         ...obj
     })
 }
+
+
+
 const handleDelete = (row: any, type: string) => {
-    if (!row) {
-        return ElMessage.error('请选择行')
+    if (!data.formData[type]) return;
+
+    // 如果是子节点（在child数组中）
+    if (row.columnParentId) {
+        // 找到父节点
+        const parentItem = data.formData[type].find((item: any) => item.columnId === row.columnParentId);
+        if (parentItem && parentItem.child) {
+            // 从父节点的child数组中删除当前节点
+            const childIndex = parentItem.child.findIndex((child: any) => child.columnId === row.columnId);
+            if (childIndex !== -1) {
+                parentItem.child.splice(childIndex, 1);
+            }
+        }
+    } else {
+        // 如果是父节点，删除它及其所有子节点
+        const index = data.formData[type].findIndex((item: any) => item.columnId === row.columnId);
+        if (index !== -1) {
+            data.formData[type].splice(index, 1);
+        }
     }
-    data.formData[type].splice(data.formData[type].indexOf(row), 1)
 }
 
-const cellMouseLeave = (row: any) => {
-    // if (row) {
-    //     row.edit = false
-    // }
-}
+
+
 const cellMouseEnter = (row: any) => {
     if (row) {
         row.edit = true
@@ -225,7 +240,6 @@ const getPublicParam = () => {
                     <template #header>请求参数说明</template>
                     <div class="flex justify-end mb-8">
                         <el-button type="primary" link @click="addParam('req')">添加参数</el-button>
-                        <el-button type="primary" link @click="addChildrenParam('req')">添加下级参数</el-button>
                     </div>
                     <el-table style="width: 100%" row-key="columnId" :tree-props="{ children: 'child' }"
                         :row-class-name="tableRowClassName" @row-click="(row: any) => {
@@ -283,7 +297,14 @@ const getPublicParam = () => {
                         </el-table-column>
                         <el-table-column label="操作" width="80px">
                             <template #default="scope">
-                                <el-button type="primary" link @click="handleDelete(scope.row, 'req')">删除</el-button>
+                                <div class="flex justify-center gap-2 items-center">
+                                    <span @click="addChildrenParam(scope.row, 'req')"><el-icon>
+                                            <CirclePlus />
+                                        </el-icon></span>
+                                    <span @click="handleDelete(scope.row, 'req')"><el-icon>
+                                            <Remove />
+                                        </el-icon></span>
+                                </div>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -292,7 +313,6 @@ const getPublicParam = () => {
                     <template #header>返回参数说明</template>
                     <div class="flex justify-end mb-8">
                         <el-button type="primary" link @click="addParam('res')">添加参数</el-button>
-                        <el-button type="primary" link @click="addChildrenParam('res')">添加下级参数</el-button>
                     </div>
                     <el-table style="width: 100%" row-key="columnId" :tree-props="{ children: 'child' }"
                         :row-class-name="tableRowClassName" @row-click="(row: any) => {
@@ -350,7 +370,14 @@ const getPublicParam = () => {
                         </el-table-column>
                         <el-table-column label="操作" width="80px">
                             <template #default="scope">
-                                <el-button type="primary" link @click="handleDelete(scope.row, 'res')">删除</el-button>
+                                <div class="flex justify-center gap-2 items-center">
+                                    <span @click="addChildrenParam(scope.row, 'res')"><el-icon>
+                                            <CirclePlus />
+                                        </el-icon></span>
+                                    <span @click="handleDelete(scope.row, 'res')"><el-icon>
+                                            <Remove />
+                                        </el-icon></span>
+                                </div>
                             </template>
                         </el-table-column>
                     </el-table>

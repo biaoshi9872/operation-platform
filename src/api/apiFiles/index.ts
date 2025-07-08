@@ -91,6 +91,29 @@ class apiFiles_api {
       method: 'post'
     })
   }
+
+  /**
+   * 意向公司列表
+   */
+
+  A_intentionCompanyList(data: any) {
+    return request<any>({
+      url: '/partner/page',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 获取接口文档
+   */
+  A_intentionCompanySave(data: any) {
+    return request<any>({
+      url: '/partner/save ',
+      method: 'post',
+      data
+    })
+  }
 }
 
 export default new apiFiles_api()
