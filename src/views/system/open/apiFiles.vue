@@ -17,6 +17,7 @@ const dataPage = reactive({
     tableData: []
 })
 const addHandler = () => {
+    dataPage.curryInfo = null
     dataPage.showFlModel = true
 }
 
@@ -53,6 +54,7 @@ const addApiHandler = () => {
     if (!dataPage.nodeCurryInfo) {
         return ElMessage.warning('请选择一个目录！')
     }
+    dataPage.curryInfo = null
     dataPage.showAddModel = true
 }
 
