@@ -39,6 +39,7 @@ const data = reactive<any>({
         "res": [],
         "sort": 0
     },
+    json: '',
     formDataBK: {},
     formRules: {
         apiName: [{ required: true, message: '请输入接口名称', trigger: ['change', 'blur'] }],
@@ -220,6 +221,7 @@ const getPublicParam = () => {
     <el-drawer v-bind="$attrs" :close-on-click-modal="false" title="API文档编辑" size="60%" @closed="handleReset"
         @open="openHandler">
         <div class="api_container">
+            <JsonEditor v-model="data.json" @error="(err) => data.requestError = err" />
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
                 <el-card title="基础信息" class="mb-8">
