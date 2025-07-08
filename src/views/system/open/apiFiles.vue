@@ -100,31 +100,37 @@ const initData = () => {
 <template>
     <div class="api_box_box">
         <div class="main_box_left">
-            <div class="flex items-center p-8">
-                <el-button type="primary" @click="addHandler">新增</el-button>
-            </div>
-            <div>
-                <el-tree node-key="id" :data="dataPage.treeList" :props="defaultProps" @node-click="handleNodeClick">
-                    <template #default="{ node, data }">
-                        <div class="custom-tree-node">
-                            <span class="node-title">
-                                <el-tooltip :content="node.label" placement="top">
-                                    <div ref="tooltipRef" class="overflow-tooltip-cell">
-                                        {{ node.label }}</div>
-                                </el-tooltip>
-                            </span>
-                            <div class="flex">
-                                <el-button type="primary" link @click="appendHandler(data)">
-                                    编辑
-                                </el-button>
-                                <el-button style="margin-left: 4px" type="danger" link @click="removeHandler(data)">
-                                    删除
-                                </el-button>
+            <el-card>
+                <template #header>
+                    <div class="flex  justify-between items-center">
+                        <h3>目录名称</h3>
+                        <el-button type="primary" @click="addHandler">新增</el-button>
+                    </div>
+                </template>
+                <div>
+                    <el-tree node-key="id" :data="dataPage.treeList" :props="defaultProps"
+                        @node-click="handleNodeClick">
+                        <template #default="{ node, data }">
+                            <div class="custom-tree-node">
+                                <span class="node-title">
+                                    <el-tooltip :content="node.label" placement="top">
+                                        <div ref="tooltipRef" class="overflow-tooltip-cell">
+                                            {{ node.label }}</div>
+                                    </el-tooltip>
+                                </span>
+                                <div class="flex">
+                                    <el-button type="primary" link @click="appendHandler(data)">
+                                        编辑
+                                    </el-button>
+                                    <el-button style="margin-left: 4px" type="danger" link @click="removeHandler(data)">
+                                        删除
+                                    </el-button>
+                                </div>
                             </div>
-                        </div>
-                    </template>
-                </el-tree>
-            </div>
+                        </template>
+                    </el-tree>
+                </div>
+            </el-card>
         </div>
         <div class="main_box_right">
             <div class="flex items-center mb-8">
@@ -180,6 +186,10 @@ const initData = () => {
         overflow: hidden;
         background-color: #fff;
         margin-right: 12px;
+
+        ::v-deep(.el-card.is-always-shadow) {
+            height: 100%;
+        }
     }
 
     .main_box_right {
