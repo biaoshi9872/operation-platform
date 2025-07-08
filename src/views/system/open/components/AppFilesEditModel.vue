@@ -3,7 +3,7 @@ import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid';
 import apiFiles from '@/api/apiFiles/index'
-
+import JsonEditorVue from 'json-editor-vue3'
 interface IProps {
     nodeCurryInfo: any,
     curryInfo: any
@@ -199,7 +199,35 @@ const tableRowClassName = ({ row, rowIndex }: { row: any; rowIndex: number }) =>
         if (data.curryRow?.['customerId_index'] == rowIndex) return 'success-row'
     }
 }
+const resExample = computed({
+    get() {
+        let val = {}
+        try {
+            val = JSON.parse(data.formData.resExample)
+        } catch (error) {
+            val = {}
+        }
+        return val
+    },
+    set(val) {
+        data.formData.resExample = JSON.stringify(val)
+    }
+})
 
+const reqExample = computed({
+    get() {
+        let val = {}
+        try {
+            val = JSON.parse(data.formData.reqExample)
+        } catch (error) {
+            val = {}
+        }
+        return val
+    },
+    set(val) {
+        data.formData.reqExample = JSON.stringify(val)
+    }
+})
 const getPublicParam = () => {
     apiFiles.A_getPublicParam().then((res) => {
         try {
@@ -221,7 +249,6 @@ const getPublicParam = () => {
     <el-drawer v-bind="$attrs" :close-on-click-modal="false" title="API文档编辑" size="60%" @closed="handleReset"
         @open="openHandler">
         <div class="api_container">
-            <JsonEditor v-model="data.json" @error="(err) => data.requestError = err" />
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
                 <el-card title="基础信息" class="mb-8">
@@ -386,14 +413,14 @@ const getPublicParam = () => {
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>请求示例</template>
-                    <JsonEditor v-model="data.formData.reqExample" @error="(err) => data.requestError = err" />
+                    <json-editor-vue class="editor" v-model="reqExample" />
                     <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
                         {{ data.requestError }}
                     </div>
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>响应示例</template>
-                    <JsonEditor v-model="data.formData.resExample" @error="(err) => data.resError = err" />
+                    <json-editor-vue class="editor" v-model="resExample" />
                     <div v-if="data.resError" class="text-red-500 mt-2 text-sm">
                         {{ data.resError }}
                     </div>
@@ -458,6 +485,42 @@ const getPublicParam = () => {
 
     ::v-deep(.el-table__cell) {
         height: 65px !important;
+    }
+
+    ::v-deep(.jsoneditor-poweredBy, .jsoneditor-modes) {
+        display: none;
+    }
+
+    ::v-deep(.jsoneditor-modes) {
+        display: none !important;
+    }
+
+    ::v-deep(.jsoneditor-transform) {
+        display: none !important;
+    }
+
+    ::v-deep(.jsoneditor-transform) {
+        display: none !important;
+    }
+
+    ::v-deep(.jsoneditor-sort) {
+        display: none !important;
+    }
+
+    ::v-deep(.jsoneditor-repair) {
+        display: none !important;
+    }
+
+    ::v-deep(.full-screen) {
+        right: 8px;
+    }
+
+    ::v-deep(.jsoneditor-menu) {
+        background-color: var(--el-color-primary);
+    }
+
+    ::v-deep(.jsoneditor) {
+        border-color: var(--el-border-color-light);
     }
 }
 </style>

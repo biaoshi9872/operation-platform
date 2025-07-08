@@ -9,10 +9,9 @@ import 'uno.css'
 import router from './router'
 import store from './stores'
 import 'virtual:svg-icons-register'
-import '@codemirror/theme-one-dark'
 import JsonViewer from 'vue3-json-viewer'
 import 'vue3-json-viewer/dist/index.css'
-
+// import JsonEditorVue from 'json-editor-vue3'
 try {
   const app = createApp(App)
   vueGlobalProperties(app), elementPlus(app)
