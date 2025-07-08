@@ -9,6 +9,7 @@ import 'uno.css'
 import router from './router'
 import store from './stores'
 import 'virtual:svg-icons-register'
+import 'vue3-json-viewer/dist/vue3-json-viewer.css'
 import JsonViewer from 'vue3-json-viewer'
 
 import VueCodemirror from 'vue-codemirror'
