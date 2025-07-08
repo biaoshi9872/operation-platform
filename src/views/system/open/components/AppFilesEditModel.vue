@@ -203,35 +203,7 @@ const tableRowClassName = ({ row, rowIndex }: { row: any; rowIndex: number }) =>
         if (data.curryRow?.['customerId_index'] == rowIndex) return 'success-row'
     }
 }
-const resExample = computed({
-    get() {
-        let val = {}
-        try {
-            val = JSON.parse(data.formData.resExample)
-        } catch (error) {
-            val = {}
-        }
-        return val
-    },
-    set(val) {
-        data.formData.resExample = JSON.stringify(val)
-    }
-})
 
-const reqExample = computed({
-    get() {
-        let val = {}
-        try {
-            val = JSON.parse(data.formData.reqExample)
-        } catch (error) {
-            val = {}
-        }
-        return val
-    },
-    set(val) {
-        data.formData.reqExample = JSON.stringify(val)
-    }
-})
 const getPublicParam = () => {
     apiFiles.A_getPublicParam().then((res) => {
         try {
@@ -253,8 +225,7 @@ const getPublicParam = () => {
     <el-drawer v-bind="$attrs" :close-on-click-modal="false" title="API文档编辑" size="60%" @closed="handleReset"
         @open="openHandler">
         <div class="api_container">
-            <codemirror v-model="data.json" placeholder="Code goes here..." :autofocus="true" :indent-with-tab="true"
-                :tab-size="2" :style="{ minHeight: '300px', maxHeight: '600px' }" />
+
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
                 <el-card title="基础信息" class="mb-8">
@@ -420,13 +391,16 @@ const getPublicParam = () => {
                 <el-card class="mb-8">
                     <template #header>请求示例</template>
                     <!-- <json-editor-vue class="editor" v-model="reqExample" /> -->
+                    <codemirror v-model="data.formData.reqExample" placeholder="" :autofocus="true"
+                        :indent-with-tab="true" :tab-size="2" />
                     <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
                         {{ data.requestError }}
                     </div>
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>响应示例</template>
-                    <!-- <json-editor-vue class="editor" v-model="resExample" /> -->
+                    <codemirror v-model="data.formData.resExample" placeholder="" :autofocus="true"
+                        :indent-with-tab="true" :tab-size="2" />
                     <div v-if="data.resError" class="text-red-500 mt-2 text-sm">
                         {{ data.resError }}
                     </div>

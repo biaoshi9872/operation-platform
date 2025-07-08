@@ -37,7 +37,7 @@
     "pinia": "^2.0.34",
     "tinymce": "^5.10.5",
     "vue3-json-excel": "1.0.10-alpha",
-    "vue3-json-viewer": "^2.2.2",
+    "vue3-json-viewer": "2.2.2",
     "vuedraggable": "^4.1.0",
     "@codemirror/lang-javascript": "^6.2.2",
     "@codemirror/lang-vue": "^0.1.3",
