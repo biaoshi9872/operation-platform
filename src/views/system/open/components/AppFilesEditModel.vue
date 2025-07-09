@@ -162,30 +162,28 @@ const addChildrenParam = (row: any, type: string) => {
     })
 }
 
-
-
 const handleDelete = (row: any, type: string) => {
-    debugger
     if (!data.formData[type]) return;
 
-    // 如果是子节点（在child数组中）
-    if (row.columnParentId && row.columnParentId != 0) {
-        // 找到父节点
-        const parentItem = data.formData[type].find((item: any) => item.columnId === row.columnParentId);
-        if (parentItem && parentItem.child) {
-            // 从父节点的child数组中删除当前节点
-            const childIndex = parentItem.child.findIndex((child: any) => child.columnId === row.columnId);
-            if (childIndex !== -1) {
-                parentItem.child.splice(childIndex, 1);
+    // 递归查找并删除节点
+    const deleteNode = (items: any[]) => {
+        for (let i = 0; i < items.length; i++) {
+            // 检查当前项
+            if (items[i].columnId === row.columnId) {
+                items.splice(i, 1);
+                return true;
+            }
+            // 检查子项
+            if (items[i].child && items[i].child.length) {
+                if (deleteNode(items[i].child)) {
+                    return true;
+                }
             }
         }
-    } else {
-        // 如果是父节点，删除它及其所有子节点
-        const index = data.formData[type].findIndex((item: any) => item.columnId === row.columnId);
-        if (index !== -1) {
-            data.formData[type].splice(index, 1);
-        }
-    }
+        return false;
+    };
+
+    deleteNode(data.formData[type]);
 }
 
 
