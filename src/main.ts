@@ -13,10 +13,12 @@ import 'vue3-json-viewer/dist/index.css'
 import JsonViewer from 'vue3-json-viewer'
 import VueCodemirror from 'vue-codemirror'
 import { basicSetup } from 'codemirror'
+import SelectModel from '@/components/SelectModel/index.vue'
 try {
   const app = createApp(App)
   vueGlobalProperties(app), elementPlus(app)
   directive(app)
+  app.component('SelectModel', SelectModel)
   app
     .use(router)
     .use(VueCodemirror, {
