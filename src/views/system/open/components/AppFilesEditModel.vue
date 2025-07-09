@@ -78,7 +78,7 @@ onMounted(() => {
 })
 const openHandler = () => {
     data.formData = {
-        ...data.formDataBK
+        ...cloneDeep(data.formDataBK)
     }
     if (props.curryInfo?.id) {
         apiFiles.A_apiInterfaceDetail(props.curryInfo.id).then((res) => {
@@ -165,10 +165,11 @@ const addChildrenParam = (row: any, type: string) => {
 
 
 const handleDelete = (row: any, type: string) => {
+    debugger
     if (!data.formData[type]) return;
 
     // 如果是子节点（在child数组中）
-    if (row.columnParentId) {
+    if (row.columnParentId && row.columnParentId != 0) {
         // 找到父节点
         const parentItem = data.formData[type].find((item: any) => item.columnId === row.columnParentId);
         if (parentItem && parentItem.child) {
