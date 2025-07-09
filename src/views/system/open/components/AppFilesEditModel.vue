@@ -256,13 +256,21 @@ const getPublicParam = () => {
                         :data="data.formData.req" border>
                         <el-table-column label="" width="55"></el-table-column>
                         <el-table-column type="index" label="序号" width="55"></el-table-column>
-                        <el-table-column label="名称" show-overflow-tooltip>
+                        <el-table-column label="字段" show-overflow-tooltip>
                             <template #default="scope">
                                 <div v-if="!scope.row.edit">
                                     {{ scope.row.columnName }}
                                 </div>
                                 <el-input v-else v-model="scope.row.columnName" type="" maxlength="100"
                                     show-word-limit></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="名称" show-overflow-tooltip>
+                            <template #default="scope">
+                                <div v-if="!scope.row.edit">
+                                    {{ scope.row.columnDescription }}
+                                </div>
+                                <el-input v-else v-model="scope.row.columnDescription" maxlength="500"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="类型" width="130px">
@@ -295,12 +303,12 @@ const getPublicParam = () => {
                                     show-word-limit></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column label="描述" show-overflow-tooltip>
+                        <el-table-column label="备注" show-overflow-tooltip>
                             <template #default="scope">
                                 <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnDescription }}
+                                    {{ scope.row.columnRemark }}
                                 </div>
-                                <el-input v-else v-model="scope.row.columnDescription" maxlength="500"></el-input>
+                                <el-input v-else v-model="scope.row.columnRemark" maxlength="500"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作" width="80px">
@@ -329,12 +337,21 @@ const getPublicParam = () => {
                         :data="data.formData.res" border>
                         <el-table-column label="" width="55"></el-table-column>
                         <el-table-column type="index" label="序号" width="55"></el-table-column>
-                        <el-table-column label="名称" show-overflow-tooltip>
+                        <el-table-column label="字段" show-overflow-tooltip>
                             <template #default="scope">
                                 <div v-if="!scope.row.edit">
                                     {{ scope.row.columnName }}
                                 </div>
                                 <el-input v-else v-model="scope.row.columnName" type="" maxlength="100"
+                                    show-word-limit></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="名称" show-overflow-tooltip>
+                            <template #default="scope">
+                                <div v-if="!scope.row.edit">
+                                    {{ scope.row.columnDescription }}
+                                </div>
+                                <el-input v-else v-model="scope.row.columnDescription" type="" maxlength="100"
                                     show-word-limit></el-input>
                             </template>
                         </el-table-column>
@@ -368,12 +385,12 @@ const getPublicParam = () => {
                                     show-word-limit></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column label="描述" show-overflow-tooltip>
+                        <el-table-column label="备注" show-overflow-tooltip>
                             <template #default="scope">
                                 <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnDescription }}
+                                    {{ scope.row.columnRemark }}
                                 </div>
-                                <el-input v-else v-model="scope.row.columnDescription" maxlength="500"></el-input>
+                                <el-input v-else v-model="scope.row.columnRemark" maxlength="500"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作" width="80px">
