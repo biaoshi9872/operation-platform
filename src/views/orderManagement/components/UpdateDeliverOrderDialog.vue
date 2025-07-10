@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { FormInstance } from 'element-plus';
+import { FormInstance, ElMessage } from 'element-plus';
 import { cloneDeep } from 'lodash-es';
-// import { A_updateExpress } from '@/api/orderManger'
+import systemUtils_api from '@/api/system/systemUtils'
 import { validatePhone } from '@/utils/validator';
 interface IProp {
   deliverInfo: any
@@ -69,19 +69,19 @@ const openHandler = () => {
 const deliveryType = computed(() => props.deliverInfo.deliveryType)
 
 const handleSubmit = () => {
-  const { id, outgoingCode, deliverGoodsList } = props.deliverInfo
+  const { packageId, outgoingCode, deliverGoodsList } = props.deliverInfo
   const detailIdSet = deliverGoodsList.map((el: any) => el.id)
 
   formRef.value.validate().then(() => {
     data.submitLoading = true
-    // A_updateExpress({ id, outgoingCode, deliveryType: deliveryType.value, detailIdSet, ...data.formDelivery })
-    //   .then(() => {
-    //     ElMessage.success('操作成功！')
-    //     handleClose()
-    //   })
-    //   .finally(() => {
-    //     data.submitLoading = false
-    //   })
+    systemUtils_api.A_updateExpress({ packageId, outgoingCode, deliveryType: deliveryType.value, detailIdSet, ...data.formDelivery })
+      .then(() => {
+        ElMessage.success('操作成功！')
+        handleClose()
+      })
+      .finally(() => {
+        data.submitLoading = false
+      })
   })
 }
 
@@ -94,14 +94,14 @@ const getExpressHandler = (value: any) => {
 }
 
 const queryComList = () => {
-  // A_getLogisticList({}).then((res: any) => {
-  //   data.formDeliveryList = res.list?.map((item: any) => {
-  //     return {
-  //       expressCompanyCode: item.companyCode,
-  //       expressCompanyName: item.companyName
-  //     }
-  //   })
-  // })
+  systemUtils_api.A_getLogisticList({}).then((res: any) => {
+    data.formDeliveryList = res?.map((item: any) => {
+      return {
+        expressCompanyCode: item.companyCode,
+        expressCompanyName: item.companyName
+      }
+    })
+  })
 }
 
 const { submitLoading, formDelivery, formDeliveryList, formRules } = toRefs(data)
