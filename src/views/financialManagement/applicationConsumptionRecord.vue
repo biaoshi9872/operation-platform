@@ -59,9 +59,6 @@ const exportHandler = () => {
 </script>
 <template>
     <PageContainer class="main_box">
-        {{ distributionConstant }}
-        <CustomSelectModel v-model.trim="dataPage.facade.actionType" :multiple="true"
-            :selectList="distributionConstant.C_moneyManagementOperationType1"></CustomSelectModel>
         <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
             @search="searchQueryHarder">
             <el-form-item label="应用编码">
