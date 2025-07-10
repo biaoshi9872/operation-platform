@@ -59,6 +59,7 @@ const exportHandler = () => {
 </script>
 <template>
     <PageContainer class="main_box">
+        <CustomSelectModel></CustomSelectModel>
         <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
             @search="searchQueryHarder">
             <el-form-item label="应用编码">
@@ -102,7 +103,7 @@ const exportHandler = () => {
                 <YbtTableColumn prop="actionType" label="操作类型" mix-width="120">
                     <template #default="{ row }">{{
                         distributionConstant.getMoneyManagementOperationType1(row.actionType)
-                    }}</template>
+                        }}</template>
                 </YbtTableColumn>
                 <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
                 <YbtTableColumn prop="retailAmount" label="变更金额" mix-width="160">
