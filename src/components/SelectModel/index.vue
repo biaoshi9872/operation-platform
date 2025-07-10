@@ -72,17 +72,8 @@ const changeHandler = (e: any) => {
 }
 </script>
 <template>
-  <el-select
-    v-bind="$attrs"
-    v-model="modelValue"
-    ref="selectRef"
-    clearable
-    @change="changeHandler"
-    :multiple="multipleTag"
-    collapse-tags
-    popper-class="select-w"
-    :filterable="filterable"
-  >
+  <el-select v-bind="$attrs" v-model="modelValue" ref="selectRef" clearable @change="changeHandler"
+    :multiple="multipleTag" collapse-tags popper-class="select-w" :filterable="filterable">
     <!-- 指定多选 -->
     <template v-if="multiple">
       <el-option v-for="item in optionList" :key="item.value" :label="item.label" :value="item.value"></el-option>
