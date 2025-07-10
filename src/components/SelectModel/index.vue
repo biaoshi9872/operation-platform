@@ -72,6 +72,17 @@ const changeHandler = (e: any) => {
 }
 </script>
 <template>
-  111
+  <el-select v-bind="$attrs" v-model="modelValue" ref="selectRef" clearable @change="changeHandler"
+    :multiple="multipleTag" collapse-tags popper-class="select-w" :filterable="filterable">
+    <!-- 指定多选 -->
+    <template v-if="multiple">
+      <el-option v-for="item in optionList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+    </template>
+    <!--- 自动转多选 -->
+    <template v-else>
+      <el-option v-if="!multipleTag" label="全部" value></el-option>
+      <el-option v-for="item in optionList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+    </template>
+  </el-select>
 </template>
 <style scoped lang="scss"></style>
