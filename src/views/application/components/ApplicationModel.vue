@@ -77,6 +77,7 @@ const openHandler = () => {
   data.formData = {
     ...data.formDataBK
   }
+  data.goodsTypeList = []
   if (props.curryInfo?.id) {
     getDetail()
   }

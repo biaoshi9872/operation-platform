@@ -43,5 +43,17 @@ class systemUtils_api {
       method: 'post'
     })
   }
+
+  /**
+   * 修改物流单号
+   *
+   */
+  A_updateExpress(data: any) {
+    return request<any>({
+      url: '/order/deliver/update/express',
+      method: 'post',
+      data: data
+    })
+  }
 }
 export default new systemUtils_api()
