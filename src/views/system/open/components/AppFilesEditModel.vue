@@ -238,7 +238,7 @@ const getPublicParam = () => {
                     <el-form-item label="接口名称" prop="apiName">
                         <el-input v-model="data.formData.apiName" maxlength="100" show-word-limit></el-input>
                     </el-form-item>
-                    <el-form-item label="API说明" prop="description">
+                    <el-form-item label="功能描述" prop="description">
                         <MyTinymce v-model="data.formData.description"></MyTinymce>
                     </el-form-item>
                 </el-card>

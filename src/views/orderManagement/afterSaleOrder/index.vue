@@ -50,6 +50,7 @@ const dataPage: IPage<any, any> = reactive({
     skuCode: '', //商品编码
     supplierIdList: [], //供应商
     desensitizationStatus: null, //是否脱敏
+    afterSaleNo: ''
   },
   facadeKz: {
     activeName: '1'
@@ -351,9 +352,13 @@ const initColumns = () => {
         <el-input v-model.trim="dataPage.facade.channelAfterSaleNo"
           :placeholder="getSystemOptionType == 401 ? '请输入售后单编号' : '请输入渠道售后单编号'"></el-input>
       </el-form-item>
+      <el-form-item v-if="getSystemOptionType != 401" label="售后编号" class="formItem" placeholder="请选择">
+        <el-input v-model.trim="dataPage.facade.afterSaleNo" placeholder="请输入售后编号"></el-input>
+      </el-form-item>
       <el-form-item label="商品名称" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuName" placeholder="请输入商品名称"></el-input>
       </el-form-item>
+
       <el-form-item v-if="getSystemOptionType != 401" label="渠道订单编号" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号"></el-input>
       </el-form-item>
@@ -387,6 +392,7 @@ const initColumns = () => {
               '售后单编号:' : '渠道售后单编号:' }} {{ row.channelAfterSaleNo
               }}</span>
             <span v-if="getSystemOptionType != 401">渠道订单编号:{{ row.channelOrderNo }}</span>
+            <span v-if="getSystemOptionType != 401">售后单编号:{{ row.afterSaleNo }}</span>
             <span>申请时间:{{ row.applyTime }}</span>
             <span v-if="getSystemOptionType == 101">供应商:{{ row.supplyName }}</span>
             <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105">供应商:{{ row.supplyName }}</span>

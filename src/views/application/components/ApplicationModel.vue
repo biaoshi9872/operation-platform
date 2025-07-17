@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import goods_api from '@/api/goods'
 import application_api from '@/api/system/application'
+import system_enum from '@/utils/constant/system'
 import { validateEmail, validatePhone } from '@/utils/validator'
 import { ElMessage, FormInstance } from 'element-plus'
+import { isNullOrUnDefOrisEmpty } from '@/utils/is'
 import { cloneDeep } from 'lodash-es'
 interface IProp {
   curryInfo: any
@@ -27,6 +29,7 @@ const data = reactive<IData>({
   formData: {
     appName: '',
     goodsSourceTypeCodeList: [],
+    appProfitModelDTOList: [],
     orgId: '',
     isSupportMask: false,
     developerEmail: '',
@@ -97,8 +100,16 @@ const handleSubmit = () => {
   formRef.value.validate().then(() => {
     data.submitLoading = true
     let goodsSourceTypeCodeList = data.formData.goodsSourceTypeCodeList.join(',')
+    let appProfitModelDTOList = data.formData.goodsSourceTypeCodeList.map((el: any) => {
+      let objInfo = data.goodsTypeList.find((item: any) => item.source == el) || {}
+      return {
+        source: el,
+        profitModel: objInfo.profitModel || null,
+        discountRate: objInfo.discountRate || null,
+      }
+    })
     application_api
-      .A_save({ ...data.formData, goodsSourceTypeCodeList, id: props.curryInfo?.id || null })
+      .A_save({ ...data.formData, goodsSourceTypeCodeList, appProfitModelDTOList, id: props.curryInfo?.id || null })
       .then(() => {
         ElMessage.success('操作成功!')
         handleClose()
@@ -134,12 +145,43 @@ const changeHandler = () => {
 }
 const getGoodTypeList = () => {
   goods_api.A_goodsSourceByOrg({ orgId: data.formData.orgId }).then((res: any) => {
-    data.goodsTypeList = res
+    data.goodsTypeList = res.map((item: any) => {
+      const info = data.formData.appProfitModelDTOList.find((el: any) => el.source == item.id) || {}
+      return {
+        ...item,
+        source: item.id,
+        profitModel: info.profitModel || null,
+        discountRate: info.discountRate || null,
+      }
+    })
+    //自动添加
+    if (data.goodsTypeList.find((el: any) => el.source == 105) && !data.formData.goodsSourceTypeCodeList.some((el: any) => el == 105)) {
+      data.formData.goodsSourceTypeCodeList.push(105)
+    }
   })
 }
+
+const profitModelValidate = (rule: any, value: any, callback: any, item: any) => {
+  if (data.formData.goodsSourceTypeCodeList.includes(item.source)) {
+    if (isNullOrUnDefOrisEmpty(item.profitModel)) {
+      return callback(new Error('请填写完整信息'))
+    } else {
+      if (item.profitModel == '1') {
+        if (isNullOrUnDefOrisEmpty(item.discountRate)) {
+          return callback(new Error('请填写完整信息'))
+        }
+        return callback()
+      }
+    }
+    return callback()
+  } else {
+    return callback()
+  }
+}
+
 </script>
 <template>
-  <el-dialog v-bind="$attrs" :title="title" width="500px" append-to-body @open="openHandler" draggable destroy-on-close
+  <el-dialog v-bind="$attrs" :title="title" width="750px" append-to-body @open="openHandler" draggable destroy-on-close
     :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
       <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
@@ -161,8 +203,38 @@ const getGoodTypeList = () => {
         </el-form-item>
         <el-form-item v-if="data.goodsTypeList.length" label="可见商品类型" prop="goodsSourceTypeCodeList">
           <el-checkbox-group v-model="data.formData.goodsSourceTypeCodeList" @change="goodsSourceChangeHandler">
-            <el-checkbox v-for="item in data.goodsTypeList" :disabled="item.displayEnum == 1" :label="item.sourceName"
-              :value="item.id" />
+            <div class="el-checkbox-group-box">
+              <el-checkbox v-for="item in data.goodsTypeList" :disabled="item.displayEnum == 1" :label="item.sourceName"
+                :value="item.id">
+                <el-form-item :prop="'goodsTypeList' + item.id" :rules="[
+                  {
+                    required: true, message: '请填写必填选项',
+                    validator: (rule, value, callback) => {
+                      return profitModelValidate(rule, value, callback, item)
+                    },
+                    trigger: ['blur', 'change']
+                  }
+                ]">
+                  <div class="content">
+                    <span class="title1">{{ item.sourceName }}</span>
+                    <span class="title2">盈利模式</span>
+                    <div>
+                      <el-select class="w-150 title3" v-model="item.profitModel" placeholder="请选择">
+                        <el-option key="1" label="扣点" :value="1">
+                        </el-option>
+                        <el-option v-if="item.source !== 105" key="2" label="赚差价" :value="2">
+                        </el-option>
+                      </el-select>
+                    </div>
+                    <div v-if="item.profitModel == '1'">
+                      <el-input-number class="w-150 title4" v-model="item.discountRate" :controls="false" :min="0"
+                        :max="99999999.99" />
+                      <span class="ml-4 color-#999999">%</span>
+                    </div>
+                  </div>
+                </el-form-item>
+              </el-checkbox>
+            </div>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(104)" label="是否支持脱敏" prop="isSupportMask">
@@ -184,4 +256,44 @@ const getGoodTypeList = () => {
     </template>
   </el-dialog>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep(.el-checkbox-group) {
+  width: 100%;
+}
+
+.el-checkbox-group-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #F7F8FA;
+  padding: 24px 8px;
+  padding-bottom: 0;
+
+  ::v-deep(.el-checkbox) {
+    border-bottom: 1px dashed #E5E5E5;
+    padding-bottom: 32px !important;
+    margin-bottom: 32px !important;
+  }
+
+  ::v-deep(.el-checkbox__label) {
+    display: flex;
+    flex: 1;
+
+    .content {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .title1 {
+        min-width: 100px;
+      }
+
+      .title2 {
+        width: 70px;
+        color: #999999;
+      }
+    }
+  }
+}
+</style>

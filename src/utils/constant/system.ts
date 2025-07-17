@@ -68,6 +68,24 @@ class system_enum {
   public getPriceMarkupStrategy(value: any) {
     return this.priceMarkupStrategy.find(item => item.value == value)?.label || '--'
   }
+
+  /**
+   * 盈利模式
+   */
+  public profitModeList = [
+    {
+      value: 1,
+      label: '扣点'
+    },
+    {
+      value: 2,
+      label: '赚差价'
+    }
+  ]
+
+  public getProfitMode(value: any) {
+    return this.profitModeList.find(item => item.value == value)?.label || '--'
+  }
 }
 
 export default new system_enum()
