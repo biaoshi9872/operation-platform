@@ -133,29 +133,34 @@ class goodPoor_enum extends baseEnum {
    */
   public sourceTypeList = [
     {
+      label: '驿宝通精选',
+      value: '104',
+      imageUrl: new URL('@/assets/images/poor/ybt.png', import.meta.url).href
+    },
+    {
       label: '京东',
       value: '1',
-      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/2efe916f3cef45c0b5b145f10dcd5714.png'
+      imageUrl: new URL('@/assets/images/poor/jd.png', import.meta.url).href
     },
     {
       label: '京东生鲜',
       value: '11',
-      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/94d8ddb3278b436abad8ae2d98ded12d.png'
+      imageUrl: new URL('@/assets/images/poor/jdsx.png', import.meta.url).href
     },
     {
       label: '天猫超市',
       value: '55',
-      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/32506076a18c4986881606143fe73031.png'
+      imageUrl: new URL('@/assets/images/poor/tm.png', import.meta.url).href
     },
     {
-      label: '驿宝通精选',
-      value: '104',
-      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/90486b07e16e499f86870c17a6c016bc.png'
+      label: '平台虚拟商品',
+      value: '106',
+      imageUrl: new URL('@/assets/images/poor/ptjx.png', import.meta.url).href
     },
     {
       label: '渠道自营',
       value: '105',
-      imageUrl: 'https://ycbsaas-bucket.oss-cn-hangzhou.aliyuncs.com/images/20250603/7d796fc370ed41bfa718e5db24d91597.png'
+      imageUrl: new URL('@/assets/images/poor/zy.png', import.meta.url).href
     }
   ]
 
