@@ -1,6 +1,6 @@
 # VERSION 1  
 # Author: mcdull
- 
+
 # 定义基础包
 #FROM nginx:1.17.2
 FROM registry-vpc.cn-hangzhou.aliyuncs.com/nfc/ycb_nginx:1.17.2

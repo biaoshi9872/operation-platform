@@ -51,6 +51,14 @@ class distributionConstant {
     {
       label: '充值',
       value: '3'
+    },
+    {
+      label: '服务费结算',
+      value: '4'
+    },
+    {
+      label: '售后订单服务费退款',
+      value: '5'
     }
   ]
 
