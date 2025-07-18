@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid';
 import apiFiles from '@/api/apiFiles/index'
 import { oneDark } from '@codemirror/theme-one-dark'
-
+import EditCell from './EditCell.vue'
 interface IProps {
     nodeCurryInfo: any,
     curryInfo: any
@@ -87,9 +87,7 @@ const openHandler = () => {
     }
     getPublicParam()
 }
-const cellMouseLeave = () => {
 
-}
 const handleSubmit = () => {
     formRef.value.validate().then(() => {
         const cateId = props.nodeCurryInfo.id
@@ -186,12 +184,54 @@ const handleDelete = (row: any, type: string) => {
     deleteNode(data.formData[type]);
 }
 
+const upMove = (row: any, type: string) => {
+    if (!data.formData[type]) return;
+    // 递归查找节点及其父节点
+    const findNodeAndParent = (items: any[]): any => {
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].columnId === row.columnId) {
+                return { array: items, index: i };
+            }
+            if (items[i].child && items[i].child.length) {
+                const result = findNodeAndParent(items[i].child);
+                if (result) return result;
+            }
+        }
+        return null;
+    };
 
+    const result = findNodeAndParent(data.formData[type]);
+    if (!result) return;
 
-const cellMouseEnter = (row: any) => {
-    if (row) {
-        row.edit = true
+    const { array, index } = result;
+    if (index > 0) {
+        // 交换当前节点与前一个节点的位置
+        [array[index], array[index - 1]] = [array[index - 1], array[index]];
     }
+}
+
+const downMove = (row: any, type: string) => {
+    if (!data.formData[type]) return;
+
+    // 递归查找节点及其父节点
+    const findNodeAndParent = (items: any[], parentArray: any[] | null = null): any => {
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].columnId === row.columnId) {
+                return { node: items[i], index: i, parent: parentArray || items };
+            }
+            if (items[i].child && items[i].child.length) {
+                const result = findNodeAndParent(items[i].child, items[i].child);
+                if (result) return result;
+            }
+        }
+        return null;
+    };
+
+    const result = findNodeAndParent(data.formData[type]);
+    if (!result) return;
+    const { index, parent } = result;
+    if (index === parent.length - 1) return;
+    [parent[index], parent[index + 1]] = [parent[index + 1], parent[index]];
 }
 const tableRowClassName = ({ row, rowIndex }: { row: any; rowIndex: number }) => {
     if (row.hasOwnProperty('columnId')) {
@@ -202,9 +242,6 @@ const tableRowClassName = ({ row, rowIndex }: { row: any; rowIndex: number }) =>
         if (data.curryRow?.['customerId_index'] == rowIndex) return 'success-row'
     }
 }
-const extensions = [
-
-]
 const getPublicParam = () => {
     apiFiles.A_getPublicParam().then((res) => {
         try {
@@ -220,7 +257,9 @@ const getPublicParam = () => {
         }
     })
 }
-
+const handleCellClick = (row: any, column: any, cell: any, type: string) => {
+    row[column.property + 'edit'] = true
+}
 </script>
 <template>
     <el-drawer v-bind="$attrs" :close-on-click-modal="false" title="API文档编辑" size="60%" @closed="handleReset"
@@ -251,74 +290,57 @@ const getPublicParam = () => {
                     <el-table style="width: 100%" row-key="columnId" :tree-props="{ children: 'child' }"
                         :row-class-name="tableRowClassName" @row-click="(row: any) => {
                             handleRowClick(row, 'req')
-                        }" @cell-mouse-leave="cellMouseLeave" @cell-mouse-enter="cellMouseEnter"
-                        :data="data.formData.req" border>
-                        <el-table-column label="" width="55"></el-table-column>
+                        }" @cell-click="(row: any, column: any, cell: any) => {
+                            handleCellClick(row, column, cell, 'req')
+                        }" :data="data.formData.req" border>
                         <el-table-column type="index" label="序号" width="55"></el-table-column>
-                        <el-table-column label="字段" show-overflow-tooltip>
+                        <el-table-column label="字段" min-width="140px" prop="columnName" show-overflow-tooltip>
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnName }}
-                                </div>
-                                <el-input v-else v-model="scope.row.columnName" type="" maxlength="100"
-                                    show-word-limit></el-input>
+                                <EditCell :row="scope.row" prop="columnName" type="string"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="名称" show-overflow-tooltip>
+                        <el-table-column label="名称" show-overflow-tooltip prop="columnDescription">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnDescription }}
-                                </div>
-                                <el-input v-else v-model="scope.row.columnDescription" maxlength="500"></el-input>
+                                <EditCell :row="scope.row" prop="columnDescription" type="string"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="类型" width="130px">
+                        <el-table-column label="类型" width="120px" prop="columnType">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnType }}
-                                </div>
-                                <el-select v-else v-model="scope.row.columnType" placeholder="请选择">
-                                    <el-option v-for="item in typeList" :label="item.label" :value="item.value" />
-                                </el-select>
+                                <EditCell :row="scope.row" prop="columnType" type="select" :options="typeList">
+                                </EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="是否必填" width="120px">
+                        <el-table-column label="是否必填" width="120px" prop="columnRequired">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnRequired ? '是' : '否' }}
-                                </div>
-                                <el-select v-else v-model="scope.row.columnRequired" placeholder="请选择">
-                                    <el-option label="是" :value="true" />
-                                    <el-option label="否" :value="false" />
-                                </el-select>
+                                <EditCell :row="scope.row" prop="columnRequired" type="select"
+                                    :options="[{ label: '是', value: true }, { label: '否', value: false }]"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="示例值" show-overflow-tooltip>
+                        <el-table-column label="示例值" show-overflow-tooltip width="140px" prop="columnExample">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnExample }}
-                                </div>
-                                <el-input v-else v-model="scope.row.columnExample" type="" maxlength="100"
-                                    show-word-limit></el-input>
+                                <EditCell :row="scope.row" prop="columnExample" type="string"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="备注" show-overflow-tooltip>
+                        <el-table-column label="备注" show-overflow-tooltip prop="columnRemark">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnRemark }}
-                                </div>
-                                <el-input v-else v-model="scope.row.columnRemark" maxlength="500"></el-input>
+                                <EditCell :row="scope.row" prop="columnRemark" type="string"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" width="80px">
+                        <el-table-column label="操作" width="140px" align="right">
                             <template #default="scope">
                                 <div class="flex justify-center gap-2 items-center">
-                                    <span @click="addChildrenParam(scope.row, 'req')"><el-icon>
+                                    <div @click="upMove(scope.row, 'req')"><el-icon>
+                                            <Upload />
+                                        </el-icon></div>
+                                    <div @click="downMove(scope.row, 'req')"><el-icon>
+                                            <Download />
+                                        </el-icon></div>
+                                    <div @click="addChildrenParam(scope.row, 'req')"><el-icon>
                                             <CirclePlus />
-                                        </el-icon></span>
-                                    <span @click="handleDelete(scope.row, 'req')"><el-icon>
+                                        </el-icon></div>
+                                    <div @click="handleDelete(scope.row, 'req')"><el-icon>
                                             <Remove />
-                                        </el-icon></span>
+                                        </el-icon></div>
                                 </div>
                             </template>
                         </el-table-column>
@@ -332,75 +354,57 @@ const getPublicParam = () => {
                     <el-table style="width: 100%" row-key="columnId" :tree-props="{ children: 'child' }"
                         :row-class-name="tableRowClassName" @row-click="(row: any) => {
                             handleRowClick(row, 'res')
-                        }" @cell-mouse-leave="cellMouseLeave" @cell-mouse-enter="cellMouseEnter"
-                        :data="data.formData.res" border>
-                        <el-table-column label="" width="55"></el-table-column>
+                        }" @cell-click="(row: any, column: any, cell: any) => {
+                            handleCellClick(row, column, cell, 'req')
+                        }" :data="data.formData.res" border>
                         <el-table-column type="index" label="序号" width="55"></el-table-column>
-                        <el-table-column label="字段" show-overflow-tooltip>
+                        <el-table-column label="字段" min-width="140px" prop="columnName" show-overflow-tooltip>
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnName }}
-                                </div>
-                                <el-input v-else v-model="scope.row.columnName" type="" maxlength="100"
-                                    show-word-limit></el-input>
+                                <EditCell :row="scope.row" prop="columnName" type="string"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="名称" show-overflow-tooltip>
+                        <el-table-column label="名称" show-overflow-tooltip prop="columnDescription">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnDescription }}
-                                </div>
-                                <el-input v-else v-model="scope.row.columnDescription" type="" maxlength="100"
-                                    show-word-limit></el-input>
+                                <EditCell :row="scope.row" prop="columnDescription" type="string"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="类型" width="130px">
+                        <el-table-column label="类型" width="120px" prop="columnType">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnType }}
-                                </div>
-                                <el-select v-else v-model="scope.row.columnType" placeholder="请选择">
-                                    <el-option v-for="item in typeList" :label="item.label" :value="item.value" />
-                                </el-select>
+                                <EditCell :row="scope.row" prop="columnType" type="select" :options="typeList">
+                                </EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="是否必填" width="120px">
+                        <el-table-column label="是否必填" width="120px" prop="columnRequired">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnRequired ? '是' : '否' }}
-                                </div>
-                                <el-select v-else v-model="scope.row.columnRequired" placeholder="请选择">
-                                    <el-option label="是" :value="true" />
-                                    <el-option label="否" :value="false" />
-                                </el-select>
+                                <EditCell :row="scope.row" prop="columnRequired" type="select"
+                                    :options="[{ label: '是', value: true }, { label: '否', value: false }]"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="示例值" show-overflow-tooltip>
+                        <el-table-column label="示例值" show-overflow-tooltip width="140px" prop="columnExample">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnExample }}
-                                </div>
-                                <el-input v-else v-model="scope.row.columnExample" type="" maxlength="100"
-                                    show-word-limit></el-input>
+                                <EditCell :row="scope.row" prop="columnExample" type="string"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="备注" show-overflow-tooltip>
+                        <el-table-column label="备注" show-overflow-tooltip prop="columnRemark">
                             <template #default="scope">
-                                <div v-if="!scope.row.edit">
-                                    {{ scope.row.columnRemark }}
-                                </div>
-                                <el-input v-else v-model="scope.row.columnRemark" maxlength="500"></el-input>
+                                <EditCell :row="scope.row" prop="columnRemark" type="string"></EditCell>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" width="80px">
+                        <el-table-column label="操作" width="140px" align="right">
                             <template #default="scope">
                                 <div class="flex justify-center gap-2 items-center">
-                                    <span @click="addChildrenParam(scope.row, 'res')"><el-icon>
+                                    <div @click="upMove(scope.row, 'res')"><el-icon>
+                                            <Upload />
+                                        </el-icon></div>
+                                    <div @click="downMove(scope.row, 'res')"><el-icon>
+                                            <Download />
+                                        </el-icon></div>
+                                    <div @click="addChildrenParam(scope.row, 'res')"><el-icon>
                                             <CirclePlus />
-                                        </el-icon></span>
-                                    <span @click="handleDelete(scope.row, 'res')"><el-icon>
+                                        </el-icon></div>
+                                    <div @click="handleDelete(scope.row, 'res')"><el-icon>
                                             <Remove />
-                                        </el-icon></span>
+                                        </el-icon></div>
                                 </div>
                             </template>
                         </el-table-column>
@@ -410,7 +414,7 @@ const getPublicParam = () => {
                     <template #header>请求示例</template>
                     <!-- <json-editor-vue class="editor" v-model="reqExample" /> -->
                     <codemirror v-model="data.formData.reqExample" placeholder="" :autofocus="true"
-                        :indent-with-tab="true" :tab-size="2" :extensions="extensions" />
+                        :indent-with-tab="true" :tab-size="2" :extensions="[]" />
                     <div v-if="data.requestError" class="text-red-500 mt-2 text-sm">
                         {{ data.requestError }}
                     </div>
@@ -418,7 +422,7 @@ const getPublicParam = () => {
                 <el-card class="mb-8">
                     <template #header>响应示例</template>
                     <codemirror v-model="data.formData.resExample" placeholder="" :autofocus="true"
-                        :indent-with-tab="true" :tab-size="2" :extensions="extensions" />
+                        :indent-with-tab="true" :tab-size="2" :extensions="[]" />
                     <div v-if="data.resError" class="text-red-500 mt-2 text-sm">
                         {{ data.resError }}
                     </div>
