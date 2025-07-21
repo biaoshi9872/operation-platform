@@ -72,10 +72,23 @@ const selectList = computed(() => {
     }
 })
 
+const valueTile = computed(() => {
+    return function (row: any) {
+        switch (props.prop) {
+            case 'columnType':
+                return row.columnType
+            case 'columnRequired':
+                return row.columnRequired ? '是' : '否'
+            default:
+                return row[props.prop]
+        }
+    }
+})
+
 </script>
 <template>
     <span v-if="!row[props.prop + 'edit']" @click="clickEditHandler">
-        {{ row[prop] }}
+        {{ valueTile(row) }}
     </span>
     <span v-else>
         <el-input v-if="type === 'string'" v-model="row[prop]" class="w-[100px]" type="" maxlength="100" show-word-limit

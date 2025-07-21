@@ -36,6 +36,7 @@ const data = reactive<any>({
         "description": "",
         "reqExample": "",
         "resExample": "",
+        reqSdk: '',
         "req": [],
         "res": [],
         "sort": 0
@@ -426,6 +427,11 @@ const handleCellClick = (row: any, column: any, cell: any, type: string) => {
                     <div v-if="data.resError" class="text-red-500 mt-2 text-sm">
                         {{ data.resError }}
                     </div>
+                </el-card>
+                <el-card class="mb-8">
+                    <template #header>SDK示例</template>
+                    <codemirror v-model="data.formData.reqSdk" placeholder="" :autofocus="true" :indent-with-tab="true"
+                        :tab-size="2" :extensions="[]" />
                 </el-card>
                 <el-card class="mb-8">
                     <template #header>公共参数</template>
