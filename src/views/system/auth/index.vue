@@ -146,10 +146,13 @@ function handleSubmit() {
   .permission-bottom {
     position: sticky;
     padding: 8px 0;
+    height: 60px;
+    margin: 8px 0;
     bottom: 0;
     left: 0;
     display: flex;
     justify-content: center;
+    align-items: center;
     background-color: #fff;
     z-index: 999;
     box-shadow: 0 0 2px #ccc;

@@ -118,7 +118,7 @@ const updataPwdHandler = (row: any) => {
                     <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
                 </template>
                 <el-table-column label="编号" prop="accountCode" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="创建时间" prop="createTime" min-width="120px" align="left"></el-table-column>
+                <el-table-column label="创建时间" prop="createTime" min-width="170px" align="left"></el-table-column>
                 <el-table-column label="所属分支机构" prop="orgName" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="供应商名称" prop="supplyName" min-width="120px" align="left"></el-table-column>
                 <el-table-column label="联系人" prop="contractName" min-width="120px" align="left"></el-table-column>
@@ -129,7 +129,7 @@ const updataPwdHandler = (row: any) => {
                         {{ supplierEnum.getAccountStatus(row.status) }}
                     </template>
                 </el-table-column>
-                <el-table-column label="账号有效期" prop="status" min-width="120px" align="left">
+                <el-table-column label="账号有效期" prop="status" min-width="170px" align="left">
                     <template #default="{ row }">
                         {{ row.accountValidStart }} 至 {{ row.accountValidEnd }}
                     </template>
@@ -139,7 +139,7 @@ const updataPwdHandler = (row: any) => {
                         {{ supplierEnum.getBusinessScope(row.businessScope) }}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" prop="accountValidStart" min-width="140px" align="right">
+                <el-table-column label="操作" prop="accountValidStart" min-width="170px" align="right" fixed="right">
                     <template #default="{ row }">
                         <el-button type="primary" link @click="editAccountHandler(row)">编辑</el-button>
                         <el-button v-if="row.status == 1" type="primary" link

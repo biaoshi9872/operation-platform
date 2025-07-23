@@ -97,7 +97,7 @@ const exportHandler = () => {
           <template #default="{ row }">{{ distributionConstant.getMoneyManagementOperationType(row.actionType)
           }}</template>
         </YbtTableColumn>
-        <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
+        <YbtTableColumn prop="createDate" label="创建时间" width="170"></YbtTableColumn>
         <YbtTableColumn prop="amount" label="变更金额" mix-width="160">
           <template #default="{ row }">
             <span :class="row.amount > 0 ? 'color-green' : 'color-red'">{{ `${row.amount > 0 ? '+' :
@@ -107,7 +107,7 @@ const exportHandler = () => {
         <YbtTableColumn prop="amountBalance" label="预存可用余额" mix-width="160">
           <template #default="{ row }">{{ `￥${row.amountBalance}` }}</template>
         </YbtTableColumn>
-        <YbtTableColumn prop="amountCreditLine" label="固定授信概况" mix-width="180">
+        <YbtTableColumn prop="amountCreditLine" label="固定授信概况" width="200">
           <template #default="{ row }">
             <div>总额：￥{{ row.amountCreditLine }}</div>
             <div>已用：￥{{ row.amountCreditLineUsed }}</div>
