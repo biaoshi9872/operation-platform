@@ -104,8 +104,8 @@ const handleSubmit = () => {
       let objInfo = data.goodsTypeList.find((item: any) => item.source == el) || {}
       return {
         source: el,
-        profitModel: objInfo.profitModel || null,
-        discountRate: objInfo.discountRate || null,
+        profitModel: objInfo.profitModel,
+        discountRate: objInfo.discountRate,
       }
     })
     application_api
@@ -150,8 +150,8 @@ const getGoodTypeList = () => {
       return {
         ...item,
         source: item.id,
-        profitModel: info.profitModel || null,
-        discountRate: info.discountRate || null,
+        profitModel: info.profitModel ?? null,
+        discountRate: info.discountRate ?? null,
       }
     })
     //自动添加

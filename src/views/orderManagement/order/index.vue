@@ -63,33 +63,33 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
   loadingCallback: dataRestCallback,
   dataList: [1],
   dataListCache: {
-    '-1': [],
+    '-999': [],
     '1': [],
     '2': [],
     '3': [],
-    '4': []
+    '-1': []
   },
   multipleList: [],
   curryInfo: null,
   page: {
-    '-1': cloneDeep(pageInfo),
+    '-999': cloneDeep(pageInfo),
     '1': cloneDeep(pageInfo),
     '2': cloneDeep(pageInfo),
     '3': cloneDeep(pageInfo),
-    '4': cloneDeep(pageInfo)
+    '-1': cloneDeep(pageInfo)
   },
   isOnload: true,
   facade: {
-    '-1': cloneDeep(searchForm),
+    '-999': cloneDeep(searchForm),
     '1': cloneDeep(searchForm),
     '2': cloneDeep(searchForm),
     '3': cloneDeep(searchForm),
-    '4': cloneDeep(searchForm)
+    '-1': cloneDeep(searchForm)
   },
   waitDeliverCount: 0,
   showDeliverGood: false,
   facadeKz: {
-    tab: '-1'
+    tab: '-999'
   }
 })
 
@@ -134,7 +134,7 @@ const pagingQueryHarder = () => {
 const orderTabs = ref([
   {
     label: '全部订单',
-    value: '-1'
+    value: '-999'
   },
   {
     label: '待发货',
@@ -147,6 +147,10 @@ const orderTabs = ref([
   {
     label: '已完成',
     value: '3'
+  },
+  {
+    label: '失败',
+    value: '-1'
   }
 ])
 const tabChangHarder = () => {
@@ -401,7 +405,7 @@ const initColumns = () => {
 //状态定制化
 const orderStatusList = computed(() => {
   switch (String(dataPage.facadeKz.tab)) {
-    case '-1':
+    case '-999':
       return [
         {
           value: '1',
@@ -418,6 +422,10 @@ const orderStatusList = computed(() => {
         {
           value: '6',
           label: '已完成'
+        },
+        {
+          label: '失败',
+          value: '-1'
         }
       ]
     case '2':
@@ -464,7 +472,7 @@ const orderStatusList = computed(() => {
         placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderNo" placeholder="请输入订单编号"></el-input>
       </el-form-item>
-      <el-form-item v-show="['-1', '2', '4'].includes(dataPage.facadeKz.tab)" label="订单状态" class="formItem">
+      <el-form-item v-show="['-999', '2', '4'].includes(dataPage.facadeKz.tab)" label="订单状态" class="formItem">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderStatusList" :multiple="true"
           :selectList="orderStatusList"></SelectModel>
       </el-form-item>
@@ -477,6 +485,7 @@ const orderStatusList = computed(() => {
       <el-form-item label="收货人姓名" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverName" placeholder="请输入收货人姓名"></el-input>
       </el-form-item>
+
       <el-form-item v-if="(['10', '101'].includes(getSystemOptionType))" label="供应商" class="formItem" placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyIds" :hasJdChance="true">
         </AffiliatedSupplier>
@@ -519,13 +528,13 @@ const orderStatusList = computed(() => {
               ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>

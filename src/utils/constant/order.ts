@@ -19,6 +19,10 @@ class order_enum extends baseEnum {
     {
       value: '6',
       label: '已完成'
+    },
+    {
+      value: '-1',
+      label: '失败'
     }
   ]
 

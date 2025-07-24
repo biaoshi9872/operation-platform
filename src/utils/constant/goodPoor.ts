@@ -167,6 +167,28 @@ class goodPoor_enum extends baseEnum {
   public getSourceTypeNameByKey(key: number | string) {
     return this.getDictNameByKey(this.sourceTypeList, key)
   }
+
+  /**
+   * 虚拟产品类型
+   */
+  public vpProductTypeList = [
+    {
+      value: 'KM',
+      label: '卡密'
+    },
+    {
+      value: 'ZH',
+      label: '直冲'
+    },
+    {
+      value: 'HF',
+      label: '话费'
+    }
+  ]
+
+  public getVpProductTypeNameByKey(key: number | string) {
+    return this.getDictNameByKey(this.vpProductTypeList, key)
+  }
 }
 
 export default new goodPoor_enum()

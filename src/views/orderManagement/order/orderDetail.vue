@@ -6,11 +6,8 @@ import OrderInfoCell from './components/OrderInfoCell.vue'
 import OrderLogisticCell from './components/OrderLogisticCell.vue'
 import OrderProductCell from './components/OrderProductCell.vue'
 import OrderStateNode from './components/OrderStateNode.vue'
+import goodPoor_enum from '@/utils/constant/goodPoor'
 const route = useRoute()
-const showReasonFlag = ref(false)
-const closeHandler = () => {
-  showReasonFlag.value = false
-}
 const dataPage = reactive({
   detailInfo: {
     goodsInfo: [],
@@ -19,7 +16,8 @@ const dataPage = reactive({
     freightAmount: null,
     remark: '',
     orderStatus: null,
-    orderDeliverExpressList: []
+    orderDeliverExpressList: [],
+    vpGoodsInfo: []
   },
   activeName: 1
 })
@@ -66,6 +64,37 @@ const stateTitle = computed(() => {
   <CardModel iconName="menu-order" :title="`订单状态:${stateTitle}`">
     <OrderInfoCell :orderBaseInfo="dataPage.detailInfo.orderBaseInfo"></OrderInfoCell>
   </CardModel>
+  <CardModel title="详细信息">
+    <div class=" content_box  " :class="dataPage.detailInfo.vpGoodsInfo.length > 1 ? 'card_container' : ''"
+      v-for="(item, index) in dataPage.detailInfo.vpGoodsInfo">
+      <div class="item">
+        <span class="item_title">产品名称:</span>
+        <span class="item_value">{{ item.goodsName }}
+        </span>
+      </div>
+      <div class="item">
+        <span class="item_title">产品属性:</span>
+        <span class="item_value">{{ goodPoor_enum.getVpProductTypeNameByKey(item.productType)
+        }}</span>
+      </div>
+      <div class="item">
+        <span class="item_title">券码:</span>
+        <span class="item_value">{{ item.cardNo }}</span>
+      </div>
+      <div class="item">
+        <span class="item_title">有效期开始时间:</span>
+        <span class="item_value">{{ item.expirationStartDate || '-' }}</span>
+      </div>
+      <div class="item">
+        <span class="item_title">有效期结束时间:</span>
+        <span class="item_value">{{ item.expirationEndDate || '-' }}</span>
+      </div>
+      <div class="item">
+        <span class="item_title">账号:</span>
+        <span class="item_value">{{ item.accountNumber }}</span>
+      </div>
+    </div>
+  </CardModel>
   <CardModel title="收货信息">
     <div class="content_box">
       <div class="item">
@@ -100,9 +129,14 @@ const stateTitle = computed(() => {
       :orderDeliverVOList="dataPage.detailInfo.orderDeliverExpressList"></OrderLogisticCell>
   </CardModel>
 </template>
-
 <style lang="scss" scoped>
 .content_box {
   @include grid_content_box(3);
+}
+
+.card_container {
+  background-color: #f5f7fa;
+  margin-bottom: 12px;
+  padding: 12px;
 }
 </style>
