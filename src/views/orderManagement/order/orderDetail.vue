@@ -64,7 +64,7 @@ const stateTitle = computed(() => {
   <CardModel iconName="menu-order" :title="`订单状态:${stateTitle}`">
     <OrderInfoCell :orderBaseInfo="dataPage.detailInfo.orderBaseInfo"></OrderInfoCell>
   </CardModel>
-  <CardModel title="详细信息">
+  <CardModel v-if="dataPage.detailInfo.orderType == 1" title="详细信息">
     <div class=" content_box  " :class="dataPage.detailInfo.vpGoodsInfo.length > 1 ? 'card_container' : ''"
       v-for="(item, index) in dataPage.detailInfo.vpGoodsInfo">
       <div class="item">
@@ -75,7 +75,7 @@ const stateTitle = computed(() => {
       <div class="item">
         <span class="item_title">产品属性:</span>
         <span class="item_value">{{ goodPoor_enum.getVpProductTypeNameByKey(item.productType)
-        }}</span>
+          }}</span>
       </div>
       <div class="item">
         <span class="item_title">券码:</span>
