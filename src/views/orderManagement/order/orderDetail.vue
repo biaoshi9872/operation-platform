@@ -95,7 +95,7 @@ const stateTitle = computed(() => {
       </div>
     </div>
   </CardModel>
-  <CardModel title="收货信息">
+  <CardModel v-if="dataPage.detailInfo.orderType != 1" title="收货信息">
     <div class="content_box">
       <div class="item">
         <span class="item_title">收货人:</span>
@@ -124,7 +124,7 @@ const stateTitle = computed(() => {
   <CardModel title="商品信息">
     <OrderProductCell :orderInfo="dataPage.detailInfo" :goodsVOList="dataPage.detailInfo.goodsInfo"></OrderProductCell>
   </CardModel>
-  <CardModel title="发货信息">
+  <CardModel v-if="dataPage.detailInfo.orderType != 1" title="发货信息">
     <OrderLogisticCell v-model:active="dataPage.activeName" :orderInfo="dataPage.detailInfo"
       :orderDeliverVOList="dataPage.detailInfo.orderDeliverExpressList"></OrderLogisticCell>
   </CardModel>
