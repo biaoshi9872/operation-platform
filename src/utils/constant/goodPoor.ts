@@ -177,7 +177,7 @@ class goodPoor_enum extends baseEnum {
       label: '卡密'
     },
     {
-      value: 'ZH',
+      value: 'ZC',
       label: '直冲'
     },
     {
