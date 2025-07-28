@@ -85,12 +85,12 @@ const exportHandler = () => {
         <YbtTableColumn prop="id" label="日志ID"></YbtTableColumn>
         <YbtTableColumn prop="actionType" label="操作类型" min-width="160">
           <template #default="{ row }">{{ distributionConstant.getMoneyManagementOperationType(row.actionType)
-            }}</template>
+          }}</template>
         </YbtTableColumn>
         <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
         <YbtTableColumn prop="amount" label="变更金额" mix-width="160">
           <template #default="{ row }">
-            <span :class="row.amount > 0 ? 'color-green' : 'color-red'">{{ `${row.amount > 0 ? '+' :
+            <span :class="row.amount >= 0 ? 'color-green' : 'color-red'">{{ `${row.amount >= 0 ? '+' :
               '-'}￥${Math.abs(row.amount)}` }}</span>
           </template>
         </YbtTableColumn>

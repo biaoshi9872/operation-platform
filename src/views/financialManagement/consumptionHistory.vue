@@ -100,7 +100,7 @@ const exportHandler = () => {
         <YbtTableColumn prop="createDate" label="创建时间" width="170"></YbtTableColumn>
         <YbtTableColumn prop="amount" label="变更金额" mix-width="160">
           <template #default="{ row }">
-            <span :class="row.amount > 0 ? 'color-green' : 'color-red'">{{ `${row.amount > 0 ? '+' :
+            <span :class="row.amount >= 0 ? 'color-green' : 'color-red'">{{ `${row.amount >= 0 ? '+' :
               '-'}￥${Math.abs(row.amount)}` }}</span>
           </template>
         </YbtTableColumn>
