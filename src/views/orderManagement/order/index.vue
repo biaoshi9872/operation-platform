@@ -67,7 +67,7 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
     '1': [],
     '2': [],
     '3': [],
-    '-1': []
+    '-3': []
   },
   multipleList: [],
   curryInfo: null,
@@ -76,7 +76,7 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
     '1': cloneDeep(pageInfo),
     '2': cloneDeep(pageInfo),
     '3': cloneDeep(pageInfo),
-    '-1': cloneDeep(pageInfo)
+    '-3': cloneDeep(pageInfo)
   },
   isOnload: true,
   facade: {
@@ -84,7 +84,7 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
     '1': cloneDeep(searchForm),
     '2': cloneDeep(searchForm),
     '3': cloneDeep(searchForm),
-    '-1': cloneDeep(searchForm)
+    '-3': cloneDeep(searchForm)
   },
   waitDeliverCount: 0,
   showDeliverGood: false,
@@ -150,7 +150,7 @@ const orderTabs = ref([
   },
   {
     label: '失败',
-    value: '-1'
+    value: '-3'
   }
 ])
 const tabChangHarder = () => {
@@ -241,7 +241,7 @@ const initColumns = () => {
       })
       //申请售后
       const afterButton =
-        ![0, 4, 5, -1].includes(parentRow.orderStatus) &&
+        ![0, 4, 5, -3].includes(parentRow.orderStatus) &&
         ![1, 4].includes(row.afterSaleStatus) &&
         [104, 105].includes(parentRow.channelSource) &&
         withDirectives(
@@ -425,7 +425,7 @@ const orderStatusList = computed(() => {
         },
         {
           label: '失败',
-          value: '-1'
+          value: '-3'
         }
       ]
     case '2':
@@ -528,13 +528,13 @@ const orderStatusList = computed(() => {
               ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>

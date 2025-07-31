@@ -63,6 +63,9 @@ const openHandler = () => {
     data.formData = {
         ...data.formDataBK
     }
+    if (props.curryInfo) {
+        data.formData.afterSaleNum = props.curryInfo?.goodsNum || 1
+    }
 }
 const handleSubmit = () => {
     formRef.value.validate().then(() => {

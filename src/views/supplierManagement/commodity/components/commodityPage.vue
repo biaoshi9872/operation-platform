@@ -191,8 +191,8 @@ const toListHandler = () => {
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="商品编码" prop="skuCode" required>
-                        <el-input v-model="dataInfo.form.skuCode" maxlength="20" show-word-limit
-                            placeholder="商品编码需由字母+数字组成，至少6个字符，最大20个字符。" />
+                        <el-input v-model="dataInfo.form.skuCode" :disabled="props.type != 'add'" maxlength="20"
+                            show-word-limit placeholder="商品编码需由字母+数字组成，至少6个字符，最大20个字符。" />
                     </el-form-item>
                     <el-form-item label="商品名称" prop="skuName" required>
                         <el-input v-model="dataInfo.form.skuName" maxlength="50" placeholder="请输入商品名称"
