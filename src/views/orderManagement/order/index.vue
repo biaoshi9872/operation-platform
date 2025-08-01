@@ -33,6 +33,7 @@ const searchForm = {
   confirmTimeEnd: '', //
   orderNo: '', //开放平台订单号
   channelOrderNo: '', //渠道订单号
+  thirdOrderNo: '',//第三方订单号
   supplyIds: [], //供应商
   skuName: '', //商品名称
   receiverName: '', //收货人
@@ -513,6 +514,10 @@ const orderStatusList = computed(() => {
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelOrderNo"
           :placeholder="getSystemOptionType == 401 ? '请输入订单编号' : '请输入渠道订单编号'"></el-input>
       </el-form-item>
+      <el-form-item label="第三方订单编号" class="formItem" placeholder="请选择">
+        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].thirdOrderNo"
+          placeholder="请输入第三方订单编号"></el-input>
+      </el-form-item>
     </SearchForm>
     <OrderCustomTable class="order-container" :openFold="false" :openERP="false" :border="true" :dataPage="dataPage"
       :dataList="dataList" orderChildAttr="goodsList" :columns="columns">
@@ -534,6 +539,12 @@ const orderStatusList = computed(() => {
               {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
+                }}</el-tooltip>
+            </span>
+            <span class="order-overflow" ref="orderNo">
+              第三方订单编号：
+              <el-tooltip class="box-item" effect="dark" :content="row.thirdOrderNo" placement="top-start">{{
+                row.thirdOrderNo
                 }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
