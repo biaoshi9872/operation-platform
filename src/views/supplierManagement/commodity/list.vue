@@ -113,7 +113,7 @@ const upOrDownDateHandler = (row: any, type: 'up' | 'down') => {
     )
         .then(() => {
             goods_api.A_upDown(obj).then(res => {
-                ElMessage.success(`批量${title}成功`)
+                ElMessage.success(`${title}成功`)
                 searchQueryHarder()
             })
         })
