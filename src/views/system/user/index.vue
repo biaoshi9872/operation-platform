@@ -151,16 +151,18 @@ const searchQueryHandler = () => {
           <YbtTableColumn label="状态">
             <template #default="scope">
               <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{ scope.row.status === 1 ? '正常' : '禁用'
-              }}</el-tag>
+                }}</el-tag>
             </template>
           </YbtTableColumn>
           <YbtTableColumn label="创建时间" prop="createDate" width="200" />
           <YbtTableColumn label="操作" width="200" align="right">
             <template #default="{ row }">
               <div class="btnStatus">
-                <el-button type="text" @click="handleEditUser(row)">编辑</el-button>
+                <el-button v-if="!row?.roleNameList?.includes('渠道自营供应商')" type="text"
+                  @click="handleEditUser(row)">编辑</el-button>
                 <el-button type="text" @click="handleRestPassword(row)">重置密码</el-button>
-                <el-button type="text" v-if="!row.ifAdminAccount" @click="handleDelete(row)">删除</el-button>
+                <el-button type="text" v-if="!row.ifAdminAccount && !row?.roleNameList?.includes('渠道自营供应商')"
+                  @click="handleDelete(row)">删除</el-button>
               </div>
             </template>
           </YbtTableColumn>

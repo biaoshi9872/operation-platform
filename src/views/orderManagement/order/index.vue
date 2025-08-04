@@ -533,19 +533,19 @@ const orderStatusList = computed(() => {
               ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               第三方订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.thirdOrderNo" placement="top-start">{{
                 row.thirdOrderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>
