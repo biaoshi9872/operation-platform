@@ -34,7 +34,8 @@ const hiddenStatus = computed(() => {
         <span class="ml-8">物流信息:{{ deliverInfo.expressCompanyName }}</span> |
         <span>{{ deliverInfo.expressCode }}</span>
         <span v-if="hiddenStatus" class="ml-8">
-          <AuthButton authKey="ORDER_UPDATA_WLDH" :detail="detail" type="text" @click="updateLogisticHandler">修改单号
+          <AuthButton authKey="ORDER_UPDATA_WLDH" v-if="detail.channelSource == '105'" :detail="detail" type="text"
+            @click="updateLogisticHandler">修改单号
           </AuthButton>
         </span>
       </template>
@@ -42,7 +43,8 @@ const hiddenStatus = computed(() => {
         <span class="ml-8">物流方式:自行配送</span> |
         <span class="ml-8">配送员手机号:{{ deliverInfo.mobile }}</span> |
         <span v-if="hiddenStatus" class="ml-8">
-          <AuthButton authKey="ORDER_UPDATA_PSSJH" :detail="detail" type="text" @click="updateLogisticHandler">修改手机号
+          <AuthButton authKey="ORDER_UPDATA_PSSJH" v-if="detail.channelSource == '105'" :detail="detail" type="text"
+            @click="updateLogisticHandler">修改手机号
           </AuthButton>
         </span>
       </template>

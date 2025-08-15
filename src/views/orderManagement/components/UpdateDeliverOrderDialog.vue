@@ -71,7 +71,6 @@ const deliveryType = computed(() => props.deliverInfo.deliveryType)
 const handleSubmit = () => {
   const { packageId, outgoingCode, deliverGoodsList } = props.deliverInfo
   const detailIdSet = deliverGoodsList.map((el: any) => el.id)
-
   formRef.value.validate().then(() => {
     data.submitLoading = true
     systemUtils_api.A_updateExpress({ packageId, outgoingCode, deliveryType: deliveryType.value, detailIdSet, ...data.formDelivery })
