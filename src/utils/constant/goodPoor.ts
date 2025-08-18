@@ -153,6 +153,11 @@ class goodPoor_enum extends baseEnum {
       imageUrl: new URL('@/assets/images/poor/tm.png', import.meta.url).href
     },
     {
+      label: '新天猫超市',
+      value: '63',
+      imageUrl: new URL('@/assets/images/poor/tm.png', import.meta.url).href
+    },
+    {
       label: '平台虚拟商品',
       value: '106',
       imageUrl: new URL('@/assets/images/poor/ptjx.png', import.meta.url).href
