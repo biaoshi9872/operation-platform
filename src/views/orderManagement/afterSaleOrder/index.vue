@@ -366,7 +366,8 @@ const initColumns = () => {
         <el-input v-model.trim="dataPage.facade.skuCode" placeholder="请输入商品编码"></el-input>
       </el-form-item>
       <el-form-item v-if="(['10', '101'].includes(getSystemOptionType))" label="供应商" class="formItem" placeholder="请选择">
-        <AffiliatedSupplier v-model.trim="dataPage.facade.supplierIdList" :hasJdChance="true"></AffiliatedSupplier>
+        <AffiliatedSupplier v-model.trim="dataPage.facade.supplierIdList" :mode="1" :hasJdChance="true">
+        </AffiliatedSupplier>
       </el-form-item>
       <el-form-item v-if="['101'].includes(getSystemOptionType)" label="分支机构" class="formItem" placeholder="请选择">
         <OrgSelect v-model.trim="dataPage.facade.orgIdList" :multiple="true"></OrgSelect>

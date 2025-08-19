@@ -16,12 +16,14 @@ interface IProp {
   modelValue: string
   multiple: boolean
   supplyType: string
+  mode: number
   valueKey: string
   valueLabel: string
   hasJdChance: boolean
 }
 const props = withDefaults(defineProps<IProp>(), {
   modelValue: '',
+  mode: 0,
   multiple: true,
   hasJdChance: false,
   valueKey: 'id',
@@ -57,7 +59,9 @@ const init = () => {
 }
 
 const getAllDictionaries = () => {
-  systemUtils_api.A_supplierSelect({}).then((res: any) => {
+  systemUtils_api.A_supplierSelect({
+    mode: props.mode
+  }).then((res: any) => {
     let list = Object.keys(res).map((key) => {
       return {
         id: key,

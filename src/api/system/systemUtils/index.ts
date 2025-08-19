@@ -23,13 +23,24 @@ class systemUtils_api {
   }
 
   /**
+   * vp分类
+   */
+  A_vpCategory(params: any) {
+    return request<any>({
+      url: '/cate/vp/listAll',
+      method: 'get',
+      params
+    })
+  }
+
+  /**
    * 供应商下拉框
    */
   A_supplierSelect(data: any) {
     return request<any>({
       url: '/supplierManage/supplierSelect',
       method: 'get',
-      data: data
+      params: data
     })
   }
 
