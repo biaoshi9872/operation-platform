@@ -283,34 +283,25 @@ const initColumns = () => {
             title = '确认退款'
             break
         }
-        authButton = h(ElButton, {
-          type: 'text',
-          innerText: title,
-          onClick: () => {
-            authHandler(row, title)
-          }
-        })
+        authButton = withDirectives(
+          h(ElButton, {
+            type: 'text',
+            innerText: title,
+            onClick: () => {
+              authHandler(row, title)
+            }
+          }),
+          [
+            [
+              authDir,
+              {
+                authKey: 'AFTER_ORDER_SH',
+                detail: row
+              }
+            ]
+          ]
+        )
       }
-      // //审核
-      // const authButton = [1].includes(row.status) && ![104, 105].includes(row.channelSource) &&
-      //   withDirectives(
-      //     h(ElButton, {
-      //       type: 'text',
-      //       innerText: '审核',
-      //       onClick: () => {
-      //         authHandler(row)
-      //       }
-      //     }),
-      //     [
-      //       [
-      //         authDir,
-      //         {
-      //           authKey: 'AFTER_ORDER_SH',
-      //           detail: row
-      //         }
-      //       ]
-      //     ]
-      //   )
       //撤销
       const revocationButton = [1].includes(row.status) && ![104].includes(row.channelSource) &&
         withDirectives(
