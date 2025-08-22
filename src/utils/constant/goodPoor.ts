@@ -169,6 +169,12 @@ class goodPoor_enum extends baseEnum {
     }
   ]
 
+  //渠道类型。电商渠道
+  public D_sourceTypeList = [1, 11, 55, 63, 105]
+
+  //自营类型。
+  public Z_sourceTypeList = [104, 106]
+
   public getSourceTypeNameByKey(key: number | string) {
     return this.getDictNameByKey(this.sourceTypeList, key)
   }
