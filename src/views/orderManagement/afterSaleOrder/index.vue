@@ -283,7 +283,7 @@ const initColumns = () => {
             title = '确认退款'
             break
         }
-        authButton = withDirectives(
+        authButton = [1].includes(row.status) && withDirectives(
           h(ElButton, {
             type: 'text',
             innerText: title,
