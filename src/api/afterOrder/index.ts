@@ -130,6 +130,17 @@ class After_order_api {
       data: data
     })
   }
+
+  /**
+   * 售后审核
+   */
+  A_auditEC(data: API.T_ShouHouShenHeRequest) {
+    return request<any>({
+      url: '/afterSale/auditEC',
+      method: 'post',
+      data: data
+    })
+  }
 }
 
 export default new After_order_api()

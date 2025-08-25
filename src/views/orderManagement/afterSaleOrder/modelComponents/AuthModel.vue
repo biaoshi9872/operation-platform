@@ -180,7 +180,7 @@ const saveData = () => {
         const afterSaleNo = props.curryInfo.afterSaleNo
         const afterSaleType = props.curryInfo.afterSaleType
         const afterNode = props.curryInfo.afterNode
-        after_order_api.A_audit({ ...data.formData, afterSaleNo, afterSaleType, afterNode }).then(() => {
+        after_order_api.A_auditEC({ ...data.formData, afterSaleNo, afterSaleType, afterNode }).then(() => {
             data.submitLoading = false
             handleClose()
             ElMessage.success('操作成功')
