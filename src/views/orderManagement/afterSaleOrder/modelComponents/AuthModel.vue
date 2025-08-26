@@ -233,7 +233,7 @@ const saveData = () => {
                                 maxlength="200" show-word-limit></el-input>
                         </el-form-item>
                     </template>
-                    <template v-else>
+                    <template v-if="data.formData.returnAddressInfo.auditStatus == 2">
                         <el-form-item label="拒绝理由" prop="returnAddressInfo.rejectReason">
                             <el-input v-model="data.formData.returnAddressInfo.rejectReason" type="textarea"
                                 maxlength="200" show-word-limit></el-input>
@@ -291,7 +291,8 @@ const saveData = () => {
                     <el-form-item v-if="data.formData.excludeAudit.auditStatus === 1" label="分销价">
                         <span>{{ data.returnInfo.preRetailPrice }}</span>
                     </el-form-item>
-                    <el-form-item v-if="data.formData.excludeAudit.auditStatus === 1" label="运费">
+                    <el-form-item v-if="data.formData.excludeAudit.auditStatus === 1 && curryInfo.channelSource != 105"
+                        label="运费">
                         <span>{{ data.returnInfo.freightAmount }}</span>
                     </el-form-item>
                     <el-form-item v-if="data.formData.excludeAudit.auditStatus === 1" label="退用户"
@@ -299,8 +300,8 @@ const saveData = () => {
                         <el-input-number v-model="data.formData.excludeAudit.refundCustomerPrice" :controls="false"
                             :max="data.returnInfo.preRetailPrice" :precision="2"></el-input-number>
                     </el-form-item>
-                    <el-form-item v-if="data.formData.excludeAudit.auditStatus === 1" label="退运费"
-                        prop="excludeAudit.freightAmount">
+                    <el-form-item v-if="data.formData.excludeAudit.auditStatus === 1 && curryInfo.channelSource != 105"
+                        label="退运费" prop="excludeAudit.freightAmount">
                         <el-input-number v-model="data.formData.excludeAudit.freightAmount" :controls="false"
                             :max="data.returnInfo.freightAmount" :precision="2"></el-input-number>
                     </el-form-item>
