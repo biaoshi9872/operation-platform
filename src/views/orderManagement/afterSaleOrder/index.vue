@@ -303,7 +303,7 @@ const initColumns = () => {
         )
       }
       //撤销
-      const revocationButton = [1].includes(row.status) && ![104].includes(row.channelSource) &&
+      const revocationButton = [1].includes(row.status) && row.afterNode == 1 && ![104].includes(row.channelSource) &&
         withDirectives(
           h(ElButton, {
             type: 'text',
