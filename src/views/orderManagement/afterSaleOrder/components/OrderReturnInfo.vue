@@ -17,16 +17,16 @@ const afterSaleTypeName = inject('afterSaleTypeName', () => '')
   <div class="content_box">
     <div class="item">
       <span class="item_title">联系人:</span>
-      <span class="item_value">{{ receiveUserInfo.name }}</span>
+      <span class="item_value">{{ receiveUserInfo?.name }}</span>
     </div>
     <div class="item">
       <span class="item_title">联系电话:</span>
-      <span class="item_value">{{ receiveUserInfo.mobile }}</span>
+      <span class="item_value">{{ receiveUserInfo?.mobile }}</span>
     </div>
     <div class="item">
       <span class="item_title">{{ afterSaleTypeName }}地址:</span>
       <span class="item_value">
-        {{ receiveUserInfo.address }}
+        {{ receiveUserInfo?.address }}
       </span>
     </div>
   </div>

@@ -105,11 +105,11 @@ const queryLogisticsInfo = () => {
 
 //售后类型
 const afterSaleTypeName = computed(() => {
-  return order_enum.getAfterSalesTypeTitle(dataPage.detail.afterSaleType)
+  return order_enum.getAfterSalesTypeTitle(dataPage.detail.afterSaleType + '')
 })
 //售后状态
 const statusName = computed(() => {
-  return order_enum.getAfter_order_statesTitle(dataPage.detail.status)
+  return order_enum.getAfter_order_statesTitle(dataPage.detail.status + '')
 })
 
 //文案类型
@@ -139,26 +139,21 @@ const closeHandler = () => {
       <OrderProductCell :orderInfo="dataPage.detail"></OrderProductCell>
     </CardModel>
     <!-- 换货，退货 上门取件 -->
-    <CardModel
-      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && ['104'].includes(String(dataPage.detail.channelSource))"
-      title="仓库地址信息">
+    <CardModel v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType))" title="仓库地址信息">
       <OrderReturnInfo :receiveUserInfo="dataPage.detail.receiveUserInfo"></OrderReturnInfo>
     </CardModel>
     <!-- 退货 -->
     <CardModel
-      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && dataPage.detail?.receiveUserInfo?.expressCode && ['104'].includes(String(dataPage.detail.channelSource))"
+      v-if="['1', '4'].includes(String(dataPage.detail.afterSaleType)) && dataPage.detail?.receiveUserInfo?.expressCode"
       title="退货物流">
       <OrderReturnLogistic :receiveUserInfo="dataPage.detail.receiveUserInfo"></OrderReturnLogistic>
     </CardModel>
     <!-- 换货， -->
-    <CardModel
-      v-if="['1'].includes(String(dataPage.detail.afterSaleType)) && ['104'].includes(String(dataPage.detail.channelSource))"
-      title="客户地址信息">
+    <CardModel v-if="['1'].includes(String(dataPage.detail.afterSaleType))" title="客户地址信息">
       <OrderReturnUserInfo :sendUserInfo="dataPage.detail.sendUserInfo"></OrderReturnUserInfo>
     </CardModel>
     <!-- 换货 -->
-    <template
-      v-if="['1'].includes(String(dataPage.detail.afterSaleType)) && ['104'].includes(String(dataPage.detail.channelSource))">
+    <template v-if="['1'].includes(String(dataPage.detail.afterSaleType))">
       <OrderLogisticCell :orderInfo="dataPage.detail" :orderDeliverVOList="dataPage.detail.orderDeliverVOList">
       </OrderLogisticCell>
     </template>
