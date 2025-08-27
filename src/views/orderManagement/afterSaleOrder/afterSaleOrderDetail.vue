@@ -109,7 +109,7 @@ const afterSaleTypeName = computed(() => {
 })
 //售后状态
 const statusName = computed(() => {
-  return order_enum.getAfter_order_statesTitle(dataPage.detail.status + '')
+  return order_enum.getAfter_order_statesTitle(dataPage.detail.status + '') + (dataPage?.detail?.status == '1' ? `(${dataPage?.detail?.currentFlowNodeName})` : '')
 })
 
 //文案类型
