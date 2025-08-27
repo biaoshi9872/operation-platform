@@ -50,10 +50,12 @@ const data = reactive<IData>({
             "returnAddress": null
         },
         "returnTrack": {
+            "returnLogisticsCode": null,
             "returnLogisticsName": null,
             "returnTrackNo": null
         },
         "exchangeTrack": {
+            "exchangeLogisticsCode": null,
             "exchangeLogisticsName": null,
             "exchangeTrackNo": null
         },
@@ -113,9 +115,9 @@ const data = reactive<IData>({
         'returnAddressInfo.returnProvinceName': [{ required: true, message: '请选择用户省份', trigger: ['change', 'blur'] }],
         'returnAddressInfo.returnCityName': [{ required: true, message: '请选择用户城市', trigger: ['change', 'blur'] }],
         'returnAddressInfo.returnAreaName': [{ required: true, message: '请选择用户区县', trigger: ['change', 'blur'] }],
-        'returnTrack.returnLogisticsName': [{ required: true, message: '请选择物流公司', trigger: ['change', 'blur'] }],
+        'returnTrack.returnLogisticsCode': [{ required: true, message: '请选择物流公司', trigger: ['change', 'blur'] }],
         'returnTrack.returnTrackNo': [{ required: true, message: '请输入物流单号', trigger: ['change', 'blur'] }],
-        'exchangeTrack.exchangeLogisticsName': [{ required: true, message: '请选择物流公司', trigger: ['change', 'blur'] }],
+        'exchangeTrack.exchangeLogisticsCode': [{ required: true, message: '请选择物流公司', trigger: ['change', 'blur'] }],
         'exchangeTrack.exchangeTrackNo': [{ required: true, message: '请输入物流单号', trigger: ['change', 'blur'] }],
         'excludeAudit.auditStatus': [{ required: true, message: '请选择审核类型', trigger: ['change', 'blur'] }],
         'excludeAudit.rejectReason': [{ required: true, message: '请输入处理意见', trigger: ['change', 'blur'] }],
@@ -164,6 +166,25 @@ const queryComList = () => {
     systemUtils_api.A_getLogisticList().then((res: any) => {
         data.logisticsCompanyList = res
     })
+}
+
+// 新增：根据选择的代码同步名称（退货物流）
+const onReturnLogisticsCodeChange = (code: string) => {
+    const item = (data.logisticsCompanyList || []).find(
+        (it: any) => it.companyCode === code || it.companyName === code
+    )
+    // 以 code 为主进行回填；若找不到，则仅保留 code，名称置空
+    data.formData.returnTrack.returnLogisticsCode = item?.companyCode ?? code
+    data.formData.returnTrack.returnLogisticsName = item?.companyName ?? null
+}
+
+// 新增：根据选择的代码同步名称（换货物流）
+const onExchangeLogisticsCodeChange = (code: string) => {
+    const item = (data.logisticsCompanyList || []).find(
+        (it: any) => it.companyCode === code || it.companyName === code
+    )
+    data.formData.exchangeTrack.exchangeLogisticsCode = item?.companyCode ?? code
+    data.formData.exchangeTrack.exchangeLogisticsName = item?.companyName ?? null
 }
 
 const handleSubmit = () => {
@@ -242,10 +263,11 @@ const saveData = () => {
                 </template>
                 <!-- 2.上传退货物流-->
                 <template v-if="curryInfo.afterNode == 2">
-                    <el-form-item label="物流公司" prop="returnTrack.returnLogisticsName">
-                        <el-select v-model="data.formData.returnTrack.returnLogisticsName" placeholder="请选择物流公司">
+                    <el-form-item label="物流公司" prop="returnTrack.returnLogisticsCode">
+                        <el-select v-model="data.formData.returnTrack.returnLogisticsCode" placeholder="请选择物流公司"
+                            @change="onReturnLogisticsCodeChange">
                             <el-option v-for="item in data.logisticsCompanyList" :key="item.companyCode"
-                                :label="item.companyName" :value="item.companyName">
+                                :label="item.companyName" :value="item.companyCode">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -256,10 +278,11 @@ const saveData = () => {
                 </template>
                 <!-- 3.上传发货物流-->
                 <template v-if="curryInfo.afterNode == 3">
-                    <el-form-item label="物流公司" prop="exchangeTrack.exchangeLogisticsName">
-                        <el-select v-model="data.formData.exchangeTrack.exchangeLogisticsName" placeholder="请选择物流公司">
+                    <el-form-item label="物流公司" prop="exchangeTrack.exchangeLogisticsCode">
+                        <el-select v-model="data.formData.exchangeTrack.exchangeLogisticsCode" placeholder="请选择物流公司"
+                            @change="onExchangeLogisticsCodeChange">
                             <el-option v-for="item in data.logisticsCompanyList" :key="item.companyCode"
-                                :label="item.companyName" :value="item.companyName">
+                                :label="item.companyName" :value="item.companyCode">
                             </el-option>
                         </el-select>
                     </el-form-item>
