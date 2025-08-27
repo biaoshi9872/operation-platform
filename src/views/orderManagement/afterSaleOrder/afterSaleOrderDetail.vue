@@ -87,7 +87,7 @@ const queryAfterSaleOrderInfo = () => {
       ...res
     }
     //自营换货需要显示物流信息
-    if (['1'].includes(String(dataPage.detail.afterSaleType)) && ['104'].includes(String(dataPage.detail.channelSource))) {
+    if (['1'].includes(String(dataPage.detail.afterSaleType))) {
       queryLogisticsInfo()
     }
   })
