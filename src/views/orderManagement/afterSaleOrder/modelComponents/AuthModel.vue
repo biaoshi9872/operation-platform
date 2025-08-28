@@ -6,6 +6,7 @@ import { cloneDeep } from 'lodash-es';
 import systemUtils_api from '@/api/system/systemUtils'
 // 新增导入图标
 import { WarningFilled } from '@element-plus/icons-vue'
+import { nextTick } from 'vue'  // 新增：显式导入 nextTick
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 interface IProp {
     curryInfo: any,
@@ -35,7 +36,7 @@ const data = reactive<IData>({
         "afterSaleType": null,
         "afterNode": null,
         "returnAddressInfo": {
-            "auditStatus": null,
+            "auditStatus": 1,
             "rejectReason": null,
             "returnUserName": null,
             "returnUserMobile": null,
@@ -60,7 +61,7 @@ const data = reactive<IData>({
             "exchangeTrackNo": null
         },
         "excludeAudit": {
-            "auditStatus": null,
+            "auditStatus": 1,
             "rejectReason": null,
             "refundCustomerPrice": null,
             "freightAmount": null
@@ -71,7 +72,19 @@ const data = reactive<IData>({
     formDataBK: {},
     formRules: {
         'returnAddressInfo.auditStatus': [{ required: true, message: '请选择审核类型', trigger: ['change', 'blur'] }],
-        'returnAddressInfo.rejectReason': [{ required: true, message: '请输入处理意见', trigger: ['change', 'blur'] }],
+        // 将“拒绝理由”改为按状态动态必填：auditStatus === 2 时才必填
+        'returnAddressInfo.rejectReason': [
+            {
+                validator: (rule: any, value: any, callback: any) => {
+                    const status = data.formData?.returnAddressInfo?.auditStatus
+                    if (status === 2 && !value) {
+                        return callback(new Error('请输入处理意见'))
+                    }
+                    callback()
+                },
+                trigger: ['change', 'blur']
+            }
+        ],
         'returnAddressInfo.returnUserName': [{ required: true, message: '请输入用户姓名', trigger: ['change', 'blur'] }],
         'returnAddressInfo.returnUserMobile': [
             { required: true, message: '请输入用户手机号', trigger: ['change', 'blur'] },
@@ -112,6 +125,7 @@ const data = reactive<IData>({
                 trigger: ['change', 'blur']
             }
         ],
+        'returnAddressInfo.returnAddress': [{ required: true, message: '请添加详情地址', trigger: ['change', 'blur'] }],
         'returnAddressInfo.returnProvinceName': [{ required: true, message: '请选择用户省份', trigger: ['change', 'blur'] }],
         'returnAddressInfo.returnCityName': [{ required: true, message: '请选择用户城市', trigger: ['change', 'blur'] }],
         'returnAddressInfo.returnAreaName': [{ required: true, message: '请选择用户区县', trigger: ['change', 'blur'] }],
@@ -120,7 +134,19 @@ const data = reactive<IData>({
         'exchangeTrack.exchangeLogisticsCode': [{ required: true, message: '请选择物流公司', trigger: ['change', 'blur'] }],
         'exchangeTrack.exchangeTrackNo': [{ required: true, message: '请输入物流单号', trigger: ['change', 'blur'] }],
         'excludeAudit.auditStatus': [{ required: true, message: '请选择审核类型', trigger: ['change', 'blur'] }],
-        'excludeAudit.rejectReason': [{ required: true, message: '请输入处理意见', trigger: ['change', 'blur'] }],
+        // 同理：退款拒绝原因按状态动态必填
+        'excludeAudit.rejectReason': [
+            {
+                validator: (rule: any, value: any, callback: any) => {
+                    const status = data.formData?.excludeAudit?.auditStatus
+                    if (status === 2 && !value) {
+                        return callback(new Error('请输入处理意见'))
+                    }
+                    callback()
+                },
+                trigger: ['change', 'blur']
+            }
+        ],
         'excludeAudit.refundCustomerPrice': [{ required: true, message: '请输入退用户金额', trigger: ['change', 'blur'] }],
         'excludeAudit.freightAmount': [{ required: true, message: '请输入退运费金额', trigger: ['change', 'blur'] }],
     },
@@ -194,6 +220,14 @@ const changeHandler = () => {
     // 修正：清空对应的嵌套驳回原因，避免清空一个不存在的顶层字段
     data.formData.returnAddressInfo.rejectReason = ''
     data.formData.excludeAudit.rejectReason = ''
+    data.formData.returnAddressInfo.returnUserName = ''
+    data.formData.returnAddressInfo.returnUserMobile = ''
+    data.formData.returnAddressInfo.returnProvinceId = ''
+    data.formData.returnAddressInfo.returnCityId = ''
+    data.formData.returnAddressInfo.returnAreaId = ''
+    data.formData.returnAddressInfo.returnAddress = ''
+    data.formData.returnAddressInfo.returnStreetId = ''
+    formRef.value.clearValidate()
 }
 const saveData = () => {
     formRef.value.validate().then(() => {
@@ -293,13 +327,13 @@ const saveData = () => {
                 </template>
                 <!-- 4.确认收货-->
                 <template v-if="curryInfo.afterNode == 4">
-                    <div class="text-center"><el-icon class="color-[var(--el-color-warning)] mr-2">
+                    <div class="text-left"><el-icon class="color-[var(--el-color-warning)] mr-2">
                             <WarningFilled />
                         </el-icon>是否确认已收到退货？</div>
                 </template>
                 <!-- 5.用户确认收货-->
                 <template v-if="curryInfo.afterNode == 5">
-                    <div class="text-center"><el-icon class="color-[var(--el-color-warning)] mr-2">
+                    <div class="text-left"><el-icon class="color-[var(--el-color-warning)] mr-2">
                             <WarningFilled />
                         </el-icon>是否确认已收到货？</div>
                 </template>
