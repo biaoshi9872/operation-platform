@@ -91,6 +91,7 @@ const changeHandler = (value: any) => {
 
 const skuChangeHandler = (value: any) => {
   let item = goodsInfoList?.value.find((el: any) => el.skuCode == value)
+  item.skuImage = item.images
   merge(props.detail, omit(item, ['deliverNum']))
 }
 
