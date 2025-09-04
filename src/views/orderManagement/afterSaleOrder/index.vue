@@ -56,6 +56,7 @@ const dataPage: IPage<any, any> = reactive({
     activeName: '1'
   },
   showAuthModel: false,
+  title: '',
   showRevokeModel: false,
   curryInfo: null
 })
@@ -101,13 +102,10 @@ const toDetailHandler = (row: any) => {
   })
 }
 // 审核
-const authHandler = (row: any) => {
+const authHandler = (row: any, title: string) => {
   dataPage.curryInfo = row
+  dataPage.title = title
   dataPage.showAuthModel = true
-}
-const authZyHandler = (row: any) => {
-  dataPage.curryInfo = row
-  dataPage.showAuthModelZy = true
 }
 //撤销
 const revocationHandler = (row: any) => {
@@ -257,34 +255,40 @@ const initColumns = () => {
     label: '操作',
     align: 'center',
     render: (row: any) => {
-      //审核
-      const zyAuthButton = [1].includes(row.status) && [105].includes(row.channelSource) &&
-        withDirectives(
+      //电商审核逻辑
+      let authButton = null
+      if (goodPoor.D_sourceTypeList.includes(row.channelSource)) {
+        //1.：待售后审核 2：待用户上传物流信息 3：供应商上传物流信息 4：待供应商确认收货 5：待用户确认收货 6：待售后确认
+        //1.退货退款   审核 上传退货物流 供应商确认收货  确认退款
+        //2.换货      审核  上传退货物流 供应商确认收货 供应商上传发货物流 用户确认收货
+        //3.仅退款：   审核 确认退款
+        let title = ''
+        switch (row.afterNode) {
+          case 1:
+            title = '审核'
+            break
+          case 2:
+            title = '上传退货物流'
+            break
+          case 3:
+            title = '上传发货物流'
+            break
+          case 4:
+            title = '确认收货'
+            break
+          case 5:
+            title = '用户确认收货'
+            break
+          case 6:
+            title = '确认退款'
+            break
+        }
+        authButton = [1].includes(row.status) && withDirectives(
           h(ElButton, {
             type: 'text',
-            innerText: '审核',
+            innerText: title,
             onClick: () => {
-              authZyHandler(row)
-            }
-          }),
-          [
-            [
-              authDir,
-              {
-                authKey: 'AFTER_ORDER_SH_ZY',
-                detail: row
-              }
-            ]
-          ]
-        )
-      //审核
-      const authButton = [1].includes(row.status) && ![104, 105].includes(row.channelSource) &&
-        withDirectives(
-          h(ElButton, {
-            type: 'text',
-            innerText: '审核',
-            onClick: () => {
-              authHandler(row)
+              authHandler(row, title)
             }
           }),
           [
@@ -297,8 +301,9 @@ const initColumns = () => {
             ]
           ]
         )
+      }
       //撤销
-      const revocationButton = [1].includes(row.status) && ![104].includes(row.channelSource) &&
+      const revocationButton = [1].includes(row.status) && row.afterNode == 1 && ![104].includes(row.channelSource) &&
         withDirectives(
           h(ElButton, {
             type: 'text',
@@ -326,7 +331,7 @@ const initColumns = () => {
         }
       })
       const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
-      return h('div', { style }, [authButton, zyAuthButton, revocationButton, detailButton])
+      return h('div', { style }, [authButton, revocationButton, detailButton])
     }
   })
 }
@@ -402,7 +407,8 @@ const initColumns = () => {
       </template>
     </OrderCustomTable>
     <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page"></CustomPagination>
-    <AuthModel v-model="dataPage.showAuthModel" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHarder">
+    <AuthModel v-model="dataPage.showAuthModel" :curryInfo="dataPage.curryInfo" :title="dataPage.title"
+      @refresh="searchQueryHarder">
     </AuthModel>
     <AuthModelZY v-model="dataPage.showAuthModelZy" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHarder">
     </AuthModelZY>
