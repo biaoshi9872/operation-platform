@@ -160,7 +160,7 @@ const data = reactive<IData>({
 })
 const handleReset = () => {
     if (formRef.value) {
-        formRef.value.resetFields()
+        formRef.value.clearValidate()
     }
     emits('update:modelValue', false)
 }
@@ -178,6 +178,7 @@ const openHandler = () => {
     data.formData = {
         ...cloneDeep(data.formDataBK)
     }
+    formRef.value.clearValidate()
     getFindAfterSalePrice()
     queryComList()
 }
@@ -186,6 +187,7 @@ const getFindAfterSalePrice = () => {
     const afterSaleNo = props.curryInfo.afterSaleNo
     after_order_api.A_findAfterSalePrice({ afterSaleNo }).then((res: any) => {
         data.returnInfo = res
+        formRef.value.clearValidate()
     })
 }
 const queryComList = () => {
@@ -227,7 +229,9 @@ const changeHandler = () => {
     data.formData.returnAddressInfo.returnAreaId = ''
     data.formData.returnAddressInfo.returnAddress = ''
     data.formData.returnAddressInfo.returnStreetId = ''
-    formRef.value.clearValidate()
+    setTimeout(() => {
+        formRef.value.clearValidate()
+    }, 100)
 }
 const saveData = () => {
     formRef.value.validate().then(() => {
