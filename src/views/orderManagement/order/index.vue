@@ -3,7 +3,7 @@ defineOptions({ name: 'orderList' })
 import order_api from '@/api/order/index'
 import SkuDetail from '@/components/SkuDetail/index.vue'
 import StateCell from '@/components/Tooltip/StateCell.vue'
-import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+
 import pageHooks from '@/hooks/pageListHooks'
 import { tabsStore } from '@/stores'
 import { IPage } from '@/types/from-types'
@@ -14,6 +14,7 @@ import { cloneDeep } from 'lodash-es'
 import { ref, resolveDirective, withDirectives } from 'vue'
 import DeliverGood from '../components/DeliverGood/index.vue'
 import system_enum from '@/utils/constant/system'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 
 const tabsStoreInfo: any = tabsStore()
@@ -551,19 +552,19 @@ const orderStatusList = computed(() => {
               ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               第三方订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.thirdOrderNo" placement="top-start">{{
                 row.thirdOrderNo
-                }}</el-tooltip>
+              }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>

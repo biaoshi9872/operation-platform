@@ -6,18 +6,17 @@ import pageHooks from '@/hooks/pageListHooks'
 import moneyManagement_api from '@/api/moneyManagement'
 import { IPage } from '@/types/from-types'
 import goodPoor from '@/utils/constant/goodPoor'
-
+import order_enum from '@/utils/constant/order'
+import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 // 路由参数
 const route = useRoute()
 const router = useRouter()
 const queryBillNo = computed(() => String(route.query.billNo || ''))
-const queryBillDate = computed(() => String(route.query.billDate || ''))
-const queryAppId = computed(() => String(route.query.appId || ''))
-const queryOrgId = computed(() => String(route.query.orgId || ''))
 
 // 列表页数据模型
 const dataPage = reactive<IPage<API.OpenBillDetailParams, API.OpenBillDetailRecord>>({
-    isOnload: true,
+    isOnload: false,
     // 查询方法
     selectPage: moneyManagement_api.A_openBillDetail,
     // 下载中心导出方法
@@ -47,6 +46,9 @@ const dataPage = reactive<IPage<API.OpenBillDetailParams, API.OpenBillDetailReco
 
 const { searchQuery, toDownloadCenter, pagingQuery } = pageHooks(dataPage)
 
+onMounted(() => {
+    searchQueryHarder()
+})
 const getQueryParams = () => {
     const { page, facade, facadeKz } = dataPage
     return { ...page, ...facade, ...facadeKz }
@@ -71,43 +73,13 @@ const exportHandler = () => {
     })
 }
 
-const goBack = () => {
-    router.back()
-}
 </script>
 
 <template>
     <PageContainer class="main_box">
-        <!-- 顶部信息条：展示列表页带来的基本上下文 -->
-        <el-alert type="info" show-icon :closable="false" class="mb12">
-            <template #title>
-                <div>账单明细</div>
-                <div>账单编号：{{ dataPage.facade.billNo }}</div>
-                <div v-if="queryBillDate">账单月份：{{ queryBillDate }}</div>
-                <div v-if="queryAppId">应用ID：{{ queryAppId }}</div>
-                <div v-if="queryOrgId">分支机构ID：{{ queryOrgId }}</div>
-            </template>
-        </el-alert>
-
         <!-- 搜索区 -->
         <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
             @search="searchQueryHarder">
-            <el-form-item label="订单编号">
-                <el-input v-model.trim="dataPage.facade.orderNo" placeholder="请输入订单编号" clearable />
-            </el-form-item>
-            <el-form-item label="渠道订单编号">
-                <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号" clearable />
-            </el-form-item>
-            <el-form-item label="外部订单编号">
-                <el-input v-model.trim="dataPage.facade.outOrderNo" placeholder="请输入外部订单编号" clearable />
-            </el-form-item>
-            <el-form-item label="商品名称">
-                <el-input v-model.trim="dataPage.facade.skuName" placeholder="请输入商品名称" clearable />
-            </el-form-item>
-            <el-form-item label="商品类型">
-                <SelectModel v-model.trim="dataPage.facade.goodsType" :selectList="goodPoor.sourceTypeList" />
-            </el-form-item>
-
             <el-form-item label="提交订单时间" class="el-form-item-inputGroup">
                 <DatePickerRange v-model:start="dataPage.facade.submitTimeStart"
                     v-model:end="dataPage.facade.submitTimeEnd" />
@@ -116,39 +88,64 @@ const goBack = () => {
                 <DatePickerRange v-model:start="dataPage.facade.confirmTimeStart"
                     v-model:end="dataPage.facade.confirmTimeEnd" />
             </el-form-item>
+            <el-form-item label="订单编号">
+                <el-input v-model.trim="dataPage.facade.orderNo" placeholder="请输入订单编号" clearable />
+            </el-form-item>
+            <el-form-item label="渠道订单编号">
+                <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号" clearable />
+            </el-form-item>
+            <el-form-item label="第三方订单编号">
+                <el-input v-model.trim="dataPage.facade.outOrderNo" placeholder="请输入第三方订单编号" clearable />
+            </el-form-item>
+            <el-form-item label="商品名称">
+                <el-input v-model.trim="dataPage.facade.skuName" placeholder="请输入商品名称" clearable />
+            </el-form-item>
+            <el-form-item label="商品类型">
+                <SelectModel v-model.trim="dataPage.facade.goodsType" :selectList="goodPoor.sourceTypeList" />
+            </el-form-item>
         </SearchForm>
-
         <!-- 操作区 + 表格 -->
         <div class="option_box">
             <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="pagingQueryHarder">
                 <template #option>
-                    <el-button @click="goBack">返回</el-button>
                     <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
                 </template>
-
                 <!-- 列定义 -->
-                <el-table-column label="订单编号" prop="orderNo" min-width="160" align="left" />
-                <el-table-column label="渠道订单编号" prop="channelOrderNo" min-width="160" align="left" />
-                <el-table-column label="外部订单编号" prop="outOrderNo" min-width="160" align="left" />
-                <el-table-column label="提交时间" prop="submitTime" min-width="160" align="left" />
-                <el-table-column label="确认时间" prop="confirmTime" min-width="160" align="left" />
-
-                <el-table-column label="SKU编码" prop="skuCode" min-width="140" align="left" />
-                <el-table-column label="商品名称" prop="skuName" min-width="200" align="left" />
-                <el-table-column label="商品类型" prop="goodsTypeName" min-width="120" align="center" />
-
-                <el-table-column label="数量" prop="goodsNum" min-width="80" align="right" />
-                <el-table-column label="供应商" prop="supplyName" min-width="160" align="left" />
-
-                <el-table-column label="分销价（元）" prop="retailPrice" min-width="120" align="right" />
-                <el-table-column label="商品金额（元）" prop="goodsPriceTotal" min-width="140" align="right" />
-                <el-table-column label="运费（元）" prop="freightAmount" min-width="120" align="right" />
-                <el-table-column label="服务费（元）" prop="serviceAmount" min-width="120" align="right" />
-                <el-table-column label="结算总金额（元）" prop="settlementPriceTotal" min-width="160" align="right" />
-
-                <el-table-column label="售后状态" prop="afterStatus" min-width="100" align="center" />
-                <el-table-column label="售后类型" prop="afterOrderType" min-width="100" align="center" />
-                <el-table-column label="订单状态" prop="orderStatus" min-width="100" align="center" />
+                <el-table-column label="订单编号" prop="orderNo" min-width="200" align="left" />
+                <el-table-column label="渠道订单编号" prop="channelOrderNo" min-width="200" align="left" />
+                <el-table-column label="第三方订单编号" prop="outOrderNo" min-width="200" align="left" />
+                <el-table-column label="提交订单时间" prop="submitTime" min-width="170" align="left" />
+                <el-table-column label="确认订单时间" prop="confirmTime" min-width="160" align="left" />
+                <el-table-column label="订单状态" prop="orderStatus" min-width="100" align="center">
+                    <template #default="scope">
+                        {{ order_enum.getOrder_statesTitle(scope.row.orderStatus) }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="售后状态" prop="afterStatus" min-width="100" align="center">
+                    <template #default="scope">
+                        {{ order_enum.getAfter_order_statesTitle(scope.row.afterStatus) }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="售后类型" prop="afterOrderType" min-width="100" align="center">
+                    <template #default="scope">
+                        {{ order_enum.getAfterSalesTypeTitle(scope.row.afterOrderType) }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="商品编码" prop="skuCode" min-width="140" align="left" />
+                <el-table-column label="商品名称" prop="skuName" show-overflow-tooltip min-width="200" align="left" />
+                <el-table-column label="商品数量" prop="goodsNum" min-width="100" align="left" />
+                <el-table-column label="商品单价" prop="retailPrice" min-width="120" align="left" />
+                <el-table-column label="商品总金额" prop="goodsPriceTotal" min-width="140" align="left" />
+                <el-table-column label="运费（元）" prop="freightAmount" min-width="120" align="left" />
+                <el-table-column label="服务费（元）" prop="serviceAmount" min-width="120" align="left" />
+                <el-table-column label="结算总金额（元）" prop="settlementPriceTotal" min-width="160" align="left" />
+                <el-table-column label="商品类型" prop="goodsTypeName" min-width="120" align="center">
+                    <template #default="scope">
+                        {{ scope.row.goodsTypeName }}
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="(['101'].includes(getSystemOptionType))" label="供应商" show-overflow-tooltip
+                    prop="supplyName" min-width="160" align="left" />
             </TableModel>
         </div>
     </PageContainer>

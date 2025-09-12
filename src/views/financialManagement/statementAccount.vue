@@ -5,8 +5,9 @@ defineOptions({
 import { reactive } from 'vue'
 import pageHooks from '@/hooks/pageListHooks'
 import moneyManagement_api from '@/api/moneyManagement'
+import { tabsStore } from '@/stores'
 const router = useRouter()
-
+const tabsStoreInfo: any = tabsStore()
 // 列表页数据模型
 const dataPage = reactive<IPage<any, API.OpenBillPageRecord>>({
     isOnload: true,
@@ -45,13 +46,10 @@ const exportHandler = () => {
 }
 
 const goDetail = (row: API.OpenBillPageRecord) => {
-    router.push({
-        path: '/financialManagement/statementAccountDetail',
+    tabsStoreInfo.reload({
+        path: '/financialManagement/statementAccountDetal',
         query: {
             billNo: String(row.billNo || ''),
-            billDate: String(dataPage.facade.billDate || row.billDate || ''),
-            appId: String(dataPage.facade.appId || ''),
-            orgId: String(dataPage.facade.orgId || '')
         }
     })
 }
@@ -77,17 +75,15 @@ const goDetail = (row: API.OpenBillPageRecord) => {
                 <OrgSelect v-model="dataPage.facade.orgId" />
             </el-form-item>
         </SearchForm>
-
+        <div class="bg-white p-12 mb12 border-radius-8">
+            <div class="tip-container">
+                <div><svg-icon name="menu-order" class="fs-22" /> 账单说明：</div>
+                <div>1、账单以月的维度展示，每天凌晨更新T+3的订单数据，已确认的订单（下单成功）为正流水，售后已完成的订单将会出负流水记录（换货除外）。</div>
+                <div>2、每个应用一个账单。</div>
+                <div>3、账单数据仅供参考，具体的出账及开票请在综管平台进行，若双方账单数据存在出入，请及时核查并反馈处理。</div>
+            </div>
+        </div>
         <!-- 说明文案（根据截图补充） -->
-        <el-alert type="info" show-icon :closable="false" class="mb12">
-            <template #title>
-                <div>账单说明：</div>
-                <div>1. 账单以外的维度展示，每天凌晨更新T-3的订单数据，已确认的订单（下单成功）为正常水，售后已完结的订单将会包含在流水记录（账款除外）。</div>
-                <div>2. 每个应用一个账单。</div>
-                <div>3. 账单数据仅供参考，具体的结算以结算平台出具为准，开票及账单数据在出入、含税及服务费三个模块内。</div>
-            </template>
-        </el-alert>
-
         <!-- 操作区 -->
         <div class="option_box">
             <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
@@ -99,21 +95,16 @@ const goDetail = (row: API.OpenBillPageRecord) => {
                 <el-table-column label="应用名称" prop="appName" min-width="120" align="left" />
                 <el-table-column label="账单月份" prop="billDate" min-width="120" align="left" />
                 <el-table-column label="账单编号" prop="billNo" min-width="160" align="left" />
-
-                <el-table-column label="商品金额（元）" prop="goodsAmountTotal" min-width="120" align="right" />
-                <el-table-column label="售后商品金额（元）" prop="goodsAmountAfterTotal" min-width="140" align="right" />
-                <el-table-column label="开票商品金额（元）" prop="goodsAmountInvoiceTotal" min-width="140" align="right" />
-
-                <el-table-column label="商品运费金额（元）" prop="goodsFreightTotal" min-width="140" align="right" />
-                <el-table-column label="售后运费金额（元）" prop="goodsFreightAfterTotal" min-width="140" align="right" />
-                <el-table-column label="开票运费金额（元）" prop="goodsFreightInvoiceTotal" min-width="140" align="right" />
-
-                <el-table-column label="商品服务费金额（元）" prop="goodsServiceTotal" min-width="150" align="right" />
-                <el-table-column label="售后服务费金额（元）" prop="goodsServiceAfterTotal" min-width="150" align="right" />
-                <el-table-column label="开票服务费金额（元）" prop="goodsServiceInvoiceTotal" min-width="150" align="right" />
-
-                <el-table-column label="可开票金额（元）" prop="goodsAmountFinalInvoiceTotal" min-width="140" align="right" />
-
+                <el-table-column label="商品金额（元）" prop="goodsAmountTotal" min-width="160" align="left" />
+                <el-table-column label="售后商品金额（元）" prop="goodsAmountAfterTotal" min-width="180" align="left" />
+                <el-table-column label="开票商品金额（元）" prop="goodsAmountInvoiceTotal" min-width="180" align="left" />
+                <el-table-column label="商品运费金额（元）" prop="goodsFreightTotal" min-width="180" align="left" />
+                <el-table-column label="售后运费金额（元）" prop="goodsFreightAfterTotal" min-width="180" align="left" />
+                <el-table-column label="开票运费金额（元）" prop="goodsFreightInvoiceTotal" min-width="180" align="left" />
+                <el-table-column label="商品服务费金额（元）" prop="goodsServiceTotal" min-width="180" align="left" />
+                <el-table-column label="售后服务费金额（元）" prop="goodsServiceAfterTotal" min-width="180" align="left" />
+                <el-table-column label="开票服务费金额（元）" prop="goodsServiceInvoiceTotal" min-width="180" align="left" />
+                <el-table-column label="可开票金额（元）" prop="goodsAmountFinalInvoiceTotal" min-width="160" align="left" />
                 <el-table-column label="操作" min-width="100" align="right" fixed="right">
                     <template #default="{ row }">
                         <el-button type="primary" link @click="goDetail(row)">详情</el-button>
@@ -127,6 +118,13 @@ const goDetail = (row: API.OpenBillPageRecord) => {
 <style lang="scss" scoped>
 .option_box {
     margin-top: 8px;
+}
+
+.tip-container {
+    padding: 12px;
+    background: rgba(241, 237, 237, 0.6);
+    color: #999;
+    line-height: 25px;
 }
 
 .mb12 {
