@@ -64,15 +64,15 @@ const goDetail = (row: API.OpenBillPageRecord) => {
                 <el-date-picker v-model="dataPage.facade.billDate" type="month" placeholder="选择月份"
                     value-format="YYYY-MM" clearable />
             </el-form-item>
+            <el-form-item label="机构名称">
+                <OrgSelect v-model="dataPage.facade.orgId" />
+            </el-form-item>
             <el-form-item label="应用名称">
                 <ApplicationSelect v-model="dataPage.facade.appId" :multiple="false" valueKey="id"
                     valueLabel="appName" />
             </el-form-item>
             <el-form-item label="账单编号">
                 <el-input v-model.trim="dataPage.facade.billNO" placeholder="请输入账单编号" clearable />
-            </el-form-item>
-            <el-form-item label="所属分支机构">
-                <OrgSelect v-model="dataPage.facade.orgId" />
             </el-form-item>
         </SearchForm>
         <div class="bg-white p-12 mb12 border-radius-8">
