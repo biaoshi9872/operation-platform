@@ -13,7 +13,9 @@ import { ElButton } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import { ref, resolveDirective, withDirectives } from 'vue'
 import DeliverGood from '../components/DeliverGood/index.vue'
+import system_enum from '@/utils/constant/system'
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
+
 const tabsStoreInfo: any = tabsStore()
 const authDir = resolveDirective('auth')
 const $route = useRoute()
@@ -377,6 +379,17 @@ const initColumns = () => {
     },
     openMarginCell: true
   })
+  columns.value.push({
+    label: '项目类型',
+    align: 'center',
+    width: '160px',
+    prop: 'projectType',
+    render: (row: any) => {
+      let projectTypeName = h('div', system_enum.getProjectType(row.projectType)) //订单状态
+      //状态显示
+      return h('div', {}, [projectTypeName])
+    }
+  })
   columns.value.push(
     {
       label: '操作',
@@ -518,6 +531,11 @@ const orderStatusList = computed(() => {
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].thirdOrderNo"
           placeholder="请输入第三方订单编号"></el-input>
       </el-form-item>
+      <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
+        <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].projectTypeList"
+          :selectList="system_enum.projectType">
+        </SelectModel>
+      </el-form-item>
     </SearchForm>
     <OrderCustomTable class="order-container" :openFold="false" :openERP="false" :border="true" :dataPage="dataPage"
       :dataList="dataList" orderChildAttr="goodsList" :columns="columns">
@@ -533,25 +551,26 @@ const orderStatusList = computed(() => {
               ref="orderNo">
               订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.orderNo" placement="top-start">{{ row.orderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               {{ getSystemOptionType == 401 ? '订单编号:' : '渠道订单编号:' }}
               <el-tooltip class="box-item" effect="dark" :content="row.channelOrderNo" placement="top-start">{{
                 row.channelOrderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span class="order-overflow" ref="orderNo">
               第三方订单编号：
               <el-tooltip class="box-item" effect="dark" :content="row.thirdOrderNo" placement="top-start">{{
                 row.thirdOrderNo
-              }}</el-tooltip>
+                }}</el-tooltip>
             </span>
             <span>提交订单时间:{{ row.submitTime }}</span>
             <span>确认下单时间:{{ row.confirmTime }}</span>
             <span v-if="getSystemOptionType == 101">供应商:{{ row.supplyName }}</span>
             <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105">供应商:{{ row.supplyName }}</span>
             <span>订单总金额:￥{{ row.totalAmount }}</span>
+            <span>结算总金额:￥{{ row.settlementPrice }}</span>
           </div>
           <div>
             <el-button type="primary" @click="toOrderDetailHandler(row)" link>查看详情</el-button>

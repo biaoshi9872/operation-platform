@@ -7,6 +7,7 @@ import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import pageHooks from '@/hooks/pageListHooks'
 import { IPage } from '@/types/from-types'
 import distributionConstant from '@/utils/constant/distribution'
+import system_enum from '@/utils/constant/system'
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 
 const router = useRouter()
@@ -84,6 +85,10 @@ const exportHandler = () => {
             <el-form-item label="订单号">
                 <el-input v-model.trim="dataPage.facade.plantOrderNo"></el-input>
             </el-form-item>
+            <el-form-item label="项目类型" class="formItem" placeholder="请选择">
+                <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
+                </SelectModel>
+            </el-form-item>
         </SearchForm>
         <div class="option_box">
             <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" :loading="dataPage.loadingData"
@@ -98,11 +103,16 @@ const exportHandler = () => {
                 </YbtTableColumn>
                 <YbtTableColumn prop="appCode" label="应用编码" show-overflow-tooltip mix-width="140"></YbtTableColumn>
                 <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip mix-width="140"></YbtTableColumn>
+                <YbtTableColumn prop="projectType" label="项目类型" mix-width="140">
+                    <template #default="{ row }">{{
+                        system_enum.getProjectType(row.projectType)
+                    }}</template>
+                </YbtTableColumn>
                 <YbtTableColumn prop="id" label="日志ID" mix-width="120"></YbtTableColumn>
                 <YbtTableColumn prop="actionType" label="操作类型" mix-width="120">
                     <template #default="{ row }">{{
                         distributionConstant.getMoneyManagementOperationType1(row.actionType)
-                        }}</template>
+                    }}</template>
                 </YbtTableColumn>
                 <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
                 <YbtTableColumn prop="retailAmount" label="变更金额" mix-width="160">

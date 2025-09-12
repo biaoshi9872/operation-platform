@@ -5,6 +5,7 @@ import system_enum from '@/utils/constant/system'
 import { validateEmail, validatePhone } from '@/utils/validator'
 import { ElMessage, FormInstance } from 'element-plus'
 import { isNullOrUnDefOrisEmpty } from '@/utils/is'
+import systemUtils_api from '@/api/system/systemUtils'
 import { cloneDeep } from 'lodash-es'
 interface IProp {
   curryInfo: any
@@ -31,6 +32,8 @@ const data = reactive<IData>({
     goodsSourceTypeCodeList: [],
     appProfitModelDTOList: [],
     orgId: '',
+    projectNo: '',
+    projectType: '',
     isSupportMask: false,
     vpOderCallBackUrl: '',
     developerEmail: '',
@@ -42,6 +45,8 @@ const data = reactive<IData>({
     appName: [{ required: true, message: '请输入应用名称', trigger: ['change', 'blur'] }],
     goodsSourceTypeCodeList: [{ required: true, message: '请选择可见商品类型', trigger: ['change', 'blur'] }],
     orgId: [{ required: true, message: '请选择分支机构', trigger: ['change', 'blur'] }],
+    projectNo: [{ required: true, message: '请输入综管项目编号', trigger: ['change', 'blur'] }],
+    projectType: [{ required: true, message: '请选择项目类型', trigger: ['change', 'blur'] }],
     isSupportMask: [{ required: true, message: '请选择是否支持脱敏', trigger: ['change', 'blur'] }],
     developerEmail: [
       { required: true, message: '请输入开发者邮箱', trigger: ['change', 'blur'] },
@@ -136,6 +141,7 @@ watch(
     deep: true
   }
 )
+
 const goodsSourceChangeHandler = (val: any) => {
   if (!val.includes(104)) {
     data.formData.isSupportMask = null
@@ -180,6 +186,17 @@ const profitModelValidate = (rule: any, value: any, callback: any, item: any) =>
   }
 }
 
+const blurHandler = () => {
+  if (data.formData.projectNo) {
+    return systemUtils_api
+      .A_getProjectInfo({ projectNo: data.formData.projectNo })
+      .then((res: any) => {
+        return true
+      }).catch(() => {
+        data.formData.projectNo = ''
+      })
+  }
+}
 </script>
 <template>
   <el-dialog v-bind="$attrs" :title="title" width="750px" append-to-body @open="openHandler" draggable destroy-on-close
@@ -193,6 +210,15 @@ const profitModelValidate = (rule: any, value: any, callback: any, item: any) =>
         </el-form-item>
         <el-form-item label="应用名称" prop="appName">
           <el-input v-model="data.formData.appName" placeholder="请输入应用名称" maxlength="200" show-word-limit></el-input>
+        </el-form-item>
+        <el-form-item label="综管项目编号" prop="projectNo">
+          <el-input v-model="data.formData.projectNo" placeholder="请输入综管项目编号" @blur="blurHandler"
+            maxlength="200"></el-input>
+        </el-form-item>
+        <el-form-item label="项目类型" prop="projectType">
+          <el-select v-model="data.formData.projectType" placeholder="请选择">
+            <el-option v-for="item in system_enum.projectType" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="开发者邮箱" prop="developerEmail">
           <el-input v-model="data.formData.developerEmail" placeholder="请输入开发者邮箱" maxlength="50"

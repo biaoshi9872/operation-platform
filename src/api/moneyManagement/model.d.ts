@@ -79,4 +79,114 @@ declare namespace API {
     createDate: String
   }
   type applyForATopUpRecordList = applyForATopUpRecordRecording[]
+
+  // 开放平台 - 账单列表 查询参数
+  type OpenBillPageParams = {
+    billDate: String
+    billNO: String
+    orgId: Number | null
+    appId: Number | null
+    page: Number
+    limit: Number
+  }
+
+  // 开放平台 - 账单列表 单条记录
+  type OpenBillPageRecord = {
+    orgName: String
+    appName: String
+    billDate: String
+    billNo: String
+    goodsAmountTotal: Number
+    goodsAmountAfterTotal: Number
+    goodsAmountInvoiceTotal: Number
+    goodsFreightTotal: Number
+    goodsFreightAfterTotal: Number
+    goodsFreightInvoiceTotal: Number
+    goodsServiceTotal: Number
+    goodsServiceAfterTotal: Number
+    goodsServiceInvoiceTotal: Number
+    goodsAmountFinalInvoiceTotal: Number
+  }
+
+  // 开放平台 - 账单列表 分页体
+  type OpenBillPage = {
+    records: OpenBillPageRecord[]
+    pageNumber: Number
+    pageSize: Number
+    totalPage: Number
+    totalRow: Number
+  }
+
+  // 开放平台 - 账单列表 响应体
+  type OpenBillPageResponse = {
+    msg: String
+    code: Number
+    page: OpenBillPage
+  }
+
+  // 开放平台 - 账单列表导出 参数（与列表相同）
+  type OpenExportBillParams = OpenBillPageParams
+
+  // 开放平台 - 账单明细 查询参数
+  type OpenBillDetailParams = {
+    billNo: String
+    orderNo: String
+    channelOrderNo: String
+    outOrderNo: String
+    skuName: String
+    goodsType: Number | null
+    submitTimeStart: String
+    submitTimeEnd: String
+    confirmTimeStart: String
+    confirmTimeEnd: String
+  }
+
+  // 开放平台 - 账单明细 单条记录
+  type OpenBillDetailRecord = {
+    id: Number
+    billNo: String
+    orderNo: String
+    channelOrderNo: String
+    outOrderNo: String
+    submitTime: String
+    confirmTime: String
+    skuCode: String
+    skuName: String
+    goodsType: Number
+    goodsTypeName: String
+    goodsNum: Number
+    supplyId: Number
+    supplyName: String
+    retailPrice: Number
+    goodsPriceTotal: Number
+    freightAmount: Number
+    serviceAmount: Number | null
+    settlementPriceTotal: Number | null
+    afterStatus: Number
+    afterOrderType: Number | null
+    orderStatus: Number
+  }
+
+  // 开放平台 - 账单明细 分页体
+  type OpenBillDetail = {
+    records: OpenBillDetailRecord[]
+    pageNumber: Number
+    pageSize: Number
+    totalPage: Number
+    totalRow: Number
+  }
+
+  // 开放平台 - 账单明细 响应体
+  type OpenBillDetailResponse = {
+    msg: String
+    code: Number
+    page: OpenBillDetail
+  }
+
+  // 开放平台 - 账单明细导出 参数（注意：billNO 为大写 O）
+  type OpenBillDetailExportParams = {
+    billNO: String
+    page: Number
+    limit: Number
+  }
 }

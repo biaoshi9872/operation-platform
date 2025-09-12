@@ -64,7 +64,8 @@ const getAllDictionaries = () => {
 }
 </script>
 <template>
-  <el-select v-model="value" placeholder="请选择应用" filterable clearable collapse-tags multiple collapse-tags-tooltip>
+  <el-select v-model="value" placeholder="请选择应用" filterable clearable :multiple="props.multiple"
+    :collapse-tags="props.multiple" :collapse-tags-tooltip="props.multiple">
     <el-option v-for="(item, index) in data.applicationList" :key="index" :value="item[props.valueKey]"
       :label="item[props.valueLabel]"></el-option>
   </el-select>

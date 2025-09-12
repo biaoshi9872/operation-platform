@@ -14,6 +14,7 @@ import { ref, resolveDirective, withDirectives } from 'vue'
 import AuthModel from './modelComponents/AuthModel.vue'
 import AuthModelZY from './modelComponents/AuthModelZY.vue'
 import RevokeModel from './modelComponents/RevokeModel.vue'
+import system_enum from '@/utils/constant/system'
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 const $route = useRoute()
@@ -250,7 +251,17 @@ const initColumns = () => {
       prop: 'appName'
     })
   }
-
+  columns.value.push({
+    label: '项目类型',
+    align: 'center',
+    width: '160px',
+    prop: 'projectType',
+    render: (row: any) => {
+      let projectTypeName = h('div', system_enum.getProjectType(row.projectType)) //订单状态
+      //状态显示
+      return h('div', {}, [projectTypeName])
+    }
+  })
   columns.value.push({
     label: '操作',
     align: 'center',
@@ -382,6 +393,10 @@ const initColumns = () => {
       </el-form-item>
       <el-form-item label="是否脱敏发货" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade.desensitizationStatus" :selectList="order_enum.C_isMaskList">
+        </SelectModel>
+      </el-form-item>
+      <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
+        <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
         </SelectModel>
       </el-form-item>
     </SearchForm>

@@ -66,5 +66,16 @@ class systemUtils_api {
       data: data
     })
   }
+
+  /**
+   *
+   */
+  A_getProjectInfo(data: any) {
+    return request<any>({
+      url: '/sys/application/projectInfo',
+      method: 'get',
+      params: data
+    })
+  }
 }
 export default new systemUtils_api()

@@ -182,8 +182,6 @@ class order_enum extends baseEnum {
       })?.label ?? '-'
     return label
   }
-
-  
 }
 
 export default new order_enum()
