@@ -39,13 +39,13 @@ const afterSaleGoodsVO = computed(() => {
       </div>
       <div class="item"
         v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType)) && ['10', '101', '20', '201'].includes(getSystemOptionType)">
-        <span class="item_title">{{ `退款金额（分销价）` }}:</span>
+        <span class="item_title">{{ `退款金额(退用户)` }}:</span>
         <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.afterSaleRetailPrice ?? '-'}` }}</span>
       </div>
       <div class="item" v-if="['2', '3', '4'].includes(String(orderInfo.afterSaleType))">
-        <span class="item_title">{{ ['10', '101', '20', '201'].includes(getSystemOptionType) ? `退款金额(供应价)` :
+        <span class="item_title">{{ ['10', '101', '20', '201'].includes(getSystemOptionType) ? `退款金额(退机构)` :
           "退款金额(含税供应价)"
-          }}:</span>
+        }}:</span>
         <span class="item_value">{{ `￥${orderInfo.afterSaleGoodsVO.afterSaleSupplyPrice ?? '-'}` }}</span>
       </div>
 
@@ -131,14 +131,14 @@ const afterSaleGoodsVO = computed(() => {
           </YbtTableColumn>
           <YbtTableColumn
             v-if="!['1'].includes(String(orderInfo.afterSaleType)) && ['101', '201'].includes(getSystemOptionType)"
-            width="160" prop="afterSaleSupplyPrice" label="退款金额(供应价)">
+            width="160" prop="afterSaleSupplyPrice" label="退款金额(退机构)">
             <template #default="{ row }">
               <span>{{ row.afterSaleSupplyPrice ?? '-' }}</span>
             </template>
           </YbtTableColumn>
           <YbtTableColumn
             v-if="!['1'].includes(String(orderInfo.afterSaleType)) && ['101', '201'].includes(getSystemOptionType)"
-            width="160" prop="afterSaleRetailPrice" label="退款金额(分销价)">
+            width="160" prop="afterSaleRetailPrice" label="退款金额(退用户)">
             <template #default="{ row }">
               <span>{{ row.afterSaleRetailPrice ?? '-' }}</span>
             </template>
@@ -165,7 +165,7 @@ const afterSaleGoodsVO = computed(() => {
         </YbtTableColumn>
         <YbtTableColumn prop="price" label="进项发票类型">
           <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-            }}</template>
+          }}</template>
         </YbtTableColumn>
       </el-table>
     </div>

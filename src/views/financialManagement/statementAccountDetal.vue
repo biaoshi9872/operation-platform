@@ -91,8 +91,8 @@ const exportHandler = () => {
             <el-form-item label="订单编号">
                 <el-input v-model.trim="dataPage.facade.orderNo" placeholder="请输入订单编号" clearable />
             </el-form-item>
-            <el-form-item label="渠道订单编号">
-                <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号" clearable />
+            <el-form-item label="供应商订单编号">
+                <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入供应商订单编号" clearable />
             </el-form-item>
             <el-form-item label="第三方订单编号">
                 <el-input v-model.trim="dataPage.facade.outOrderNo" placeholder="请输入第三方订单编号" clearable />
@@ -112,7 +112,7 @@ const exportHandler = () => {
                 </template>
                 <!-- 列定义 -->
                 <el-table-column label="订单编号" prop="orderNo" min-width="200" align="left" />
-                <el-table-column label="渠道订单编号" prop="channelOrderNo" min-width="200" align="left" />
+                <el-table-column label="供应商订单编号" prop="channelOrderNo" min-width="200" align="left" />
                 <el-table-column label="第三方订单编号" prop="outOrderNo" min-width="200" align="left" />
                 <el-table-column label="提交订单时间" prop="submitTime" min-width="170" align="left" />
                 <el-table-column label="确认订单时间" prop="confirmTime" min-width="160" align="left" />

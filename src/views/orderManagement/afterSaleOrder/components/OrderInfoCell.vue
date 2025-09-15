@@ -39,7 +39,7 @@ const emits = defineEmits<{
 //     }
 //   },
 //   {
-//     label: '渠道订单编号',
+//     label: '供应商订单编号',
 //     prop: 'channelOrderNo'
 //   },
 //   {
@@ -119,7 +119,7 @@ const FIELDS = computed(() => {
       }
     })
     arr.push({
-      label: '渠道订单编号',
+      label: '供应商订单编号',
       prop: 'channelOrderNo'
     })
     arr.push({
