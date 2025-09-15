@@ -187,6 +187,8 @@ const getFindAfterSalePrice = () => {
     const afterSaleNo = props.curryInfo.afterSaleNo
     after_order_api.A_findAfterSalePrice({ afterSaleNo }).then((res: any) => {
         data.returnInfo = res
+        data.formData.excludeAudit.refundCustomerPrice = data.returnInfo.preRetailPrice
+        data.formData.excludeAudit.freightAmount = data.returnInfo.freightAmount
         formRef.value.clearValidate()
     })
 }
