@@ -212,8 +212,8 @@ const blurHandler = () => {
           <el-input v-model="data.formData.appName" placeholder="请输入应用名称" maxlength="200" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="综管项目编号" prop="projectNo">
-          <el-input v-model="data.formData.projectNo" placeholder="请输入综管项目编号" @blur="blurHandler"
-            maxlength="200"></el-input>
+          <el-input v-model="data.formData.projectNo" placeholder="请输入综管项目编号" @blur="blurHandler" maxlength="50"
+            show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="项目类型" prop="projectType">
           <el-select v-model="data.formData.projectType" placeholder="请选择">
