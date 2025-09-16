@@ -91,8 +91,8 @@ const goDetail = (row: API.OpenBillPageRecord) => {
                     <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
                 </template>
                 <!-- 列表 -->
-                <el-table-column label="所属分支机构" prop="orgName" min-width="120" align="left" />
-                <el-table-column label="应用名称" prop="appName" min-width="120" align="left" />
+                <el-table-column label="所属分支机构" prop="orgName" min-width="180" show-overflow-tooltip align="left" />
+                <el-table-column label="应用名称" prop="appName" min-width="120" show-overflow-tooltip align="left" />
                 <el-table-column label="账单月份" prop="billDate" min-width="120" align="left" />
                 <el-table-column label="账单编号" prop="billNo" min-width="160" align="left" />
                 <el-table-column label="商品金额（元）" prop="goodsAmountTotal" min-width="160" align="left" />
