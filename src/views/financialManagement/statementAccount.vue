@@ -18,7 +18,7 @@ const dataPage = reactive<IPage<any, API.OpenBillPageRecord>>({
     },
     facade: {
         billDate: '',   // YYYY-MM
-        billNO: '',
+        billNo: '',
         orgId: '',
         appId: ''       // 使用 ApplicationSelect 选择的应用 id
     },
@@ -72,7 +72,7 @@ const goDetail = (row: API.OpenBillPageRecord) => {
                     valueLabel="appName" />
             </el-form-item>
             <el-form-item label="账单编号">
-                <el-input v-model.trim="dataPage.facade.billNO" placeholder="请输入账单编号" clearable />
+                <el-input v-model.trim="dataPage.facade.billNo" placeholder="请输入账单编号" clearable />
             </el-form-item>
         </SearchForm>
         <div class="bg-white p-12 mb12 border-radius-8">

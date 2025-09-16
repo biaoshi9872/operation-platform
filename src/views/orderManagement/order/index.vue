@@ -556,14 +556,14 @@ const orderStatusList = computed(() => {
             <div class="order_detail mb-8">
               <span v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))">
                 <span class="title"> 订单编号：</span>
-                <span class="value">{{ row.orderNo }}</span>
+                <span class="value">{{ row.orderNo || '-' }}</span>
                 <el-divider direction="vertical" />
               </span>
               <span>
                 <span class="title">{{ getSystemOptionType == 401 ? '订单编号:' : '供应商订单编号:' }}</span>
                 <span class="value">
                   {{
-                    row.channelOrderNo
+                    row.channelOrderNo || '-'
                   }}
                 </span>
                 <el-divider direction="vertical" />
@@ -573,7 +573,7 @@ const orderStatusList = computed(() => {
                 <span class="title">第三方订单编号：</span>
                 <span class="value">
                   {{
-                    row.thirdOrderNo
+                    row.thirdOrderNo || '-'
                   }}
                 </span>
                 <el-divider direction="vertical" />
@@ -582,7 +582,7 @@ const orderStatusList = computed(() => {
                 <span class="title">电商订单编号(子单)：</span>
                 <span class="value">
                   {{
-                    row.outTradeNo
+                    row.outTradeNo || '-'
                   }}
                 </span>
               </span>
@@ -608,7 +608,7 @@ const orderStatusList = computed(() => {
                 <el-divider direction="vertical" />
               </span>
               <span>
-                <span class="title">结算总金额:</span>
+                <span class="title">订单结算总金额:</span>
                 <span class="value">￥{{ row.settlementPrice }}</span>
               </span>
             </div>

@@ -83,7 +83,7 @@ declare namespace API {
   // 开放平台 - 账单列表 查询参数
   type OpenBillPageParams = {
     billDate: String
-    billNO: String
+    billNo: String
     orgId: Number | null
     appId: Number | null
     page: Number
@@ -183,9 +183,9 @@ declare namespace API {
     page: OpenBillDetail
   }
 
-  // 开放平台 - 账单明细导出 参数（注意：billNO 为大写 O）
+  // 开放平台 - 账单明细导出 参数（注意：billNo 为大写 O）
   type OpenBillDetailExportParams = {
-    billNO: String
+    billNo: String
     page: Number
     limit: Number
   }

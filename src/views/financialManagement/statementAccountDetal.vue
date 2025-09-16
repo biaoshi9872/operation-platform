@@ -12,7 +12,7 @@ const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckH
 // 路由参数
 const route = useRoute()
 const router = useRouter()
-const queryBillNo = computed(() => String(route.query.billNo || ''))
+const querybillNo = computed(() => String(route.query.billNo || ''))
 
 // 列表页数据模型
 const dataPage = reactive<IPage<API.OpenBillDetailParams, API.OpenBillDetailRecord>>({
@@ -29,7 +29,7 @@ const dataPage = reactive<IPage<API.OpenBillDetailParams, API.OpenBillDetailReco
     },
     // 查询条件
     facade: {
-        billNo: queryBillNo.value,      // 必传
+        billNo: querybillNo.value,      // 必传
         orderNo: '',
         channelOrderNo: '',
         outOrderNo: '',
@@ -65,9 +65,9 @@ const pagingQueryHarder = () => {
 }
 
 const exportHandler = () => {
-    // 该导出接口只需要 billNO（注意大写 O），附带分页参数
+    // 该导出接口只需要 billNo（注意大写 O），附带分页参数
     toDownloadCenter({
-        billNO: dataPage.facade.billNo || queryBillNo.value,
+        billNo: dataPage.facade.billNo || querybillNo.value,
         page: dataPage.page.page,
         limit: dataPage.page.limit
     })
