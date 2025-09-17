@@ -139,6 +139,7 @@ declare namespace API {
     submitTimeEnd: String
     confirmTimeStart: String
     confirmTimeEnd: String
+    statementType: Number | null
   }
 
   // 开放平台 - 账单明细 单条记录
