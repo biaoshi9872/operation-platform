@@ -104,7 +104,7 @@ const exportHandler = () => {
             <el-form-item label="商品类型">
                 <SelectModel v-model.trim="dataPage.facade.goodsType" :selectList="goodPoor.sourceTypeList" />
             </el-form-item>
-            <el-form-item label="是否售后">
+            <el-form-item label="是否售后完成">
                 <el-select v-model="dataPage.facade.statementType" clearable>
                     <el-option label="全部" value></el-option>
                     <el-option label="是" value="1"></el-option>
@@ -129,7 +129,7 @@ const exportHandler = () => {
                         {{ order_enum.getOrder_statesTitle(scope.row.orderStatus) }}
                     </template>
                 </el-table-column>
-                <el-table-column label="是否售后" prop="statementType" min-width="100" align="center">
+                <el-table-column label="是否售后完成" prop="statementType" min-width="100" align="center">
                     <template #default="scope">
                         {{ scope.row.statementType === 1 ? '是' : '否' }}
                     </template>

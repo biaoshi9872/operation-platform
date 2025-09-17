@@ -61,8 +61,8 @@ const goDetail = (row: API.OpenBillPageRecord) => {
         <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
             @search="searchQueryHarder">
             <el-form-item label="账单月份">
-                <el-date-picker v-model="dataPage.facade.billDate" type="month" placeholder="选择月份"
-                    value-format="YYYY-MM" clearable />
+                <el-date-picker v-model="dataPage.facade.billDate" type="month" placeholder="选择月份" value-format="YYYYMM"
+                    clearable />
             </el-form-item>
             <el-form-item label="机构名称">
                 <OrgSelect v-model="dataPage.facade.orgId" />

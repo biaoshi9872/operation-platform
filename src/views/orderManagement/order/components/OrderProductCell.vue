@@ -165,7 +165,7 @@ const dataInfo = reactive({
 
   .footer-content {
     display: grid;
-    grid-template-columns: 80px 1fr;
+    grid-template-columns: 160px 1fr;
 
     .item_title {
       text-align: right;

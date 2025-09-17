@@ -369,7 +369,7 @@ const saveData = () => {
                             :max="data.returnInfo.freightAmount" :precision="2"></el-input-number>
                     </el-form-item>
                     <el-form-item v-if="data.formData.excludeAudit.auditStatus === 1 && curryInfo.channelSource != 105"
-                        label="历史退款">
+                        label="已退运费">
                         <span>{{ data.returnInfo.orderRefundFreightAmount }}</span>
                     </el-form-item>
 
