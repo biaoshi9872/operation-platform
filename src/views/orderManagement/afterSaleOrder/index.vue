@@ -251,17 +251,19 @@ const initColumns = () => {
       prop: 'appName'
     })
   }
-  columns.value.push({
-    label: '项目类型',
-    align: 'center',
-    width: '160px',
-    prop: 'projectType',
-    render: (row: any) => {
-      let projectTypeName = h('div', system_enum.getProjectType(row.projectType)) //订单状态
-      //状态显示
-      return h('div', {}, [projectTypeName])
-    }
-  })
+  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+    columns.value.push({
+      label: '项目类型',
+      align: 'center',
+      width: '160px',
+      prop: 'projectType',
+      render: (row: any) => {
+        let projectTypeName = h('div', system_enum.getProjectType(row.projectType)) //订单状态
+        //状态显示
+        return h('div', {}, [projectTypeName])
+      }
+    })
+  }
   columns.value.push({
     label: '操作',
     align: 'center',

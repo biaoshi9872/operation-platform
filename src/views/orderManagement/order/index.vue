@@ -381,17 +381,19 @@ const initColumns = () => {
     },
     openMarginCell: true
   })
-  columns.value.push({
-    label: '项目类型',
-    align: 'center',
-    width: '160px',
-    prop: 'projectType',
-    render: (row: any) => {
-      let projectTypeName = h('div', system_enum.getProjectType(row.projectType)) //订单状态
-      //状态显示
-      return h('div', {}, [projectTypeName])
-    }
-  })
+  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+    columns.value.push({
+      label: '项目类型',
+      align: 'center',
+      width: '160px',
+      prop: 'projectType',
+      render: (row: any) => {
+        let projectTypeName = h('div', system_enum.getProjectType(row.projectType)) //订单状态
+        //状态显示
+        return h('div', {}, [projectTypeName])
+      }
+    })
+  }
   columns.value.push(
     {
       label: '操作',
@@ -552,7 +554,7 @@ const orderStatusList = computed(() => {
       </template>
       <template #customRow="{ row }">
         <div class="order_row">
-          <div>
+          <div class="content">
             <div class="order_detail mb-8">
               <span v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))">
                 <span class="title"> 订单编号：</span>
@@ -585,6 +587,7 @@ const orderStatusList = computed(() => {
                     row.outTradeNo || '-'
                   }}
                 </span>
+                <el-divider direction="vertical" />
               </span>
             </div>
             <div class="order_detail">
@@ -607,7 +610,7 @@ const orderStatusList = computed(() => {
                 <span class="value">￥{{ row.totalAmount }}</span>
                 <el-divider direction="vertical" />
               </span>
-              <span>
+              <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)">
                 <span class="title">订单结算总金额:</span>
                 <span class="value">￥{{ row.settlementPrice }}</span>
               </span>
@@ -645,20 +648,24 @@ const orderStatusList = computed(() => {
     justify-content: space-between;
     align-items: center;
 
-    .order_detail {
+    .content {
       flex: 1;
       display: flex;
-      justify-content: flex-start;
-      gap: 24px;
-      color: #999;
+      flex-wrap: wrap;
 
-      .title {
-        display: inline-block;
+      .order_detail {
+        display: flex;
+        justify-content: flex-start;
         color: #999;
-      }
 
-      .value {
-        color: #333;
+        .title {
+          display: inline-block;
+          color: #999;
+        }
+
+        .value {
+          color: #333;
+        }
       }
     }
 
