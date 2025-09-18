@@ -14,6 +14,7 @@ import { ref, resolveDirective, withDirectives } from 'vue'
 import AuthModel from './modelComponents/AuthModel.vue'
 import AuthModelZY from './modelComponents/AuthModelZY.vue'
 import RevokeModel from './modelComponents/RevokeModel.vue'
+import system_enum from '@/utils/constant/system'
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 const $route = useRoute()
@@ -250,7 +251,19 @@ const initColumns = () => {
       prop: 'appName'
     })
   }
-
+  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+    columns.value.push({
+      label: '项目类型',
+      align: 'center',
+      width: '160px',
+      prop: 'projectType',
+      render: (row: any) => {
+        let projectTypeName = h('div', system_enum.getProjectType(row.projectType)) //订单状态
+        //状态显示
+        return h('div', {}, [projectTypeName])
+      }
+    })
+  }
   columns.value.push({
     label: '操作',
     align: 'center',
@@ -364,8 +377,8 @@ const initColumns = () => {
         <el-input v-model.trim="dataPage.facade.skuName" placeholder="请输入商品名称"></el-input>
       </el-form-item>
 
-      <el-form-item v-if="getSystemOptionType != 401" label="渠道订单编号" class="formItem" placeholder="请选择">
-        <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入渠道订单编号"></el-input>
+      <el-form-item v-if="getSystemOptionType != 401" label="供应商订单编号" class="formItem" placeholder="请选择">
+        <el-input v-model.trim="dataPage.facade.channelOrderNo" placeholder="请输入供应商订单编号"></el-input>
       </el-form-item>
       <el-form-item label="商品编码" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade.skuCode" placeholder="请输入商品编码"></el-input>
@@ -384,6 +397,10 @@ const initColumns = () => {
         <SelectModel v-model.trim="dataPage.facade.desensitizationStatus" :selectList="order_enum.C_isMaskList">
         </SelectModel>
       </el-form-item>
+      <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
+        <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
+        </SelectModel>
+      </el-form-item>
     </SearchForm>
     <OrderCustomTable class="order-container" :openERP="false" :openFold="false" :border="true" :dataPage="dataPage"
       :dataList="dataPage.dataList" :columns="columns">
@@ -397,7 +414,7 @@ const initColumns = () => {
             <span> {{ getSystemOptionType == 401 ?
               '售后单编号:' : '渠道售后单编号:' }} {{ row.channelAfterSaleNo
               }}</span>
-            <span v-if="getSystemOptionType != 401">渠道订单编号:{{ row.channelOrderNo }}</span>
+            <span v-if="getSystemOptionType != 401">供应商订单编号:{{ row.channelOrderNo }}</span>
             <span v-if="getSystemOptionType != 401">售后单编号:{{ row.afterSaleNo }}</span>
             <span>申请时间:{{ row.applyTime }}</span>
             <span v-if="getSystemOptionType == 101">供应商:{{ row.supplyName }}</span>

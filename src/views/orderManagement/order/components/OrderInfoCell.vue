@@ -20,12 +20,16 @@ const FIELDS = computed(() => {
     })
   }
   arr.push({
-    label: getSystemOptionType.value == 401 ? '订单编号' : '渠道订单编号',
+    label: getSystemOptionType.value == 401 ? '订单编号' : '供应商订单编号',
     prop: 'channelOrderNo'
   })
   arr.push({
     label: '第三方订单编号',
     prop: 'thirdOrderNo'
+  })
+  arr.push({
+    label: '电商订单编号(子单)',
+    prop: 'outTradeNo'
   })
   arr.push({
     label: '提交订单时间',

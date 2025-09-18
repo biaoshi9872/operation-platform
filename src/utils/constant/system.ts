@@ -86,6 +86,27 @@ class system_enum {
   public getProfitMode(value: any) {
     return this.profitModeList.find(item => item.value == value)?.label || '--'
   }
+
+  /**
+   * 项目类型
+   */
+  public projectType = [
+    {
+      value: 1,
+      label: '金融API项目'
+    },
+    {
+      value: 2,
+      label: '企业(福利)API项目'
+    },
+    {
+      value: 3,
+      label: '礼业合作API项目'
+    }
+  ]
+  public getProjectType(value: any) {
+    return this.projectType.find(item => item.value == value)?.label || '--'
+  }
 }
 
 export default new system_enum()

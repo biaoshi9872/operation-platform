@@ -161,6 +161,42 @@ class moneyManagement_api {
       data
     })
   }
+
+  // 开放平台 - 账单列表
+  A_openBillPage(data: API.OpenBillPageParams) {
+    return request<API.OpenBillPageResponse>({
+      url: '/bill/page',
+      method: 'post',
+      data
+    })
+  }
+
+  // 开放平台 - 账单列表导出
+  A_openExportBill(data: API.OpenExportBillParams) {
+    return request({
+      url: '/export/bill/export',
+      method: 'post',
+      data
+    })
+  }
+
+  // 开放平台 - 账单明细列表
+  A_openBillDetail(data: API.OpenBillDetailParams) {
+    return request<API.OpenBillDetailResponse>({
+      url: '/bill/detail',
+      method: 'post',
+      data
+    })
+  }
+
+  // 开放平台 - 账单明细列表导出
+  A_openExportBillDetail(data: API.OpenBillDetailExportParams) {
+    return request({
+      url: '/export/bill/detail/export',
+      method: 'post',
+      data
+    })
+  }
 }
 
 export default new moneyManagement_api()

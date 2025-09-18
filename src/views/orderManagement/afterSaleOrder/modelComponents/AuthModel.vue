@@ -187,6 +187,8 @@ const getFindAfterSalePrice = () => {
     const afterSaleNo = props.curryInfo.afterSaleNo
     after_order_api.A_findAfterSalePrice({ afterSaleNo }).then((res: any) => {
         data.returnInfo = res
+        data.formData.excludeAudit.refundCustomerPrice = data.returnInfo.preRetailPrice
+        data.formData.excludeAudit.freightAmount = (data.returnInfo.freightAmount || 0) - (data.returnInfo.orderRefundFreightAmount || 0)
         formRef.value.clearValidate()
     })
 }
@@ -366,6 +368,11 @@ const saveData = () => {
                         <el-input-number v-model="data.formData.excludeAudit.freightAmount" :controls="false"
                             :max="data.returnInfo.freightAmount" :precision="2"></el-input-number>
                     </el-form-item>
+                    <el-form-item v-if="data.formData.excludeAudit.auditStatus === 1 && curryInfo.channelSource != 105"
+                        label="已退运费">
+                        <span>{{ data.returnInfo.orderRefundFreightAmount }}</span>
+                    </el-form-item>
+
                     <el-form-item v-if="data.formData.excludeAudit.auditStatus === 2" label="拒绝原因"
                         prop="excludeAudit.rejectReason">
                         <el-input v-model="data.formData.excludeAudit.rejectReason" placeholder="拒绝原因，展示给前端用户"

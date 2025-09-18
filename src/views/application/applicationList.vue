@@ -11,6 +11,7 @@ import { encrypted, strEncodeURIComponent } from '@/utils/encrypt'
 import { setLocal } from '@/utils/storage'
 import { ElButton } from 'element-plus'
 import ApplicationModel from './components/ApplicationModel.vue'
+import system_enum from '@/utils/constant/system'
 const { isOrgLast } = isStateCheckHooks()
 const $useUserStore = useUserStore()
 const router = useRouter()
@@ -95,6 +96,10 @@ const toApplicationHandler = (row: any) => {
       <el-form-item label="应用名称">
         <el-input v-model="dataPage.facade.appName" placeholder="请输入应用名称"></el-input>
       </el-form-item>
+      <el-form-item label="项目类型" class="formItem" placeholder="请选择">
+        <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
+        </SelectModel>
+      </el-form-item>
     </SearchForm>
     <div class="option_box">
       <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
@@ -110,6 +115,11 @@ const toApplicationHandler = (row: any) => {
           </template>
         </el-table-column>
         <el-table-column prop="orgName" label="分支机构"></el-table-column>
+        <YbtTableColumn prop="projectType" label="项目类型" mix-width="140">
+          <template #default="{ row }">{{
+            system_enum.getProjectType(row.projectType)
+          }}</template>
+        </YbtTableColumn>
         <el-table-column prop="createDate" label="创建时间"></el-table-column>
         <el-table-column prop="createUserName" label="创建人"></el-table-column>
         <el-table-column label="操作" width="200px" align="right">

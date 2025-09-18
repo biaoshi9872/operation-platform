@@ -119,6 +119,9 @@ const dataInfo = reactive({
         <span class="item_price">￥{{ orderInfo.freightAmount }}</span>
         <span class="item_title">订单总金额:</span>
         <span class="item_price">￥{{ orderInfo.orderAmount }}</span>
+        <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" class="item_title">订单结算总金额:</span>
+        <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" class="item_price">￥{{
+          orderInfo.settlementPrice }}</span>
       </div>
     </div>
   </div>
@@ -163,7 +166,7 @@ const dataInfo = reactive({
 
   .footer-content {
     display: grid;
-    grid-template-columns: 80px 1fr;
+    grid-template-columns: 160px 1fr;
 
     .item_title {
       text-align: right;
