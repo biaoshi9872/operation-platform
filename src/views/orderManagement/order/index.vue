@@ -651,7 +651,7 @@ const orderStatusList = computed(() => {
     .content {
       flex: 1;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
 
       .order_detail {
         display: flex;

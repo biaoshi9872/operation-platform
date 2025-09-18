@@ -216,6 +216,22 @@ const blurHandler = () => {
             show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="项目类型" prop="projectType">
+          <template #label>
+            <el-tooltip effect="dark" placement="top">
+              <template #content>
+                <div> 1、金融AP项目：项目盈利模式为赚差价，收入计入基准为分销价；
+                  若项目特殊设置盈利模式为扣点模式，请线下对账。</div>
+                <div> 2、企业（福利）APl项目：项目盈利模式为赚差价，收入计入基准为分销价；若项目特殊设置盈利模式为扣点模式，请线下对账。</div>
+                <div> 3、礼业合作AP1项目：项目盈利模式为扣点模式，收入计入基准为平台供应价；若项目特殊设置盈利模式为赚差价，请线下对账。</div>
+              </template>
+              <div class="flex items-center gap-4">
+                项目类型
+                <el-icon>
+                  <QuestionFilled />
+                </el-icon>
+              </div>
+            </el-tooltip>
+          </template>
           <el-select v-model="data.formData.projectType" placeholder="请选择">
             <el-option v-for="item in system_enum.projectType" :label="item.label" :value="item.value" />
           </el-select>
