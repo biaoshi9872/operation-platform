@@ -146,7 +146,7 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-        }}</template>
+          }}</template>
       </el-table-column>
     </el-table>
     <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">
