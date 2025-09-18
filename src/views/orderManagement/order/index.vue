@@ -647,7 +647,7 @@ const orderStatusList = computed(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 
     .content {
       flex: 1;
