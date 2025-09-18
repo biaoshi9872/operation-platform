@@ -188,7 +188,7 @@ const getFindAfterSalePrice = () => {
     after_order_api.A_findAfterSalePrice({ afterSaleNo }).then((res: any) => {
         data.returnInfo = res
         data.formData.excludeAudit.refundCustomerPrice = data.returnInfo.preRetailPrice
-        data.formData.excludeAudit.freightAmount = data.returnInfo.freightAmount
+        data.formData.excludeAudit.freightAmount = (data.returnInfo.freightAmount || 0) - (data.returnInfo.orderRefundFreightAmount || 0)
         formRef.value.clearValidate()
     })
 }
