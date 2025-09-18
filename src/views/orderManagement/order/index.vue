@@ -554,67 +554,63 @@ const orderStatusList = computed(() => {
       </template>
       <template #customRow="{ row }">
         <div class="order_row">
-          <div class="content">
-            <div class="order_detail mb-8">
-              <span v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))">
-                <span class="title"> 订单编号：</span>
-                <span class="value">{{ row.orderNo || '-' }}</span>
-                <el-divider direction="vertical" />
+          <div class="order_detail">
+            <span v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))">
+              <span class="title"> 订单编号：</span>
+              <span class="value">{{ row.orderNo || '-' }}</span>
+              <el-divider direction="vertical" />
+            </span>
+            <span>
+              <span class="title">{{ getSystemOptionType == 401 ? '订单编号:' : '供应商订单编号:' }}</span>
+              <span class="value">
+                {{
+                  row.channelOrderNo || '-'
+                }}
               </span>
-              <span>
-                <span class="title">{{ getSystemOptionType == 401 ? '订单编号:' : '供应商订单编号:' }}</span>
-                <span class="value">
-                  {{
-                    row.channelOrderNo || '-'
-                  }}
-                </span>
-                <el-divider direction="vertical" />
-              </span>
+              <el-divider direction="vertical" />
+            </span>
 
-              <span>
-                <span class="title">第三方订单编号：</span>
-                <span class="value">
-                  {{
-                    row.thirdOrderNo || '-'
-                  }}
-                </span>
-                <el-divider direction="vertical" />
+            <span>
+              <span class="title">第三方订单编号：</span>
+              <span class="value">
+                {{
+                  row.thirdOrderNo || '-'
+                }}
               </span>
-              <span>
-                <span class="title">电商订单编号(子单)：</span>
-                <span class="value">
-                  {{
-                    row.outTradeNo || '-'
-                  }}
-                </span>
-                <el-divider direction="vertical" />
-              </span>
-            </div>
-            <div class="order_detail">
-              <span> <span class="title">提交订单时间：</span><span class="value">{{ row.submitTime }}</span></span>
               <el-divider direction="vertical" />
-              <span> <span class="title">确认下单时间：</span><span class="value">{{ row.confirmTime }}</span></span>
+            </span>
+            <span>
+              <span class="title">电商订单编号(子单)：</span>
+              <span class="value">
+                {{
+                  row.outTradeNo || '-'
+                }}
+              </span>
               <el-divider direction="vertical" />
-              <span v-if="getSystemOptionType == 101">
-                <span class="title">供应商:</span>
-                <span class="value">{{ row.supplyName }}</span>
-                <el-divider direction="vertical" />
-              </span>
-              <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105">
-                <span class="title">供应商:</span>
-                <span class="value">{{ row.supplyName }}</span>
-                <el-divider direction="vertical" />
-              </span>
-              <span>
-                <span class="title">订单总金额:</span>
-                <span class="value">￥{{ row.totalAmount }}</span>
-                <el-divider direction="vertical" />
-              </span>
-              <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)">
-                <span class="title">订单结算总金额:</span>
-                <span class="value">￥{{ row.settlementPrice }}</span>
-              </span>
-            </div>
+            </span>
+            <span> <span class="title">提交订单时间：</span><span class="value">{{ row.submitTime }}</span></span>
+            <el-divider direction="vertical" />
+            <span> <span class="title">确认下单时间：</span><span class="value">{{ row.confirmTime }}</span></span>
+            <el-divider direction="vertical" />
+            <span v-if="getSystemOptionType == 101">
+              <span class="title">供应商:</span>
+              <span class="value">{{ row.supplyName }}</span>
+              <el-divider direction="vertical" />
+            </span>
+            <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105">
+              <span class="title">供应商:</span>
+              <span class="value">{{ row.supplyName }}</span>
+              <el-divider direction="vertical" />
+            </span>
+            <span>
+              <span class="title">订单总金额:</span>
+              <span class="value">￥{{ row.totalAmount }}</span>
+              <el-divider direction="vertical" />
+            </span>
+            <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)">
+              <span class="title">订单结算总金额:</span>
+              <span class="value">￥{{ row.settlementPrice }}</span>
+            </span>
           </div>
           <div>
             <el-button type="primary" @click="toOrderDetailHandler(row)" link>查看详情</el-button>
