@@ -495,7 +495,7 @@ const orderStatusList = computed(() => {
         <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].confirmTimeStart"
           v-model:end="dataPage.facade[dataPage.facadeKz.tab].confirmTimeEnd"></DatePickerRange>
       </el-form-item>
-      <el-form-item label="延迟时间" class="el-form-item-inputGroup" v-if="['-999', '4'].includes(dataPage.facadeKz.tab)">
+      <el-form-item label="延迟时间" class="el-form-item-inputGroup" v-if="['4'].includes(dataPage.facadeKz.tab)">
         <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].delayTimeStart"
           v-model:end="dataPage.facade[dataPage.facadeKz.tab].delayTimeEnd"></DatePickerRange>
       </el-form-item>
@@ -604,7 +604,7 @@ const orderStatusList = computed(() => {
             <span> <span class="title">提交订单时间：</span><span class="value">{{ row.submitTime }}</span></span>
             <el-divider direction="vertical" />
             <span> <span class="title">确认下单时间：</span><span class="value">{{ row.confirmTime }}</span></span>
-            <span v-if="row.delayTime">
+            <span v-if="['4'].includes(dataPage.facadeKz.tab)">
               <el-divider direction="vertical" />
               <span class="title">延迟时间：</span>
               <span class="value">{{ row.delayTime ?? '-' }}分钟</span>
