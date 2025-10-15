@@ -604,10 +604,10 @@ const orderStatusList = computed(() => {
             <span> <span class="title">提交订单时间：</span><span class="value">{{ row.submitTime }}</span></span>
             <el-divider direction="vertical" />
             <span> <span class="title">确认下单时间：</span><span class="value">{{ row.confirmTime }}</span></span>
-            <el-divider direction="vertical" />
-            <span>
+            <span v-if="row.delayTime">
+              <el-divider direction="vertical" />
               <span class="title">延迟时间：</span>
-              <span class="value">{{ row.delayTime ?? '-' }}</span>
+              <span class="value">{{ row.delayTime ?? '-' }}分钟</span>
             </span>
             <el-divider direction="vertical" />
             <span v-if="getSystemOptionType == 101">
