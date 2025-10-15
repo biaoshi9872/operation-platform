@@ -40,6 +40,10 @@ const FIELDS = computed(() => {
     prop: 'confirmTime'
   })
   arr.push({
+    label: '延迟时间',
+    prop: 'delayTime'
+  })
+  arr.push({
     label: '下单人',
     prop: 'buyer'
   })
