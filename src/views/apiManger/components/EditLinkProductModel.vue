@@ -137,6 +137,10 @@ const systemOrgId = computed(() => {
 const getOrgList = () => {
   org_api.A_selectList({}).then((res: any) => {
     data.orgList = res
+    if (['201'].includes(getSystemOptionType.value)) {
+      data.formData.orgId = systemOrgId.value
+      orgChangeHandler(true)
+    }
   })
 }
 /**
@@ -164,6 +168,15 @@ const appChangeHandler = (isInit: Boolean = false) => {
   let appId = data.formData.appId
   getApplication(appId)
 }
+
+/**
+ * 
+ * @param val 
+ */
+const changeGoods = (val: any) => {
+  data.formData.skuName = data.goodsList.find((el: any) => el.skuCode === val)?.skuName || ''
+}
+
 const goodTypeSizeChangeHandler = (val: any) => {
   data.page.page = 1
   goodTypeChangeHandler(false)
@@ -198,10 +211,10 @@ const getApplicationList = (orgId: any) => {
  */
 const getApplication = (appId: any) => {
   application_api.A_applicationDetail({ appId }).then((res: any) => {
-    data.goodTypeList = res?.goodsSourceTypeNameList.map((el: any) => ({
+    data.goodTypeList = (res?.goodsSourceTypeNameList.map((el: any) => ({
       label: el.sourceName,
       value: el.id
-    })) || []
+    })) || []).filter((el: any) => el.value != 105)
   })
 }
 /**
@@ -255,7 +268,7 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
           </el-select>
         </el-form-item>
         <el-form-item label="选择商品" prop="skuCode">
-          <el-select v-model="data.formData.skuCode" filterable clearable placeholder="请选择商品">
+          <el-select v-model="data.formData.skuCode" filterable clearable placeholder="请选择商品" @change="changeGoods">
             <el-option v-for="item in data.goodsList" :key="item.skuCode" :label="`${item.skuName}`"
               :value="item.skuCode" :title="item.skuName" />
             <template #footer v-if="data.page.totalCount >= 1000">

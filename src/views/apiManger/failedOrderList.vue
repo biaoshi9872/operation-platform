@@ -23,8 +23,8 @@ const dataPage: IPage<API.T_YiChangDingDanLieBiaoSearchForm, any> = reactive({
   facade: {
     appIds: null, //分销
     orgIds: null, //分支机构
-    ybtOrderNo: '', //驿宝通订单号
-    channelOrderNo: '', //渠道订单号
+    orderNo: '', //驿宝通订单号
+    thirdOrderNo: '', //渠道订单号
     skuCode: '', //商品编码
     outSkuCode: '', //外部商品编码
     skuName: '', //商品名称
@@ -128,28 +128,16 @@ const handleClose = () => {
     <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
       @search="searchQueryHarder" @reset="reset">
       <el-form-item label="应用名称">
-        <ApplicationSelect v-model="dataPage.facade.appIds" :multiple="true"></ApplicationSelect>
+        <ApplicationSelect v-model="dataPage.facade.appIds" valueKey="id" :multiple="true"></ApplicationSelect>
       </el-form-item>
       <el-form-item label="分支机构" v-if="['101'].includes(getSystemOptionType)">
-        <OrgSelect v-model="dataPage.facade.orgIds" :multiple="true"></OrgSelect>
+        <OrgSelect v-model="dataPage.facade.orgIds" valueKey="id" :multiple="true"></OrgSelect>
       </el-form-item>
       <el-form-item label="订单编号">
         <el-input v-model="dataPage.facade.orderNo" placeholder="请输入订单编号" clearable></el-input>
       </el-form-item>
       <el-form-item label="第三方订单编号">
         <el-input v-model="dataPage.facade.thirdOrderNo" placeholder="请输入第三方订单编号" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="商品编码">
-        <el-input v-model="dataPage.facade.skuCode" placeholder="请输入商品编码" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="外部商品编码">
-        <el-input v-model="dataPage.facade.outSkuCode" placeholder="请输入外部商品编码" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="商品名称">
-        <el-input v-model="dataPage.facade.skuName" placeholder="请输入商品名称" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="外部商品名称">
-        <el-input v-model="dataPage.facade.outSkuName" placeholder="请输入外部商品名称" clearable></el-input>
       </el-form-item>
       <el-form-item label="提交订单时间">
         <DatePickerRange v-model:start="dataPage.facade.submitTimeMin" v-model:end="dataPage.facade.submitTimeMax" />

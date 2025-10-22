@@ -69,10 +69,10 @@ const addOrEditHandler = (row: any, type: 'edit' | 'add') => {
     <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
       @search="searchQueryHarder">
       <el-form-item label="应用名称">
-        <ApplicationSelect v-model="dataPage.facade.appIds" :multiple="true"></ApplicationSelect>
+        <ApplicationSelect v-model="dataPage.facade.appIds" valueKey="id" :multiple="true"></ApplicationSelect>
       </el-form-item>
       <el-form-item label="分支机构" v-if="['101'].includes(getSystemOptionType)">
-        <OrgSelect v-model="dataPage.facade.orgIds" :multiple="true"></OrgSelect>
+        <OrgSelect v-model="dataPage.facade.orgIds" valueKey="id" :multiple="true"></OrgSelect>
       </el-form-item>
       <el-form-item label="驿宝通商品编码">
         <el-input v-model="dataPage.facade.skuCode" placeholder="请输入驿宝通商品编码" clearable></el-input>
@@ -86,7 +86,7 @@ const addOrEditHandler = (row: any, type: 'edit' | 'add') => {
       <el-form-item label="外部商品编码">
         <el-input v-model="dataPage.facade.outSkuCode" placeholder="请输入外部商品编码" clearable></el-input>
       </el-form-item>
-      <el-form-item label="商品状态状态">
+      <el-form-item label="商品状态">
         <el-select v-model="dataPage.facade.goodsStatus" placeholder="请选择" clearable filterable true>
           <el-option label="全部" value></el-option>
           <el-option v-for="item in ycb_enum.E_ShangPinZhuangTai" :key="item.value" :label="item.label"
@@ -94,10 +94,10 @@ const addOrEditHandler = (row: any, type: 'edit' | 'add') => {
         </el-select>
       </el-form-item>
       <el-form-item label="新增时间">
-        <DatePickerRange v-model:start="dataPage.facade.createTimeStart" v-model:end="dataPage.facade.createTimeEnd" />
+        <DatePickerRange v-model:start="dataPage.facade.createDataMin" v-model:end="dataPage.facade.createDataMax" />
       </el-form-item>
       <el-form-item label="更新时间">
-        <DatePickerRange v-model:start="dataPage.facade.updateTimeStart" v-model:end="dataPage.facade.updateTimeEnd" />
+        <DatePickerRange v-model:start="dataPage.facade.updateDataMin" v-model:end="dataPage.facade.updateDataMax" />
       </el-form-item>
     </SearchForm>
     <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" id="skuCode" @pagingQuery="searchQueryHarder"
