@@ -34,6 +34,8 @@ const searchForm = {
   submitTimeEnd: '', //
   confirmTimeStart: '', //订单确认时间
   confirmTimeEnd: '', //
+  delayTimeStart: '', //延迟开始时间
+  delayTimeEnd: '', //延迟结束时间
   orderNo: '', //开放平台订单号
   channelOrderNo: '', //渠道订单号
   thirdOrderNo: '',//第三方订单号
@@ -72,6 +74,7 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
     '1': [],
     '2': [],
     '3': [],
+    '4': [],
     '-3': []
   },
   multipleList: [],
@@ -81,6 +84,7 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
     '1': cloneDeep(pageInfo),
     '2': cloneDeep(pageInfo),
     '3': cloneDeep(pageInfo),
+    '4': cloneDeep(pageInfo),
     '-3': cloneDeep(pageInfo)
   },
   isOnload: true,
@@ -89,6 +93,7 @@ const dataPage: IPage<API.OrderListParams, API.OrderListRowInfo> = reactive({
     '1': cloneDeep(searchForm),
     '2': cloneDeep(searchForm),
     '3': cloneDeep(searchForm),
+    '4': cloneDeep(searchForm),
     '-3': cloneDeep(searchForm)
   },
   waitDeliverCount: 0,
@@ -156,7 +161,11 @@ const orderTabs = ref([
   {
     label: '失败',
     value: '-3'
-  }
+  },
+  {
+    label: '延迟中',
+    value: '4'
+  },
 ])
 const tabChangHarder = () => {
   //handleReset()
@@ -486,6 +495,10 @@ const orderStatusList = computed(() => {
         <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].confirmTimeStart"
           v-model:end="dataPage.facade[dataPage.facadeKz.tab].confirmTimeEnd"></DatePickerRange>
       </el-form-item>
+      <el-form-item label="延迟时间" class="el-form-item-inputGroup" v-if="['4'].includes(dataPage.facadeKz.tab)">
+        <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].delayTimeStart"
+          v-model:end="dataPage.facade[dataPage.facadeKz.tab].delayTimeEnd"></DatePickerRange>
+      </el-form-item>
       <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="订单编号" class="formItem"
         placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderNo" placeholder="请输入订单编号"></el-input>
@@ -591,6 +604,11 @@ const orderStatusList = computed(() => {
             <span> <span class="title">提交订单时间：</span><span class="value">{{ row.submitTime }}</span></span>
             <el-divider direction="vertical" />
             <span> <span class="title">确认下单时间：</span><span class="value">{{ row.confirmTime }}</span></span>
+            <span v-if="['4'].includes(dataPage.facadeKz.tab)">
+              <el-divider direction="vertical" />
+              <span class="title">延迟时间：</span>
+              <span class="value">{{ row.delayTime ?? '-' }}分钟</span>
+            </span>
             <el-divider direction="vertical" />
             <span v-if="getSystemOptionType == 101">
               <span class="title">供应商:</span>
