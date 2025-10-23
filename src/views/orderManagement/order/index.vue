@@ -496,8 +496,8 @@ const orderStatusList = computed(() => {
           v-model:end="dataPage.facade[dataPage.facadeKz.tab].confirmTimeEnd"></DatePickerRange>
       </el-form-item>
       <el-form-item label="延迟时间" class="el-form-item-inputGroup" v-if="['4'].includes(dataPage.facadeKz.tab)">
-        <DatePickerRange v-model:start="dataPage.facade[dataPage.facadeKz.tab].delayTimeStart"
-          v-model:end="dataPage.facade[dataPage.facadeKz.tab].delayTimeEnd"></DatePickerRange>
+        <DoubleInput v-model:start="dataPage.facade[dataPage.facadeKz.tab].delayTimeStart"
+          v-model:end="dataPage.facade[dataPage.facadeKz.tab].delayTimeEnd"></DoubleInput>
       </el-form-item>
       <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="订单编号" class="formItem"
         placeholder="请选择">
