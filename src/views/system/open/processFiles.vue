@@ -3,7 +3,7 @@ defineOptions({
     name: 'xxxx'
 })
 import { ElMessageBox, ElMessage } from 'element-plus'
-import AppFilesEditModel from './components/AppFilesEditModel.vue'
+import AppProcessFIlesEditModel from './components/AppProcessFIlesEditModel.vue'
 import AppFadeModel from './components/AppFadeModel.vue'
 import { ElButton } from 'element-plus'
 import apiFiles_api from '@/api/apiFiles/index'
@@ -134,11 +134,11 @@ const initData = () => {
         </div>
         <div class="main_box_right">
             <div class="flex items-center mb-8">
-                <el-button type="primary" @click="addApiHandler">新增接口</el-button>
+                <el-button type="primary" @click="addApiHandler">新增文档</el-button>
             </div>
             <el-table :data="dataPage.tableData" style="width: 100%">
-                <el-table-column prop="apiUrl" label="接口路径" />
-                <el-table-column prop="apiName" label="接口名称" />
+                <el-table-column prop="apiName" label="文档名称" />
+                <el-table-column prop="apiUrl" label="文档简介" />
                 <el-table-column label="操作" width="140" align="right">
                     <template #default="scope">
                         <el-button type="primary" link @click="editApiHandler(scope.row)">编辑</el-button>
@@ -148,11 +148,11 @@ const initData = () => {
             </el-table>
         </div>
     </div>
-    <AppFadeModel v-model="dataPage.showFlModel" title="API设置" @refresh="initData"
+    <AppFadeModel v-model="dataPage.showFlModel" title="文档设置" @refresh="initData"
         :nodeCurryInfo="dataPage.nodeCurryInfo" :curryInfo="dataPage.curryInfo"></AppFadeModel>
-    <AppFilesEditModel v-model="dataPage.showAddModel" @refresh="getListByCateId"
+    <AppProcessFIlesEditModel v-model="dataPage.showAddModel" @refresh="getListByCateId"
         :nodeCurryInfo="dataPage.nodeCurryInfo" :curryInfo="dataPage.curryInfo">
-    </AppFilesEditModel>
+    </AppProcessFIlesEditModel>
 </template>
 <style lang="scss" scoped>
 .api_box_box {

@@ -6,10 +6,12 @@ import apiFiles from '@/api/apiFiles/index'
 interface IProp {
     nodeCurryInfo: any,
     curryInfo: any,
+    title: string
 }
 const props = withDefaults(defineProps<IProp>(), {
     nodeCurryInfo: {},
-    curryInfo: {}
+    curryInfo: {},
+    title: 'API设置'
 })
 const emits = defineEmits<{
     (e: 'update:modelValue', value: any): void
@@ -84,8 +86,8 @@ const handleSubmit = () => {
 }
 </script>
 <template>
-    <el-dialog v-bind="$attrs" title="API设置" width="500px" append-to-body @open="openHandler" draggable destroy-on-close
-        :close-on-click-modal="false" @closed="handleReset">
+    <el-dialog v-bind="$attrs" :title="title" width="500px" append-to-body @open="openHandler" draggable
+        destroy-on-close :close-on-click-modal="false" @closed="handleReset">
         <div class="option">
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
