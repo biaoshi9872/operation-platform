@@ -167,6 +167,15 @@ const orderTabs = ref([
     value: '4'
   },
 ])
+
+const orderTabsList = computed(() => {
+  return orderTabs.value.filter((item: any) => {
+    if (item.value == '4') {
+      return !['401'].includes(getSystemOptionType.value)
+    }
+    return true
+  })
+})
 const tabChangHarder = () => {
   //handleReset()
   searchQueryHarder()
@@ -476,7 +485,7 @@ const orderStatusList = computed(() => {
       class="el-search-item" @search="searchQueryHarder" :customReset="true" @reset="resetHandler">
       <template #tabs>
         <el-tabs v-model="dataPage.facadeKz.tab" @tab-change="tabChangHarder">
-          <el-tab-pane v-for="item in orderTabs" :label="item.label" :name="item.value" :key="item.value">
+          <el-tab-pane v-for="item in orderTabsList" :label="item.label" :name="item.value" :key="item.value">
             <template #label>
               <span class="badge">
                 <el-badge :value="dataPage.waitDeliverCount" :hidden="item.value !== '1'">
