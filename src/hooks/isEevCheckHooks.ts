@@ -23,7 +23,7 @@ export default function (data: any): TisEevCheckHooks {
     let cookie = document.cookie
     console.log('cookie', cookie)
     let host = location.host
-    if (cookie.includes('version=always') && host == 'vsc.ebaoton.cn' && import.meta.env.VITE_TAG === 'voperate') {
+    if (cookie.includes('version=always') && host == 'vsc.ebaoton.cn') {
       return true
     } else return false
   })

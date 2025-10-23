@@ -39,10 +39,13 @@ const FIELDS = computed(() => {
     label: '确认下单时间',
     prop: 'confirmTime'
   })
-  arr.push({
-    label: '延迟时间',
-    prop: 'delayTime'
-  })
+  if (props.orderBaseInfo.delayStatus == 2 && !['401'].includes(getSystemOptionType.value)) {
+    arr.push({
+      label: '延迟时间',
+      prop: 'delayTime',
+      unit: "分钟"
+    })
+  }
   arr.push({
     label: '下单人',
     prop: 'buyer'
@@ -65,7 +68,7 @@ const getTitle = computed(() => {
   <div class="content_box">
     <div class="item flex" v-for="(item, index) in FIELDS" :key="index">
       <span class="item_title">{{ item.label }}:</span>
-      <span class="item_value">{{ getTitle(item) || '-' }}</span>
+      <span class="item_value">{{ getTitle(item) || '-' }} {{ item.unit || '' }}</span>
     </div>
   </div>
 </template>
