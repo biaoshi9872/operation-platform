@@ -39,7 +39,7 @@ const FIELDS = computed(() => {
     label: '确认下单时间',
     prop: 'confirmTime'
   })
-  if (props.orderBaseInfo.delayStatus == 2) {
+  if (props.orderBaseInfo.delayStatus == 2 && !['401'].includes(getSystemOptionType.value)) {
     arr.push({
       label: '延迟时间',
       prop: 'delayTime',
