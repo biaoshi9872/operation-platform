@@ -75,6 +75,10 @@ const openHandler = () => {
   }
   if (props.curryInfo.id) {
     data.formData.address = props.curryInfo.address
+    data.formData.provinceId = parseInt(props.curryInfo.provinceId)
+    data.formData.cityId = parseInt(props.curryInfo.cityId)
+    data.formData.countyId = parseInt(props.curryInfo.countyId)
+    data.formData.townId = parseInt(props.curryInfo.townId) > 0 ? parseInt(props.curryInfo.townId) : null
   }
   setTimeout(() => {
     formRef.value.clearValidate()
