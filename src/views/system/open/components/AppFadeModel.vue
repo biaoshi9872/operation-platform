@@ -7,11 +7,13 @@ interface IProp {
     nodeCurryInfo: any,
     curryInfo: any,
     title: string
+    type: number
 }
 const props = withDefaults(defineProps<IProp>(), {
     nodeCurryInfo: {},
     curryInfo: {},
-    title: 'API设置'
+    title: 'API设置',
+    type: 1
 })
 const emits = defineEmits<{
     (e: 'update:modelValue', value: any): void
@@ -77,7 +79,8 @@ const handleSubmit = () => {
         }
         apiFiles.A_apiCateSave({
             ...data.formData,
-            parentId
+            parentId,
+            type: props.type
         }).then((res: any) => {
             emits('refresh')
             handleClose()

@@ -30,6 +30,7 @@ const data = reactive<any>({
         apiName: [{ required: true, message: '请输入文档名称', trigger: ['change', 'blur'] }],
         apiUrl: [{ required: true, message: '请输入文档简介', trigger: ['change', 'blur'] }],
     },
+    optionType: 2,
     submitLoading: false,
 })
 const handleReset = () => {
@@ -64,7 +65,8 @@ const handleSubmit = () => {
         const cateId = props.nodeCurryInfo.id
         apiFiles.A_apiInterfaceSave({
             ...data.formData,
-            cateId
+            cateId,
+            type: data.optionType
         }).then((res: any) => {
             ElMessage.success('保存成功')
             emits('refresh')
@@ -83,7 +85,7 @@ const handleSubmit = () => {
                 <el-form-item label="文档名称" prop="apiName">
                     <el-input v-model="data.formData.apiName" maxlength="100" show-word-limit></el-input>
                 </el-form-item>
-                <el-form-item label="文档简介" prop="apiUrl">
+                <el-form-item label="文档简介">
                     <el-input v-model="data.formData.apiUrl" maxlength="500" show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="功能描述" prop="description">

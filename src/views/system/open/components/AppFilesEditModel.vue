@@ -60,6 +60,7 @@ const data = reactive<any>({
     resError: '',
     requestError: '',
     submitLoading: false,
+    optionType: 1
 })
 const handleReset = () => {
     if (formRef.value) {
@@ -94,7 +95,8 @@ const handleSubmit = () => {
         const cateId = props.nodeCurryInfo.id
         apiFiles.A_apiInterfaceSave({
             ...data.formData,
-            cateId
+            cateId,
+            type: data.optionType
         }).then((res: any) => {
             ElMessage.success('保存成功')
             emits('refresh')

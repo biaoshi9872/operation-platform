@@ -14,7 +14,8 @@ const dataPage = reactive({
     showFlModel: false,
     nodeCurryInfo: null,
     treeList: [],
-    tableData: []
+    tableData: [],
+    type: 2
 })
 const addHandler = () => {
     dataPage.curryInfo = null
@@ -91,7 +92,9 @@ const getListByCateId = () => {
     }
 }
 const initData = () => {
-    apiFiles_api.A_treeList({}).then((res: any) => {
+    apiFiles_api.A_treeList({
+        type: dataPage.type
+    }).then((res: any) => {
         dataPage.treeList = res
     })
 }
@@ -148,7 +151,7 @@ const initData = () => {
             </el-table>
         </div>
     </div>
-    <AppFadeModel v-model="dataPage.showFlModel" title="文档设置" @refresh="initData"
+    <AppFadeModel v-model="dataPage.showFlModel" title="文档设置" :type="2" @refresh="initData"
         :nodeCurryInfo="dataPage.nodeCurryInfo" :curryInfo="dataPage.curryInfo"></AppFadeModel>
     <AppProcessFIlesEditModel v-model="dataPage.showAddModel" @refresh="getListByCateId"
         :nodeCurryInfo="dataPage.nodeCurryInfo" :curryInfo="dataPage.curryInfo">
