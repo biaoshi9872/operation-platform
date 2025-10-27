@@ -29,6 +29,10 @@ class distributionConstant {
     {
       label: '售后退款',
       value: '3'
+    },
+    {
+      label: '调账处理',
+      value: '8'
     }
   ]
   getTheTypeOfTopUpService(value: any) {
