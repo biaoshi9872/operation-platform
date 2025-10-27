@@ -9,8 +9,8 @@ class ycb_enum extends baseConstant {
    * 商品状态
    */
   E_ShangPinZhuangTai = [
-    { label: '上架', value: '2' },
-    { label: '下架', value: '1' }
+    { label: '上架', value: '1' },
+    { label: '下架', value: '2' }
   ]
 
   /**

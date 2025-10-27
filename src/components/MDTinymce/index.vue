@@ -37,7 +37,6 @@ const toolbars = {
     header: true, // 标题
     underline: true, // 下划线
     strikethrough: true, // 中划线
-    mark: true, // 标记
     superscript: true, // 上角标
     subscript: true, // 下角标
     quote: true, // 引用
