@@ -82,10 +82,10 @@ const exportHandler = () => {
         </ApplicationSelect>
       </el-form-item>
       <el-form-item label="订单号">
-        <el-input v-model.trim="dataPage.facade.plantOrderNo"></el-input>
+        <el-input v-model.trim="dataPage.facade.plantOrderNo" placeholder="请输入订单号"></el-input>
       </el-form-item>
       <el-form-item label="售后单号">
-        <el-input v-model.trim="dataPage.facade.afterSaleNo"></el-input>
+        <el-input v-model.trim="dataPage.facade.afterSaleNo" placeholder="请输入售后单号"></el-input>
       </el-form-item>
       <el-form-item label="项目类型" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
@@ -104,12 +104,12 @@ const exportHandler = () => {
         <YbtTableColumn prop="projectType" label="项目类型" mix-width="160">
           <template #default="{ row }">{{
             system_enum.getProjectType(row.projectType)
-            }}</template>
+          }}</template>
         </YbtTableColumn>
         <YbtTableColumn prop="id" label="日志ID" mix-width="160"></YbtTableColumn>
         <YbtTableColumn prop="actionType" label="操作类型" mix-width="160">
           <template #default="{ row }">{{ distributionConstant.getMoneyManagementOperationType(row.actionType)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
         <YbtTableColumn prop="createDate" label="创建时间" width="170"></YbtTableColumn>
         <YbtTableColumn prop="amount" label="变更金额" mix-width="160">

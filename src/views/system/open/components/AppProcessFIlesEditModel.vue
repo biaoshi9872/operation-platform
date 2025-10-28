@@ -77,7 +77,7 @@ const handleSubmit = () => {
 
 </script>
 <template>
-    <el-drawer v-bind="$attrs" :close-on-click-modal="false" title="API文档编辑" size="60%" @closed="handleReset"
+    <el-drawer v-bind="$attrs" :close-on-click-modal="false" title="API文档编辑" size="80%" @closed="handleReset"
         @open="openHandler">
         <div class="api_container">
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
