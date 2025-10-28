@@ -214,7 +214,7 @@ const getApplication = (appId: any) => {
     data.goodTypeList = (res?.goodsSourceTypeNameList.map((el: any) => ({
       label: el.sourceName,
       value: el.id
-    })) || []).filter((el: any) => el.value != 105)
+    })) || []) //.filter((el: any) => el.value != 105)
   })
 }
 /**
