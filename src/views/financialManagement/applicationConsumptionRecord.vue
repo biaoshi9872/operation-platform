@@ -84,10 +84,10 @@ const exportHandler = () => {
                 </OrgSelect>
             </el-form-item>
             <el-form-item label="订单号">
-                <el-input v-model.trim="dataPage.facade.plantOrderNo"></el-input>
+                <el-input v-model.trim="dataPage.facade.plantOrderNo" placeholder="请输入订单号"></el-input>
             </el-form-item>
             <el-form-item label="售后单号">
-                <el-input v-model.trim="dataPage.facade.afterSaleNo"></el-input>
+                <el-input v-model.trim="dataPage.facade.afterSaleNo" placeholder="请输入售后单号"></el-input>
             </el-form-item>
             <el-form-item label="项目类型" class="formItem" placeholder="请选择">
                 <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
