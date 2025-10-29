@@ -120,7 +120,7 @@ const verifyHandler = () => {
       </div>
       <div class="item">
         <span class="item_title">订单号:</span>
-        <span class="item_value">{{ data.detailInfo.channelOrderNo }}</span>
+        <span class="item_value">{{ data.detailInfo.orderNo }}</span>
       </div>
     </div>
   </CardModel>

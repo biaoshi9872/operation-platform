@@ -94,6 +94,7 @@ const rechargeHandler = (row: API.MerchantPrepaidRecording) => {
         <YbtTableColumn prop="amountRechargeTotal" label="累计充值(元)" mix-width="140"></YbtTableColumn>
         <YbtTableColumn prop="amountUsedTotal" label="已用额度(预存款)(元)" mix-width="160"></YbtTableColumn>
         <YbtTableColumn prop="amountBalance" label="预存款账户余额(元)" mix-width="160"></YbtTableColumn>
+        <YbtTableColumn prop="amountFreeze" label="冻结金额(元)" mix-width="160"></YbtTableColumn>
         <YbtTableColumn prop="amountCreditLine" label="授信额度(元)" mix-width="160"></YbtTableColumn>
         <YbtTableColumn prop="prepaidDepositLimitFlag" label="是否预存款限制" mix-width="160">
           <template #default="{ row }">{{ distributionConstant.getPrepaidDepositLimitFlag(row.prepaidDepositLimitFlag)

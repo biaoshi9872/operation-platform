@@ -108,6 +108,11 @@ const changeHandler = (value: any) => {
     ElMessage.error('最大充值金额为50万!')
   }
 }
+const businessTypeChangeHandler = (value: any) => {
+  if (data.formData.businessType != 8 && data.formData.amount < 0) {
+    data.formData.amount = null
+  }
+}
 </script>
 <template>
   <el-dialog v-bind="$attrs" title="充值" width="800px" append-to-body @open="openHandler" draggable destroy-on-close
@@ -117,11 +122,11 @@ const changeHandler = (value: any) => {
         label-width="100px">
         <el-form-item label="充值金额" prop="amount">
           <el-input-number v-model="data.formData.amount" @change="changeHandler" :precision="2" :controls="false"
-            :min="0" :max="500000" />
+            :min="data.formData.businessType == '8' ? -99999999 : 0" :max="500000" />
           <span>&nbsp;&nbsp;元(最大金额为50万)</span>
         </el-form-item>
         <el-form-item label="业务类型" prop="businessType">
-          <el-radio-group v-model="data.formData.businessType">
+          <el-radio-group v-model="data.formData.businessType" @change="businessTypeChangeHandler">
             <el-radio v-for="(item, index) in distributionConstant.C_theTypeOfTopUpService" :label="item.value">{{
               item.label }}</el-radio>
           </el-radio-group>
