@@ -140,7 +140,7 @@ const verifyHandler = () => {
                 <el-form-item label="售后类型" prop="afterSaleType">
                     <el-radio-group v-model="data.formData.afterSaleType" @change="changeHandler">
                         <el-radio v-for="(item, index) in order_enum.AfterSalesType" :label="item.value">{{ item.label
-                            }}</el-radio>
+                        }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item v-if="['4', '3', '2'].includes(data.formData.afterSaleType)" label="退款总金额">

@@ -186,7 +186,7 @@ const isUploadVoucherRequired: any = computed(() => {
             </div>
             <div class="item">
                 <span class="item_title">订单号:</span>
-                <span class="item_value">{{ data.detailInfo.channelOrderNo }}
+                <span class="item_value">{{ data.detailInfo.orderNo }}
                     <el-button size="small" link @click="goDetailHandler" type="primary">查看订单详情</el-button>
                 </span>
             </div>
@@ -199,7 +199,7 @@ const isUploadVoucherRequired: any = computed(() => {
                 <el-form-item label="售后类型" prop="afterSaleType">
                     <el-radio-group v-model="data.formData.afterSaleType" @change="changeHandler">
                         <el-radio v-for="(item, index) in afterSalesTypeList" :label="item.value">{{ item.label
-                        }}</el-radio>
+                            }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="退款总金额">
