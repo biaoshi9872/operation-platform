@@ -147,7 +147,13 @@ const getStreetList = () => {
   const { countyId } = props
   countyId &&
     systemUtils_api.A_address({ source: 1, channelId: countyId, type: 4 }).then(({ districtList }: any) => {
-      data.streeList = districtList as any
+      data.streeList = districtList.map((el => {
+        return {
+          ...el,
+          districtId: Number.parseInt(el.districtId),
+          name: el.name
+        }
+      })) as any
     })
 }
 
