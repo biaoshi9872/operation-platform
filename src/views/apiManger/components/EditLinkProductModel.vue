@@ -269,8 +269,8 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
         </el-form-item>
         <el-form-item label="选择商品" prop="skuCode">
           <el-select v-model="data.formData.skuCode" filterable clearable placeholder="请选择商品" @change="changeGoods">
-            <el-option v-for="item in data.goodsList" :key="item.skuCode" :label="`${item.skuName}`"
-              :value="item.skuCode" :title="item.skuName" />
+            <el-option v-for="item in data.goodsList" :key="item.skuCode"
+              :label="`${item.skuName}` + `(${item.skuCode})`" :value="item.skuCode" :title="item.skuName" />
             <template #footer v-if="data.page.totalCount >= 1000">
               <el-pagination v-model:current-page="data.page.page" :page-size="[50, 100, 200, 500]"
                 v-model:page-size="data.page.limit" :size="data.page.limit"
