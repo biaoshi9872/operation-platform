@@ -267,6 +267,7 @@ const initColumns = () => {
   columns.value.push({
     label: '操作',
     align: 'center',
+    width: '160px',
     render: (row: any) => {
       //电商审核逻辑
       let authButton = null
@@ -275,6 +276,7 @@ const initColumns = () => {
         //1.退货退款   审核 上传退货物流 供应商确认收货  确认退款
         //2.换货      审核  上传退货物流 供应商确认收货 供应商上传发货物流 用户确认收货
         //3.仅退款：   审核 确认退款
+        //4.节点等于-1强制隐藏审核
         let title = ''
         switch (row.afterNode) {
           case 1:
@@ -296,7 +298,7 @@ const initColumns = () => {
             title = '确认退款'
             break
         }
-        authButton = [1].includes(row.status) && withDirectives(
+        authButton = row.afterNode != -1 && [1].includes(row.status) && withDirectives(
           h(ElButton, {
             type: 'text',
             innerText: title,
