@@ -7,10 +7,10 @@
 import NewTallAfterSaleOrderPage from './components/NewTallAfterSaleOrderPage.vue';
 import AfterSaleOrderPage from './components/AfterSaleOrderPage.vue';
 const $route = useRoute();
-const type = computed(() => {
-  return $route.query.type;
-}
-)
+const type = ref('');
+onMounted(() => {
+  type.value = $route.query.type || '';
+})
 </script>
 
 <style lang="scss" scoped></style>

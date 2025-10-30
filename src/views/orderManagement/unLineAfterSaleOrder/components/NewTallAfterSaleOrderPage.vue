@@ -70,21 +70,21 @@ const goBarkOrderList = () => {
 }
 
 onMounted(() => {
+    debugger
     getDetailInfo()
 })
 
 //获取详情
 const getDetailInfo = () => {
     const { channelOrderNo, skuCode } = $useRote.query as any
-    after_order_api.A_preAfterOrderDetail({ channelOrderNo, skuCode }).then((res: any) => {
+    channelOrderNo && after_order_api.A_preAfterOrderDetail({ channelOrderNo, skuCode }).then((res: any) => {
         data.detailInfo = {
             ...data.detailInfo,
             ...res
         }
         data.afterSaleGoods = [{ ...res.afterSaleGoodsVO, afterSaleNum: res.afterSaleGoodsVO.goodsNum }]
     })
-    after_order_api.A_afterSaleRender({ channelOrderNo, skuCode }).then((res: any) => {
-        debugger
+    channelOrderNo && after_order_api.A_afterSaleRender({ channelOrderNo, skuCode }).then((res: any) => {
         data.outerRefundList = [
             ...data.outerRefundList,
             ...(res?.date || [])
