@@ -59,6 +59,9 @@ const handleReset = () => {
   if (formRef.value) {
     formRef.value.resetFields()
   }
+  data.formData = {
+    ...cloneDeep(data.formDataBK)
+  }
   emits('update:modelValue', false)
 }
 const handleClose = () => {
@@ -111,8 +114,8 @@ const handleSubmit = () => {
 }
 </script>
 <template>
-  <el-dialog v-bind="$attrs" title="重试" class="dialog-m" append-to-body @open="openHandler" draggable destroy-on-close
-    :close-on-click-modal="false" @closed="handleReset">
+  <el-dialog v-bind="$attrs" title="重试" class="dialog-m" :destroy-on-close="true" append-to-body @open="openHandler"
+    draggable :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
       <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
         label-width="100px">
