@@ -151,7 +151,6 @@ const state = reactive({
     importcss_append: false,
     //自定义文件选择器的回调内容
     file_picker_callback(callback: any, value: any, meta: any) {
-      debugger
       console.log('file_picker_callback: ')
       var input = document.createElement('input')
       input.setAttribute('type', 'file')

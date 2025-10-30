@@ -78,7 +78,7 @@ const goDetail = (row: API.OpenBillPageRecord) => {
         <div class="bg-white p-12 mb12 border-radius-8">
             <div class="tip-container">
                 <div><svg-icon name="menu-order" class="fs-22" /> 账单说明：</div>
-                <div>1、账单以月的维度展示，每天凌晨更新T+3的订单数据，已确认的订单（下单成功）为正流水，售后已完成的订单将会出负流水记录（换货除外）。</div>
+                <div>1、账单以月的维度展示，每天凌晨更新T+1的订单数据，已确认的订单（下单成功）为正流水，售后已完成的订单将会出负流水记录（换货除外）。</div>
                 <div>2、每个应用一个账单。</div>
                 <div>3、账单数据仅供参考，具体的出账及开票请在综管平台进行，若双方账单数据存在出入，请及时核查并反馈处理。</div>
             </div>

@@ -85,23 +85,24 @@ const disposeHandler = (row: API.applyForATopUpRecordRecording) => {
           v-model:end="dataPage.facade.rechargeEndTime"></DatePickerRange>
       </el-form-item>
       <el-form-item label="交易流水号">
-        <el-input v-model.trim="dataPage.facade.rechargeNo"></el-input>
+        <el-input v-model.trim="dataPage.facade.rechargeNo" placeholder="请输入交易流水号"></el-input>
       </el-form-item>
       <el-form-item label="机构ID">
-        <OrgSelect v-model.trim="dataPage.facade.orgId" :multiple="true" valueKey="id" valueLabel="id">
+        <OrgSelect v-model.trim="dataPage.facade.orgId" placeholder="请选择机构ID" :multiple="true" valueKey="id"
+          valueLabel="id">
         </OrgSelect>
       </el-form-item>
       <el-form-item label="机构名称">
-        <OrgSelect v-model.trim="dataPage.facade.orgName" :multiple="true" valueKey="name" valueLabel="name">
+        <OrgSelect v-model.trim="dataPage.facade.orgName" placeholder="请选择机构名称" :multiple="true" valueKey="name"
+          valueLabel="name">
         </OrgSelect>
       </el-form-item>
       <el-form-item label="客户名称">
         <OrgSelect v-model.trim="dataPage.facade.customerName" :multiple="true" valueKey="customerName"
-          valueLabel="customerName">
-        </OrgSelect>
+          valueLabel="customerName" placeholder="请选择客户名称"></OrgSelect>
       </el-form-item>
       <el-form-item label="处理状态">
-        <SelectModel v-model.trim="dataPage.facade.operationStatus"
+        <SelectModel v-model.trim="dataPage.facade.operationStatus" placeholder="请选择处理状态"
           :selectList="distributionConstant.C_applyOperationStatus"></SelectModel>
       </el-form-item>
     </SearchForm>

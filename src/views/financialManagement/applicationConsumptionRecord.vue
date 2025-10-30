@@ -29,7 +29,8 @@ const dataPage: IPage<any, any> = reactive({
         actionType: [],
         startTime: null,
         endTime: null,
-        plantOrderNo: null
+        plantOrderNo: null,
+        afterSaleNo: null
     },
     facadeKz: {
         queryType: '2'
@@ -83,7 +84,10 @@ const exportHandler = () => {
                 </OrgSelect>
             </el-form-item>
             <el-form-item label="订单号">
-                <el-input v-model.trim="dataPage.facade.plantOrderNo"></el-input>
+                <el-input v-model.trim="dataPage.facade.plantOrderNo" placeholder="请输入订单号"></el-input>
+            </el-form-item>
+            <el-form-item label="售后单号">
+                <el-input v-model.trim="dataPage.facade.afterSaleNo" placeholder="请输入售后单号"></el-input>
             </el-form-item>
             <el-form-item label="项目类型" class="formItem" placeholder="请选择">
                 <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
@@ -106,13 +110,13 @@ const exportHandler = () => {
                 <YbtTableColumn prop="projectType" label="项目类型" mix-width="140">
                     <template #default="{ row }">{{
                         system_enum.getProjectType(row.projectType)
-                    }}</template>
+                        }}</template>
                 </YbtTableColumn>
                 <YbtTableColumn prop="id" label="日志ID" mix-width="120"></YbtTableColumn>
                 <YbtTableColumn prop="actionType" label="操作类型" mix-width="120">
                     <template #default="{ row }">{{
                         distributionConstant.getMoneyManagementOperationType1(row.actionType)
-                    }}</template>
+                        }}</template>
                 </YbtTableColumn>
                 <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
                 <YbtTableColumn prop="retailAmount" label="变更金额" mix-width="160">
@@ -123,6 +127,7 @@ const exportHandler = () => {
                     </template>
                 </YbtTableColumn>
                 <YbtTableColumn prop="plantOrderNo" label="订单号" width="240"></YbtTableColumn>
+                <YbtTableColumn prop="afterSaleNo" label="售后单号" width="240"></YbtTableColumn>
                 <YbtTableColumn prop="remark" label="平台备注" show-overflow-tooltip mix-width="140"></YbtTableColumn>
             </TableModel>
         </div>
