@@ -201,7 +201,8 @@ const afterApplyHandler = (row: any, parentRow: any) => {
     path: '/orderManagement/unLineAfterSaleOrder/index',
     query: {
       channelOrderNo: parentRow.channelOrderNo,
-      skuCode: row.skuCode
+      skuCode: row.skuCode,
+      type: parentRow.channelSource == 63 ? 1 : 0
     }
   })
 }
@@ -266,7 +267,7 @@ const initColumns = () => {
       const afterButton =
         ![0, 4, 5, -3].includes(parentRow.orderStatus) &&
         ![1, 4].includes(row.afterSaleStatus) &&
-        [104, 105].includes(parentRow.channelSource) &&
+        [104, 105, 63].includes(parentRow.channelSource) &&
         withDirectives(
           h(ElButton, {
             type: 'text',

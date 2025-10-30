@@ -1,7 +1,8 @@
 <template>
     <div class="editor-container">
         <!-- 引入编辑器，绑定 imgAdd 事件 -->
-        <mavon-editor v-model="content" :subfield="true" :toolbars="toolbars" @imgAdd="handleImgAdd" ref="editorRef" />
+        <mavon-editor v-model="content" :subfield="true" :toolbars="toolbars" :xssOptions="xssOptions"
+            @imgAdd="handleImgAdd" ref="editorRef" />
     </div>
 </template>
 
@@ -87,6 +88,22 @@ const handleImgAdd = async (pos, file) => {
 
     } catch (error) {
         console.error('上传接口出错：', error)
+    }
+}
+const xssOptions = {
+    whiteList: {
+        p: ['style', 'align'],
+        div: ['style', 'align'],
+        h1: ['style', 'align'],
+        h2: ['style', 'align'],
+        h3: ['style', 'align'],
+        h4: ['style', 'align'],
+        h5: ['style', 'align'],
+        h6: ['style', 'align'],
+        table: ['style', 'align'],
+        th: ['style', 'align'],
+        td: ['style', 'align'],
+        img: ['src', 'alt', 'title', 'style', 'align']
     }
 }
 </script>
