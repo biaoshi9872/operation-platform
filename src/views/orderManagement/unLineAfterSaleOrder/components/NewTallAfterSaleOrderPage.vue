@@ -123,7 +123,7 @@ const afterSalesTypeList: any = computed(() => {
             value: item.outerRefundType,
             ...item
         }
-    })
+    }).filter((item: any) => !!item.outerRefundTypeName)
 })
 
 /**
@@ -199,7 +199,7 @@ const isUploadVoucherRequired: any = computed(() => {
                 <el-form-item label="售后类型" prop="afterSaleType">
                     <el-radio-group v-model="data.formData.afterSaleType" @change="changeHandler">
                         <el-radio v-for="(item, index) in afterSalesTypeList" :label="item.value">{{ item.label
-                            }}</el-radio>
+                        }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="退款总金额">

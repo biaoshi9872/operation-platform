@@ -3,7 +3,7 @@ import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import { tabsStore } from '@/stores'
 import order_enum from '@/utils/constant/order'
 import ApplyRefundModel from '../../components/ApplyRefundModel.vue'
-
+import ApplyTallRefundModel from '../../components/ApplyTallRefundModel.vue'
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 
@@ -37,10 +37,15 @@ const goodsList = computed(() => {
 })
 const applyRefundHandler = (row: any) => {
   dataInfo.curryInfo = row
-  dataInfo.showApplyRefundModel = true
+  if (props.orderInfo?.channelSource == 63) {
+    dataInfo.showApplyTallRefundModel = true
+  } else {
+    dataInfo.showApplyRefundModel = true
+  }
 }
 const dataInfo = reactive({
   showApplyRefundModel: false,
+  showApplyTallRefundModel: false,
   curryInfo: null
 })
 
@@ -146,11 +151,14 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+        }}</template>
       </el-table-column>
     </el-table>
     <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">
     </ApplyRefundModel>
+    <ApplyTallRefundModel v-model="dataInfo.showApplyTallRefundModel" :orderInfo="orderInfo"
+      :curryInfo="dataInfo.curryInfo">
+    </ApplyTallRefundModel>
   </div>
 </template>
 
