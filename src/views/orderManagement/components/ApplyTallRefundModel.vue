@@ -99,6 +99,7 @@ const handleSubmit = () => {
 const afterSaleAmount = computed(() => {
     return (props.curryInfo.retailPrice * data.formData.afterSaleNum).toFixed(2)
 })
+
 const verifyHandler = () => {
     formRef.value?.validateField('reasonImages')
 }
@@ -155,6 +156,7 @@ const goodsStatusHandler = (value: any) => {
 const reasonChangeHandler = (value: any) => {
     data.formData.reasonName = reasonForRefundList.value?.find((item: any) => item.value == value)?.label || ''
 }
+
 /**
  * 上传凭证必填
  */
@@ -174,7 +176,7 @@ const isUploadVoucherRequired: any = computed(() => {
                 <el-form-item label="售后类型" prop="afterSaleType">
                     <el-radio-group v-model="data.formData.afterSaleType" @change="changeHandler">
                         <el-radio v-for="(item, index) in afterSalesTypeList" :label="item.value">{{ item.label
-                        }}</el-radio>
+                            }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="退款总金额">

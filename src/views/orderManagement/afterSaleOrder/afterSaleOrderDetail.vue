@@ -107,11 +107,11 @@ const queryLogisticsInfo = () => {
 const afterSaleTypeName = computed(() => {
   return order_enum.getAfterSalesTypeTitle(dataPage.detail.afterSaleType + '')
 })
+
 //售后状态
 const statusName = computed(() => {
-  return order_enum.getAfter_order_statesTitle(dataPage.detail.status + '') + (dataPage?.detail?.status == '1' ? `(${dataPage?.detail?.currentFlowNodeName})` : '')
+  return order_enum.getAfter_order_statesTitle(dataPage.detail.status + '') + (dataPage?.detail?.status == '1' ? (dataPage?.detail?.currentFlowNodeName == '无节点' ? '' : `(${dataPage?.detail?.currentFlowNodeName})`) : '')
 })
-
 //文案类型
 provide('afterSaleTypeName', afterSaleTypeName)
 provide('statusName', statusName)
