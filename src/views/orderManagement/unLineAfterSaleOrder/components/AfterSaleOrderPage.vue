@@ -11,7 +11,7 @@ import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const $useRote = useRoute()
-
+const emit = defineEmits(['refresh'])
 const tabsStoreInfo: any = tabsStore()
 
 const formRef = ref<FormInstance>()
@@ -46,6 +46,7 @@ const data = reactive({
     }
 })
 const saveHandler = () => {
+
     formRef.value?.validate((valid: boolean) => {
         if (valid) {
             data.submitLoading = true
@@ -54,6 +55,7 @@ const saveHandler = () => {
             let obj = { ...data.formData, orgId, appId, channelOrderNo, afterSaleGoodsList } as any
             after_order_api.A_backApply(obj).then((res: any) => {
                 ElMessage.success('操作完成')
+                emit('refresh')
                 goBarkOrderList()
             }).finally(() => {
                 data.submitLoading = false
