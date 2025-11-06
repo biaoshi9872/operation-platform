@@ -8,7 +8,7 @@ import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
 const $useRote = useRoute()
-
+const emit = defineEmits(['refresh'])
 const tabsStoreInfo: any = tabsStore()
 
 const formRef = ref<FormInstance>()
@@ -55,6 +55,7 @@ const saveHandler = () => {
             let obj = { ...data.formData, orgId, appId, channelOrderNo, afterSaleGoodsList } as any
             after_order_api.A_backApply(obj).then((res: any) => {
                 ElMessage.success('操作完成')
+                emit('refresh')
                 goBarkOrderList()
             }).finally(() => {
                 data.submitLoading = false
@@ -70,21 +71,21 @@ const goBarkOrderList = () => {
 }
 
 onMounted(() => {
+    debugger
     getDetailInfo()
 })
 
 //获取详情
 const getDetailInfo = () => {
     const { channelOrderNo, skuCode } = $useRote.query as any
-    after_order_api.A_preAfterOrderDetail({ channelOrderNo, skuCode }).then((res: any) => {
+    channelOrderNo && after_order_api.A_preAfterOrderDetail({ channelOrderNo, skuCode }).then((res: any) => {
         data.detailInfo = {
             ...data.detailInfo,
             ...res
         }
         data.afterSaleGoods = [{ ...res.afterSaleGoodsVO, afterSaleNum: res.afterSaleGoodsVO.goodsNum }]
     })
-    after_order_api.A_afterSaleRender({ channelOrderNo, skuCode }).then((res: any) => {
-        debugger
+    channelOrderNo && after_order_api.A_afterSaleRender({ channelOrderNo, skuCode }).then((res: any) => {
         data.outerRefundList = [
             ...data.outerRefundList,
             ...(res?.date || [])
@@ -123,7 +124,7 @@ const afterSalesTypeList: any = computed(() => {
             value: item.outerRefundType,
             ...item
         }
-    })
+    }).filter((item: any) => !!item.outerRefundTypeName)
 })
 
 /**
@@ -199,7 +200,7 @@ const isUploadVoucherRequired: any = computed(() => {
                 <el-form-item label="售后类型" prop="afterSaleType">
                     <el-radio-group v-model="data.formData.afterSaleType" @change="changeHandler">
                         <el-radio v-for="(item, index) in afterSalesTypeList" :label="item.value">{{ item.label
-                            }}</el-radio>
+                        }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="退款总金额">

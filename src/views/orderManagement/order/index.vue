@@ -3,7 +3,7 @@ defineOptions({ name: 'orderList' })
 import order_api from '@/api/order/index'
 import SkuDetail from '@/components/SkuDetail/index.vue'
 import StateCell from '@/components/Tooltip/StateCell.vue'
-
+import eventBus from '@/utils/eventBus';
 import pageHooks from '@/hooks/pageListHooks'
 import { tabsStore } from '@/stores'
 import { IPage } from '@/types/from-types'
@@ -15,8 +15,8 @@ import { ref, resolveDirective, withDirectives } from 'vue'
 import DeliverGood from '../components/DeliverGood/index.vue'
 import system_enum from '@/utils/constant/system'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
-const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 
+const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 const authDir = resolveDirective('auth')
 const $route = useRoute()
@@ -478,6 +478,7 @@ const orderStatusList = computed(() => {
       ]
   }
 })
+eventBus.on('orderRefresh', searchQueryHarder)
 </script>
 
 <template>

@@ -15,7 +15,7 @@ const chunksMap = ['element-plus', 'lodash-es', 'axios', 'vue-router', 'vuedragg
 
 const HOST = 'https://supply-test.ycb51.cn' // 测试环境
 //const HOST = 'https://vsc.ebaoton.cn' // 测试环境
-//const HOST = 'http://192.168.10.251:9001' // 刘康
+//const HOST = 'http://192.168.211.1:9001' // 刘康
 //const HOST = 'http://192.168.10.67:9001' //晶晶
 //const HOST = 'http://192.168.10.234:9001' //旺翔
 //const HOST = 'http://192.168.10.249:9001' //双源

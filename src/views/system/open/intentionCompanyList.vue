@@ -15,7 +15,9 @@ const dataPage: IPage<any, any> = reactive({
         totalCount: 0
     },
     facade: {
-        companyName: ''
+        companyName: '',
+        createTimeStart: '',
+        createTimeEnd: ''
     },
     otherData: {
         showRecharge: false,
@@ -43,6 +45,11 @@ const handleSelectionChange = (value: any) => {
     <PageContainer class="main_box">
         <SearchForm v-model:model="dataPage.facade" v-model:current-page="dataPage.page.page" class="el-search-item"
             @search="searchQueryHarder">
+            <el-form-item label="提交时间">
+                <DatePickerRange v-model:start="dataPage.facade.createTimeStart"
+                    v-model:end="dataPage.facade.createTimeEnd">
+                </DatePickerRange>
+            </el-form-item>
             <el-form-item label="公司名称">
                 <el-input placeholder="请输入公司名称" v-model="dataPage.facade.companyName"></el-input>
             </el-form-item>
@@ -50,7 +57,7 @@ const handleSelectionChange = (value: any) => {
         <div class="option_box">
             <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
                 @selection-change="handleSelectionChange">
-
+                <el-table-column prop="createTime" label="提交时间"></el-table-column>
                 <el-table-column prop="personName" label="联系人"></el-table-column>
                 <el-table-column prop="phone" label="联系方式"></el-table-column>
                 <el-table-column prop="companyName" label="企业名称" show-overflow-tooltip></el-table-column>
