@@ -14,6 +14,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  type: {
+    type: String,
+    default: ''
+  },
   categoryName: {
     type: String,
     default: ''
@@ -25,10 +29,22 @@ const props = defineProps({
   checkStrictly: {
     type: Boolean,
     default: false
+  },
+  firstCateId: {
+    type: String,
+    default: ''
+  },
+  secondCateId: {
+    type: String,
+    default: ''
+  },
+  thirdCateId: {
+    type: String,
+    default: ''
   }
 })
 
-const emits = defineEmits(['update:category', 'update:categoryName', 'submit'])
+const emits = defineEmits(['update:category', 'update:categoryName', 'submit', 'update:firstCateId', 'update:secondCateId', 'update:thirdCateId'])
 
 const data = reactive({
   categoryDialogShow: false,
@@ -41,6 +57,10 @@ const categoryCode = computed({
   },
   set(value) {
     emits('update:category', value)
+    let arr = value?.split('|') || []
+    emits('update:firstCateId', arr[0] || '')
+    emits('update:secondCateId', arr[1] || '')
+    emits('update:thirdCateId', arr[2] || '')
   }
 })
 
@@ -57,7 +77,7 @@ const submitHandler = (value: any) => {
   emits('submit', value)
 }
 
-const changeHandler = (value: any) => {}
+const changeHandler = (value: any) => { }
 
 //打开分类
 const openCategoryDialogHandler = () => {
@@ -67,29 +87,24 @@ const openCategoryDialogHandler = () => {
 const clearCategoryDialogHandler = () => {
   emits('update:categoryName', '')
   emits('update:category', '')
+  categoryCode.value = ''
 }
 </script>
 <template>
-  <el-input readonly v-model="categoryCodeName" placeholder="请选择商品分类" maxlength="180" show-word-limit @click="openCategoryDialogHandler">
+  <el-input readonly v-model="categoryCodeName" placeholder="请选择商品分类" maxlength="180" show-word-limit
+    @click="openCategoryDialogHandler">
     <template #append>
       <el-icon v-if="categoryCode && !editIconClose" @click.stop="clearCategoryDialogHandler">
         <CloseBold />
       </el-icon>
       <el-icon v-else @click="openCategoryDialogHandler">
-        <EditPen />
+        <MoreFilled />
       </el-icon>
     </template>
   </el-input>
-  <CategoryDialog
-    :comboType="comboType"
-    v-model="data.categoryDialogShow"
-    @change="changeHandler"
-    v-model:category-code="categoryCode"
-    v-model:categoryCodeName="categoryCodeName"
-    :editIconClose="editIconClose"
-    :checkStrictly="checkStrictly"
-    @submit="submitHandler"
-  ></CategoryDialog>
+  <CategoryDialog :comboType="comboType" :type="type" v-model="data.categoryDialogShow" @change="changeHandler"
+    v-model:category-code="categoryCode" v-model:categoryCodeName="categoryCodeName" :editIconClose="editIconClose"
+    :checkStrictly="checkStrictly" @submit="submitHandler"></CategoryDialog>
 </template>
 
 <style lang="scss" scoped>
