@@ -49,6 +49,12 @@ const dataInfo = reactive({
   curryInfo: null
 })
 
+const retryHandler = (row: any) => {
+  dataInfo.curryInfo = row
+  dataInfo.showVirtualRechargeModel = true
+}
+
+
 </script>
 
 <template>
@@ -130,6 +136,29 @@ const dataInfo = reactive({
       </div>
     </div>
   </div>
+  <div class="mb-8 mt-16" v-if="[107].includes(orderInfo?.channelSource)">
+    <h3>子商品信息</h3>
+    <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
+      <el-table-column prop="skuName" label="子商品名称" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="skuName" label="商品编码">
+      </el-table-column>
+      <el-table-column prop="skuName" label="券ID">
+      </el-table-column>
+      <el-table-column prop="skuName" label="供应商订单编号">
+      </el-table-column>
+      <el-table-column prop="skuName" label="兑换状态">
+      </el-table-column>
+      <el-table-column prop="skuName" label="失败原因描述" show-overflow-tooltip
+        v-if="['101', '201'].includes(getSystemOptionType)">
+      </el-table-column>
+      <el-table-column prop="skuName" label="操作" v-if="['101', '201'].includes(getSystemOptionType)">
+        <template #default="scope">
+          <el-button type="primary" link @click="retryHandler(scope.row)">重试</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
   <div class="mt-16 table_container">
     <h3 class="mb-8">商品财务信息</h3>
     <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
@@ -151,7 +180,7 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-        }}</template>
+          }}</template>
       </el-table-column>
     </el-table>
     <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">
@@ -159,6 +188,9 @@ const dataInfo = reactive({
     <ApplyTallRefundModel v-model="dataInfo.showApplyTallRefundModel" :orderInfo="orderInfo"
       :curryInfo="dataInfo.curryInfo">
     </ApplyTallRefundModel>
+    <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
+      :curryInfo="dataInfo.curryInfo">
+    </VirtualRechargeModel>
   </div>
 </template>
 

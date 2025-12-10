@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import type { ElTree } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
+import virtualCardPackProduct_api from '@/api/virtualCardPackProduct'
+import virtualCardPackProduct_enum from '@/utils/constant/virtualCardPackProduct'
 interface IProp {
     curryInfo: any,
+    type: string
+    isBatch: boolean
+    mulSelect: any
 }
 const props = withDefaults(defineProps<IProp>(), {
-    curryInfo: {}
+    curryInfo: {},
+    type: '',
+    isBatch: false,
+    mulSelect: []
 })
 const emits = defineEmits<{
     (e: 'update:modelValue', value: any): void
@@ -13,74 +22,21 @@ const emits = defineEmits<{
 }>()
 const formRef = ref<FormInstance>() as any
 interface IData {
-    formData: any,
-    formDataBK: any,
-    formRules: any,
-    tableFromData: any,
+    packageAppList: any,
+    selectedPackageAppList: any,
+    defaultCheckedKeys: any,
+    dialogVisible: boolean,
     submitLoading: boolean,
 }
 const data = reactive<IData>({
-    formData: {
-        stockNum: ''
-    },
-    formDataBK: {},
-    formRules: {
-        stockNum: [{ required: true, message: '请输入商品数量', trigger: ['change', 'blur'] }],
-    },
-    tableFromData: [
-        {
-            id: 1,
-            label: 'Level one 1',
-            children: [
-                {
-                    id: 4,
-                    label: 'Level two 1-1',
-                    disabled: true,
-                },
-                {
-                    id: 4,
-                    label: 'Level two 1-1',
-                    disabled: true,
-                },
-                {
-                    id: 4,
-                    label: 'Level two 1-1',
-                    disabled: false,
+    packageAppList: [],
+    selectedPackageAppList: [],
+    defaultCheckedKeys: [],
 
-                },
-            ],
-        },
-        {
-            id: 2,
-            label: 'Level one 2',
-            children: [
-                {
-                    id: 5,
-                    label: 'Level two 2-1',
-                },
-                {
-                    id: 6,
-                    label: 'Level two 2-2',
-                },
-            ],
-        },
-        {
-            id: 3,
-            label: 'Level one 3',
-            children: [
-                {
-                    id: 7,
-                    label: 'Level two 3-1',
-                },
-                {
-                    id: 8,
-                    label: 'Level two 3-2',
-                },
-            ],
-        },
-    ],
+    dialogVisible: false,
     submitLoading: false,
 })
+const allTree = ref<InstanceType<typeof ElTree>>()
 const handleReset = () => {
     if (formRef.value) {
         formRef.value.resetFields()
@@ -92,35 +48,69 @@ const defaultProps = {
     disabled: 'disabled',
     label: 'label',
 }
-const handleSelectionChange = (val: any) => {
-    console.log(val)
+const handleCheck = () => {
+    const keys = allTree.value?.getCheckedKeys() || []
+    const halfKeys = allTree.value?.getHalfCheckedKeys() || []
+    data.selectedPackageAppList = [...keys, ...halfKeys]
 }
 const handleClose = () => {
     handleReset()
-    emits('refresh')
-    searchQueryHandler()
     emits('update:modelValue', false)
 }
-const searchQueryHandler = inject('searchQueryHandler', () => { })
-onMounted(() => {
-    data.formDataBK = cloneDeep(data.formData)
-})
+
 const openHandler = () => {
-    data.formData = {
-        ...data.formDataBK
-    }
+    getPackageApp()
 }
 const handleSubmit = () => {
-    formRef.value.validate().then(() => {
+    let selectedPackageAppList = data.selectedPackageAppList.filter((item: any) => {
+        return !String(item).startsWith('ORG')
     })
+    if (props.isBatch) {
+        virtualCardPackProduct_api.A_push({
+            appIds: selectedPackageAppList,
+            packageCodes: props.isBatch ? props.mulSelect.map((item: any) => item.packageCode) : [props.curryInfo.packageCode]
+        }).then(() => {
+            ElMessage.success(title.value + '成功')
+            emits('refresh')
+            handleClose()
+        })
+    } else {
+        virtualCardPackProduct_api.A_singPush({
+            appIds: selectedPackageAppList,
+            packageCode: props.curryInfo.packageCode
+        }).then(() => {
+            ElMessage.success(title.value + '成功')
+            emits('refresh')
+            handleClose()
+        })
+    }
 }
+const title = computed(() => {
+    if (props.type === 'push') {
+        return props.isBatch ? '批量推送' : '推送'
+    } else {
+        return props.isBatch ? '批量取消推送' : '取消推送'
+    }
+})
+const getPackageApp = async () => {
+    const res = await virtualCardPackProduct_api.A_getPackageApp()
+    data.packageAppList = res
+    data.defaultCheckedKeys = []
+
+    if (!props.isBatch && props.curryInfo.appNameList) {
+        data.defaultCheckedKeys = props.curryInfo.appNameList?.map(item => item.appId) || []
+        data.selectedPackageAppList = [...data.defaultCheckedKeys]
+    }
+}
+
 </script>
 <template>
-    <el-dialog v-bind="$attrs" title="选择推送应用" class="dialog-m" append-to-body @open="openHandler" draggable
-        destroy-on-close :close-on-click-modal="false" @closed="handleReset">
+    <el-dialog v-bind="$attrs" :title="'选择' + title + '应用'" class="dialog-m" append-to-body @open="openHandler"
+        draggable destroy-on-close :close-on-click-modal="false" @closed="handleReset">
         <div class="option">
-            <el-tree style="max-width: 600px" :data="data.tableFromData" show-checkbox node-key="id"
-                @change="handleSelectionChange" :props="defaultProps" />
+            <el-tree style="max-width: 600px" ref="allTree" default-expand-all :data="data.packageAppList"
+                :default-checked-keys="data.defaultCheckedKeys" show-checkbox node-key="value" @check="handleCheck"
+                :props="defaultProps" />
         </div>
         <template #footer>
             <div class="dialog-footer">
@@ -129,5 +119,23 @@ const handleSubmit = () => {
             </div>
         </template>
     </el-dialog>
+    <el-dialog v-model="data.dialogVisible" :title="title + '结果详情'" class="dialog-m" append-to-body draggable
+        destroy-on-close :close-on-click-modal="false" @closed="data.dialogVisible = false">
+        <div class="result-container">" >
+            <div class="dialog-body-title" v-for="value in 10">
+                <span>API开放平台:</span>
+                <span>本次共选择推送1个商品</span>
+                <span>成功1条信息</span>
+                <span>失败0条信息</span>
+            </div>
+        </div>
+        <template #footer>
+            <el-button @click="data.dialogVisible = false" class="mr-10">关闭</el-button>
+        </template>
+    </el-dialog>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.result-container {
+    padding: 20px;
+}
+</style>

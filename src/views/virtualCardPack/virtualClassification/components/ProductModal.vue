@@ -2,8 +2,7 @@
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { pick } from 'lodash-es'
-import { A_saveCateInfo, A_getCateGoryInfoByLevel, A_getCateInfoDetail } from '@/api/productCategory'
-
+import virtualCardPackProduct_api from '@/api/virtualCardPackProduct'
 interface FormData {
     id?: number
     level: 1 | 2 | 3 | ''
@@ -24,6 +23,10 @@ const props = defineProps({
     id: {
         type: Number,
         required: true
+    },
+    curryInfo: {
+        type: Object,
+        default: () => ({})
     }
 })
 
@@ -58,10 +61,16 @@ const backendCategoryName = ref('') //关联的类目编辑时暂存的的类目
 
 const rules = reactive<FormRules>({
     level: [{ required: true, message: '请选择类目层级', trigger: 'change' }],
-    parentCode: [{ required: true, message: '请选择父级类目', trigger: 'change' }],
+    parentCode: [{
+        validator: (_rule: any, value: any, callback: any) => {
+            if (formData.level === 1) return callback()
+            if (!value) return callback(new Error('请选择父级类目'))
+            callback()
+        },
+        trigger: 'change'
+    }],
     categoryName: [{ required: true, message: '请输入类目名称', trigger: 'blur' }],
     categoryCode: [{ required: true, message: '请输入类目编号', trigger: 'blur' }],
-    categoryPicUrl: [{ required: true, message: '请上传类目图片', trigger: 'change' }],
     stateEnum: [{ required: true, message: '请选择状态', trigger: 'change' }],
     sort: [{ required: true, message: '请输入排序', trigger: 'blur' }],
     remarks: [{ validator: validateRemarks, trigger: 'blur' }]
@@ -80,19 +89,20 @@ function handleClose() {
 async function getCateInfoDetail(id: number) {
     try {
         loading.value = true
-        const res = await A_getCateInfoDetail({ id })
-        backendCategoryName.value = res.categoryName
-        flag.value = res.flag
-        const obj = pick(res, Object.keys(formData))
-        obj.categoryPicUrl = obj.categoryPicUrl ? obj.categoryPicUrl.split(',') : []
+        const obj = pick(props.curryInfo, Object.keys(formData))
         Object.assign(formData, obj)
+        backendCategoryName.value = formData.categoryName
+        flag.value = Boolean((props.curryInfo as any)?.mappingChannelList?.length)
+        if (formData.level && formData.level !== 1) {
+            await fetchLevelList(Number(formData.level) - 1)
+        }
     } finally {
         loading.value = false
     }
 }
 
 async function fetchLevelList(level: number) {
-    levelList.value = await A_getCateGoryInfoByLevel({ level })
+    levelList.value = await virtualCardPackProduct_api.A_listByLevel({ level })
 }
 
 function onLevelChange(val: 1 | 2 | 3) {
@@ -131,7 +141,7 @@ async function saveCateInfo() {
         id && (payload.id = id)
         parentCode && (payload.parentCode = parentCode)
         submitLoading.value = true
-        await A_saveCateInfo(payload)
+        await virtualCardPackProduct_api.A_cateSave(payload)
         ElMessage({
             message: `${!!props.id ? '编辑' : '新增'}成功`,
             type: 'success'
@@ -191,23 +201,11 @@ function handleReset() {
             <el-form-item label="类目编号" prop="categoryCode" v-if="props.id">
                 <el-input v-model="formData.categoryCode" :disabled="!!props.id" clearable />
             </el-form-item>
-            <el-form-item label="类目图片" prop="categoryPicUrl">
-                <ImgUpload v-model="formData.categoryPicUrl" :limit="1" :maxSize="1 * 1024"
-                    tip="提示：请保证图片清晰可见，图片大小不超过1M，尺寸为100x100px，格式为png、jpg、jpeg" :acceptList="['png', 'jpg', 'jpeg']" />
-            </el-form-item>
             <el-form-item label="状态" prop="stateEnum">
                 <el-radio-group v-model="formData.stateEnum">
                     <el-radio :label="1">启用</el-radio>
                     <el-radio :label="2">禁用</el-radio>
                 </el-radio-group>
-            </el-form-item>
-            <el-form-item label="排序" prop="sort">
-                <el-input-number v-model="formData.sort" :precision="0" :min="1" placeholder="输入整数，数字越小越靠前" :max="9999"
-                    :controls="false" />
-                <div class="lh-21 c-#606266">（仅与相同根目录下等同级分类排序）</div>
-            </el-form-item>
-            <el-form-item label="备注" prop="remarks">
-                <el-input v-model="formData.remarks" :rows="3" clearable maxlength="200" type="textarea" />
             </el-form-item>
         </el-form>
         <template #footer>

@@ -13,11 +13,8 @@
         <div class="option_container">
           <slot name="option"></slot>
         </div>
-        <ColumnConfig
-          v-if="filedConfigData.filedConfigList.length && openFiledConfig "
-          :columnConfigs="filedConfigData.filedConfigList"
-          :saveFiledConfigData="saveFiledConfigData"
-        ></ColumnConfig>
+        <ColumnConfig v-if="filedConfigData.filedConfigList.length && openFiledConfig"
+          :columnConfigs="filedConfigData.filedConfigList" :saveFiledConfigData="saveFiledConfigData"></ColumnConfig>
       </div>
       <div class="option_content">
         <slot name="content"></slot>
@@ -26,20 +23,9 @@
         </div>
         <slot name="headerContent"></slot>
       </div>
-      <el-table
-        :data="listTableData"
-        border
-        class="mt-8"
-        ref="multipleTableRef"
-        :scrollbar-always-on="scrollbarAlwaysOn"
-        :max-height="tableHight"
-        min-height="300px"
-        v-bind="$attrs"
-        row-key="id"
-        :row-class-name="tableRowClassName"
-        @row-click="rowClick"
-        @row-contextmenu="rowContextmenu"
-      >
+      <el-table :data="listTableData" border class="mt-8" ref="multipleTableRef"
+        :scrollbar-always-on="scrollbarAlwaysOn" :max-height="tableHight" min-height="300px" v-bind="$attrs"
+        :row-key="rowKey" :row-class-name="tableRowClassName" @row-click="rowClick" @row-contextmenu="rowContextmenu">
         <!--- 插入字段 -->
         <slot name="selection"></slot>
         <slot></slot>
@@ -48,17 +34,10 @@
         </template>
       </el-table>
       <div v-if="props.isShowPagination" class="pagination">
-        <el-pagination
-          v-bind="$attrs"
-          background
-          v-model:current-page="props.page[props.pageMap.get('currentPage')]"
-          v-model:page-size="props.page[props.pageMap.get('pageSize')]"
-          small
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="parseInt(props.page[props.pageMap.get('pageTotal')])"
-          @size-change="handleSizeChange"
-          @current-change="currentChange"
-        />
+        <el-pagination v-bind="$attrs" background v-model:current-page="props.page[props.pageMap.get('currentPage')]"
+          v-model:page-size="props.page[props.pageMap.get('pageSize')]" small
+          layout="total, sizes, prev, pager, next, jumper" :total="parseInt(props.page[props.pageMap.get('pageTotal')])"
+          @size-change="handleSizeChange" @current-change="currentChange" />
       </div>
     </div>
   </div>
@@ -303,16 +282,20 @@ onActivated(() => {
 :deep(.el-table) {
   overflow: visible;
 }
+
 .table_model_box {
   min-height: 500px;
+
   .option_box {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .option_container {
       margin: 0 8px;
       padding-top: 8px;
       display: flex;
+
       > :nth-child(1) {
         ::v-deep(.auth_button) {
           margin: 0 !important;
@@ -320,6 +303,7 @@ onActivated(() => {
       }
     }
   }
+
   ::v-deep(.el-table .success-row) {
     --el-table-tr-bg-color: var(--el-color-success-light-9);
   }

@@ -15,8 +15,13 @@ class systemUtils_api {
    * 分类
    */
   A_category(params: any) {
+    let source = params.source || ''
+    let api = '/cate/listAll'
+    if (source === 'vp') {
+      api = '/cate/tree'
+    }
     return request<any>({
-      url: '/cate/listAll',
+      url: api,
       method: 'get',
       params
     })

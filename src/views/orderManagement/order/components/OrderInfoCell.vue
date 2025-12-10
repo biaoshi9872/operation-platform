@@ -1,11 +1,13 @@
 <script setup lang="ts">
 interface IProp {
   orderBaseInfo: any
+  orderInfo: any
 }
 import isStateCheckHooks from '@/hooks/isStateCheckHooks';
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const props = withDefaults(defineProps<IProp>(), {
-  orderBaseInfo: {}
+  orderBaseInfo: {},
+  orderInfo: {}
 })
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
@@ -54,6 +56,12 @@ const FIELDS = computed(() => {
     label: '下单人手机号',
     prop: 'buyerPhone'
   })
+  if ([107].includes(props.orderInfo.channelSource)) {
+    arr.push({
+      label: '券码',
+      prop: 'couponCode'
+    })
+  }
   return arr
 })
 
