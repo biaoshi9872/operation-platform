@@ -61,7 +61,7 @@ function handleAdd() {
 }
 
 function handleEdit(row: any) {
-    currentId.value = row.categoryCode
+    currentId.value = row.id
     curryInfo.value = row
     productVisible.value = true
 }
@@ -73,16 +73,16 @@ function handleTreeNodeClick(data: API.GetTreeCateInfoData) {
 
 async function updatePage(isUpdateTree: Boolean) {
     let id: number | undefined = undefined
-    if (treeRef.value.treeRef.getCurrentNode()) {
-        const cur = treeRef.value.treeRef.getCurrentNode()
-        const { categoryCode, level } = cur
+    if (treeRef.value.getCurrentNode()) {
+        const cur = treeRef.value.getCurrentNode()
+        const { value: categoryCode, level } = cur
         id = cur.value
         fetchList({ categoryCode, level, searchParentFlag: true, searchMappingFlag: true })
     }
     if (isUpdateTree) {
         await fetchTreeCateInfo()
         if (id) {
-            treeRef.value.treeRef.setCurrentKey(id)
+            treeRef.value.setCurrentKey(id)
         }
     } else {
         currentId.value = undefined
@@ -115,7 +115,7 @@ async function updatePage(isUpdateTree: Boolean) {
                     </El-table-column>
                     <El-table-column label="父类目名称" mix-width="100">
                         <template #default="{ row }">
-                            <span>{{ row.parentCategoryName || '-' }}</span>
+                            <span>{{ row.parentName || '-' }}</span>
                         </template>
                     </El-table-column>
                     <El-table-column label="状态" width="60">

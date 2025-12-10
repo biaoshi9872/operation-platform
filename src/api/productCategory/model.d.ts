@@ -4,7 +4,6 @@ declare namespace API {
     level: 1 | 2 | 3 | ''
     categoryName: string
     parentCode?: string
-    categoryPicUrl: string
     stateEnum?: 1 | 2
     sort?: number
     remarks?: string
@@ -12,7 +11,6 @@ declare namespace API {
   interface GetTreeCateInfoData {
     categoryCode: string
     categoryName: string
-    categoryPicUrl: string
     childrenInfo: GetTreeCateInfoData[]
     id: number
     level: 1 | 2 | 3
@@ -23,7 +21,6 @@ declare namespace API {
   interface GetCateInfoDetailData {
     id: number
     categoryCode: string
-    categoryPicUrl: string
     categoryName: string
     parentCode: string
     parentCategoryName: string
@@ -42,7 +39,6 @@ declare namespace API {
   interface ProductTableItem {
     id: number
     categoryCode: string
-    categoryPicUrl: string | null
     categoryName: string
     parentCode: number
     parentCategoryName: number
@@ -65,7 +61,6 @@ declare namespace API {
   interface GetCateGoryInfoData {
     categoryCode: string
     categoryName: string
-    categoryPicUrl: string
     id: number
     level: 1 | 2 | 3
     mappingChannelList?: GetMappingChannelData[]

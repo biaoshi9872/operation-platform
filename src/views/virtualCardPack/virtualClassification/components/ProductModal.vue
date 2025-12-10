@@ -50,14 +50,10 @@ const formData = reactive<FormData>({
     categoryName: '',
     parentCode: '',
     categoryCode: '',
-    categoryPicUrl: [],
     stateEnum: undefined,
     sort: undefined,
     remarks: ''
 })
-
-const flag = ref(false) //是否关联
-const backendCategoryName = ref('') //关联的类目编辑时暂存的的类目名
 
 const rules = reactive<FormRules>({
     level: [{ required: true, message: '请选择类目层级', trigger: 'change' }],
@@ -91,8 +87,6 @@ async function getCateInfoDetail(id: number) {
         loading.value = true
         const obj = pick(props.curryInfo, Object.keys(formData))
         Object.assign(formData, obj)
-        backendCategoryName.value = formData.categoryName
-        flag.value = Boolean((props.curryInfo as any)?.mappingChannelList?.length)
         if (formData.level && formData.level !== 1) {
             await fetchLevelList(Number(formData.level) - 1)
         }
@@ -114,29 +108,15 @@ function onLevelChange(val: 1 | 2 | 3) {
 }
 
 function handleSubmit() {
-    const { id, categoryName } = formData
-    if (flag.value && id && categoryName !== backendCategoryName.value) {
-        ElMessageBox.confirm('该类目已有关联的商品，修改类目名称将会影响商品展示，请确认是否修改？', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        })
-            .then(() => {
-                saveCateInfo()
-            })
-            .catch(() => { })
-    } else {
-        saveCateInfo()
-    }
+    saveCateInfo()
 }
 
 async function saveCateInfo() {
     try {
         await formRef.value?.validate()
-        const { id, categoryCode, categoryPicUrl, parentCode, ...restFrom } = formData
+        const { id, categoryCode, parentCode, ...restFrom } = formData
         const payload: API.SaveCateInfoParams = {
-            ...restFrom,
-            categoryPicUrl: categoryPicUrl.join()
+            ...restFrom
         }
         id && (payload.id = id)
         parentCode && (payload.parentCode = parentCode)
@@ -162,13 +142,10 @@ function handleReset() {
             categoryName: '',
             parentCode: '',
             categoryCode: '',
-            categoryPicUrl: [],
             stateEnum: undefined,
             sort: undefined,
             remarks: ''
         })
-        backendCategoryName.value = ''
-        flag.value = false
     }
     emits('update:modelValue', false)
 }
