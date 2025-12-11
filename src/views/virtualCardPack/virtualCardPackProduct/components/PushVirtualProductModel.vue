@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import type { ElTree } from 'element-plus'
-import { cloneDeep } from 'lodash-es'
 import virtualCardPackProduct_api from '@/api/virtualCardPackProduct'
-import virtualCardPackProduct_enum from '@/utils/constant/virtualCardPackProduct'
 interface IProp {
     curryInfo: any,
     type: string
@@ -25,15 +23,12 @@ interface IData {
     packageAppList: any,
     selectedPackageAppList: any,
     defaultCheckedKeys: any,
-    dialogVisible: boolean,
     submitLoading: boolean,
 }
 const data = reactive<IData>({
     packageAppList: [],
     selectedPackageAppList: [],
     defaultCheckedKeys: [],
-
-    dialogVisible: false,
     submitLoading: false,
 })
 const allTree = ref<InstanceType<typeof ElTree>>()
@@ -61,6 +56,25 @@ const handleClose = () => {
 const openHandler = () => {
     getPackageApp()
 }
+type IResultItem = {
+    appId: number,
+    appName: string,
+    successCount: number,
+    failCount: number,
+    totalCount: number,
+}
+const resData = reactive({
+    showResult: false,
+    openTag: false,
+    showResultDetail: false,
+    resultDetailList: [],
+    resultList: [] as IResultItem[],
+})
+const getItemClass = (item: IResultItem) => {
+    if (item.failCount === 0) return 'success'
+    if (item.successCount === 0) return 'fail'
+    return 'partial'
+}
 const handleSubmit = () => {
     let selectedPackageAppList = data.selectedPackageAppList.filter((item: any) => {
         return !String(item).startsWith('ORG')
@@ -69,10 +83,11 @@ const handleSubmit = () => {
         virtualCardPackProduct_api.A_push({
             appIds: selectedPackageAppList,
             packageCodes: props.isBatch ? props.mulSelect.map((item: any) => item.packageCode) : [props.curryInfo.packageCode]
-        }).then(() => {
-            ElMessage.success(title.value + '成功')
+        }).then((res: any) => {
             emits('refresh')
             handleClose()
+            resData.showResult = true
+            resData.resultList = res
         })
     } else {
         virtualCardPackProduct_api.A_singPush({
@@ -98,9 +113,19 @@ const getPackageApp = async () => {
     data.defaultCheckedKeys = []
 
     if (!props.isBatch && props.curryInfo.appNameList) {
-        data.defaultCheckedKeys = props.curryInfo.appNameList?.map(item => item.appId) || []
+        data.defaultCheckedKeys = props.curryInfo.appNameList?.map((item: any) => item.appId) || []
         data.selectedPackageAppList = [...data.defaultCheckedKeys]
     }
+}
+const getResultDetailList = () => {
+    resData.openTag = true
+    virtualCardPackProduct_api.A_pushFailReason({
+    }).then((res: any) => {
+        resData.showResultDetail = true
+        resData.resultDetailList = res
+    }).finally(() => {
+        resData.openTag = false
+    })
 }
 
 </script>
@@ -119,23 +144,83 @@ const getPackageApp = async () => {
             </div>
         </template>
     </el-dialog>
-    <el-dialog v-model="data.dialogVisible" :title="title + '结果详情'" class="dialog-m" append-to-body draggable
-        destroy-on-close :close-on-click-modal="false" @closed="data.dialogVisible = false">
-        <div class="result-container">" >
-            <div class="dialog-body-title" v-for="value in 10">
-                <span>API开放平台:</span>
-                <span>本次共选择推送1个商品</span>
-                <span>成功1条信息</span>
-                <span>失败0条信息</span>
+    <el-dialog v-model="resData.showResult" :title="title + '结果详情'" class="dialog-m" append-to-body draggable
+        destroy-on-close :close-on-click-modal="false" @closed="resData.showResult = false">
+        <div class="result-container">
+            <div class="item" :class="getItemClass(item)" v-for="item in resData.resultList">
+                <span>{{ item.appName }}:</span>
+                <span class="info">本次共选择推送{{ item.totalCount }}个商品</span>
+                <span>成功<span class="success">{{ item.successCount }}</span>条信息</span>
+                <span>失败<span class="fail">{{ item.failCount }}</span>条信息</span>
             </div>
         </div>
         <template #footer>
-            <el-button @click="data.dialogVisible = false" class="mr-10">关闭</el-button>
+            <el-button @click="resData.showResult = false" class="mr-10">关闭</el-button>
+            <el-button @click="getResultDetailList" :loading="resData.openTag" type="primary">查看失败详情</el-button>
+        </template>
+    </el-dialog>
+    <el-dialog v-model="resData.showResultDetail" title="失败详情" class="dialog-l" append-to-body draggable
+        destroy-on-close :close-on-click-modal="false" @closed="resData.showResultDetail = false">
+        <div>
+            <el-table :data="resData.resultDetailList" style="width: 100%" max-height="500px">
+                <el-table-column type="index" label="序号" width="100" />
+                <el-table-column prop="packageName" label="商品信息" />
+                <el-table-column prop="packageCode" label="商品编码" />
+                <el-table-column prop="appName" label="推送渠道" />
+                <el-table-column prop="failReason" label="失败原因" />
+            </el-table>
+        </div>
+        <template #footer>
+            <el-button @click="resData.showResultDetail = false" class="mr-10">关闭</el-button>
         </template>
     </el-dialog>
 </template>
 <style lang="scss" scoped>
 .result-container {
     padding: 20px;
+    max-height: 500px;
+    overflow: auto;
+}
+
+.item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: #f5f7fa;
+    border-left: 4px solid #dcdfe6;
+    color: #606266;
+
+    .success {
+        color: #67c23a;
+    }
+
+    .fail {
+        color: #f56c6c;
+    }
+}
+
+.item:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.item.success {
+    background: #f0f9eb;
+    border-left-color: #67c23a;
+    color: #1f2d3d;
+}
+
+.item.fail {
+    background: #fde2e2;
+    border-left-color: #f56c6c;
+    color: #1f2d3d;
+}
+
+.item.partial {
+    background: #fdf6ec;
+    border-left-color: #e6a23c;
+    color: #1f2d3d;
 }
 </style>

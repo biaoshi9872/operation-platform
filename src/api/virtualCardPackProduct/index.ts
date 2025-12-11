@@ -114,5 +114,12 @@ class virtualCardPackProduct_api {
       params
     })
   }
+  A_pushFailReason(data: any) {
+    return request<any>({
+      url: '/virtual/package/pushFailReason',
+      method: 'get',
+      data
+    })
+  }
 }
 export default new virtualCardPackProduct_api()

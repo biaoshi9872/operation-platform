@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import virtualCardPackProduct_api from '@/api/virtualCardPackProduct'
 import virtualCardPackProduct_enum from '@/utils/constant/virtualCardPackProduct'
@@ -111,7 +110,7 @@ const deleteSelectData = (row: any) => {
                         <el-table-column type="selection" width="55px"></el-table-column>
                         <el-table-column label="商品名称" prop="skuName" width="200px"
                             :show-overflow-tooltip="true"></el-table-column>
-                        <el-table-column label="商品编码" prop="skuCode"></el-table-column>
+                        <el-table-column label="商品编码" prop="skuCode" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column label="面值" prop="faceValue"></el-table-column>
                         <el-table-column label="平台成本" prop="supplyPrice"></el-table-column>
                         <el-table-column label="库存" prop="stock">
@@ -119,12 +118,12 @@ const deleteSelectData = (row: any) => {
                                 {{ scope.row.stock ? scope.row.stock : '--' }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="有效期" prop="goodsSpecification">
-                            <template #default="scope">
-                                {{ scope.row.expireTime ? scope.row.expireTime : '--' }}
-                            </template>
+                        <el-table-column label="有效期" prop="expireDateMax" :show-overflow-tooltip="true">
+                            <template #default="{ row }">{{ row.expireDateMax ?
+                                `${row.expireDateMin}至${row.expireDateMax}` : '-'
+                                }}</template>
                         </el-table-column>
-                        <el-table-column label="产品属性" prop="goodsAttr">
+                        <el-table-column label="产品属性" prop="goodsAttr" :show-overflow-tooltip="true">
                             <template #default="scope">
                                 {{ virtualCardPackProduct_enum.getGoodsAttrTitle(scope.row.goodsAttr) }}
                             </template>
@@ -136,7 +135,7 @@ const deleteSelectData = (row: any) => {
                     <el-table :data="dataPage.selectData" border max-height="460px">
                         <el-table-column label="商品名称" prop="skuName" width="120px"
                             :show-overflow-tooltip="true"></el-table-column>
-                        <el-table-column label="商品编码" prop="skuCode"></el-table-column>
+                        <el-table-column label="商品编码" prop="skuCode" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column label="平台成本" prop="supplyPrice"></el-table-column>
                         <el-table-column label="数量" prop="goodsNum" width="120px">
                             <template #default="scope">

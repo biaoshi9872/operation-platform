@@ -177,7 +177,7 @@ const handleChange = (val: number) => {
                             </el-table-column>
                             <el-table-column label="税点">
                                 <template #default="scope">
-                                    {{ scope.row.taxRate ? scope.row.taxRate + '%' : '-' }}
+                                    {{ scope.row.taxRate ?? '-' }}
                                 </template>
                             </el-table-column>
                             <el-table-column label="平台供应价">
