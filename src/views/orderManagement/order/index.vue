@@ -206,6 +206,16 @@ const afterApplyHandler = (row: any, parentRow: any) => {
     }
   })
 }
+//申请赔付
+const applyCompensationHandler = (row: any, parentRow: any) => {
+  tabsStoreInfo.reload({
+    path: '/orderManagement/compensationOrder/applyCompensation',
+    query: {
+      channelOrderNo: parentRow.channelOrderNo,
+      skuCode: row.skuCode
+    }
+  })
+}
 
 const columns: any = ref([])
 
@@ -287,7 +297,29 @@ const initColumns = () => {
             ]
           ]
         )
-      return h('div', {}, [goodsDetail, afterButton])
+      const applyCompensationButton =
+        ![0].includes(row.tmCompensationStatus) &&
+        [63].includes(parentRow.channelSource) &&
+        withDirectives(
+          h(ElButton, {
+            type: 'text',
+            innerText: '申请赔付',
+            style: { 'margin-left': '12px' },
+            onClick: () => {
+              applyCompensationHandler(row, parentRow)
+            }
+          }),
+          [
+            [
+              authDir,
+              {
+                authKey: 'ORDER_SHLP',
+                detail: row
+              }
+            ]
+          ]
+        )
+      return h('div', {}, [goodsDetail, afterButton, applyCompensationButton])
     },
     openMarginCell: true
   })

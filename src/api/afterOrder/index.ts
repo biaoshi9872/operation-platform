@@ -145,7 +145,7 @@ class After_order_api {
   /**
    * 新天猫售后预渲染
    */
-  A_afterSaleRender(data: { channelOrderNo: string; skuCode: string }) {
+  A_afterSaleRender(data: { channelOrderNo: string; skuCode: string; type: number }) {
     return request<any>({
       url: '/afterSale/afterSaleRender',
       method: 'post',
