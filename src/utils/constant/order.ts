@@ -1,5 +1,21 @@
 import baseEnum from './baseEnum'
 class order_enum extends baseEnum {
+  public AfterSalesPfType = [
+    {
+      value: '11',
+      label: '运费赔付'
+    },
+    {
+      value: '12',
+      label: '品质赔付'
+    }
+  ]
+  /**
+   * 赔付状态
+   */
+  public getAfterSalesPfTypeTitle(key: string) {
+    return this.getDictNameByKey(this.AfterSalesPfType, key)
+  }
   /**
    * 订单状态
    */

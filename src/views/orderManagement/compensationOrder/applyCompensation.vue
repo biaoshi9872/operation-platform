@@ -16,7 +16,6 @@ const cancelHandler = () => {
     goBarkOrderList()
 }
 
-
 const data = reactive({
     formData: {
         afterSaleType: '',
@@ -24,6 +23,7 @@ const data = reactive({
         reasonName: '',
         goodsStatus: '',
         afterSaleNum: 1,
+        refundAmount: null,
         reasonImages: '',
         reasonDescription: ''
     },
@@ -33,6 +33,7 @@ const data = reactive({
         applyUserMobile: '',
         channelOrderNo: '',
         reasonDescription: '',
+        orderDetailId: '',
         orgId: '',
         appId: ''
     },
@@ -42,15 +43,15 @@ const data = reactive({
     formRules: {
         afterSaleType: [{ required: true, message: '请选择售后类型', trigger: 'change' }],
         goodsStatus: [{ required: true, message: '请选择货物状态', trigger: 'change' }],
-        reasonCode: [{ required: true, message: '请选择退款原因', trigger: 'change' }],
-        reasonDescription: [{ required: true, message: '请选择退款原因', trigger: ['change', 'blur'] }]
+        reasonCode: [{ required: true, message: '请选择赔付类型', trigger: 'change' }],
+        reasonDescription: [{ required: true, message: '请输入赔付描述', trigger: ['change', 'blur'] }]
     }
 })
 const saveHandler = () => {
     formRef.value?.validate((valid: boolean) => {
         if (valid) {
             data.submitLoading = true
-            const { orgId, appId, channelOrderNo } = data.detailInfo
+            const { orgId, appId, channelOrderNo, orderDetailId } = data.detailInfo
             const afterSaleGoodsList = data.afterSaleGoods
             let obj = { ...data.formData, orgId, appId, channelOrderNo, afterSaleGoodsList } as any
             after_order_api.A_backApply(obj).then((res: any) => {
@@ -71,40 +72,30 @@ const goBarkOrderList = () => {
 }
 
 onMounted(() => {
-    debugger
     getDetailInfo()
 })
 
 //获取详情
 const getDetailInfo = () => {
     const { channelOrderNo, skuCode } = $useRote.query as any
-    channelOrderNo && after_order_api.A_preAfterOrderDetail({ channelOrderNo, skuCode, type: 1 }).then((res: any) => {
+    channelOrderNo && after_order_api.A_preAfterOrderDetail({ channelOrderNo, skuCode, type: 2 }).then((res: any) => {
         data.detailInfo = {
             ...data.detailInfo,
             ...res
         }
-        data.afterSaleGoods = [{ ...res.afterSaleGoodsVO, afterSaleNum: res.afterSaleGoodsVO.goodsNum }]
     })
-    channelOrderNo && after_order_api.A_afterSaleRender({ channelOrderNo, skuCode, type: 1 }).then((res: any) => {
+    channelOrderNo && after_order_api.A_afterSaleRender({ channelOrderNo, skuCode, type: 2 }).then((res: any) => {
         data.outerRefundList = [
             ...data.outerRefundList,
             ...(res?.date || [])
         ] as any
     })
 }
-//退款总金额
-const afterSaleAmount = computed(() => {
-    const total = data.afterSaleGoods.reduce((total: any, curry: any) => {
-        let retailPrice = curry.retailPrice
-        return (total += curry.afterSaleNum * retailPrice)
-    }, 0)
-    return total.toFixed(2)
-})
-
 
 const verifyHandler = () => {
     formRef.value?.validateField('reasonImages')
 }
+
 const goDetailHandler = () => {
     tabsStoreInfo.close($useRote, {
         path: '/orderManagement/order/orderDetail',
@@ -197,14 +188,11 @@ const isUploadVoucherRequired: any = computed(() => {
         <div>
             <el-form ref="formRef" :model="data.formData" label-suffix=":" label-position="right" label-width="100px"
                 :rules="data.formRules">
-                <el-form-item label="售后类型" prop="afterSaleType">
+                <el-form-item label="赔付类型" prop="afterSaleType">
                     <el-radio-group v-model="data.formData.afterSaleType" @change="changeHandler">
                         <el-radio v-for="(item, index) in afterSalesTypeList" :label="item.value">{{ item.label
-                            }}</el-radio>
+                        }}</el-radio>
                     </el-radio-group>
-                </el-form-item>
-                <el-form-item label="退款总金额">
-                    <span>￥{{ afterSaleAmount }}</span>
                 </el-form-item>
                 <el-form-item label="货物状态" prop="goodsStatus">
                     <el-select v-model="data.formData.goodsStatus" class="w-400" @change="goodsStatusHandler">
@@ -212,11 +200,15 @@ const isUploadVoucherRequired: any = computed(() => {
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="退款原因" prop="reasonCode">
+                <el-form-item label="申请原因" prop="reasonCode">
                     <el-select v-model="data.formData.reasonCode" class="w-400" @change="reasonChangeHandler">
                         <el-option v-for="(item, index) in reasonForRefundList" :label="item.label"
                             :value="item.value"></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="赔付金额">
+                    <el-input-number v-model="data.formData.refundAmount" :precision="2" :min="0" :controls="false"
+                        :max="1000" placeholder="请输入退款金额" />
                 </el-form-item>
                 <el-form-item label="上传凭证" prop="reasonImages"
                     :rules="[{ required: isUploadVoucherRequired, message: '请上传凭证', trigger: ['blur', 'change'] }]">
@@ -225,31 +217,10 @@ const isUploadVoucherRequired: any = computed(() => {
                 </el-form-item>
                 <el-form-item label="说明" prop="reasonDescription">
                     <el-input type="textarea" class="w-400" v-model="data.formData.reasonDescription" :rows="3"
-                        maxlength="200" show-word-limit placeholder="请输入说明" />
+                        maxlength="200" show-word-limit placeholder="补充描述，有助于卖家更好的处理售后问题" />
                 </el-form-item>
             </el-form>
         </div>
-    </CardModel>
-    <CardModel title="商品信息">
-        <el-table style="width: 100%" :data="data.afterSaleGoods">
-            <YbtTableColumn prop="date" label="商品信息" width="300">
-                <template #default="{ row }">
-                    <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }" width="100%"
-                        :goodDetail="row"></SkuDetail>
-                </template>
-            </YbtTableColumn>
-            <YbtTableColumn prop="retailPrice" label="分销价">
-                <template #default="{ row }">
-                    <span>{{ `￥${row.retailPrice}` }}</span>
-                </template>
-            </YbtTableColumn>
-            <YbtTableColumn prop="goodsNum" label="总量" />
-            <YbtTableColumn prop="afterSaleNum" label="售后数量">
-                <template #default="{ row }">
-                    <el-input-number v-model="row.afterSaleNum" :min="1" :max="row.goodsNum" :precision="0" />
-                </template>
-            </YbtTableColumn>
-        </el-table>
     </CardModel>
     <CardModel>
         <div class="option">

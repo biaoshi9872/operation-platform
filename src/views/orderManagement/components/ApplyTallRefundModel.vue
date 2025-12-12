@@ -68,7 +68,7 @@ const openHandler = () => {
         data.formData.afterSaleNum = props.curryInfo?.goodsNum || 1
         let { channelOrderNo } = props.orderInfo.orderBaseInfo
         let { skuCode } = props.curryInfo
-        channelOrderNo && after_order_api.A_afterSaleRender({ channelOrderNo, skuCode }).then((res: any) => {
+        channelOrderNo && after_order_api.A_afterSaleRender({ channelOrderNo, skuCode, type: 1 }).then((res: any) => {
             data.outerRefundList = [
                 ...data.outerRefundList,
                 ...(res?.date || [])
