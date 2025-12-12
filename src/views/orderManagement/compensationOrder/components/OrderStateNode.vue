@@ -17,7 +17,7 @@ onMounted(() => {
 const getOperationLog = () => {
   const { afterSaleNo }: any = route.query
   afterSaleNo &&
-    after_order_api.A_progress({ afterSaleNo }).then((res: any) => {
+    after_order_api.A_progress({ afterSaleNo, bizType: 2 }).then((res: any) => {
       dataPage.nodeList = res as any[]
       dataPage.activeIndex = tranFromActive()
     })

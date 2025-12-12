@@ -8,11 +8,13 @@ import OrderProductCell from './components/OrderProductCell.vue'
 import after_order_api from '@/api/afterOrder/index'
 import order_enum from '@/utils/constant/order'
 import ConfirmReceiptModel from './components/ConfirmReceiptModel.vue'
+
 import { useRoute } from 'vue-router'
 const route = useRoute()
 
 interface IData {
     detail: {
+        compensateConfirmStatus: Number,//是否可以确认
         afterSaleNo: String
         applyTime: String
         orderNo: String
@@ -32,13 +34,15 @@ interface IData {
         status: String
         orderDeliverVOList: any //物流信息
         receiveUserInfo: any //仓库信息
-        sendUserInfo: any
+        sendUserInfo: any,
+        compensateProgressList: any[]
     },
-    showConfirmReceipt: false
+    showConfirmReceipt: boolean
 }
 
 const dataPage = reactive<IData>({
     detail: {
+        compensateConfirmStatus: 1,//是否可以确认
         afterSaleNo: '',
         applyTime: '',
         orderNo: '',
@@ -58,7 +62,9 @@ const dataPage = reactive<IData>({
         status: '',
         orderDeliverVOList: [],
         receiveUserInfo: {},
-        sendUserInfo: {}
+        sendUserInfo: {},
+        //理赔节点
+        compensateProgressList: []
     },
     showConfirmReceipt: false
 })
@@ -74,17 +80,23 @@ const init = () => {
 //订单详情
 const queryAfterSaleOrderInfo = () => {
     const { afterSaleNo }: any = route.query
-    after_order_api.A_detail({ afterSaleNo }).then((res: any) => {
+    //1.获取售后详情
+    after_order_api.A_detail({ afterSaleNo, bizType: 2 }).then((res: any) => {
         dataPage.detail = {
             ...dataPage.detail,
             ...res
         }
     })
+    //2.节点状态[]
+    after_order_api.A_compensatePsrogress({ afterSaleNo, bizType: 2 }).then((res: any) => {
+        //理赔节点
+        dataPage.detail.compensateProgressList = res || []
+    })
 }
 
 //售后状态
 const statusName = computed(() => {
-    return order_enum.getAfter_order_statesTitle(dataPage.detail.status + '') + (dataPage?.detail?.status == '1' ? (dataPage?.detail?.currentFlowNodeName == '无节点' ? '' : `(${dataPage?.detail?.currentFlowNodeName})`) : '')
+    return `赔付状态:${order_enum.getAfter_order_statesTitle(dataPage.detail.status + '')}      赔付类型：品质退赔付`
 })
 
 //确认已到账
@@ -101,32 +113,27 @@ const confirmArrival = () => {
         <CardModel iconName="menu-order">
             <OrderStateNode></OrderStateNode>
         </CardModel>
-        <CardModel iconName="menu-order" :title="`售后状态:${statusName}`">
+        <CardModel iconName="menu-order" :title="`${statusName}`">
             <OrderInfoCell :orderInfo="dataPage.detail"></OrderInfoCell>
         </CardModel>
         <CardModel title="赔付信息">
             <OrderProductCell :orderInfo="dataPage.detail"></OrderProductCell>
         </CardModel>
-        <CardModel title="赔付处理详情">
+        <CardModel title="赔付处理详情" v-if="dataPage.detail.compensateProgressList.length > 0">
             <el-timeline style="max-width: 1000px" class="mt-24">
-                <el-timeline-item timestamp="2018/4/12" placement="top">
+                <el-timeline-item :timestamp="item.operationTime" placement="top" color='#0bbd87'
+                    v-for="(item, index) in dataPage.detail.compensateProgressList" :key="index">
                     <div class="flex items-center gap-4 mb-12">
-                        <h4>退款已确认</h4>
-                        <p class="text-[#cccccc]">已确认退款到账</p>
+                        <h4>{{ item.flowNodeName }}</h4>
+                        <p class="text-[#cccccc]">{{ item.msg }}</p>
                     </div>
-                    <el-card>
-                        <div class="flex items-center gap-3">凭证:<ImgUpload v-model="dataPage.detail.images"
-                                :disabled="true" :isArray="false">
+                    <el-card v-if="item.images.length > 0">
+                        <div class="flex items-center gap-3">凭证:<ImgUpload v-model="item.reasonImages" :disabled="true"
+                                :isArray="false">
                             </ImgUpload>
                         </div>
-                        <div>备注：{{ dataPage.detail.reasonDescription }}</div>
+                        <div>备注：{{ item.reasonDescription }}</div>
                     </el-card>
-                </el-timeline-item>
-                <el-timeline-item timestamp="2018/4/3" placement="top">
-                    <div class="flex items-center gap-4">
-                        <h4>已同意</h4>
-                        <p class="text-[#cccccc]">赔付申请已同意，请等待退款到账</p>
-                    </div>
                 </el-timeline-item>
             </el-timeline>
         </CardModel>
