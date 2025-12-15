@@ -58,7 +58,6 @@ const handleSubmit = () => {
         data.submitLoading = true
         after_order_api.A_refundCompensateConfirm({
             thirdAfterSaleNo: props.curryInfo.channelAfterSaleNo,
-            isDebug: 1,
             ...data.formData
         }).then(res => {
             ElMessage.success('操作成功')

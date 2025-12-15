@@ -41,7 +41,19 @@ const dataPage = reactive({
   <div class="order-state-container">
     <el-steps :active="dataPage.activeIndex" finish-status="success" align-center>
       <el-step v-for="(item, index) in dataPage.nodeList" :key="index" :title="item.flowNodeName"
-        :description="item.operationTime"></el-step>
+        :description="item.operationTime">
+        <template #title>
+          <div>
+            <span>{{ item.flowNodeName }}</span>
+          </div>
+        </template>
+        <template #description>
+          <div>
+            <span>{{ item.operationTime }}</span>
+            <span class="ml-4">{{ item.operatorName }}</span>
+          </div>
+        </template>
+      </el-step>
     </el-steps>
   </div>
 </template>
