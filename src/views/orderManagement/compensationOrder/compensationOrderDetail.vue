@@ -96,7 +96,8 @@ const queryAfterSaleOrderInfo = () => {
 
 //售后状态
 const statusName = computed(() => {
-    return `赔付状态:${order_enum.getAfter_order_statesTitle(dataPage.detail.status + '')}      赔付类型：品质退赔付`
+    let afterSaleTitle = order_enum.getAfterSalesPfTypeTitle(dataPage.detail.afterSaleType)
+    return `赔付状态:${order_enum.getAfter_order_statesTitle(dataPage.detail.status + '')}      赔付类型：${afterSaleTitle}`
 })
 
 //确认已到账
@@ -107,7 +108,8 @@ const confirmArrival = () => {
 </script>
 <template>
     <div class="process-edit">
-        <CardModel v-auth="{ authKey: 'ORDER_QRDZ_PF' }" iconName="menu-order">
+        <CardModel v-if="dataPage.detail.compensateConfirmStatus == 1" v-auth="{ authKey: 'ORDER_QRDZ_PF' }"
+            iconName="menu-order">
             <AuthButton type="primary" @click="confirmArrival">确认已到账</AuthButton>
         </CardModel>
         <CardModel iconName="menu-order">
@@ -119,20 +121,21 @@ const confirmArrival = () => {
         <CardModel title="赔付信息">
             <OrderProductCell :orderInfo="dataPage.detail"></OrderProductCell>
         </CardModel>
-        <CardModel title="赔付处理详情" v-if="dataPage.detail.compensateProgressList.length > 0">
+        <CardModel title="赔付处理详情">
             <el-timeline style="max-width: 1000px" class="mt-24">
+
                 <el-timeline-item :timestamp="item.operationTime" placement="top" color='#0bbd87'
                     v-for="(item, index) in dataPage.detail.compensateProgressList" :key="index">
                     <div class="flex items-center gap-4 mb-12">
                         <h4>{{ item.flowNodeName }}</h4>
                         <p class="text-[#cccccc]">{{ item.msg }}</p>
                     </div>
-                    <el-card v-if="item.images.length > 0">
-                        <div class="flex items-center gap-3">凭证:<ImgUpload v-model="item.reasonImages" :disabled="true"
-                                :isArray="false">
+                    <el-card v-if="item.compensateConfirmImage">
+                        <div class="flex items-center gap-3">凭证:<ImgUpload v-model="item.compensateConfirmImage"
+                                :disabled="true" :isArray="false">
                             </ImgUpload>
                         </div>
-                        <div>备注：{{ item.reasonDescription }}</div>
+                        <div>备注：{{ item.compensateConfirmRemark }}</div>
                     </el-card>
                 </el-timeline-item>
             </el-timeline>

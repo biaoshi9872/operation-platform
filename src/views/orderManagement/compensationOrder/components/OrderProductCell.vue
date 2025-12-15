@@ -42,7 +42,7 @@ const afterSaleGoodsVO = computed(() => {
       </div>
       <div class="item">
         <span class="item_title">赔付金额:</span>
-        <span class="item_value">{{ `￥${orderInfo.afterSaleRetailPrice ?? '-'}` }}</span>
+        <span class="item_value">{{ `￥${orderInfo?.afterSaleGoodsVO?.afterSaleRetailPrice ?? '-'}` }}</span>
       </div>
 
     </div>
