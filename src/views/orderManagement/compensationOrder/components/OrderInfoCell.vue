@@ -36,7 +36,7 @@ const FIELDS = computed(() => {
   })
   arr.push({
     label: '供应商赔付单编号',
-    prop: 'channelOrderNo'
+    prop: 'channelAfterSaleNo'
   })
   arr.push({
     label: '赔付单编号',
