@@ -52,8 +52,7 @@ const dataPage: IPage<any, any> = reactive({
         afterSaleNo: ''
     },
     facadeKz: {
-        activeName: '1',
-        bizType: 1
+        bizType: 2
     },
     showConfirmReceiptModel: false,
     curryInfo: null
@@ -76,8 +75,8 @@ const exportHandler = () => {
 
 // 查询回调
 const getQueryParams = () => {
-    const { page, facade } = dataPage
-    return { ...page, ...facade }
+    const { page, facade, facadeKz } = dataPage
+    return { ...page, ...facade, ...facadeKz }
 }
 
 // 查询回调
@@ -253,7 +252,7 @@ const initColumns = () => {
         width: '160px',
         render: (row: any) => {
             //撤销
-            const revocationButton =
+            const revocationButton = row.compensateConfirmStatus == 1 &&
                 withDirectives(
                     h(ElButton, {
                         type: 'text',

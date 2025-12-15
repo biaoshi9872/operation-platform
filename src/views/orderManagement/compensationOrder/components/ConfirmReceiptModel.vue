@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
+import after_order_api from '@/api/afterOrder'
 interface IProp {
     curryInfo: any,
 }
@@ -21,7 +22,7 @@ interface IData {
 }
 const data = reactive<IData>({
     formData: {
-        remarks: '',
+        reasonDescription: '',
         reasonImages: ''
     },
     formDataBK: {},
@@ -54,6 +55,18 @@ const openHandler = () => {
 }
 const handleSubmit = () => {
     formRef.value.validate().then(() => {
+        data.submitLoading = true
+        after_order_api.A_refundCompensateConfirm({
+            thirdAfterSaleNo: props.curryInfo.channelAfterSaleNo,
+            isDebug: 1,
+            ...data.formData
+        }).then(res => {
+            ElMessage.success('操作成功')
+            emits('update:modelValue', false)
+            emits('refresh')
+        }).finally(() => {
+            data.submitLoading = false
+        })
     })
 }
 </script>
@@ -63,8 +76,8 @@ const handleSubmit = () => {
         <div class="option">
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
-                <el-form-item label="备注" prop="remarks">
-                    <el-input type="textarea" v-model="data.formData.remarks" placeholder="请输入备注" :rows="3"
+                <el-form-item label="备注" prop="reasonDescription">
+                    <el-input type="textarea" v-model="data.formData.reasonDescription" placeholder="请输入备注" :rows="3"
                         maxlength="200" show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="上传凭证" prop="reasonImages">

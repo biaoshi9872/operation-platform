@@ -44,6 +44,7 @@ const data = reactive({
         afterSaleType: [{ required: true, message: '请选择售后类型', trigger: 'change' }],
         goodsStatus: [{ required: true, message: '请选择货物状态', trigger: 'change' }],
         reasonCode: [{ required: true, message: '请选择赔付类型', trigger: 'change' }],
+        refundAmount: [{ required: true, message: '请输入赔付金额', trigger: ['change', 'blur'] }],
         reasonDescription: [{ required: true, message: '请输入赔付描述', trigger: ['change', 'blur'] }]
     }
 })
@@ -53,8 +54,8 @@ const saveHandler = () => {
             data.submitLoading = true
             const { orgId, appId, channelOrderNo, orderDetailId } = data.detailInfo
             const afterSaleGoodsList = data.afterSaleGoods
-            let obj = { ...data.formData, orgId, appId, channelOrderNo, afterSaleGoodsList } as any
-            after_order_api.A_backApply(obj).then((res: any) => {
+            let obj = { ...data.formData, orgId, appId, orderDetailId, channelOrderNo, afterSaleGoodsList } as any
+            after_order_api.A_applyRefundCompensate(obj).then((res: any) => {
                 ElMessage.success('操作完成')
                 emit('refresh')
                 goBarkOrderList()
@@ -191,7 +192,7 @@ const isUploadVoucherRequired: any = computed(() => {
                 <el-form-item label="赔付类型" prop="afterSaleType">
                     <el-radio-group v-model="data.formData.afterSaleType" @change="changeHandler">
                         <el-radio v-for="(item, index) in afterSalesTypeList" :label="item.value">{{ item.label
-                        }}</el-radio>
+                            }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="货物状态" prop="goodsStatus">
@@ -206,7 +207,7 @@ const isUploadVoucherRequired: any = computed(() => {
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="赔付金额">
+                <el-form-item label="赔付金额" props="refundAmount">
                     <el-input-number v-model="data.formData.refundAmount" :precision="2" :min="0" :controls="false"
                         :max="1000" placeholder="请输入退款金额" />
                 </el-form-item>
