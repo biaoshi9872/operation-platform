@@ -2,6 +2,7 @@
 import virtualCardPackProduct_api from '@/api/virtualCardPackProduct'
 import virtualCardPackProductEnum from '@/utils/constant/virtualCardPackProduct'
 import SelectVirtualProductModel from './SelectVirtualProductModel.vue'
+import supplier_enum from '@/utils/constant/supplier'
 import { cloneDeep } from 'lodash-es'
 import { ElMessage } from 'element-plus';
 interface IProp {
@@ -95,14 +96,7 @@ const isDisabled = computed(() => {
 })
 
 const saveSelectData = (val: any) => {
-    let arr = cloneDeep(val)
-    arr.forEach((item: any) => {
-        if (dataInfo.form.couponDetail.findIndex((i: any) => i.skuCode == item.skuCode) == -1) {
-            dataInfo.form.couponDetail.push({ ...item })
-        } else {
-            dataInfo.form.couponDetail.splice(dataInfo.form.couponDetail.findIndex((i: any) => i.skuCode == item.skuCode), 1, { ...item })
-        }
-    })
+    dataInfo.form.couponDetail = val
 }
 const addChildProduct = () => {
     dataInfo.showSelectVirtualProductModel = true
@@ -116,13 +110,15 @@ const removeChildProduct = (index: number) => {
  * 子商品数量
  */
 const selectLength = computed(() => {
-    let totalNum = dataInfo.form.couponDetail.reduce((acc, cur) => {
-        acc += (Number(cur.goodsNum) || 0)
+    const list = dataInfo.form.couponDetail as any[]
+    let totalNum = list.reduce((acc, cur: any) => {
+        acc += (Number(cur?.goodsNum) || 0)
         return acc
     }, 0)
     return totalNum || 0
 })
-const handleChange = (val: number) => {
+const handleChange = (cur: number | undefined, prev: number | undefined) => {
+    const val = Number(cur || 0)
     if (val > selectLength.value) {
         ElMessage.error('不能大于主商品数量')
         dataInfo.form.receiveTimes = selectLength.value
@@ -155,7 +151,7 @@ const handleChange = (val: number) => {
                         </ImgUpload>
                     </el-form-item>
                     <el-form-item label="礼包描述" prop="remarks" class="description_box">
-                        <MyTinymce v-model="dataInfo.form.remarks" :disabled="isDisabled"></MyTinymce>
+                        <MyTinymce v-model="dataInfo.form.remarks" :disabled="isDisabled" :maxLength="500"></MyTinymce>
                     </el-form-item>
                 </el-card>
                 <el-card shadow="never" class="mb-8">
@@ -178,6 +174,11 @@ const handleChange = (val: number) => {
                             <el-table-column label="税点">
                                 <template #default="scope">
                                     {{ scope.row.taxRate ?? '-' }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="发票种类">
+                                <template #default="scope">
+                                    {{ supplier_enum.getInvoiceType(scope.row.invoiceType) }}
                                 </template>
                             </el-table-column>
                             <el-table-column label="平台供应价">
@@ -226,7 +227,8 @@ const handleChange = (val: number) => {
             <el-button type="primary" @click="saveDataHandler('1')">保存并可用</el-button>
         </div>
     </div>
-    <SelectVirtualProductModel v-model="dataInfo.showSelectVirtualProductModel" @saveData="saveSelectData" />
+    <SelectVirtualProductModel v-model="dataInfo.showSelectVirtualProductModel" :curryInfo="dataInfo.form.couponDetail"
+        @saveData="saveSelectData" />
 </template>
 <style scoped lang="scss">
 .virtualCardPackProduct-page {

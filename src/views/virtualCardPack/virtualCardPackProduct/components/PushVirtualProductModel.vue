@@ -84,6 +84,7 @@ const handleSubmit = () => {
             appIds: selectedPackageAppList,
             packageCodes: props.isBatch ? props.mulSelect.map((item: any) => item.packageCode) : [props.curryInfo.packageCode]
         }).then((res: any) => {
+            ElMessage.success('批量推送成功')
             emits('refresh')
             handleClose()
             resData.showResult = true
@@ -94,7 +95,7 @@ const handleSubmit = () => {
             appIds: selectedPackageAppList,
             packageCode: props.curryInfo.packageCode
         }).then(() => {
-            ElMessage.success(title.value + '成功')
+            ElMessage.success('操作成功')
             emits('refresh')
             handleClose()
         })

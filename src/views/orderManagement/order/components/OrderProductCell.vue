@@ -4,6 +4,7 @@ import { tabsStore } from '@/stores'
 import order_enum from '@/utils/constant/order'
 import ApplyRefundModel from '../../components/ApplyRefundModel.vue'
 import ApplyTallRefundModel from '../../components/ApplyTallRefundModel.vue'
+import VirtualRechargeModel from '../../components/VirtualRechargeModel.vue'
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
 
@@ -46,6 +47,7 @@ const applyRefundHandler = (row: any) => {
 const dataInfo = reactive({
   showApplyRefundModel: false,
   showApplyTallRefundModel: false,
+  showVirtualRechargeModel: false,
   curryInfo: null
 })
 
@@ -137,7 +139,7 @@ const retryHandler = (row: any) => {
     </div>
   </div>
   <div class="mb-8 mt-16" v-if="[107].includes(orderInfo?.channelSource)">
-    <h3>子商品信息</h3>
+    <h3 class="mb-8">子商品信息</h3>
     <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
       <el-table-column prop="skuName" label="子商品名称" show-overflow-tooltip>
       </el-table-column>
@@ -154,7 +156,7 @@ const retryHandler = (row: any) => {
       </el-table-column>
       <el-table-column prop="skuName" label="操作" v-if="['101', '201'].includes(getSystemOptionType)">
         <template #default="scope">
-          <el-button type="primary" link @click="retryHandler(scope.row)">重试</el-button>
+          <el-button type="primary" v-if="scope.row.status == -1" link @click="retryHandler(scope.row)">重试</el-button>
         </template>
       </el-table-column>
     </el-table>

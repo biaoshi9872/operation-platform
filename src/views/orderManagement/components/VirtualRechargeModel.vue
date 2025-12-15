@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import order_api from '@/api/order'
 import { cloneDeep } from 'lodash-es'
 interface IProp {
     curryInfo: any,
@@ -21,11 +22,11 @@ interface IData {
 }
 const data = reactive<IData>({
     formData: {
-        stockNum: ''
+        accountNo: ''
     },
     formDataBK: {},
     formRules: {
-        stockNum: [{ required: true, message: '请输入兑换账号', trigger: ['change', 'blur'] }],
+        accountNo: [{ required: true, message: '请输入兑换账号', trigger: ['change', 'blur'] }],
     },
     tableFromData: {},
     submitLoading: false,
@@ -38,7 +39,6 @@ const handleReset = () => {
 }
 const handleClose = () => {
     handleReset()
-    emits('refresh')
     emits('update:modelValue', false)
 }
 onMounted(() => {
@@ -48,20 +48,32 @@ const openHandler = () => {
     data.formData = {
         ...data.formDataBK
     }
+    data.formData.accountNo = props.curryInfo.accountNo
 }
 const handleSubmit = () => {
     formRef.value.validate().then(() => {
+        data.submitLoading = true
+        order_api.A_receiveCoupon({
+            ...data.formData,
+            couponKey: props.curryInfo.couponKey
+        }).then(() => {
+            emits('refresh')
+            handleClose()
+            ElMessage.success('操作成功')
+        }).finally(() => {
+            data.submitLoading = false
+        })
     })
 }
 </script>
 <template>
-    <el-dialog v-bind="$attrs" title="重试" class="dialog-m" append-to-body @open="openHandler" draggable destroy-on-close
+    <el-dialog v-bind="$attrs" title="重试" width="450" append-to-body @open="openHandler" draggable destroy-on-close
         :close-on-click-modal="false" @closed="handleReset">
         <div class="option">
             <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules"
                 label-position="right" label-width="100px">
-                <el-form-item label="兑换账号" prop="stockNum">
-                    <el-input v-model="data.formData.stockNum" placeholder="请输入兑换账号" />
+                <el-form-item label="兑换账号" prop="accountNo">
+                    <el-input class="w-300" v-model="data.formData.accountNo" placeholder="请输入兑换账号" />
                 </el-form-item>
             </el-form>
         </div>

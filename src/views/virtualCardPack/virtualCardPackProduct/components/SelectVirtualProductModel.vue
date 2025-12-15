@@ -4,8 +4,10 @@ import virtualCardPackProduct_api from '@/api/virtualCardPackProduct'
 import virtualCardPackProduct_enum from '@/utils/constant/virtualCardPackProduct'
 import pageHooks from '@/hooks/pageListHooks'
 import { IPage } from '@/types/from-types'
+import { ElMessage } from 'element-plus'
+import { nextTick } from 'vue'
 interface IProp {
-    curryInfo: any,
+    curryInfo?: any,
 }
 const props = withDefaults(defineProps<IProp>(), {
     curryInfo: {}
@@ -33,6 +35,7 @@ const dataPage: IPage<any, any> = reactive({
     selectPage: virtualCardPackProduct_api.A_couponAndVp,
 })
 const { searchQuery, toDownloadCenter, downloadFile } = pageHooks(dataPage)
+const tableRef = ref<any>()
 const handleReset = () => {
     emits('update:modelValue', false)
 }
@@ -48,7 +51,11 @@ const openHandler = () => {
     dataPage.facade = {
         ...dataPage.facade
     }
-    dataPage.selectData = []
+    const initial = Array.isArray(props.curryInfo) ? props.curryInfo : []
+    dataPage.selectData = initial.map((row: any) => ({
+        ...row,
+        goodsNum: Number(row?.goodsNum) || 1
+    }))
     dataPage.multipleSelection = []
     searchQueryHarder()
 }
@@ -60,10 +67,49 @@ const handleSelectionChange = (val: any) => {
     dataPage.multipleSelection = val
     val.forEach((item: any) => {
         if (dataPage.selectData.findIndex((i: any) => i.skuCode === item.skuCode) === -1) {
-            dataPage.selectData.push({
-                ...item,
-                goodsNum: 1
-            })
+            if (dataPage.selectData.length >= 50) {
+                ElMessage.warning('最多可选择50条')
+                tableRef.value?.multipleTableRef?.toggleRowSelection(item, false)
+            } else {
+                dataPage.selectData.push({
+                    ...item,
+                    goodsNum: 1
+                })
+            }
+        }
+    })
+}
+const handleRowSelect = (selection: any[], row: any) => {
+    const isSelected = selection.some((i: any) => i.skuCode === row.skuCode)
+    const existsIdx = dataPage.selectData.findIndex((i: any) => i.skuCode === row.skuCode)
+    if (isSelected) {
+        if (existsIdx === -1) {
+            if (dataPage.selectData.length >= 50) {
+                ElMessage.warning('最多可选择50条')
+                tableRef.value?.multipleTableRef?.toggleRowSelection(row, false)
+                return
+            }
+            dataPage.selectData.push({ ...row, goodsNum: 1 })
+        }
+    } else {
+        if (existsIdx !== -1) {
+            dataPage.selectData.splice(existsIdx, 1)
+        }
+    }
+}
+const handleSelectAll = (selection: any[]) => {
+    if (!selection.length) {
+        const currentKeys = new Set(dataPage.dataList.map((r: any) => r.skuCode))
+        dataPage.selectData = dataPage.selectData.filter((i: any) => !currentKeys.has(i.skuCode))
+        return
+    }
+    const remaining = 50 - dataPage.selectData.length
+    const toAdd = selection.filter((r: any) => dataPage.selectData.findIndex((i: any) => i.skuCode === r.skuCode) === -1)
+    toAdd.forEach((row: any, idx: number) => {
+        if (idx < remaining) {
+            dataPage.selectData.push({ ...row, goodsNum: 1 })
+        } else {
+            tableRef.value?.multipleTableRef?.toggleRowSelection(row, false)
         }
     })
 }
@@ -73,12 +119,28 @@ const getQueryParams = () => {
 }
 const searchQueryHarder = () => {
     const obj = getQueryParams()
-    searchQuery(obj)
+    searchQuery(obj, () => {
+        nextTick(() => {
+            syncTableSelectionWithSelectData()
+        })
+    })
+}
+const syncTableSelectionWithSelectData = () => {
+    if (!tableRef.value?.multipleTableRef) return
+    const table = tableRef.value.multipleTableRef
+    dataPage.dataList.forEach((row: any) => {
+        const checked = dataPage.selectData.findIndex((i: any) => i.skuCode === row.skuCode) !== -1
+        table.toggleRowSelection(row, checked)
+    })
 }
 const deleteSelectData = (row: any) => {
     const index = dataPage.selectData.findIndex((item: any) => item.skuCode === row.skuCode)
     if (index !== -1) {
         dataPage.selectData.splice(index, 1)
+    }
+    const inPage = dataPage.dataList.find((item: any) => item.skuCode === row.skuCode)
+    if (inPage) {
+        tableRef.value?.multipleTableRef?.toggleRowSelection(inPage, false)
     }
 }
 </script>
@@ -103,10 +165,11 @@ const deleteSelectData = (row: any) => {
             </SearchForm>
             <div class="content">
                 <div class="content-table-left">
-                    <h3 class="mb-8 color-red">您已选择{{ dataPage.multipleSelection.length }}个商品</h3>
+                    <h3 class="mb-8 color-red">您已选择{{ dataPage.selectData.length }}个商品</h3>
                     <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" :loading="dataPage.loadingData"
-                        @pagingQuery="searchQueryHarder" rowKey="skuCode" max-height="400px"
-                        @selection-change="handleSelectionChange">
+                        @pagingQuery="searchQueryHarder" rowKey="skuCode" max-height="400px" ref="tableRef"
+                        reserve-selection @selection-change="handleSelectionChange" @select="handleRowSelect"
+                        @select-all="handleSelectAll">
                         <el-table-column type="selection" width="55px"></el-table-column>
                         <el-table-column label="商品名称" prop="skuName" width="200px"
                             :show-overflow-tooltip="true"></el-table-column>
