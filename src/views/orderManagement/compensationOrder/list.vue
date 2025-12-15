@@ -292,8 +292,8 @@ const initColumns = () => {
             @search="searchQueryHarder">
             <el-form-item label="赔付类型" class="formItem">
                 <el-select v-model="dataPage.facade.afterSaleTypeList" multiple placeholder="请选择赔付类型" clearable>
-                    <el-option label="运费赔付" value="11"></el-option>
-                    <el-option label="品质赔付" value="12"></el-option>
+                    <el-option v-for="item in order_enum.AfterSalesPfType" :key="item.value" :label="item.label"
+                        :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="赔付状态" class="formItem">

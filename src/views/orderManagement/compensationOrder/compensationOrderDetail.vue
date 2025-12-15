@@ -108,14 +108,20 @@ const confirmArrival = () => {
 </script>
 <template>
     <div class="process-edit">
-        <CardModel v-if="dataPage.detail.compensateConfirmStatus == 1" v-auth="{ authKey: 'ORDER_QRDZ_PF' }"
-            iconName="menu-order">
+        <CardModel v-if="dataPage.detail.compensateConfirmStatus == 1" v-auth="{ authKey: 'ORDER_QRDZ_PF' }">
             <AuthButton type="primary" @click="confirmArrival">确认已到账</AuthButton>
         </CardModel>
-        <CardModel iconName="menu-order">
+        <CardModel>
             <OrderStateNode></OrderStateNode>
         </CardModel>
-        <CardModel iconName="menu-order" :title="`${statusName}`">
+        <CardModel>
+            <template #option>
+                <div class="status-container">
+                    <span><svg-icon name="menu-order" class="fs-20" /> {{
+                        `赔付状态:${order_enum.getAfter_order_statesTitle(dataPage.detail.status + '')}` }}</span>
+                    <span> {{ `赔付类型：${order_enum.getAfterSalesPfTypeTitle(dataPage.detail.afterSaleType)}` }}</span>
+                </div>
+            </template>
             <OrderInfoCell :orderInfo="dataPage.detail"></OrderInfoCell>
         </CardModel>
         <CardModel title="赔付信息">
@@ -146,4 +152,12 @@ const confirmArrival = () => {
 
 
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.status-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 46px;
+    margin-left: 0 !important;
+    color: #999;
+}
+</style>

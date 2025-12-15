@@ -3,11 +3,11 @@ class order_enum extends baseEnum {
   public AfterSalesPfType = [
     {
       value: '11',
-      label: '运费赔付'
+      label: '退运费赔付'
     },
     {
       value: '12',
-      label: '品质赔付'
+      label: '品质退赔付'
     }
   ]
   /**
