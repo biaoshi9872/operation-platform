@@ -207,7 +207,7 @@ const isUploadVoucherRequired: any = computed(() => {
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="赔付金额" props="refundAmount">
+                <el-form-item label="赔付金额" prop="refundAmount">
                     <el-input-number v-model="data.formData.refundAmount" :precision="2" :min="0" :controls="false"
                         :max="1000" placeholder="请输入退款金额" />
                 </el-form-item>
