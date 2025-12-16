@@ -197,7 +197,7 @@ const initColumns = () => {
         align: 'center',
         prop: 'status',
         render: (row: any) => {
-            return h('div', order_enum.getAfter_order_statesTitle(row.status))
+            return h('div', order_enum.getAfter_compensation_order_statesTitle(row.status))
         }
     })
     columns.value.push({
@@ -298,7 +298,7 @@ const initColumns = () => {
             </el-form-item>
             <el-form-item label="赔付状态" class="formItem">
                 <SelectModel v-model.trim="dataPage.facade.statusList" placeholder="请选择赔付状态" :multiple="true"
-                    :selectList="order_enum.after_order_states"></SelectModel>
+                    :selectList="order_enum.after_compensation_order_states"></SelectModel>
             </el-form-item>
             <el-form-item label="申请时间" class="el-form-item-inputGroup">
                 <DatePickerRange v-model:start="dataPage.facade.applyTimeStart"

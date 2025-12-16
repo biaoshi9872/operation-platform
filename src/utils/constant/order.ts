@@ -198,6 +198,31 @@ class order_enum extends baseEnum {
       })?.label ?? '-'
     return label
   }
+
+  /**
+   * 售后状态
+   */
+  public after_compensation_order_states = [
+    {
+      value: '1',
+      label: '审核中'
+    },
+    {
+      value: '2',
+      label: '已拒绝 '
+    },
+    {
+      value: '4',
+      label: '已完成 '
+    }
+  ]
+  public getAfter_compensation_order_statesTitle(key: string) {
+    return (
+      this.after_compensation_order_states.find((item: any) => {
+        return item.value == key
+      })?.label || '未申请售后'
+    )
+  }
 }
 
 export default new order_enum()
