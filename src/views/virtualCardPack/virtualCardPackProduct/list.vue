@@ -45,7 +45,7 @@ const dataPage: IPage<any, any> = reactive({
     isBatch: false,
     mulSelect: [],
     multipleList: [],
-    toDownloadCenterApi: null,
+    toDownloadCenterApi: virtualCardPackProduct_api.A_packageExport,
     selectPage: virtualCardPackProduct_api.A_page,
 })
 const { searchQuery, toDownloadCenter, downloadFile, handleSelectionChange } = pageHooks(dataPage)
@@ -57,10 +57,6 @@ const getQueryParams = () => {
 const searchQueryHarder = () => {
     const obj = getQueryParams()
     searchQuery(obj)
-}
-
-const handlePush = (row?: any) => {
-    dataPage.showPushVirtualProductModel = true
 }
 
 // 编辑处理函数

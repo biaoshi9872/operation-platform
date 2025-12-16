@@ -121,5 +121,12 @@ class virtualCardPackProduct_api {
       data
     })
   }
+  A_packageExport(data: any) {
+    return request<any>({
+      url: '/export/goods/packageExport',
+      method: 'post',
+      data
+    })
+  }
 }
 export default new virtualCardPackProduct_api()

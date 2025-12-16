@@ -44,7 +44,11 @@ const getOrderDetail = () => {
             ...res
         }
         dataPage.activeName = 0
-        getOrderLogistic()
+        //不需要显示物流
+        if (![107].includes(dataPage.detailInfo.channelSource)) {
+            getOrderLogistic()
+        }
+
     })
 }
 
@@ -75,7 +79,7 @@ const stateTitle = computed(() => {
             <div class="item">
                 <span class="item_title">产品属性:</span>
                 <span class="item_value">{{ goodPoor_enum.getVpProductTypeNameByKey(item.productType)
-                    }}</span>
+                }}</span>
             </div>
             <div class="item">
                 <span class="item_title">券码:</span>

@@ -2,9 +2,9 @@
 defineOptions({ name: 'CardModel' })
 
 interface IProp {
-  title: string
-  iconName: string
-  type: 'warning' | 'info' | 'success' | 'error'
+  title?: string
+  iconName?: string
+  type?: 'warning' | 'info' | 'success' | 'error'
 }
 const props = withDefaults(defineProps<IProp>(), {
   title: '',

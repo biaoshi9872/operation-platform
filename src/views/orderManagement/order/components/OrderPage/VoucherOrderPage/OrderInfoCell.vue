@@ -15,23 +15,17 @@ const emits = defineEmits<{
 
 const FIELDS = computed(() => {
   let arr = []
-  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
-    arr.push({
-      label: '订单编号',
-      prop: 'orderNo'
-    })
-  }
   arr.push({
-    label: getSystemOptionType.value == 401 ? '订单编号' : '供应商订单编号',
+    label: '订单编号',
+    prop: 'orderNo'
+  })
+  arr.push({
+    label: '供应商订单编号',
     prop: 'channelOrderNo'
   })
   arr.push({
     label: '第三方订单编号',
     prop: 'thirdOrderNo'
-  })
-  arr.push({
-    label: '电商订单编号(子单)',
-    prop: 'outTradeNo'
   })
   arr.push({
     label: '提交订单时间',
@@ -41,20 +35,9 @@ const FIELDS = computed(() => {
     label: '确认下单时间',
     prop: 'confirmTime'
   })
-  if (props.orderBaseInfo.delayStatus == 2 && !['401'].includes(getSystemOptionType.value)) {
-    arr.push({
-      label: '延迟时间',
-      prop: 'delayTime',
-      unit: "分钟"
-    })
-  }
   arr.push({
-    label: '下单人',
-    prop: 'buyer'
-  })
-  arr.push({
-    label: '下单人手机号',
-    prop: 'buyerPhone'
+    label: '券码',
+    prop: 'packageKey'
   })
   return arr
 })

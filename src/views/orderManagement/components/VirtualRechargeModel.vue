@@ -48,7 +48,7 @@ const openHandler = () => {
     data.formData = {
         ...data.formDataBK
     }
-    data.formData.accountNo = props.curryInfo.accountNo
+    data.formData.accountNo = props.curryInfo.userAuthCode
 }
 const handleSubmit = () => {
     formRef.value.validate().then(() => {

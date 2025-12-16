@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
-import { tabsStore } from '@/stores'
 import order_enum from '@/utils/constant/order'
-import ApplyRefundModel from '../../components/ApplyRefundModel.vue'
-import ApplyTallRefundModel from '../../components/ApplyTallRefundModel.vue'
+import virtualCardPackProduct_enum from '@/utils/constant/virtualCardPackProduct'
+import VirtualRechargeModel from '../../../../components/virtualRechargeModel.vue'
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
-const tabsStoreInfo: any = tabsStore()
 
 interface IProp {
   orderInfo: any
@@ -23,33 +21,46 @@ const goodsTotal = computed(() => {
   return props.goodsVOList?.length || 0
 })
 
-const goToDetailHandler = (row: any) => {
-  tabsStoreInfo.reload({
-    path: '/orderManagement/afterSaleOrder/afterSaleOrderDetail',
-    query: {
-      afterSaleNo: row.afterSaleNo
-    }
-  })
-}
 
 const goodsList = computed(() => {
-  return props.goodsVOList || []
+  let list: any = []
+  props.goodsVOList.forEach((item: any) => {
+    let arr = aggregate(item.goodsCouponInfo)
+    item.children = arr
+    list.push(item)
+  })
+  return list || []
 })
 
-const applyRefundHandler = (row: any) => {
-  dataInfo.curryInfo = row
-  if (props.orderInfo?.channelSource == 63) {
-    dataInfo.showApplyTallRefundModel = true
-  } else {
-    dataInfo.showApplyRefundModel = true
+const aggregate = (list: any) => {
+  const map: any = {};
+  for (const item of list) {
+    const k = item.couponSkuCode;
+    if (!map[k]) {
+      map[k] = { skuCode: k, skuName: item.couponSkuName, count: 0, tax: item.taxRate, invoiceType: item.invoiceType };
+    }
+    map[k].count += 1;
   }
-}
+  return Object.values(map).map((item: any) => {
+    return {
+      ...item,
+      skuName: item.skuName + ' * ' + item.count,
+      children: [],
+      hasChildren: false
+    }
+  });
+};
 
 const dataInfo = reactive({
-  showApplyRefundModel: false,
-  showApplyTallRefundModel: false,
+  showVirtualRechargeModel: false,
   curryInfo: null
 })
+
+const retryHandler = (row: any) => {
+  dataInfo.curryInfo = row
+  dataInfo.showVirtualRechargeModel = true
+}
+
 
 </script>
 
@@ -63,11 +74,13 @@ const dataInfo = reactive({
               comboNumName="singleComboNum" width="100%" :goodDetail="row"></SkuDetail>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="规格" width="150">
+        <el-table-column prop="date" label="规格" min-width="200">
           <template #default="{ row }">
-            <AttributeModule :row="row" :parentRow="row" comboNumName="singleComboNum"
-              :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2">
-            </AttributeModule>
+            <div class="flex flex-col ">
+              <div v-for="item in row.species">
+                {{ item }}
+              </div>
+            </div>
           </template>
         </el-table-column>
         <el-table-column v-if="!isFromOrgLast" prop="platformPurchasePrice" min-width="130" label="平台成本">
@@ -107,15 +120,6 @@ const dataInfo = reactive({
             <span>{{ order_enum.getAfterSalesTypeTitle(row.afterSaleType) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="right">
-          <template #default="{ row }">
-            <AuthButton authKey="ORDER_SQSH" v-if="![1, 4].includes(row?.afterSaleStatus) && ![0, 4, 5, -1].includes(orderInfo?.orderBaseInfo?.orderStatus)
-              && ![104, 105, 106].includes(orderInfo?.channelSource)" type="text" @click="applyRefundHandler(row)">申请售后
-            </AuthButton>
-            <el-button v-if="row.afterSaleNo && ![-1, -2].includes(row?.afterSaleStatus)" class="ml-12" type="text"
-              @click="goToDetailHandler(row)">查看售后详情</el-button>
-          </template>
-        </el-table-column>
       </el-table>
     </div>
     <div class="footer cell_content_box mt8">
@@ -133,18 +137,52 @@ const dataInfo = reactive({
       </div>
     </div>
   </div>
-  <div class="mt-16 table_container">
-    <h3 class="mb-8">商品财务信息</h3>
-    <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
-      <YbtTableColumn prop="skuName" label="商品名称" show-overflow-tooltip>
-      </YbtTableColumn>
-      <el-table-column prop="date" label="规格" width="150">
-        <template #default="{ row }">
-          <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row"
-            :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2"></AttributeModule>
+  <div class="mb-8 mt-16">
+    <h3 class="mb-8">子商品信息</h3>
+    <el-table style="width: 100%" row-key="rowKey" :data="orderInfo.goodsCouponInfo" border max-height="400">
+      <el-table-column prop="couponSkuName" label="子商品名称" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="couponSkuCode" label="商品编码" width="200">
+      </el-table-column>
+      <el-table-column prop="couponKey" label="券ID">
+      </el-table-column>
+      <el-table-column prop="supplyOrderNo" label="供应商订单编号">
+      </el-table-column>
+      <el-table-column prop="skuName" label="兑换状态">
+        <template #default="scope">
+          <span>{{ virtualCardPackProduct_enum.getCouponStatusTitle(scope.row.status) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="skuCode" label="商品编码">
+      <el-table-column prop="errMsg" label="失败原因描述" show-overflow-tooltip
+        v-if="['101', '201'].includes(getSystemOptionType)">
+      </el-table-column>
+      <el-table-column prop="skuName" label="操作" v-if="['101', '201'].includes(getSystemOptionType)" width="100"
+        align="right">
+        <template #default="scope">
+          <el-button type="primary" v-if="scope.row.status == -1" link @click="retryHandler(scope.row)">重试</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+  <div class="mt-16 table_container">
+    <h3 class="mb-8">商品财务信息</h3>
+    <el-table style="width: 70%" row-key="rowKey" :data="goodsList" border
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" :default-expand-all="true">
+      <el-table-column prop="skuName" label="商品名称" :show-overflow-tooltip="true" min-width="150">
+      </el-table-column>
+      <el-table-column prop="date" label="规格" min-width="150">
+        <template #default="{ row }">
+          <div class="flex flex-col " v-if="row.species?.length">
+            <div v-for="item in row.species">
+              {{ item }}
+            </div>
+          </div>
+          <div v-else>
+            <span>-</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="skuCode" label="商品编码" min-width="150">
         <template #default="{ row }">
           <span>{{ row.skuCode ? row.skuCode : '/' }}</span>
         </template>
@@ -157,11 +195,9 @@ const dataInfo = reactive({
         }}</template>
       </el-table-column>
     </el-table>
-    <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">
-    </ApplyRefundModel>
-    <ApplyTallRefundModel v-model="dataInfo.showApplyTallRefundModel" :orderInfo="orderInfo"
+    <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
       :curryInfo="dataInfo.curryInfo">
-    </ApplyTallRefundModel>
+    </VirtualRechargeModel>
   </div>
 </template>
 

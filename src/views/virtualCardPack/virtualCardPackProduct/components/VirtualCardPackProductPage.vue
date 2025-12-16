@@ -52,9 +52,21 @@ const isEdit = computed(() => {
 
 // 保存数据
 const saveDataHandler = async (saveType: string) => {
+    if (dataInfo.form.couponDetail.length === 0) {
+        ElMessage.error('请至少添加一条子商品')
+        return
+    }
     if (!formRef.value) return
     try {
-        await formRef.value.validate()
+        if (saveType === '0') {
+            const res = await Promise.all([
+                formRef.value.validateField('packageName'),
+                formRef.value.validateField('categoryCode'),
+            ])
+            if (!res.every(item => item === true)) return
+        } else {
+            await formRef.value.validate()
+        }
         const payload: any = {
             ...dataInfo.form,
             saveType
@@ -139,7 +151,7 @@ const handleChange = (cur: number | undefined, prev: number | undefined) => {
                         <el-input placeholder="请输入礼包名称" v-model="dataInfo.form.packageName" maxlength="50"
                             show-word-limit></el-input>
                     </el-form-item>
-                    <el-form-item label="商品分类">
+                    <el-form-item label="商品分类" prop="categoryCode">
                         <ClassificationSelect class="w-full" source="vp" filterable clearable placeholder="请选择分类"
                             v-model:categoryCode="dataInfo.form.categoryCode">
                         </ClassificationSelect>

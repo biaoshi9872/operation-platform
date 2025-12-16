@@ -185,7 +185,8 @@ const toOrderDetailHandler = (row: any) => {
   tabsStoreInfo.reload({
     path: '/orderManagement/order/orderDetail',
     query: {
-      channelOrderNo: row.channelOrderNo
+      channelOrderNo: row.channelOrderNo,
+      source: row.channelSource
     }
   })
 }
