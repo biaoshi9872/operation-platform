@@ -2,7 +2,7 @@
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import order_enum from '@/utils/constant/order'
 import virtualCardPackProduct_enum from '@/utils/constant/virtualCardPackProduct'
-import VirtualRechargeModel from '../../../../components/virtualRechargeModel.vue'
+import VirtualRechargeModel from '../../../../components/VirtualRechargeModel.vue'
 const { isFromOrgLast, getSystemOptionType } = isStateCheckHooks()
 
 interface IProp {
