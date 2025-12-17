@@ -91,7 +91,7 @@ class virtualCardPackProduct_api {
       url: '/cate/tree',
       method: 'get',
       params: {
-        enable: 0,
+        enable: null,
         ...params
       }
     })
