@@ -2,7 +2,6 @@
 defineOptions({
     name: 'categoryProduct'
 })
-import { ElMessageBox, ElMessage } from 'element-plus'
 import virtualCardPackProduct_api from '@/api/virtualCardPackProduct'
 import ProductModal from './components/ProductModal.vue'
 

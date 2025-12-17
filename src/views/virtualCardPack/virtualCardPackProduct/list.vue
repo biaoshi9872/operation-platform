@@ -23,8 +23,8 @@ const dataPage: IPage<any, any> = reactive({
         skuCode: '',
         skuName: '',
         goodsAttr: null,
-        platformSupplyPriceMin: null,
-        platformSupplyPriceMax: null,
+        supplyPriceMin: null,
+        supplyPriceMax: null,
         markPriceMin: null,
         markPriceMax: null,
         expireDateMin: '',
@@ -156,9 +156,9 @@ const pushHandler = (row: any = null) => {
             </el-form-item>
             <el-form-item label="平台成本">
                 <div class="flex items-center gap-2">
-                    <el-input v-model.number="dataPage.facade.platformSupplyPriceMin" placeholder="最低价" />
+                    <el-input v-model.number="dataPage.facade.supplyPriceMin" placeholder="最低价" />
                     <span>-</span>
-                    <el-input v-model.number="dataPage.facade.platformSupplyPriceMax" placeholder="最高价" />
+                    <el-input v-model.number="dataPage.facade.supplyPriceMax" placeholder="最高价" />
                 </div>
             </el-form-item>
             <el-form-item label="商品状态">

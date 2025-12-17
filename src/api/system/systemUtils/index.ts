@@ -14,11 +14,26 @@ class systemUtils_api {
   /**
    * 分类
    */
-  A_category(params: any) {
+  /**
+   * 分类
+   */
+  async A_category(params: any) {
     let source = params.source || ''
     let api = '/cate/listAll'
     if (source === 'vp') {
       api = '/cate/tree'
+      const res = await request<any>({
+        url: api,
+        method: 'get',
+        params: {
+          enable: 1,
+          ...params
+        }
+      })
+      return new Promise((resolve, reject) => {
+        let categoryList = res || []
+        resolve({ categoryList })
+      })
     }
     return request<any>({
       url: api,
@@ -69,17 +84,6 @@ class systemUtils_api {
       url: '/order/deliver/update/express',
       method: 'post',
       data: data
-    })
-  }
-
-  /**
-   *
-   */
-  A_getProjectInfo(data: any) {
-    return request<any>({
-      url: '/sys/application/projectInfo',
-      method: 'get',
-      params: data
     })
   }
 }
