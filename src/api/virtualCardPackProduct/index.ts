@@ -90,7 +90,10 @@ class virtualCardPackProduct_api {
     return request<any>({
       url: '/cate/tree',
       method: 'get',
-      params
+      params: {
+        enable: 0,
+        ...params
+      }
     })
   }
   A_cateSave(data: any) {
