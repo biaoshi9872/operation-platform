@@ -143,11 +143,44 @@ class After_order_api {
   }
 
   /**
+   * 申请理赔退款补偿
+   */
+  A_applyRefundCompensate(data: { channelOrderNo: string; skuCode: string; type: number }) {
+    return request<any>({
+      url: '/afterSale/applyRefundCompensate',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
    * 新天猫售后预渲染
    */
-  A_afterSaleRender(data: { channelOrderNo: string; skuCode: string }) {
+  A_afterSaleRender(data: { channelOrderNo: string; skuCode: string; type: number }) {
     return request<any>({
       url: '/afterSale/afterSaleRender',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 理赔确认已到账
+   */
+  A_refundCompensateConfirm(data: any) {
+    return request<any>({
+      url: '/afterSale/refundCompensateConfirm',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 理赔节点
+   */
+  A_compensatePsrogress(data: any) {
+    return request<any>({
+      url: '/afterSale/compensate/progress',
       method: 'post',
       data: data
     })
