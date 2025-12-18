@@ -51,7 +51,7 @@ const init = () => {
 }
 const getDetail = (id: number) => {
   dataInfo.loading = true
-  announcement_api.A_detail({ id, linkId: props.linkId }).then((res: any) => {
+  announcement_api.A_detail({ id, linkId: props.linkId, type: props.source }).then((res: any) => {
     dataInfo.form = {
       id: res?.id ?? id,
       title: res?.title ?? '',
@@ -68,10 +68,17 @@ const handleSubmit = () => {
     dataInfo.loading = true
     try {
       if (props.type === 'add') {
-        await announcement_api.A_add({ title: dataInfo.form.title, content: dataInfo.form.content, linkId: props.linkId })
+        await announcement_api.A_add({
+          title: dataInfo.form.title, content: dataInfo.form.content, linkId:
+            props.linkId,
+          type: props.source
+        })
         ElMessage.success('新增成功')
       } else {
-        await announcement_api.A_update({ id: Number(dataInfo.form.id), title: dataInfo.form.title, content: dataInfo.form.content, linkId: props.linkId })
+        await announcement_api.A_update({
+          id: Number(dataInfo.form.id), title: dataInfo.form.title, content:
+            dataInfo.form.content, linkId: props.linkId, type: props.source
+        })
         ElMessage.success('编辑成功')
       }
       visible.value = false
@@ -123,3 +130,8 @@ const titleMap = {
     </template>
   </el-dialog>
 </template>
+<style lang="scss" scoped>
+::v-deep .table_model_box {
+  min-height: 0px !important;
+}
+</style>

@@ -6,7 +6,7 @@ class announcement_api {
    */
   A_page(data: API.T_GongGaoFenYeChaXunSearchForm) {
     return request<any>({
-      url: '/vsc/notice/pageList',
+      url: '/apiInterface/noticeList',
       method: 'post',
       data
     })
@@ -50,7 +50,7 @@ class announcement_api {
    */
   A_detail(data: API.T_GongGaoXiangQingChaXunRequest) {
     return request<API.T_GongGaoXiangQingResponses>({
-      url: '/vsc/notice/detail',
+      url: '/apiInterface/noticeDetail',
       method: 'post',
       data
     })
@@ -58,4 +58,3 @@ class announcement_api {
 }
 
 export default new announcement_api()
-

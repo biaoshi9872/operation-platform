@@ -4,7 +4,7 @@ import { IPage } from '@/types/from-types'
 import pageHooks from '@/hooks/pageListHooks'
 import announcement_api from '@/api/announcement'
 import AnnouncementEditDialog from './AnnouncementEditDialog.vue'
-
+import { ElMessageBox, ElMessage } from 'element-plus'
 const props = defineProps({
     curryInfo: {
         type: Object,
@@ -37,7 +37,7 @@ const { searchQuery, deleteItem } = pageHooks(dataPage)
 const getQueryParams = () => {
     const { page, facade } = dataPage
     let linkId = props.curryInfo?.id || 0
-    return { ...page, ...facade, linkId }
+    return { ...page, ...facade, linkId, type: props.type }
 }
 const searchQueryHarder = () => {
     const obj = getQueryParams()
@@ -63,7 +63,17 @@ const handleDetail = (row: any) => {
     dialogVisible.value = true
 }
 const handleDelete = (row: any) => {
-    deleteItem({ id: row.id, linkId: props.curryInfo?.id || 0 }, '提示', '确认是否删除该公告？')
+    // 
+    ElMessageBox.confirm('确认删除该记录吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(() => {
+        announcement_api.A_delete({ id: row.id, linkId: props.curryInfo?.id || 0, type: props.type }).then(() => {
+            ElMessage.success('删除成功')
+            searchQueryHarder()
+        })
+    })
 }
 
 defineExpose({
@@ -86,9 +96,9 @@ defineExpose({
                     v-model:end="dataPage.facade.publishTimeEnd"></DatePickerRange>
             </el-form-item>
         </SearchForm>
-        <div>
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" :dataPage="dataPage"
-                :loading="dataPage.loadingData" @pagingQuery="searchQueryHarder">
+        <div class="table-container">
+            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" :dataPage="dataPage" min-height="500px"
+                max-height="500px" :loading="dataPage.loadingData" @pagingQuery="searchQueryHarder">
                 <template #option>
                     <el-button type="primary" @click="handleAdd">{{ type === '1' ? '新增公告' : '版本更新' }} </el-button>
                 </template>
