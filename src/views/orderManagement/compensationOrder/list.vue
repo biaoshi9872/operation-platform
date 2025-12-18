@@ -353,7 +353,8 @@ const initColumns = () => {
         </OrderCustomTable>
         <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page"></CustomPagination>
     </PageContainer>
-    <ConfirmReceiptModel v-model="dataPage.showConfirmReceiptModel" :curryInfo="dataPage.curryInfo">
+    <ConfirmReceiptModel v-model="dataPage.showConfirmReceiptModel" :curryInfo="dataPage.curryInfo"
+        @refresh="searchQueryHarder">
     </ConfirmReceiptModel>
 </template>
 
