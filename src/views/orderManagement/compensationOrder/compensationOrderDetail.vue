@@ -147,7 +147,8 @@ const confirmArrival = () => {
             </el-timeline>
         </CardModel>
     </div>
-    <ConfirmReceiptModel v-model="dataPage.showConfirmReceipt" :curryInfo="dataPage.detail"></ConfirmReceiptModel>
+    <ConfirmReceiptModel v-model="dataPage.showConfirmReceipt" :curryInfo="dataPage.detail" @refresh="init">
+    </ConfirmReceiptModel>
 </template>
 
 
