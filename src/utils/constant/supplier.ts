@@ -66,7 +66,7 @@ class supplier_enum {
       label: '普票'
     },
     {
-      value: 0,
+      value: 3,
       label: '不开发票'
     }
   ]

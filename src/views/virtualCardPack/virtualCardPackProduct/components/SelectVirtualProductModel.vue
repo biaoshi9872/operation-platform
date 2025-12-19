@@ -54,7 +54,8 @@ const openHandler = () => {
     const initial = Array.isArray(props.curryInfo) ? props.curryInfo : []
     dataPage.selectData = initial.map((row: any) => ({
         ...row,
-        goodsNum: Number(row?.goodsNum) || 1
+        goodsNum: Number(row?.goodsNum) || 1,
+        rechargeType: row.goodsAttr
     }))
     dataPage.multipleSelection = []
     searchQueryHarder()
@@ -73,7 +74,8 @@ const handleSelectionChange = (val: any) => {
             } else {
                 dataPage.selectData.push({
                     ...item,
-                    goodsNum: 1
+                    goodsNum: 1,
+                    rechargeType: item.goodsAttr
                 })
             }
         }
@@ -89,7 +91,7 @@ const handleRowSelect = (selection: any[], row: any) => {
                 tableRef.value?.multipleTableRef?.toggleRowSelection(row, false)
                 return
             }
-            dataPage.selectData.push({ ...row, goodsNum: 1 })
+            dataPage.selectData.push({ ...row, goodsNum: 1, rechargeType: row.goodsAttr })
         }
     } else {
         if (existsIdx !== -1) {
@@ -107,7 +109,7 @@ const handleSelectAll = (selection: any[]) => {
     const toAdd = selection.filter((r: any) => dataPage.selectData.findIndex((i: any) => i.skuCode === r.skuCode) === -1)
     toAdd.forEach((row: any, idx: number) => {
         if (idx < remaining) {
-            dataPage.selectData.push({ ...row, goodsNum: 1 })
+            dataPage.selectData.push({ ...row, goodsNum: 1, rechargeType: row.goodsAttr })
         } else {
             tableRef.value?.multipleTableRef?.toggleRowSelection(row, false)
         }
@@ -184,7 +186,7 @@ const deleteSelectData = (row: any) => {
                         <el-table-column label="有效期" prop="expireDateMax" :show-overflow-tooltip="true">
                             <template #default="{ row }">{{ row.expireDateMax ?
                                 `${row.expireDateMin}至${row.expireDateMax}` : '-'
-                                }}</template>
+                            }}</template>
                         </el-table-column>
                         <el-table-column label="产品属性" prop="goodsAttr" :show-overflow-tooltip="true">
                             <template #default="scope">

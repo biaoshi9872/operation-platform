@@ -109,10 +109,9 @@ const title = computed(() => {
     }
 })
 const getPackageApp = async () => {
+    data.defaultCheckedKeys = []
     const res = await virtualCardPackProduct_api.A_getPackageApp()
     data.packageAppList = res
-    data.defaultCheckedKeys = []
-
     if (!props.isBatch && props.curryInfo.appNameList) {
         data.defaultCheckedKeys = props.curryInfo.appNameList?.map((item: any) => item.appId) || []
         data.selectedPackageAppList = [...data.defaultCheckedKeys]
@@ -149,10 +148,10 @@ const getResultDetailList = () => {
         destroy-on-close :close-on-click-modal="false" @closed="resData.showResult = false">
         <div class="result-container">
             <div class="item" :class="getItemClass(item)" v-for="item in resData.resultList">
-                <span>{{ item.appName }}:</span>
+                <span class="app-name" :title="item.appName">{{ item.appName }}:</span>
                 <span class="info">本次共选择推送{{ item.totalCount }}个商品</span>
-                <span>成功<span class="success">{{ item.successCount }}</span>条信息</span>
-                <span>失败<span class="fail">{{ item.failCount }}</span>条信息</span>
+                <span class="info">成功<span class="success">{{ item.successCount }}</span>条信息</span>
+                <span class="info">失败<span class="fail">{{ item.failCount }}</span>条信息</span>
             </div>
         </div>
         <template #footer>
@@ -194,12 +193,26 @@ const getResultDetailList = () => {
     border-left: 4px solid #dcdfe6;
     color: #606266;
 
+    .app-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .info {
+        flex-shrink: 0;
+    }
+
     .success {
         color: #67c23a;
+        flex-shrink: 0;
     }
 
     .fail {
         color: #f56c6c;
+        flex-shrink: 0;
     }
 }
 

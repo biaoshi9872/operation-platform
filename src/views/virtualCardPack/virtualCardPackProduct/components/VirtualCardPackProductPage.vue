@@ -181,7 +181,7 @@ const handleChange = (cur: number | undefined, prev: number | undefined) => {
                             </el-table-column>
                             <el-table-column label="产品属性">
                                 <template #default="scope">{{
-                                    virtualCardPackProductEnum.getGoodsAttrTitle(scope.row.goodsAttr) }}</template>
+                                    virtualCardPackProductEnum.getGoodsAttrTitle(scope.row.rechargeType) }}</template>
                             </el-table-column>
                             <el-table-column label="税点">
                                 <template #default="scope">

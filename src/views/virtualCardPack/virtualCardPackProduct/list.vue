@@ -29,8 +29,8 @@ const dataPage: IPage<any, any> = reactive({
         markPriceMax: null,
         expireDateMin: '',
         expireDateMax: '',
-        startDate: '',
-        endDate: '',
+        createDateMin: '',
+        createDateMax: '',
         pushStatus: null,
         operStatus: null
     },
@@ -169,7 +169,8 @@ const pushHandler = (row: any = null) => {
                 </el-select>
             </el-form-item>
             <el-form-item label="添加时间">
-                <DatePickerRange v-model:start="dataPage.facade.startDate" v-model:end="dataPage.facade.endDate" />
+                <DatePickerRange v-model:start="dataPage.facade.createDateMin"
+                    v-model:end="dataPage.facade.createDateMax" />
             </el-form-item>
             <el-form-item label="礼包市场价">
                 <div class="flex items-center gap-2">
