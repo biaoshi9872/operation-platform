@@ -37,6 +37,7 @@ interface IData {
         sendUserInfo: any,
         compensateProgressList: any[]
     },
+    showReasonFlag: boolean,
     showConfirmReceipt: boolean
 }
 
@@ -66,6 +67,7 @@ const dataPage = reactive<IData>({
         //理赔节点
         compensateProgressList: []
     },
+    showReasonFlag: false,
     showConfirmReceipt: false
 })
 
@@ -104,7 +106,9 @@ const statusName = computed(() => {
 const confirmArrival = () => {
     dataPage.showConfirmReceipt = true
 }
-
+const openHandler = () => {
+    dataPage.showReasonFlag = true
+}
 </script>
 <template>
     <div class="process-edit">
@@ -119,6 +123,8 @@ const confirmArrival = () => {
                 <div class="status-container">
                     <span><svg-icon name="menu-order" class="fs-20" /> {{
                         `赔付状态:${order_enum.getAfter_order_statesTitle(dataPage.detail.status + '')}` }}</span>
+                    <el-button v-if="['2', '3'].includes(String(dataPage.detail.status))" type="danger" link
+                        @click="openHandler">查看原因</el-button>
                     <span> {{ `赔付类型：${order_enum.getAfterSalesPfTypeTitle(dataPage.detail.afterSaleType)}` }}</span>
                 </div>
             </template>
@@ -129,7 +135,6 @@ const confirmArrival = () => {
         </CardModel>
         <CardModel title="赔付处理详情">
             <el-timeline style="max-width: 1000px" class="mt-24">
-
                 <el-timeline-item :timestamp="item.operationTime" placement="top" color='#0bbd87'
                     v-for="(item, index) in dataPage.detail.compensateProgressList" :key="index">
                     <div class="flex items-center gap-4 mb-12">
@@ -149,6 +154,29 @@ const confirmArrival = () => {
     </div>
     <ConfirmReceiptModel v-model="dataPage.showConfirmReceipt" :curryInfo="dataPage.detail" @refresh="init">
     </ConfirmReceiptModel>
+    <!--取消原因-->
+    <el-dialog v-model="dataPage.showReasonFlag" :title="dataPage.detail.status == '3' ? '取消原因' : '拒绝原因'" width="400px"
+        draggable destroy-on-close :close-on-click-modal="false" @closed="dataPage.showReasonFlag = false">
+        <div class="option">
+            <div class="flex mb-8">
+                <span class="w-100 text-right mr-4 desc_box">
+                    {{
+                        dataPage.detail.status == '3' ? '取消原因' : '拒绝原因'
+                    }}:
+                </span>
+                <span>
+                    {{
+                        dataPage.detail.status == '3' ? dataPage.detail.cancelReason : dataPage.detail.rejectReason
+                    }}
+                </span>
+            </div>
+        </div>
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button type="primary" @click="dataPage.showReasonFlag = false">知道了</el-button>
+            </div>
+        </template>
+    </el-dialog>
 </template>
 
 
