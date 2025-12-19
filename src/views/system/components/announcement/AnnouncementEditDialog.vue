@@ -20,12 +20,14 @@ const dataInfo = reactive({
   form: {
     id: null as null | number,
     title: '',
+    publisher: '',
     content: ''
   },
   loading: false
 })
 const rules = {
   title: [{ required: true, message: '请输入公告标题', trigger: 'blur' }],
+  publisher: [{ required: true, message: '请输入发布人', trigger: 'blur' }],
   content: [{ required: true, message: '请输入公告内容', trigger: 'blur' }]
 }
 const formRef = ref()
@@ -36,7 +38,7 @@ watch(visible, (val) => {
     init()
   } else {
     // clear form
-    dataInfo.form = { id: null, title: '', content: '' }
+    dataInfo.form = { id: null, title: '', publisher: '', content: '' }
     // reset validation
     nextTick(() => {
       formRef.value?.resetFields()
@@ -55,7 +57,8 @@ const getDetail = (id: number) => {
     dataInfo.form = {
       id: res?.id ?? id,
       title: res?.title ?? '',
-      content: res?.content ?? ''
+      content: res?.content ?? '',
+      publisher: res?.publisher ?? ''
     }
   }).finally(() => {
     dataInfo.loading = false
@@ -69,15 +72,14 @@ const handleSubmit = () => {
     try {
       if (props.type === 'add') {
         await announcement_api.A_add({
-          title: dataInfo.form.title, content: dataInfo.form.content, linkId:
+          ...dataInfo.form, linkId:
             props.linkId,
           type: props.source
         })
         ElMessage.success('新增成功')
       } else {
         await announcement_api.A_update({
-          id: Number(dataInfo.form.id), title: dataInfo.form.title, content:
-            dataInfo.form.content, linkId: props.linkId, type: props.source
+          id: Number(dataInfo.form.id), ...dataInfo.form, linkId: props.linkId, type: props.source
         })
         ElMessage.success('编辑成功')
       }
@@ -115,6 +117,10 @@ const titleMap = {
         <el-input v-model.trim="dataInfo.form.title" maxlength="100" show-word-limit :disabled="props.type === 'detail'"
           placeholder="请输入公告标题"></el-input>
       </el-form-item>
+      <el-form-item label="发布人" prop="publisher">
+        <el-input v-model.trim="dataInfo.form.publisher" maxlength="20" show-word-limit
+          :disabled="props.type === 'detail'" placeholder="请输入发布人"></el-input>
+      </el-form-item>
       <el-form-item label="内容" prop="content">
         <MyTinymce v-model="dataInfo.form.content" :disabled="props.type === 'detail'"
           :readonly="props.type === 'detail'" placeholder="请输入公告内容" :height="400" />
@@ -130,8 +136,4 @@ const titleMap = {
     </template>
   </el-dialog>
 </template>
-<style lang="scss" scoped>
-::v-deep .table_model_box {
-  min-height: 0px !important;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -37,7 +37,7 @@ const FIELDS = computed(() => {
   })
   arr.push({
     label: '券码',
-    prop: 'packageKey'
+    prop: 'cardNo'
   })
   return arr
 })
