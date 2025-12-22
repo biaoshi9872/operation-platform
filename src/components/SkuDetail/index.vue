@@ -57,6 +57,7 @@ const imagesSrc = computed(() => {
 
 const bigImagesSrc = computed(() => {
   let url = props.goodDetail[props.customAttribute.url]?.split(',')?.[0]
+  url = url?.replace('/n1/', '/n0/')
   return url
 })
 
@@ -120,7 +121,7 @@ const linkClickHandler = () => {
     <div v-if="showOnlyTitle">
       <el-tooltip class="item" effect="dark" :content="goodDetail[customAttribute.name]" placement="top">
         <template #content>
-          <span v-if="!isShowTag">{{ goodDetail[customAttribute.name]}}</span>
+          <span v-if="!isShowTag">{{ goodDetail[customAttribute.name] }}</span>
           <div v-else>
             <AttributeModule :row="props.goodDetail" :comboNumName="comboNumName"></AttributeModule>
           </div>
@@ -131,15 +132,16 @@ const linkClickHandler = () => {
     <!-- 完整商品信息 -->
     <div v-else>
       <div class="sku-box" :style="{ width: width }">
-        <el-image class="image" :src="imagesSrc" fit="contain" @click="dialogVisible = true" :alt="imagesSrc?'加载失败':'暂无图片'">
+        <el-image class="image" :src="imagesSrc" fit="contain" @click="dialogVisible = true"
+          :alt="imagesSrc ? '加载失败' : '暂无图片'">
           <template #error>
-            <div class="image-slot">{{imagesSrc?'加载失败':'暂无图片'}}</div>
+            <div class="image-slot">{{ imagesSrc ? '加载失败' : '暂无图片' }}</div>
           </template>
         </el-image>
         <div class="title" :style="{ width: width }">
           <el-tooltip class="item" effect="dark" :content="goodDetail[customAttribute.name]" placement="top">
             <template v-if="openTooltip" #content>
-              <div class="good-name-box" v-if="!isShowTag">{{ goodDetail[customAttribute.name]}}</div>
+              <div class="good-name-box" v-if="!isShowTag">{{ goodDetail[customAttribute.name] }}</div>
               <div v-else>
                 <AttributeModule :row="props.goodDetail" :comboNumName="comboNumName"></AttributeModule>
               </div>
@@ -149,28 +151,27 @@ const linkClickHandler = () => {
           <div>
             <div class="color-#999 mt-4 tooltip" v-if="goodDetail[customAttribute.id]">
               商品编码:
-              <el-tooltip
-                class="item"
-                effect="dark"
-                :content="goodDetail[customAttribute.id]"
-                placement="top"
-              >{{ goodDetail[customAttribute.id] }}</el-tooltip>
+              <el-tooltip class="item" effect="dark" :content="goodDetail[customAttribute.id]" placement="top">{{
+                goodDetail[customAttribute.id] }}</el-tooltip>
             </div>
             <div class="color-#999 mt-4 tooltip" v-if="showExtraCode">
               商品辅助码:
-              <el-tooltip class="item" effect="dark" :content="goodDetail.extraCode" placement="top">{{ goodDetail.extraCode ||'-' }}</el-tooltip>
+              <el-tooltip class="item" effect="dark" :content="goodDetail.extraCode" placement="top">{{
+                goodDetail.extraCode
+                || '-' }}</el-tooltip>
             </div>
           </div>
         </div>
         <!-- 实现预览 -->
         <el-dialog v-model="dialogVisible" :append-to-body="true">
-          <img w-full :src="bigImagesSrc" :alt="bigImagesSrc?'加载失败':'暂无图片'" />
+          <img w-full :src="bigImagesSrc" :alt="bigImagesSrc ? '加载失败' : '暂无图片'" />
         </el-dialog>
       </div>
       <div v-if="showBrandName && goodDetail.brandName" class="color-#999 mt-4 brandBox">
         <div class="content w-160" ref="attributeRef1">
           品牌：
-          <el-tooltip class="item" effect="dark" :content="goodDetail.brandName" :disabled="!attribute1TooltipShow" placement="top">
+          <el-tooltip class="item" effect="dark" :content="goodDetail.brandName" :disabled="!attribute1TooltipShow"
+            placement="top">
             <span class="fs-12">{{ goodDetail.brandName || '测试' }}</span>
           </el-tooltip>
         </div>
@@ -188,6 +189,7 @@ const linkClickHandler = () => {
     height: 60px;
     flex-shrink: 0;
     object-fit: contain;
+
     // z-index: 9988;
     .image-slot {
       width: 100%;
