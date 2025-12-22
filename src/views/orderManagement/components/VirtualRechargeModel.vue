@@ -55,7 +55,7 @@ const handleSubmit = () => {
         data.submitLoading = true
         order_api.A_receiveCoupon({
             ...data.formData,
-            couponKey: props.curryInfo.couponKey
+            couponKey: props.curryInfo.couponKeyEncode
         }).then(() => {
             emits('refresh')
             handleClose()
