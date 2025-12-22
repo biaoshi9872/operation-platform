@@ -135,9 +135,6 @@ class order_api {
     return request({
       url: '/inner/coupon/receiveCoupon',
       method: 'post',
-      requestOptions: {
-        formData: true
-      },
       data: {
         isRetry: true,
         ...data
