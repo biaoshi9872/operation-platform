@@ -56,6 +56,16 @@ const saveDataHandler = async (saveType: string) => {
         ElMessage.error('请至少添加一条子商品')
         return
     }
+    const list = (dataInfo.form.couponDetail || []) as any[]
+    const invalids = list.filter((item: any) => {
+        const num = Number(item?.goodsNum)
+        return !Number.isFinite(num) || !Number.isInteger(num) || num < 1
+    })
+    if (invalids.length) {
+        const names = invalids.map((el: any, idx: number) => el?.skuName || `第${idx + 1}行`).join('、')
+        ElMessage.error(`请填写子商品数量（必须为整数且≥1）：${names}`)
+        return
+    }
     if (!formRef.value) return
     try {
         if (saveType === '0') {
