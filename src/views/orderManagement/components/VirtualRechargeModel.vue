@@ -4,9 +4,12 @@ import order_api from '@/api/order'
 import { cloneDeep } from 'lodash-es'
 interface IProp {
     curryInfo: any,
+    packageKey: string,
+    packageKey: string
 }
 const props = withDefaults(defineProps<IProp>(), {
-    curryInfo: {}
+    curryInfo: {},
+    packageKey: ''
 })
 const emits = defineEmits<{
     (e: 'update:modelValue', value: any): void
@@ -55,6 +58,7 @@ const handleSubmit = () => {
         data.submitLoading = true
         order_api.A_receiveCoupon({
             ...data.formData,
+            packageKey: props.packageKey,
             couponKey: props.curryInfo.couponKeyEncode
         }).then(() => {
             emits('refresh')

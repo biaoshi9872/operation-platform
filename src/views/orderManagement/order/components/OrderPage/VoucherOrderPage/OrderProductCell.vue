@@ -192,11 +192,11 @@ const retryHandler = (row: any) => {
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-        }}</template>
+          }}</template>
       </el-table-column>
     </el-table>
     <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
-      :curryInfo="dataInfo.curryInfo">
+      :curryInfo="dataInfo.curryInfo" :packageKey="orderInfo.orderBaseInfo.packageKey">
     </VirtualRechargeModel>
   </div>
 </template>
