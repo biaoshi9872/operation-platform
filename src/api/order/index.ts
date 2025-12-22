@@ -136,7 +136,7 @@ class order_api {
       url: '/inner/coupon/receiveCoupon',
       method: 'post',
       data: {
-        isRetry: true,
+        retry: true,
         ...data
       }
     })
