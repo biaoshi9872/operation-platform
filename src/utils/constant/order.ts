@@ -137,7 +137,8 @@ class order_enum extends baseEnum {
    */
   public C_invoiceTypeList = [
     { value: 1, label: '增值税普通发票' },
-    { value: 2, label: '增值税专用发票' }
+    { value: 2, label: '增值税专用发票' },
+    { value: 3, label: '无发票' }
   ]
   public getInvoiceListByType(key: string): any {
     if (key == '1') {

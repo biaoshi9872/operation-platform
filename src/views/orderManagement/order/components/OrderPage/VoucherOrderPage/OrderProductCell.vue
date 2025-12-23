@@ -24,15 +24,20 @@ const goodsTotal = computed(() => {
 
 const goodsList = computed(() => {
   let list: any = []
-  props.goodsVOList.forEach((item: any) => {
-    let arr = aggregate(item.goodsCouponInfo)
-    item.children = arr
-    list.push(item)
+  props.goodsVOList?.forEach((item: any) => {
+    const newItem = { ...item }
+    let arr = aggregate(item.goodsCouponInfo, newItem.rowKey)
+    newItem.children = arr
+    if (!arr || arr.length === 0) {
+      newItem.hasChildren = false
+    }
+    list.push(newItem)
   })
   return list || []
 })
 
-const aggregate = (list: any) => {
+const aggregate = (list: any, parentKey: any) => {
+  if (!list || !list.length) return []
   const map: any = {};
   for (const item of list) {
     const k = item.couponSkuCode;
@@ -41,11 +46,12 @@ const aggregate = (list: any) => {
     }
     map[k].count += 1;
   }
-  return Object.values(map).map((item: any) => {
+  return Object.values(map).map((item: any, index: number) => {
     return {
       ...item,
       skuName: item.skuName + ' * ' + item.count,
-      children: [],
+      rowKey: (parentKey ? parentKey + '_' : '') + (item.skuCode || 'child') + '_' + index,
+      children: undefined,
       hasChildren: false
     }
   });
