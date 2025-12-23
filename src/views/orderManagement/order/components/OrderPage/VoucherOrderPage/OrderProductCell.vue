@@ -20,7 +20,7 @@ const emits = defineEmits<{
 const goodsTotal = computed(() => {
   return props.goodsVOList?.length || 0
 })
-
+const searchQueryHandler = inject('searchQueryHandler', () => { })
 
 const goodsList = computed(() => {
   let list: any = []
@@ -202,7 +202,7 @@ const retryHandler = (row: any) => {
       </el-table-column>
     </el-table>
     <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
-      :curryInfo="dataInfo.curryInfo" :packageKey="orderInfo.orderBaseInfo.packageKey">
+      :curryInfo="dataInfo.curryInfo" :packageKey="orderInfo.orderBaseInfo.packageKey" @refresh="searchQueryHandler">
     </VirtualRechargeModel>
   </div>
 </template>
