@@ -130,6 +130,17 @@ class order_api {
       data: {}
     })
   }
+
+  A_receiveCoupon = (data: Object) => {
+    return request({
+      url: '/inner/coupon/receiveCoupon',
+      method: 'post',
+      data: {
+        retry: true,
+        ...data
+      }
+    })
+  }
 }
 
 export default new order_api()

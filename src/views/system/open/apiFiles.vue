@@ -2,6 +2,7 @@
 defineOptions({
     name: 'xxxx'
 })
+import AnnouncementDialog from '@/views/system/components/announcement/AnnouncementDialog.vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import AppFilesEditModel from './components/AppFilesEditModel.vue'
 import AppFadeModel from './components/AppFadeModel.vue'
@@ -15,6 +16,7 @@ const dataPage = reactive({
     nodeCurryInfo: null,
     treeList: [],
     tableData: [],
+    showAnnouncementDialog: false,
     type: 1
 })
 const addHandler = () => {
@@ -31,7 +33,10 @@ const appendHandler = (row: any) => {
     dataPage.curryInfo = row
     dataPage.showFlModel = true
 }
-
+const openAnnouncementDialog = (row: any) => {
+    dataPage.curryInfo = row
+    dataPage.showAnnouncementDialog = true
+}
 const removeHandler = (row: any) => {
     ElMessageBox.confirm('确定删除该目录吗？', '删除确认', {
         confirmButtonText: '确定',
@@ -144,6 +149,7 @@ const initData = () => {
                 <el-table-column prop="apiName" label="接口名称" />
                 <el-table-column label="操作" width="140" align="right">
                     <template #default="scope">
+                        <el-button type="primary" link @click="openAnnouncementDialog(scope.row)">版本更新</el-button>
                         <el-button type="primary" link @click="editApiHandler(scope.row)">编辑</el-button>
                         <el-button type="danger" link @click="deleteApiHandler(scope.row)">删除</el-button>
                     </template>
@@ -156,6 +162,8 @@ const initData = () => {
     <AppFilesEditModel v-model="dataPage.showAddModel" @refresh="getListByCateId"
         :nodeCurryInfo="dataPage.nodeCurryInfo" :curryInfo="dataPage.curryInfo">
     </AppFilesEditModel>
+    <AnnouncementDialog v-model:visible="dataPage.showAnnouncementDialog" :curryInfo="dataPage.curryInfo"
+        ref="announcementDialogRef"></AnnouncementDialog>
 </template>
 <style lang="scss" scoped>
 .api_box_box {

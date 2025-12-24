@@ -1,11 +1,13 @@
 <script setup lang="ts">
 interface IProp {
   orderBaseInfo: any
+  orderInfo: any
 }
 import isStateCheckHooks from '@/hooks/isStateCheckHooks';
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const props = withDefaults(defineProps<IProp>(), {
-  orderBaseInfo: {}
+  orderBaseInfo: {},
+  orderInfo: {}
 })
 const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void

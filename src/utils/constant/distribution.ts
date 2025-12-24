@@ -63,6 +63,10 @@ class distributionConstant {
     {
       label: '售后订单服务费退款',
       value: '5'
+    },
+    {
+      label: '理赔退款补偿',
+      value: '6'
     }
   ]
 

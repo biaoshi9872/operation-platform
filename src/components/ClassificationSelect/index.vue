@@ -23,6 +23,14 @@ const props = defineProps({
     thirdCateId: {
         type: String,
         default: ''
+    },
+    source: {
+        type: String,
+        default: ''
+    },
+    filedCategory: {
+        type: String,
+        default: 'categoryList'
     }
 })
 const emit = defineEmits(['update:modelValue', 'change', 'update:firstCateId', 'update:secondCateId', 'update:thirdCateId', 'update:categoryCode'])
@@ -52,8 +60,11 @@ const dataInfo = reactive({
 
 
 onMounted(() => {
-    systemUtils_api.A_category({}).then(res => {
-        dataInfo.categoryList = res.categoryList
+    systemUtils_api.A_category({
+        source: props.source
+    }).then(res => {
+        dataInfo.categoryList = res[props.filedCategory] || res || []
+
     })
 })
 </script>

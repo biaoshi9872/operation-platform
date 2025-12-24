@@ -88,7 +88,7 @@ onMounted(() => {
 //获取详情
 const getDetailInfo = () => {
     const { channelOrderNo, skuCode } = $useRote.query
-    channelOrderNo && after_order_api.A_preAfterOrderDetail({ channelOrderNo, skuCode }).then((res: any) => {
+    channelOrderNo && after_order_api.A_preAfterOrderDetail({ channelOrderNo, skuCode, type: 1 }).then((res: any) => {
         data.detailInfo = {
             ...data.detailInfo,
             ...res
@@ -142,7 +142,7 @@ const verifyHandler = () => {
                 <el-form-item label="售后类型" prop="afterSaleType">
                     <el-radio-group v-model="data.formData.afterSaleType" @change="changeHandler">
                         <el-radio v-for="(item, index) in order_enum.AfterSalesType" :label="item.value">{{ item.label
-                            }}</el-radio>
+                        }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item v-if="['4', '3', '2'].includes(data.formData.afterSaleType)" label="退款总金额">
@@ -155,7 +155,7 @@ const verifyHandler = () => {
                     </el-select>
                 </el-form-item>
                 <el-form-item label="上传凭证">
-                    <ImgUpload :limit="3" :maxSize="5" v-model="data.formData.reasonImages" :isArray="false"
+                    <ImgUpload :limit="5" :maxSize="5" v-model="data.formData.reasonImages" :isArray="false"
                         @verify="verifyHandler" :acceptList="['bmp', 'png', 'jpg', 'jpeg']"></ImgUpload>
                 </el-form-item>
                 <el-form-item label="说明" prop="reasonDescription">

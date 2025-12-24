@@ -91,6 +91,10 @@ const props = defineProps({
   type: {
     type: String,
     default: ''
+  },
+  maxLength: {
+    type: Number,
+    default: 2000
   }
 })
 const dataUrl = ref([''])
@@ -157,7 +161,8 @@ const state = reactive({
       input.setAttribute('accept', '.jpg,.png,.jpeg')
       input.click()
       input.onchange = function () {
-        const file = this.files[0]
+        const file = (this as HTMLInputElement).files?.[0]
+        if (!file) return
         files_api.A_upload({ file })
           .then((res: any) => {
             const url = res?.[0].ossUrl
@@ -196,9 +201,51 @@ const state = reactive({
       }
       return url
     },
-    paste_preprocess: function (plugin: any, args: any) {
-      console.log(args.content)
-      args.content = 'helloworld'
+    setup(editor: any) {
+      const isAllowedKey = (e: KeyboardEvent) => {
+        if (e.ctrlKey || e.metaKey) return true
+        const allowed = [
+          'Backspace',
+          'Delete',
+          'ArrowLeft',
+          'ArrowRight',
+          'ArrowUp',
+          'ArrowDown',
+          'Home',
+          'End',
+          'PageUp',
+          'PageDown',
+          'Tab',
+          'Escape',
+          'Enter'
+        ]
+        return allowed.includes(e.key)
+      }
+      const getTextLen = () => editor.getContent({ format: 'text' }).length
+      const overLimit = () => props.maxLength > 0 && getTextLen() >= props.maxLength
+
+      editor.on('keydown', (e: KeyboardEvent) => {
+        if (overLimit() && !isAllowedKey(e)) {
+          e.preventDefault()
+        }
+      })
+
+      editor.on('paste', (e: ClipboardEvent) => {
+        if (props.maxLength <= 0) return
+        const currentLen = getTextLen()
+        const pasteText = (e.clipboardData && e.clipboardData.getData('text')) || ''
+        if (currentLen >= props.maxLength) {
+          e.preventDefault()
+          return
+        }
+        if (currentLen + pasteText.length > props.maxLength) {
+          e.preventDefault()
+          const allowed = props.maxLength - currentLen
+          if (allowed > 0) {
+            editor.insertContent(pasteText.substring(0, allowed))
+          }
+        }
+      })
     }
   }
 })

@@ -35,6 +35,7 @@ const goToDetailHandler = (row: any) => {
 const goodsList = computed(() => {
   return props.goodsVOList || []
 })
+
 const applyRefundHandler = (row: any) => {
   dataInfo.curryInfo = row
   if (props.orderInfo?.channelSource == 63) {
@@ -43,6 +44,7 @@ const applyRefundHandler = (row: any) => {
     dataInfo.showApplyRefundModel = true
   }
 }
+
 const dataInfo = reactive({
   showApplyRefundModel: false,
   showApplyTallRefundModel: false,
@@ -64,7 +66,8 @@ const dataInfo = reactive({
         <el-table-column prop="date" label="规格" width="150">
           <template #default="{ row }">
             <AttributeModule :row="row" :parentRow="row" comboNumName="singleComboNum"
-              :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2"></AttributeModule>
+              :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2">
+            </AttributeModule>
           </template>
         </el-table-column>
         <el-table-column v-if="!isFromOrgLast" prop="platformPurchasePrice" min-width="130" label="平台成本">
