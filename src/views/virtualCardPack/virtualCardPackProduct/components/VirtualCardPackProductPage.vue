@@ -127,6 +127,7 @@ const addChildProduct = () => {
 
 const removeChildProduct = (index: number) => {
     dataInfo.form.couponDetail.splice(index, 1)
+    markPriceComputed()
 }
 const markPriceComputed = function () {
     const list = dataInfo.form.couponDetail as any[]
