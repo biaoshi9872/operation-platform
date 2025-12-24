@@ -119,6 +119,7 @@ const isDisabled = computed(() => {
 
 const saveSelectData = (val: any) => {
     dataInfo.form.couponDetail = val
+    markPriceComputed()
 }
 const addChildProduct = () => {
     dataInfo.showSelectVirtualProductModel = true
@@ -127,7 +128,14 @@ const addChildProduct = () => {
 const removeChildProduct = (index: number) => {
     dataInfo.form.couponDetail.splice(index, 1)
 }
-
+const markPriceComputed = function () {
+    const list = dataInfo.form.couponDetail as any[]
+    let totalPrice = list.reduce((acc, cur: any) => {
+        acc += (Number(cur?.faceValue) * Number(cur?.goodsNum) || 0)
+        return acc
+    }, 0)
+    dataInfo.form.markPrice = totalPrice.toFixed(2)
+}
 /**
  * 子商品数量
  */
@@ -203,13 +211,13 @@ const handleChange = (cur: number | undefined, prev: number | undefined) => {
                                     {{ supplier_enum.getInvoiceType(scope.row.invoiceType) }}
                                 </template>
                             </el-table-column>
-                            <el-table-column label="平台供应价">
+                            <el-table-column label="平台成本">
                                 <template #default="scope">{{ scope.row.supplyPrice }}</template>
                             </el-table-column>
                             <el-table-column label="数量">
                                 <template #default="scope">
                                     <el-input-number v-model="scope.row.goodsNum" :max="999999999" :min="1"
-                                        :precision="0" :controls="false" />
+                                        @change="markPriceComputed" :precision="0" :controls="false" />
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作" width="120px" align="right" v-if="!isDisabled">
