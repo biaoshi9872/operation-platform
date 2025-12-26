@@ -36,6 +36,7 @@ const data = reactive<IData>({
     projectType: '',
     isSupportMask: false,
     vpOderCallBackUrl: '',
+    vpOderVerificationCallBackUrl: '',
     developerEmail: '',
     developerPhone: ''
   },
@@ -289,21 +290,40 @@ const blurHandler = () => {
             <el-radio :value="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="虚拟下单回调地址" prop="vpOderCallBackUrl" :rules="data.formData.goodsSourceTypeCodeList?.includes(106) ? [{
-          required: true, message: '请输入虚拟下单回调地址', trigger: ['blur', 'change']
-        },
-        {
-          validator: (rule: any, value: any, callback: any) => {
-            if (value && !/^https?:\/\/.+/.test(value)) {
-              callback(new Error('回调地址必须以http://或https://开头'))
-            } else {
-              callback()
-            }
+        <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(106)" label="虚拟下单回调地址"
+          prop="vpOderCallBackUrl" :rules="[{
+            required: true, message: '请输入虚拟下单回调地址', trigger: ['blur', 'change']
           },
-          trigger: ['blur', 'change']
-        }
-        ] : []">
+          {
+            validator: (rule: any, value: any, callback: any) => {
+              if (value && !/^https?:\/\/.+/.test(value)) {
+                callback(new Error('回调地址必须以http://或https://开头'))
+              } else {
+                callback()
+              }
+            },
+            trigger: ['blur', 'change']
+          }
+          ]">
           <el-input v-model="data.formData.vpOderCallBackUrl" placeholder="请输入虚拟下单回调地址">
+          </el-input>
+        </el-form-item>
+        <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(106)" label="虚拟订单核销回调地址"
+          prop="vpOderVerificationCallBackUrl" :rules="[{
+            required: true, message: '请输入虚拟订单核销回调地址', trigger: ['blur', 'change']
+          },
+          {
+            validator: (rule: any, value: any, callback: any) => {
+              if (value && !/^https?:\/\/.+/.test(value)) {
+                callback(new Error('回调地址必须以http://或https://开头'))
+              } else {
+                callback()
+              }
+            },
+            trigger: ['blur', 'change']
+          }
+          ]">
+          <el-input v-model="data.formData.vpOderVerificationCallBackUrl" placeholder="请输入虚拟下单回调地址">
           </el-input>
         </el-form-item>
       </el-form>
