@@ -26,6 +26,7 @@ const dataInfo = reactive({
         receiveTimes: 1,
         remarks: '',
         markPrice: null,
+        packageType: null,
         couponDetail: []
     }
 })
@@ -37,6 +38,7 @@ const rules = {
     supplyPrice: [{ required: true, message: '请输入礼包价格', trigger: 'change' }],
     expireDateMin: [{ required: true, message: '请选择有效期开始', trigger: 'change' }],
     remarks: [{ required: true, message: '请输入礼包描述', trigger: 'change' }],
+    packageType: [{ required: true, message: '请选择礼包类型', trigger: 'change' }],
     markPrice: [{ required: true, message: '请输入礼包市场价', trigger: 'change' }],
     expireDateMax: [{ required: true, message: '请选择有效期结束', trigger: 'change' }],
     receiveTimes: [{ required: true, message: '请输入兑换规则', trigger: 'change' }]
@@ -156,6 +158,9 @@ const handleChange = (cur: number | undefined, prev: number | undefined) => {
         return
     }
 }
+const radioHandleChange = (val: any) => {
+    dataInfo.form.couponDetail = []
+}
 </script>
 <template>
     <div class="virtualCardPackProduct-page">
@@ -183,6 +188,14 @@ const handleChange = (cur: number | undefined, prev: number | undefined) => {
                     </el-form-item>
                     <el-form-item label="礼包描述" prop="remarks" class="description_box">
                         <MyTinymce v-model="dataInfo.form.remarks" :disabled="isDisabled" :maxLength="500"></MyTinymce>
+                    </el-form-item>
+                    <el-form-item label="礼包类型" prop="packageName">
+                        <el-radio-group v-model="dataInfo.form.packageType" @change="radioHandleChange">
+                            <el-radio v-for="item in virtualCardPackProductEnum.packageTypeList" :key="item.value"
+                                :label="item.value">{{
+                                    item.label }}</el-radio>
+                        </el-radio-group>
+
                     </el-form-item>
                 </el-card>
                 <el-card shadow="never" class="mb-8">
@@ -218,7 +231,8 @@ const handleChange = (cur: number | undefined, prev: number | undefined) => {
                             <el-table-column label="数量">
                                 <template #default="scope">
                                     <el-input-number v-model="scope.row.goodsNum" :max="999999999" :min="1"
-                                        @change="markPriceComputed" :precision="0" :controls="false" />
+                                        :disabled="dataInfo.form.packageType == '1'" @change="markPriceComputed"
+                                        :precision="0" :controls="false" />
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作" width="120px" align="right" v-if="!isDisabled">
@@ -229,7 +243,7 @@ const handleChange = (cur: number | undefined, prev: number | undefined) => {
                             </el-table-column>
                         </el-table>
                     </div>
-                    <el-form-item label="兑换规则" prop="receiveTimes">
+                    <el-form-item v-if="dataInfo.form.packageType == '0'" label="兑换规则" prop="receiveTimes">
                         <span class="mr-4">{{ selectLength }}选</span>
                         <el-input-number v-model="dataInfo.form.receiveTimes" :min="1" :precision="0" :controls="false"
                             @change="handleChange" />
@@ -259,7 +273,7 @@ const handleChange = (cur: number | undefined, prev: number | undefined) => {
         </div>
     </div>
     <SelectVirtualProductModel v-model="dataInfo.showSelectVirtualProductModel" :curryInfo="dataInfo.form.couponDetail"
-        @saveData="saveSelectData" />
+        :packageType="dataInfo.form.packageType" @saveData="saveSelectData" />
 </template>
 <style scoped lang="scss">
 .virtualCardPackProduct-page {

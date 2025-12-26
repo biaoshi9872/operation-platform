@@ -131,7 +131,7 @@ const afterSaleNumChangeHandler = (val: any) => {
                             :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item v-if="['4', '3', '2'].includes(data.formData.afterSaleType)" label="退款总金额">
+                <el-form-item v-if="['4', '3', '2'].includes(data.formData.afterSaleType)" label="预估退款总金额">
                     <span>￥{{ afterSaleAmount }}</span>
                 </el-form-item>
                 <el-form-item label="售后数量">

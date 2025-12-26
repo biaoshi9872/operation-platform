@@ -186,6 +186,13 @@ const pushHandler = (row: any = null) => {
                         :label="item.label" :value="item.value" />
                 </el-select>
             </el-form-item>
+            <el-form-item label="礼包类型">
+                <el-select v-model="dataPage.facade.pushStatus" placeholder="请选择礼包类型" clearable>
+                    <el-option value="" label="全部"></el-option>
+                    <el-option v-for="item in virtualCardPackProductEnum.packageTypeList" :key="item.value"
+                        :label="item.label" :value="item.value" />
+                </el-select>
+            </el-form-item>
         </SearchForm>
         <div class="option_box">
             <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
@@ -210,6 +217,11 @@ const pushHandler = (row: any = null) => {
                 <el-table-column label="商品状态" min-width="100px" align="left">
                     <template #default="scope">{{
                         virtualCardPackProductEnum.getGoodsStatusTitle(scope.row.packageStatus)
+                        || '-' }}</template>
+                </el-table-column>
+                <el-table-column label="礼包类型" min-width="100px" align="left">
+                    <template #default="scope">{{
+                        virtualCardPackProductEnum.getPackageTypeTitle(scope.row.packageType)
                         || '-' }}</template>
                 </el-table-column>
                 <el-table-column label="推送状态" min-width="100px" align="left">

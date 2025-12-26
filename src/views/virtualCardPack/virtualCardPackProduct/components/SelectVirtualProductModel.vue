@@ -8,9 +8,11 @@ import { ElMessage } from 'element-plus'
 import { nextTick } from 'vue'
 interface IProp {
     curryInfo?: any,
+    packageType: string
 }
 const props = withDefaults(defineProps<IProp>(), {
-    curryInfo: {}
+    curryInfo: {},
+    packageType: ''
 })
 const emits = defineEmits<{
     (e: 'update:modelValue', value: any): void
@@ -61,6 +63,12 @@ const openHandler = () => {
     searchQueryHarder()
 }
 const handleSubmit = () => {
+    if (props.packageType == '1') {
+        if (dataPage.selectData.length > 1) {
+            ElMessage.warning('最多可选择1条')
+            return
+        }
+    }
     handleClose()
     emits('saveData', dataPage.selectData)
 }
@@ -145,6 +153,19 @@ const deleteSelectData = (row: any) => {
         tableRef.value?.multipleTableRef?.toggleRowSelection(inPage, false)
     }
 }
+const selectable = (row: any) => {
+    if (props.packageType == '1') {
+        if (dataPage.selectData.length == 0) {
+            return true
+        } else if (dataPage.selectData.length == 1) {
+            return dataPage.selectData[0].skuCode === row.skuCode
+        } else {
+            return false
+        }
+    } else {
+        return dataPage.selectData.length <= 100
+    }
+}
 </script>
 <template>
     <el-dialog v-bind="$attrs" title="商品选择" width="1450px" append-to-body @open="openHandler" draggable destroy-on-close
@@ -172,7 +193,7 @@ const deleteSelectData = (row: any) => {
                         @pagingQuery="searchQueryHarder" rowKey="skuCode" max-height="400px" ref="tableRef"
                         reserve-selection @selection-change="handleSelectionChange" @select="handleRowSelect"
                         @select-all="handleSelectAll">
-                        <el-table-column type="selection" width="55px"></el-table-column>
+                        <el-table-column type="selection" width="55px" :selectable="selectable"></el-table-column>
                         <el-table-column label="商品名称" prop="skuName" width="200px"
                             :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column label="商品编码" prop="skuCode" :show-overflow-tooltip="true"></el-table-column>
@@ -205,7 +226,7 @@ const deleteSelectData = (row: any) => {
                         <el-table-column label="数量" prop="goodsNum" width="120px">
                             <template #default="scope">
                                 <el-input-number class="w-80" v-model="scope.row.goodsNum" :min="1" :max="999999999"
-                                    :precision="0" :controls="false"></el-input-number>
+                                    :disabled="packageType == '1'" :precision="0" :controls="false"></el-input-number>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作">

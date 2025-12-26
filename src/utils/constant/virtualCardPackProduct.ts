@@ -83,6 +83,20 @@ class virtualCardPackProduct_enum {
   public getCouponStatusTitle(value: any) {
     return this.couponStatusList.find(item => item.value == value)?.label || '--'
   }
+
+  public packageTypeList = [
+    {
+      value: 0,
+      label: '多商品组合礼包'
+    },
+    {
+      value: 1,
+      label: '单商品'
+    }
+  ]
+  public getPackageTypeTitle(value: any) {
+    return this.packageTypeList.find(item => item.value == value)?.label || '--'
+  }
 }
 
 export default new virtualCardPackProduct_enum()
