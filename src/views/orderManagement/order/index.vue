@@ -171,7 +171,7 @@ const orderTabs = ref([
 const orderTabsList = computed(() => {
   return orderTabs.value.filter((item: any) => {
     if (item.value == '4') {
-      return !['401'].includes(getSystemOptionType.value)
+      return !['401', '201', '20'].includes(getSystemOptionType.value)
     }
     return true
   })
