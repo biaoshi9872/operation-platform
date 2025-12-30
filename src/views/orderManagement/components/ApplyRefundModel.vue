@@ -117,7 +117,7 @@ const afterSaleNumChangeHandler = (val: any) => {
         <div class="option">
             <el-alert title="请按照与用户沟通的实际结果录入，默认返回方式为上门取件，取件地址为下单地址" class="mb-12" type="warning" :closable="false"
                 show-icon />
-            <el-form ref="formRef" :model="data.formData" label-suffix=":" label-position="right" label-width="100px"
+            <el-form ref="formRef" :model="data.formData" label-suffix=":" label-position="right" label-width="140px"
                 :rules="data.formRules">
                 <el-form-item label="售后类型" prop="afterSaleType">
                     <el-select v-model="data.formData.afterSaleType" class="w-400" @change="changeHandler">
