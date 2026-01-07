@@ -287,7 +287,7 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
           <el-input v-model.trim="data.formData.outSkuCode" placeholder="请输入外部商品编码" maxlength="100" show-word-limit
             clearable />
         </el-form-item>
-        <el-form-item label="积分比例" prop="jfRate">
+        <el-form-item label="积分比例">
           <template #label>
             <Tooltip content="请填写具体的数字，在第三方平台1元等于多少积分。">积分比例</Tooltip>
           </template>
