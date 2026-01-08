@@ -45,10 +45,11 @@ class apiFiles_api {
   /**
    * 通过分类查询接口
    */
-  A_listByCateId(id: any) {
+  A_listByCateId(data: any) {
     return request<API.T_TongGuoFenLeiChaXunJieKouResponses>({
-      url: `/apiInterface/listByCateId/${id}`,
-      method: 'post'
+      url: `/apiInterface/listByCateId`,
+      method: 'post',
+      data
     })
   }
 

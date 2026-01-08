@@ -39,6 +39,7 @@ const data = reactive<any>({
         reqSdk: '',
         "req": [],
         "res": [],
+        "isShow": 1,
         "sort": 0
     },
     json: '',
@@ -282,6 +283,14 @@ const handleCellClick = (row: any, column: any, cell: any, type: string) => {
                     </el-form-item>
                     <el-form-item label="功能描述" prop="description">
                         <MyTinymce v-model="data.formData.description"></MyTinymce>
+                    </el-form-item>
+                    <el-form-item label="是否显示" prop="isShow">
+                        <el-radio-group v-model="data.formData.isShow">
+                            <!-- works when >=2.6.0, recommended ✔️ not work when <2.6.0 ❌ -->
+                            <el-radio value="1">是</el-radio>
+                            <!-- works when <2.6.0, deprecated act as value when >=3.0.0 -->
+                            <el-radio label="0">否</el-radio>
+                        </el-radio-group>
                     </el-form-item>
                 </el-card>
 
