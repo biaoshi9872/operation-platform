@@ -245,7 +245,8 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
  * 项目类型
  */
 const customType = computed(() => {
-  return data.orgList.find((el: any) => el.id == data.formData.orgId)?.customType || '0'
+  debugger
+  return data.appList.find((el: any) => el.id == data.formData.appId)?.customType || '0'
 })
 
 </script>
