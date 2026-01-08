@@ -204,7 +204,7 @@ const blurHandler = () => {
     :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
       <el-form ref="formRef" :model="data.formData" label-suffix=":" :rules="data.formRules" label-position="right"
-        label-width="140px">
+        label-width="170px">
         <el-form-item label="分支机构" prop="orgId">
           <OrgSelect :disabled="props.curryInfo?.id" v-model="data.formData.orgId" :multiple="false"
             @change="changeHandler"></OrgSelect>
@@ -292,7 +292,7 @@ const blurHandler = () => {
         </el-form-item>
         <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(106)" label="虚拟下单回调地址"
           prop="vpOderCallBackUrl" :rules="[{
-            required: true, message: '请输入虚拟下单回调地址', trigger: ['blur', 'change']
+            required: false, message: '请输入虚拟下单回调地址', trigger: ['blur', 'change']
           },
           {
             validator: (rule: any, value: any, callback: any) => {
@@ -310,7 +310,7 @@ const blurHandler = () => {
         </el-form-item>
         <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(106)" label="虚拟订单核销回调地址"
           prop="vpOderVerificationCallBackUrl" :rules="[{
-            required: true, message: '请输入虚拟订单核销回调地址', trigger: ['blur', 'change']
+            required: false, message: '请输入虚拟订单核销回调地址', trigger: ['blur', 'change']
           },
           {
             validator: (rule: any, value: any, callback: any) => {

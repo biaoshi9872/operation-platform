@@ -42,6 +42,8 @@ const data = reactive<IData>({
     skuName: '',
     outSkuCode: '',
     outSkuName: '',
+    stockNum: null,
+    branchName: '',
     jfRate: undefined
   },
   formDataBK: {},
@@ -239,6 +241,12 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
     data.loading = false
   })
 }
+/**
+ * 项目类型
+ */
+const customType = computed(() => {
+  return data.orgList.find((el: any) => el.id == data.formData.orgId)?.customType || '0'
+})
 
 </script>
 <template>
@@ -294,6 +302,17 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
           <el-input-number v-model="data.formData.jfRate" :min="0" :max="99999999" :precision="2" :step="0.01"
             placeholder="请输入积分比例" />
         </el-form-item>
+        <!-- 定制类型 0:不定制 1:库存+分行名称-->
+        <template v-if="customType == 1">
+          <el-form-item label="分行名称">
+            <el-input v-model.trim="data.formData.branchName" placeholder="请输入分行名称" maxlength="100" show-word-limit
+              clearable />
+          </el-form-item>
+          <el-form-item label="库存">
+            <el-input-number v-model="data.formData.stockNum" :min="0" :max="99999999" :precision="0" :step="1"
+              placeholder="请输入库存" />
+          </el-form-item>
+        </template>
         <Auxiliary type="error">注意：填写外部商品名称和商品编码时，请务必填写客户平台真实准备的信息。填写错误，将影响业务正常运行！！</Auxiliary>
       </el-form>
     </div>
