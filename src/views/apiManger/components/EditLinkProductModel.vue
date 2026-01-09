@@ -44,7 +44,8 @@ const data = reactive<IData>({
     outSkuName: '',
     stockNum: null,
     branchName: '',
-    jfRate: undefined
+    jfRate: undefined,
+    saleAttr: ''
   },
   formDataBK: {},
   formRules: {
@@ -92,7 +93,8 @@ const openHandler = () => {
   if (props.curryInfo?.id) {
     data.formData = {
       ...data.formData,
-      ...props.curryInfo
+      ...props.curryInfo,
+      saleAttr: props.curryInfo?.originalSaleAttr || ''
     }
     const keys = Object.keys(data.formData)
     nextTick(() => {
@@ -153,7 +155,8 @@ const orgChangeHandler = (isInit: Boolean = false) => {
   if (!isInit) {
     data.formData.appId = undefined
     data.formData.goodsSourceId = undefined
-    data.formData.skuCode = null
+    data.formData.skuCode = 
+    
   }
   let orgId = systemOrgId.value
   getApplicationList(orgId)
@@ -176,7 +179,9 @@ const appChangeHandler = (isInit: Boolean = false) => {
  * @param val 
  */
 const changeGoods = (val: any) => {
-  data.formData.skuName = data.goodsList.find((el: any) => el.skuCode === val)?.skuName || ''
+  let item = data.goodsList.find((el: any) => el.skuCode === val)
+  data.formData.skuName = item?.skuName || ''
+  data.formData.saleAttr = item?.originalSaleAttr || ''
 }
 
 const goodTypeSizeChangeHandler = (val: any) => {
