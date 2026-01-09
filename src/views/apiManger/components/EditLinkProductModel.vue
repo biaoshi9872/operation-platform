@@ -155,8 +155,8 @@ const orgChangeHandler = (isInit: Boolean = false) => {
   if (!isInit) {
     data.formData.appId = undefined
     data.formData.goodsSourceId = undefined
-    data.formData.skuCode = 
-    
+    data.formData.skuCode = null
+
   }
   let orgId = systemOrgId.value
   getApplicationList(orgId)
@@ -181,6 +181,7 @@ const appChangeHandler = (isInit: Boolean = false) => {
 const changeGoods = (val: any) => {
   let item = data.goodsList.find((el: any) => el.skuCode === val)
   data.formData.skuName = item?.skuName || ''
+  debugger
   data.formData.saleAttr = item?.originalSaleAttr || ''
 }
 
