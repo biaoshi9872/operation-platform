@@ -38,7 +38,7 @@ const data = reactive<IData>({
     vpOderCallBackUrl: '',
     vpOderVerificationCallBackUrl: '',
     developerEmail: '',
-    isEncrypt:1,
+    isEncrypt: 1,
     developerPhone: ''
   },
   goodsTypeList: [],
@@ -291,6 +291,15 @@ const blurHandler = () => {
             <el-radio :value="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
+
+        <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(106)" label="虚拟下单回调是否加解密" prop="isEncrypt">
+          <el-radio-group v-model="data.formData.isEncrypt">
+            <!-- works when >=2.6.0, recommended ✔️ not work when <2.6.0 ❌ -->
+            <el-radio :value="1">是</el-radio>
+            <!-- works when <2.6.0, deprecated act as value when >=3.0.0 -->
+            <el-radio :value="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(106)" label="虚拟下单回调地址"
           prop="vpOderCallBackUrl" :rules="[{
             required: false, message: '请输入虚拟下单回调地址', trigger: ['blur', 'change']
@@ -327,14 +336,7 @@ const blurHandler = () => {
           <el-input v-model="data.formData.vpOderVerificationCallBackUrl" placeholder="请输入虚拟订单核销回调地址">
           </el-input>
         </el-form-item>
-        <el-form-item v-if="data.formData.goodsSourceTypeCodeList?.includes(106)" label="回调是否加解密" prop="isEncrypt">
-          <el-radio-group v-model="data.formData.isEncrypt">
-            <!-- works when >=2.6.0, recommended ✔️ not work when <2.6.0 ❌ -->
-            <el-radio :value="1">是</el-radio>
-            <!-- works when <2.6.0, deprecated act as value when >=3.0.0 -->
-            <el-radio :value="0">否</el-radio>
-          </el-radio-group>
-        </el-form-item>
+
       </el-form>
     </div>
     <template #footer>
