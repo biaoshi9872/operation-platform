@@ -55,13 +55,11 @@ class virtualCardPackProduct_api {
       data
     })
   }
-  A_getPackageApp() {
+  A_getPackageApp(data: any) {
     return request<any>({
       url: '/sys/application/packageApp',
       method: 'get',
-      requestOptions: {
-        formData: true
-      }
+      params: data
     })
   }
   A_push(data: API.T_ShuZiQuanYiLiBaoTuiSongRequest) {
