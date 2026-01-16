@@ -32,6 +32,16 @@ class bonusModel_api {
       data
     })
   }
+  A_getDetail(params: any) {
+    return request({
+      url: '/goods/coupon/detail',
+      method: 'post',
+      data: params,
+      requestOptions: {
+        formData: true
+      }
+    })
+  }
 }
 
 export default new bonusModel_api()

@@ -2,10 +2,9 @@
 defineOptions({
   name: 'ProductDetail'
 })
-import goodPood_api from '@/api/goodPool/index'
+import bonusModel_api from '@/api/bonusModel/index'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import goodPool_enum from '@/utils/constant/goodPoor'
-import { detailTransfer } from './BaseUtils'
 import PriceShowModel from '@/components/PriceModel/PriceShowModel.vue'
 const { isFromOrgLast } = isStateCheckHooks()
 
@@ -40,25 +39,18 @@ interface IData {
 
 const dataPage = reactive<any>({
   goodDetail: {
-    attributeName1: '',
-    attributeName2: '',
-    attributeValue1: '',
-    attributeValue2: '',
-    baseAttributeDto: [],
-    categoryCode: '',
-    categoryCodeName: '',
-    description: '',
-    images: '',
-    refundStatus: '',
-    taxPurchaseCost: null,
-    title: '',
-    unit: '',
-    unitName: '',
-    goodsBaseAttributeList: [],
-    bannerImages: [],
-    platformSupplyPrice: '',
-    platformCost: '',
-    markPrice: ''
+    "couponId": "2001586037526704129",
+    "couponName": "虚拟礼包直连",
+    "faceValue": 0.1,
+    "couponType": 4,
+    "status": 1,
+    "useDescription": "123",
+    "platform": 1,
+    "pushStatus": 1,
+    "supplyPrice": 0.2,
+    "stock": 0,
+    "expireDateMin": null,
+    "expireDateMax": null
   },
   attributeList: [],
   baseFromItemList: [],
@@ -68,15 +60,13 @@ const openHandler = () => {
   getProudestDetail()
 }
 const getProudestDetail = () => {
-  const skuCode = props.itemInfo.couponId
-  const goodsSourceType = props.productSource
+  const couponId = props.itemInfo.couponId
   dataPage.loading = true
-  const api = goodPood_api.A_details
-  api({ skuCode, goodsSourceType, ...props.itemInfo }).then((res: any) => {
-    let obj = detailTransfer(res, goodsSourceType)
+  const api = bonusModel_api.A_getDetail
+  api({ couponId }).then((res: any) => {
     dataPage.goodDetail = {
       ...dataPage.goodDetail,
-      ...obj
+      ...res
     }
     emits('update:show', true)
   }).catch(() => {
@@ -87,13 +77,7 @@ const getProudestDetail = () => {
 }
 //轮播图片
 const bannerImagesList = computed(() => {
-  let bannerImages = dataPage.goodDetail?.bannerImages || []
-  let list = bannerImages
-  if (dataPage.goodDetail.images) {
-    let arr = [dataPage.goodDetail.images]
-    list = bannerImages.concat(arr)
-  }
-  return list
+  return ['https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/images/20260116/130b6384cf2c48a88e04e81e77905b0f.jpg']
 })
 
 const value = computed({
@@ -125,47 +109,32 @@ const value = computed({
         </div>
         <div class="right">
           <div>
-            <h5 class="mb-16">{{ dataPage.goodDetail.title }} {{ dataPage.goodDetail.attributeValue1 }} {{
-              dataPage.goodDetail?.attributeValue2 }}
-            </h5>
+            <h3 class="mb-16">{{ dataPage.goodDetail.couponName }}
+            </h3>
             <div class="mb-16" v-if="!isFromOrgLast">
               平台成本：
               <span class="color-red ">
-                <PriceShowModel :showPriceSymbol="true" :value="dataPage.goodDetail.platformCost"></PriceShowModel>
-              </span>
-            </div>
-            <div class="mb-16">
-              平台供应价：
-              <span class="color-red ">
-                <PriceShowModel :showPriceSymbol="true" :value="dataPage.goodDetail.platformSupplyPrice">
-                </PriceShowModel>
-              </span>
-            </div>
-            <div v-if="type == 'myPool'" class="mb-16">
-              分销价：
-              <span class="color-red ">
-                <PriceShowModel :showPriceSymbol="true" :value="dataPage.goodDetail.retailPrice">
-                </PriceShowModel>
+                <PriceShowModel :showPriceSymbol="true" :value="dataPage.goodDetail.supplyPrice"></PriceShowModel>
               </span>
             </div>
             <div class="mb-16">
               市场价：
               <span class="color-red ">
-                <PriceShowModel :showPriceSymbol="true" :value="dataPage.goodDetail.markPrice"></PriceShowModel>
+                <PriceShowModel :showPriceSymbol="true" :value="dataPage.goodDetail.faceValue"></PriceShowModel>
               </span>
             </div>
             <div class="mb-16">
               商品分类：
-              <span>{{ dataPage.goodDetail.categoryCodeName }}</span>
+              <span>{{ dataPage.goodDetail.couponTypeName }}</span>
             </div>
             <div class="mb-16">
               商品来源：
-              <span>{{ goodPool_enum.getSourceTypeNameByKey(dataPage.goodDetail.source) }}</span>
+              <span>立减金</span>
             </div>
           </div>
         </div>
       </div>
-      <div class="summary" v-html="dataPage.goodDetail.description" />
+      <div class="summary" v-html="dataPage.goodDetail.useDescription" />
     </div>
   </el-drawer>
 </template>

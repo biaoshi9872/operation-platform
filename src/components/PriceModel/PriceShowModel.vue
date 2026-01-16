@@ -5,6 +5,10 @@ defineOptions({
 import MyDecimal from '@/utils/decimal'
 let SYS_PRICE_DIGIT = ref(2)
 let SYS_PERCENT_DIGIT = ref(2)
+onMounted(() => {
+
+})
+
 interface IProp {
   value: string
   type?: 'price' | 'percent'
