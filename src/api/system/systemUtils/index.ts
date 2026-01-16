@@ -34,6 +34,20 @@ class systemUtils_api {
         let categoryList = res || []
         resolve({ categoryList })
       })
+    } else if (source === 'bonusGoods') {
+      api = '/cate/coupon/listAll'
+      const res = await request<any>({
+        url: api,
+        method: 'get',
+        params: {
+          enable: 1,
+          ...params
+        }
+      })
+      return new Promise((resolve, reject) => {
+        let categoryList = res.categoryList || []
+        resolve({ categoryList })
+      })
     }
     return request<any>({
       url: api,
