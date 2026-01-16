@@ -170,7 +170,7 @@ class goodPoor_enum extends baseEnum {
     {
       label: '立减金',
       value: '108',
-      imageUrl: new URL('@/assets/images/poor/eqbg.png', import.meta.url).href
+      imageUrl: new URL('@/assets/images/poor/ljj.png', import.meta.url).href
     },
     {
       label: '渠道自营',

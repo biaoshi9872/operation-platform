@@ -3,19 +3,8 @@ defineOptions({
   name: 'PriceShowModel'
 })
 import MyDecimal from '@/utils/decimal'
-import useCacheHooks from '@/hooks/cacheHooks'
-const { getSystemConfigInfoByKey } = useCacheHooks()
 let SYS_PRICE_DIGIT = ref(2)
 let SYS_PERCENT_DIGIT = ref(2)
-onMounted(() => {
-  getSystemConfigInfoByKey('SYS_PRICE_DIGIT').then(res => {
-    SYS_PRICE_DIGIT.value = Number.parseInt(res?.paramValue || 2)
-  })
-  getSystemConfigInfoByKey('SYS_PERCENT_DIGIT').then(res => {
-    SYS_PERCENT_DIGIT.value = Number.parseInt(res?.paramValue || 2)
-  })
-})
-
 interface IProp {
   value: string
   type?: 'price' | 'percent'
@@ -43,10 +32,9 @@ const showPriceValue = computed(() => {
 </script>
 <template>
   <div class="inline-block">
-    <span v-if="showPriceSymbol && showPriceValue!='-'">¥</span>
-    {{showPriceValue}}
-    <span v-if="showPercentSymbol && showPriceValue!='-'">%</span>
+    <span v-if="showPriceSymbol && showPriceValue != '-'">¥</span>
+    {{ showPriceValue }}
+    <span v-if="showPercentSymbol && showPriceValue != '-'">%</span>
   </div>
 </template>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

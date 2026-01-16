@@ -15,3 +15,5 @@ class bonusModel_enum extends baseEnum {
     return this.goodsStatusList.find(item => item.value == value)?.label || '--'
   }
 }
+
+export default new bonusModel_enum()
