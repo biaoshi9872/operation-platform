@@ -46,7 +46,7 @@ const dataPage: IPage<any, any> = reactive({
     multipleList: [],
     showDetailModel: false,
     curryRow: {},
-    toDownloadCenterApi: null,//bonusModel_api.A_packageExport,
+    toDownloadCenterApi: bonusModel_api.A_export,
     selectPage: bonusModel_api.A_couponPage,
 })
 const { searchQuery, toDownloadCenter, downloadFile, handleSelectionChange } = pageHooks(dataPage)
@@ -138,7 +138,6 @@ const openDetail = (row: any = null) => {
         <div class="option_box">
             <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
                 :loading="dataPage.loadingData" row-key="id" @selection-change="handleSelectionChange">
-                uat-test-116
                 <template #option>
                     <el-button type="primary" @click="batchPushHandler"
                         :disabled="!dataPage.multipleList.length">批量推送</el-button>

@@ -13,39 +13,26 @@ const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
 }>()
 
-const FIELDS = computed(() => {
-  let arr = []
-  arr.push({
-    label: '商品名称',
-    prop: 'channelOrderNo'
-  })
-  arr.push({
-    label: '商品分类',
-    prop: 'thirdOrderNo'
-  })
-  arr.push({
-    label: '立减金平台',
-    prop: 'submitTime'
-  })
-  arr.push({
-    label: '批次有效期',
-    prop: 'confirmTime'
-  })
-  return arr
-})
 
-const getTitle = computed(() => {
-  return function (find: any) {
-    return props.orderBaseInfo[find.prop] || '-'
-  }
-})
 </script>
 
 <template>
   <div class="content_box">
-    <div class="item flex" v-for="(item, index) in FIELDS" :key="index">
-      <span class="item_title">{{ item.label }}:</span>
-      <span class="item_value">{{ getTitle(item) || '-' }} {{ item.unit || '' }}</span>
+    <div class="item flex">
+      <span class="item_title">商品名称:</span>
+      <span class="item_value"></span>
+    </div>
+    <div class="item flex">
+      <span class="item_title">商品分类:</span>
+      <span class="item_value"></span>
+    </div>
+    <div class="item flex">
+      <span class="item_title">立减金平台:</span>
+      <span class="item_value"></span>
+    </div>
+    <div class="item flex">
+      <span class="item_title">批次有效期:</span>
+      <span class="item_value"></span>
     </div>
   </div>
 </template>

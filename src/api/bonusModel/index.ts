@@ -42,6 +42,13 @@ class bonusModel_api {
       }
     })
   }
+  A_export(data: any) {
+    return request({
+      url: '/goods/coupon/export',
+      method: 'post',
+      data
+    })
+  }
 }
 
 export default new bonusModel_api()
