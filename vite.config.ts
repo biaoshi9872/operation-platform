@@ -13,10 +13,10 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 const chunksMap = ['element-plus', 'lodash-es', 'axios', 'vue-router', 'vuedraggable', 'vue3-json-viewer', '@ycb']
 
-const HOST = 'https://supply-test.ycb51.cn' // 测试环境
+//const HOST = 'https://supply-test.ycb51.cn' // 测试环境
 //const HOST = 'https://vsc.ebaoton.cn' // 测试环境
 // const HOST = 'http://192.168.211.1:9001' // 刘康
-//const HOST = 'http://192.168.10.70:9001' //晶晶
+const HOST = 'http://192.168.10.29:9001' //晶晶
 //const HOST = 'http://192.168.10.234:9001' //旺翔
 //const HOST = 'http://192.168.10.249:9001' //双源
 //const HOST = 'http://192.168.30.194:9001' //少
