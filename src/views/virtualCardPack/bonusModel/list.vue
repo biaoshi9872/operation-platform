@@ -59,8 +59,6 @@ const searchQueryHarder = () => {
     const obj = getQueryParams()
     searchQuery(obj)
 }
-
-
 /**
  * 导出
  */
@@ -68,8 +66,6 @@ const exportHandler = () => {
     const obj = getQueryParams()
     toDownloadCenter(obj)
 }
-
-
 const batchPushHandler = () => {
     dataPage.type = 'push'
     dataPage.isBatch = true
@@ -142,6 +138,7 @@ const openDetail = (row: any = null) => {
         <div class="option_box">
             <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
                 :loading="dataPage.loadingData" row-key="id" @selection-change="handleSelectionChange">
+                uat-test-116
                 <template #option>
                     <el-button type="primary" @click="batchPushHandler"
                         :disabled="!dataPage.multipleList.length">批量推送</el-button>
@@ -189,7 +186,9 @@ const openDetail = (row: any = null) => {
         @refresh="searchQueryHarder" :type="dataPage.type" :isBatch="dataPage.isBatch" :mulSelect="dataPage.mulSelect"
         ref="pushVirtualProductModelRef">
     </PushBonusProductModel>
-    <BonusProductDetail v-model="dataPage.showDetailModel" productSource="108" type="api" :itemInfo="dataPage.curryRow">
+    <BonusProductDetail v-model:show="dataPage.showDetailModel" productSource="108" type="api"
+        :itemInfo="dataPage.curryRow">
     </BonusProductDetail>
+
 </template>
 <style lang="scss" scoped></style>

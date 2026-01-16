@@ -6,27 +6,30 @@ import goodPood_api from '@/api/goodPool/index'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import goodPool_enum from '@/utils/constant/goodPoor'
 import { detailTransfer } from './BaseUtils'
+import PriceShowModel from '@/components/PriceModel/PriceShowModel.vue'
 const { isFromOrgLast } = isStateCheckHooks()
 
 interface IProp {
   itemInfo?: any
   productSource?: string
+  show?: boolean
   type: string
 }
 
 const props = withDefaults(defineProps<IProp>(), {
   itemInfo: {},
   productSource: '',
+  show: false,
   type: 'api'
 })
 
 const emits = defineEmits<{
-  (e: 'update:modelValue', value: any): void
+  (e: 'update:show', value: boolean): void
   (e: 'refresh'): void
 }>()
 
 const closedHandler = () => {
-  emits('update:modelValue', false)
+  emits('update:show', false)
 }
 
 interface IData {
@@ -65,19 +68,19 @@ const openHandler = () => {
   getProudestDetail()
 }
 const getProudestDetail = () => {
-  const skuCode = props.itemInfo.skuCode
+  const skuCode = props.itemInfo.couponId
   const goodsSourceType = props.productSource
   dataPage.loading = true
-  const api = goodsSourceType == '106' ? goodPood_api.A_vpDetails : goodPood_api.A_details
+  const api = goodPood_api.A_details
   api({ skuCode, goodsSourceType, ...props.itemInfo }).then((res: any) => {
     let obj = detailTransfer(res, goodsSourceType)
     dataPage.goodDetail = {
       ...dataPage.goodDetail,
       ...obj
     }
-    emits('update:modelValue', true)
+    emits('update:show', true)
   }).catch(() => {
-    emits('update:modelValue', false)
+    emits('update:show', false)
   }).finally(() => {
     dataPage.loading = false
   })
@@ -93,13 +96,19 @@ const bannerImagesList = computed(() => {
   return list
 })
 
-defineExpose({
-  openHandler
+const value = computed({
+  get() {
+    return props.show
+  },
+  set(val) {
+    emits('update:show', val)
+  }
 })
 
 </script>
 <template>
-  <el-drawer v-bind="$attrs" title="商品详情" :size="750" :before-close="closedHandler">
+  <el-drawer v-model="value" title="商品详情" :size="750" @open="openHandler" :before-close="closedHandler"
+    :append-to-body="true">
     <div v-loading="dataPage.loading" class="goodInfo_box">
       <div class="content">
         <div class="left">
