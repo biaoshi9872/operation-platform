@@ -174,7 +174,7 @@ const openDetail = (row: any = null) => {
                 </el-table-column>
                 <el-table-column label="操作" min-width="180px" align="right" fixed="right">
                     <template #default="scope">
-                        <el-button type="primary" v-if="scope.row.status === 2" link
+                        <el-button type="primary" v-if="scope.row.status === 1" link
                             @click="pushHandler(scope.row)">推送</el-button>
                         <el-button type="primary" link @click="openDetail(scope.row)">详情</el-button>
                     </template>
