@@ -30,7 +30,8 @@ const dataPage: IPage<API.T_APIShangPinGuanLianFenYeSearchForm, any> = reactive(
     createTimeStart: '', //创建时间
     createTimeEnd: '',
     updateTimeStart: '', //更新时间
-    updateTimeEnd: '' //
+    updateTimeEnd: '', //
+    branchName: ''
   },
   otherData: {
     editProductModel: false,
@@ -86,6 +87,9 @@ const addOrEditHandler = (row: any, type: 'edit' | 'add') => {
       <el-form-item label="外部商品编码">
         <el-input v-model="dataPage.facade.outSkuCode" placeholder="请输入外部商品编码" clearable></el-input>
       </el-form-item>
+      <el-form-item label="分行名称">
+        <el-input v-model="dataPage.facade.branchName" placeholder="请输入分行名称" clearable></el-input>
+      </el-form-item>
       <el-form-item label="商品状态">
         <el-select v-model="dataPage.facade.goodsStatus" placeholder="请选择" clearable filterable true>
           <el-option label="全部" value></el-option>
@@ -120,6 +124,9 @@ const addOrEditHandler = (row: any, type: 'edit' | 'add') => {
       <el-table-column label="商品状态" prop="goodsStatus" min-width="100px" align="left">
         <template #default="{ row }">{{ ycb_enum.getE_ShangPinZhuangTai(row.goodsStatus) }}</template>
       </el-table-column>
+      <el-table-column label="分行名称" prop="branchName" show-overflow-tooltip min-width="150px"
+        align="left"></el-table-column>
+      <el-table-column label="库存数量" prop="stockNum" min-width="80px" align="left"></el-table-column>
       <el-table-column label="新增时间" prop="createDate" min-width="120px" align="left"></el-table-column>
       <el-table-column label="更新时间" prop="updateDate" min-width="120px" align="left"></el-table-column>
       <el-table-column label="操作" min-width="120px" align="right">
