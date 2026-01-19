@@ -3,7 +3,7 @@ class bonusModel_enum extends baseEnum {
   //0 草稿 ， 1 不可用， 2 可用， 3 删除
   public goodsStatusList = [
     {
-      value: 0,
+      value: 2,
       label: '不可用'
     },
     {
