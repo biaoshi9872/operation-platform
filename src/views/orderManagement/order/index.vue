@@ -46,6 +46,7 @@ const searchForm = {
   orderStatusList: [],
   desensitizationStatus: '', //面单是否脱敏
   outTradeNo: '', //电商订单编号(子单)
+  branchName: '', //分行名称
 }
 const pageInfo = {
   page: 1,
@@ -596,6 +597,9 @@ eventBus.on('orderRefresh', searchQueryHarder)
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].outTradeNo"
           placeholder="请输入电商订单编号(子单)"></el-input>
       </el-form-item>
+      <el-form-item label="分行名称" class="formItem">
+        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].branchName" placeholder="请输入分行名称"></el-input>
+      </el-form-item>
       <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].projectTypeList"
           :selectList="system_enum.projectType">
@@ -652,6 +656,12 @@ eventBus.on('orderRefresh', searchQueryHarder)
               <el-divider direction="vertical" />
               <span class="title">延迟时间：</span>
               <span class="value">{{ row.delayTime ?? '-' }}分钟</span>
+            </span>
+            <el-divider direction="vertical" />
+            <span>
+              <span class="title">分行名称:</span>
+              <span class="value">{{ row.branchName }}</span>
+              <el-divider direction="vertical" />
             </span>
             <el-divider direction="vertical" />
             <span v-if="getSystemOptionType == 101">
