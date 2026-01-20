@@ -1,9 +1,9 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 defineOptions({ name: 'orderList' })
 import order_api from '@/api/order/index'
 import SkuDetail from '@/components/SkuDetail/index.vue'
 import StateCell from '@/components/Tooltip/StateCell.vue'
-import eventBus from '@/utils/eventBus';
+import eventBus from '@/utils/eventBus'
 import pageHooks from '@/hooks/pageListHooks'
 import { tabsStore } from '@/stores'
 import { IPage } from '@/types/from-types'
@@ -38,7 +38,7 @@ const searchForm = {
   delayTimeEnd: '', //延迟结束时间
   orderNo: '', //开放平台订单号
   channelOrderNo: '', //渠道订单号
-  thirdOrderNo: '',//第三方订单号
+  thirdOrderNo: '', //第三方订单号
   supplyIds: [], //供应商
   skuName: '', //商品名称
   receiverName: '', //收货人
@@ -46,7 +46,7 @@ const searchForm = {
   orderStatusList: [],
   desensitizationStatus: '', //面单是否脱敏
   outTradeNo: '', //电商订单编号(子单)
-  branchName: '', //分行名称
+  branchName: '' //分行名称
 }
 const pageInfo = {
   page: 1,
@@ -166,7 +166,7 @@ const orderTabs = ref([
   {
     label: '延迟中',
     value: '4'
-  },
+  }
 ])
 
 const orderTabsList = computed(() => {
@@ -447,30 +447,28 @@ const initColumns = () => {
       }
     })
   }
-  columns.value.push(
-    {
-      label: '操作',
-      align: 'center',
-      render: (row: any, parentRow: any) => {
-        //备注:自营体系才支持发货
-        const viewButton =
-          [105].includes(row.channelSource) &&
-          [1, 2].includes(row.orderStatus) &&
-          withDirectives(
-            h(ElButton, {
-              type: 'primary',
-              innerText: row.orderStatus == 1 ? '发货' : '部分发货',
-              onClick: () => {
-                devilryHandler(row)
-              }
-            }),
-            [[authDir, 'VO_PRODUCT_DEVIL']]
-          )
-        const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
-        return h('div', { style }, [viewButton])
-      }
+  columns.value.push({
+    label: '操作',
+    align: 'center',
+    render: (row: any, parentRow: any) => {
+      //备注:自营体系才支持发货
+      const viewButton =
+        [105].includes(row.channelSource) &&
+        [1, 2].includes(row.orderStatus) &&
+        withDirectives(
+          h(ElButton, {
+            type: 'primary',
+            innerText: row.orderStatus == 1 ? '发货' : '部分发货',
+            onClick: () => {
+              devilryHandler(row)
+            }
+          }),
+          [[authDir, 'VO_PRODUCT_DEVIL']]
+        )
+      const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
+      return h('div', { style }, [viewButton])
     }
-  )
+  })
 }
 
 //状态定制化
@@ -544,7 +542,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
         <DoubleInput v-model:start="dataPage.facade[dataPage.facadeKz.tab].delayTimeStart"
           v-model:end="dataPage.facade[dataPage.facadeKz.tab].delayTimeEnd"></DoubleInput>
       </el-form-item>
-      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="订单编号" class="formItem"
+      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="订单编号" class="formItem"
         placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].orderNo" placeholder="请输入订单编号"></el-input>
       </el-form-item>
@@ -562,7 +560,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverName" placeholder="请输入收货人姓名"></el-input>
       </el-form-item>
 
-      <el-form-item v-if="(['10', '101'].includes(getSystemOptionType))" label="供应商" class="formItem" placeholder="请选择">
+      <el-form-item v-if="['10', '101'].includes(getSystemOptionType)" label="供应商" class="formItem" placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyIds" :hasJdChance="true">
         </AffiliatedSupplier>
       </el-form-item>
@@ -574,16 +572,14 @@ eventBus.on('orderRefresh', searchQueryHarder)
           :multiple="true">
         </ApplicationSelect>
       </el-form-item>
-      <el-form-item v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))" label="商品类型" class="formItem"
+      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="商品类型" class="formItem"
         placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelSourceList"
-          :selectList="goodPoor.sourceTypeList">
-        </SelectModel>
+          :selectList="goodPoor.sourceTypeList"> </SelectModel>
       </el-form-item>
       <el-form-item label="是否脱敏发货" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].desensitizationStatus"
-          :selectList="order_enum.C_isMaskList">
-        </SelectModel>
+          :selectList="order_enum.C_isMaskList"> </SelectModel>
       </el-form-item>
       <el-form-item :label="getSystemOptionType == 401 ? '订单编号' : '供应商订单编号'" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelOrderNo"
@@ -602,8 +598,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
       </el-form-item>
       <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].projectTypeList"
-          :selectList="system_enum.projectType">
-        </SelectModel>
+          :selectList="system_enum.projectType"> </SelectModel>
       </el-form-item>
     </SearchForm>
     <OrderCustomTable class="order-container" :openFold="false" :openERP="false" :border="true" :dataPage="dataPage"
@@ -616,7 +611,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
       <template #customRow="{ row }">
         <div class="order_row">
           <div class="order_detail">
-            <span v-if="(['10', '101', '20', '201'].includes(getSystemOptionType))">
+            <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)">
               <span class="title"> 订单编号：</span>
               <span class="value">{{ row.orderNo || '-' }}</span>
               <el-divider direction="vertical" />
@@ -624,9 +619,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
             <span>
               <span class="title">{{ getSystemOptionType == 401 ? '订单编号:' : '供应商订单编号:' }}</span>
               <span class="value">
-                {{
-                  row.channelOrderNo || '-'
-                }}
+                {{ row.channelOrderNo || '-' }}
               </span>
               <el-divider direction="vertical" />
             </span>
@@ -634,24 +627,22 @@ eventBus.on('orderRefresh', searchQueryHarder)
             <span>
               <span class="title">第三方订单编号：</span>
               <span class="value">
-                {{
-                  row.thirdOrderNo || '-'
-                }}
+                {{ row.thirdOrderNo || '-' }}
               </span>
               <el-divider direction="vertical" />
             </span>
             <span>
               <span class="title">电商订单编号(子单)：</span>
               <span class="value">
-                {{
-                  row.outTradeNo || '-'
-                }}
+                {{ row.outTradeNo || '-' }}
               </span>
               <el-divider direction="vertical" />
             </span>
-            <span> <span class="title">提交订单时间：</span><span class="value">{{ row.submitTime }}</span></span>
+            <span>
+              <span class="title">提交订单时间：</span><span class="value">{{ row.submitTime }}</span></span>
             <el-divider direction="vertical" />
-            <span> <span class="title">确认下单时间：</span><span class="value">{{ row.confirmTime }}</span></span>
+            <span>
+              <span class="title">确认下单时间：</span><span class="value">{{ row.confirmTime }}</span></span>
             <span v-if="['4'].includes(dataPage.facadeKz.tab)">
               <el-divider direction="vertical" />
               <span class="title">延迟时间：</span>
@@ -660,18 +651,18 @@ eventBus.on('orderRefresh', searchQueryHarder)
             <el-divider direction="vertical" />
             <span>
               <span class="title">分行名称:</span>
-              <span class="value">{{ row.branchName }}</span>
+              <span class="value">{{ row.branchName ?? '-' }}</span>
               <el-divider direction="vertical" />
             </span>
             <el-divider direction="vertical" />
             <span v-if="getSystemOptionType == 101">
               <span class="title">供应商:</span>
-              <span class="value">{{ row.supplyName }}</span>
+              <span class="value">{{ row.supplyName ?? '-' }}</span>
               <el-divider direction="vertical" />
             </span>
             <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105">
               <span class="title">供应商:</span>
-              <span class="value">{{ row.supplyName }}</span>
+              <span class="value">{{ row.supplyName ?? '-' }}</span>
               <el-divider direction="vertical" />
             </span>
             <span>
@@ -692,12 +683,11 @@ eventBus.on('orderRefresh', searchQueryHarder)
     </OrderCustomTable>
     <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page[dataPage.facadeKz.tab]"></CustomPagination>
     <DeliverGood v-model="dataPage.showDeliverGood" :outgoingType="1" :curryInfo="dataPage.curryInfo"
-      @refresh="searchQueryHarder">
-    </DeliverGood>
+      @refresh="searchQueryHarder"> </DeliverGood>
   </PageContainer>
 </template>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .tabs-container {
   background-color: var(--el-bg-color);
   padding: 8px;
@@ -722,7 +712,6 @@ eventBus.on('orderRefresh', searchQueryHarder)
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
-
 
       .order_detail {
         display: flex;
