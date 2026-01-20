@@ -93,7 +93,10 @@ onMounted(() => {
 const getListByCateId = () => {
     const cateId = dataPage?.nodeCurryInfo?.id || null
     if (cateId) {
-        apiFiles_api.A_listByCateId(cateId).then((res: any) => {
+        apiFiles_api.A_listByCateId({
+            cateId,
+            isShow: 1
+        }).then((res: any) => {
             dataPage.tableData = res
         })
     }

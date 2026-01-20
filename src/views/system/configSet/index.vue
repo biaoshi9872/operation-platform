@@ -48,7 +48,8 @@ const editConfigHandler = (type: 'add' | 'edit', row?: any) => {
 
 const refreshAllRedisCacheHandler = () => {
   dataPage.refreshLoading = true
-  configSet_api.A_refreshAllRedisCache({})
+  configSet_api
+    .A_refreshAllRedisCache({})
     .then(() => {
       ElMessage.success('刷新成功！')
       searchQueryHarder()
@@ -59,7 +60,7 @@ const refreshAllRedisCacheHandler = () => {
 }
 const jsonValue = computed(() => {
   return function (val: any) {
-    if (!val) return val;
+    if (!val) return val
     try {
       return JSON.parse(val)
     } catch (e) {
@@ -69,20 +70,20 @@ const jsonValue = computed(() => {
 })
 
 const isValidJson = (str: any) => {
-  if (typeof str !== 'string') return false;
+  if (typeof str !== 'string') return false
   try {
-    JSON.parse(str);
-    return true;
+    JSON.parse(str)
+    return true
   } catch (e) {
-    return false;
+    return false
   }
 }
 
 const parseJson = (str: string) => {
   try {
-    return JSON.parse(str);
+    return JSON.parse(str)
   } catch (e) {
-    return str;
+    return str
   }
 }
 </script>

@@ -42,7 +42,10 @@ const data = reactive<IData>({
     skuName: '',
     outSkuCode: '',
     outSkuName: '',
-    jfRate: undefined
+    stockNum: null,
+    branchName: '',
+    jfRate: undefined,
+    saleAttr: ''
   },
   formDataBK: {},
   formRules: {
@@ -52,6 +55,8 @@ const data = reactive<IData>({
     skuName: [{ required: true, message: '请输入驿宝通商品名称', trigger: ['change', 'blur'] }],
     skuCode: [{ required: true, message: '请输入驿宝通商品编码', trigger: ['change', 'blur'] }],
     outSkuCode: [{ required: true, message: '请输入外部商品编码', trigger: ['change', 'blur'] }],
+    branchName: [{ required: true, message: '请输入分行名称', trigger: ['change', 'blur'] }],
+    stockNum: [{ required: true, message: '请输入库存数量', trigger: ['change', 'blur'] }],
     outSkuName: [{ required: true, message: '请输入外部商品名称', trigger: ['change', 'blur'] }],
     jfRate: [{ required: true, message: '请输入积分比例或费率', trigger: ['change', 'blur'] }]
   },
@@ -90,7 +95,8 @@ const openHandler = () => {
   if (props.curryInfo?.id) {
     data.formData = {
       ...data.formData,
-      ...props.curryInfo
+      ...props.curryInfo,
+      saleAttr: props.curryInfo?.saleAttr || ''
     }
     const keys = Object.keys(data.formData)
     nextTick(() => {
@@ -152,6 +158,7 @@ const orgChangeHandler = (isInit: Boolean = false) => {
     data.formData.appId = undefined
     data.formData.goodsSourceId = undefined
     data.formData.skuCode = null
+
   }
   let orgId = systemOrgId.value
   getApplicationList(orgId)
@@ -174,7 +181,9 @@ const appChangeHandler = (isInit: Boolean = false) => {
  * @param val 
  */
 const changeGoods = (val: any) => {
-  data.formData.skuName = data.goodsList.find((el: any) => el.skuCode === val)?.skuName || ''
+  let item = data.goodsList.find((el: any) => el.skuCode === val)
+  data.formData.skuName = item?.skuName || ''
+  data.formData.saleAttr = item?.originalSaleAttr || ''
 }
 
 const goodTypeSizeChangeHandler = (val: any) => {
@@ -239,6 +248,12 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
     data.loading = false
   })
 }
+/**
+ * 项目类型
+ */
+const customType = computed(() => {
+  return data.appList.find((el: any) => el.id == data.formData.appId)?.customType || '0'
+})
 
 </script>
 <template>
@@ -294,6 +309,17 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
           <el-input-number v-model="data.formData.jfRate" :min="0" :max="99999999" :precision="2" :step="0.01"
             placeholder="请输入积分比例" />
         </el-form-item>
+        <!-- 定制类型 0:不定制 1:库存+分行名称-->
+        <template v-if="customType == 1">
+          <el-form-item label="分行名称" prop="branchName">
+            <el-input v-model.trim="data.formData.branchName" placeholder="请输入分行名称" maxlength="100" show-word-limit
+              clearable />
+          </el-form-item>
+          <el-form-item label="库存" prop="stockNum">
+            <el-input-number v-model="data.formData.stockNum" :min="0" :max="99999999" :precision="0" :step="1"
+              placeholder="请输入库存" />
+          </el-form-item>
+        </template>
         <Auxiliary type="error">注意：填写外部商品名称和商品编码时，请务必填写客户平台真实准备的信息。填写错误，将影响业务正常运行！！</Auxiliary>
       </el-form>
     </div>

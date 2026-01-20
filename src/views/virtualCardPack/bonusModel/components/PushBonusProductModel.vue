@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import type { ElTree } from 'element-plus'
-import virtualCardPackProduct_api from '@/api/virtualCardPackProduct'
+import bonusModel_api from '@/api/bonusModel/index'
+import virtualCardPackProduct_api from '@/api/virtualCardPackProduct/index'
 interface IProp {
     curryInfo: any,
     type: string
@@ -80,9 +81,9 @@ const handleSubmit = () => {
         return !String(item).startsWith('ORG')
     })
     if (props.isBatch) {
-        virtualCardPackProduct_api.A_push({
+        bonusModel_api.A_push({
             appIds: selectedPackageAppList,
-            packageCodes: props.isBatch ? props.mulSelect.map((item: any) => item.packageCode) : [props.curryInfo.packageCode]
+            packageCodes: props.isBatch ? props.mulSelect.map((item: any) => item.couponId) : [props.curryInfo.couponId]
         }).then((res: any) => {
             ElMessage.success('批量推送成功')
             emits('refresh')
@@ -91,9 +92,9 @@ const handleSubmit = () => {
             resData.resultList = res
         })
     } else {
-        virtualCardPackProduct_api.A_singPush({
+        bonusModel_api.A_singPush({
             appIds: selectedPackageAppList,
-            packageCode: props.curryInfo.packageCode
+            packageCode: props.curryInfo.couponId
         }).then(() => {
             ElMessage.success('操作成功')
             emits('refresh')
@@ -110,7 +111,7 @@ const title = computed(() => {
 })
 const getPackageApp = async () => {
     data.defaultCheckedKeys = []
-    const res = await virtualCardPackProduct_api.A_getPackageApp({ goodsSourceId: 107 })
+    const res = await virtualCardPackProduct_api.A_getPackageApp({ goodsSourceId: 108 })
     data.packageAppList = res
     if (!props.isBatch && props.curryInfo.appNameList) {
         data.defaultCheckedKeys = props.curryInfo.appNameList?.map((item: any) => item.appId) || []
@@ -119,7 +120,7 @@ const getPackageApp = async () => {
 }
 const getResultDetailList = () => {
     resData.openTag = true
-    virtualCardPackProduct_api.A_pushFailReason({
+    bonusModel_api.A_getResultDetail({
     }).then((res: any) => {
         resData.showResultDetail = true
         resData.resultDetailList = res

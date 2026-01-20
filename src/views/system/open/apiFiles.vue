@@ -91,7 +91,10 @@ onMounted(() => {
 const getListByCateId = () => {
     const cateId = dataPage?.nodeCurryInfo?.id || null
     if (cateId) {
-        apiFiles_api.A_listByCateId(cateId).then((res: any) => {
+        apiFiles_api.A_listByCateId({
+            cateId,
+            isShow: 1
+        }).then((res: any) => {
             dataPage.tableData = res
         })
     }
@@ -147,7 +150,7 @@ const initData = () => {
             <el-table :data="dataPage.tableData" style="width: 100%">
                 <el-table-column prop="apiUrl" label="接口路径" />
                 <el-table-column prop="apiName" label="接口名称" />
-                <el-table-column label="操作" width="140" align="right">
+                <el-table-column label="操作" width="200" align="right">
                     <template #default="scope">
                         <el-button type="primary" link @click="openAnnouncementDialog(scope.row)">版本更新</el-button>
                         <el-button type="primary" link @click="editApiHandler(scope.row)">编辑</el-button>

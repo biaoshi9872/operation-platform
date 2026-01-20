@@ -28,12 +28,16 @@ const props = defineProps({
         type: String,
         default: ''
     },
+    code: {
+        type: String,
+        default: ''
+    },
     filedCategory: {
         type: String,
         default: 'categoryList'
     }
 })
-const emit = defineEmits(['update:modelValue', 'change', 'update:firstCateId', 'update:secondCateId', 'update:thirdCateId', 'update:categoryCode'])
+const emit = defineEmits(['update:modelValue', 'change', 'update:firstCateId', 'update:secondCateId', 'update:thirdCateId', 'update:categoryCode', 'update:code'])
 const value = computed({
     get() {
         if (props.categoryCode) {
@@ -43,11 +47,12 @@ const value = computed({
     },
     set(val) {
         let valArr = val || []
-        emit('update:firstCateId', valArr[0])
-        emit('update:secondCateId', valArr[1])
-        emit('update:thirdCateId', valArr[2])
+        emit('update:firstCateId', valArr?.[0])
+        emit('update:secondCateId', valArr?.[1])
+        emit('update:thirdCateId', valArr?.[2])
         emit('update:modelValue', valArr)
         emit('update:categoryCode', valArr.join('|'))
+        emit('update:code', valArr[valArr.length - 1])
     }
 })
 const handleChange = (val: any) => {
@@ -64,9 +69,9 @@ onMounted(() => {
         source: props.source
     }).then(res => {
         dataInfo.categoryList = res[props.filedCategory] || res || []
-
     })
 })
+
 </script>
 
 <template>

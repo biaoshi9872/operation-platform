@@ -1,60 +1,66 @@
 <template>
   <div class="flex deposit-card">
-    <!-- 资金总栏 -->
-    <div class="deposit-card-container mr-8">
-      <div class="home">
-        <div>机构ID：{{ dataPage.merchantInfo.orgId }}</div>
-        <div class="deposit-title flex justify-between">
-          <svg-icon icon-class="zhiJin" class name="zhiJin"></svg-icon>
-          <span class="text-right">账户可用余额(元):</span>
-          <span>
-            ￥{{
-              dataPage.merchantInfo.amountBalance }}
-          </span>
+    <div class="deposit-card-container left-card mr-5">
+      <div class="left-content">
+        <div class="balance-label">
+          <el-icon class="warning-icon">
+            <Warning />
+          </el-icon>
+          <h3>账户可用余额 (元)</h3>
         </div>
-        <div class="deposit-title flex justify-between">
-          <svg-icon icon-class="zhiJin" class name="zhiJin"></svg-icon>
-          <span class="text-right">授信额:</span>
-          <span>
-            ￥{{
-              dataPage.merchantInfo.amountCreditLine }}
-          </span>
+        <div class="balance-amount">￥{{ dataPage.merchantInfo.amountBalance }}</div>
+        <div class="apply-btn-wrapper">
+          <AuthButton type="primary" size="large" round class="apply-btn" authKey="CWZL_SQCZ" @click="applyHandler">
+            <el-icon class="mr-1">
+              <Plus />
+            </el-icon>申请充值
+          </AuthButton>
         </div>
       </div>
-      <div>
-        <AuthButton type="primary" authKey="CWZL_SQCZ" @click="applyHandler">申请充值</AuthButton>
+      <div class="right-content">
+        <div class="dealer-info">
+          <div class="dealer-label">机构ID</div>
+          <div class="dealer-value">{{ dataPage.merchantInfo.orgId }}</div>
+        </div>
+        <div class="credit-info mt-4">
+          <div class="credit-label">授信额</div>
+          <div class="credit-value">￥{{ dataPage.merchantInfo.amountCreditLine }}</div>
+        </div>
       </div>
     </div>
-    <!-- 冻结-->
-    <div class="deposit-card-container">
-      <div>
-        <span class="fs-20 fw-bold">冻结预存款(元)</span>
+
+    <div class="deposit-card-container right-card">
+      <div class="frozen-header">
+        <span class="frozen-label">冻结预存款 (元)</span>
         <el-tooltip class="box-item" content="提交订单就会进行预存款冻结" placement="top">
-          <el-icon>
-            <Warning />
+          <el-icon class="info-icon">
+            <QuestionFilled />
           </el-icon>
         </el-tooltip>
       </div>
-      <div>
-        ￥
-        <span class="fs-24">{{ dataPage.merchantInfo.amountFreeze }}</span>
+      <div class="frozen-content">
+        <div class="frozen-amount">￥{{ dataPage.merchantInfo.amountFreeze }}</div>
       </div>
+      <!-- <div class="frozen-footer">
+        当前占比 0.00%
+      </div> -->
     </div>
   </div>
-  <!-- 线下回款--->
   <DepositApplication v-model="dataPage.openEarlyWarning" :userInfo="userInfo" @refresh="initData"></DepositApplication>
-  <!--修改-->
   <FundsAlertSettings v-model="dataPage.openFundsAlert" :userInfo="userInfo" @refresh="initData"
     :curryInfo="dataPage.merchantInfo"></FundsAlertSettings>
 </template>
 
 <script setup lang="ts">
-import moneyManagement_api from '@/api/moneyManagement/index';
-import { useUserStore } from '@/stores';
-import { ElMessage } from 'element-plus';
-import { storeToRefs } from 'pinia';
-import DepositApplication from './DepositApplication.vue';
-import FundsAlertSettings from './FundsAlertSettings.vue';
+import moneyManagement_api from '@/api/moneyManagement/index'
+
+import { useUserStore } from '@/stores'
+import { storeToRefs } from 'pinia'
+import DepositApplication from './DepositApplication.vue'
+import FundsAlertSettings from './FundsAlertSettings.vue'
+import { ElMessage } from 'element-plus'
+import { Warning, QuestionFilled, Plus } from '@element-plus/icons-vue'
+
 const { userInfo } = storeToRefs(useUserStore())
 const dataPage = reactive({
   openEarlyWarning: false,
@@ -62,7 +68,7 @@ const dataPage = reactive({
   merchantInfo: {
     id: '',
     merchantId: '',
-    orgId: '',
+    merchantCode: '',
     amountBalance: null,
     amountCreditLine: null,
     amountWarningThreshold: null,
@@ -87,7 +93,6 @@ const queryByMerchantId = () => {
       ...res
     }
   })
-
 }
 //申请
 const applyHandler = () => {
@@ -100,7 +105,7 @@ const reviseHandler = () => {
 //正常修改
 const changeHandler = () => {
   const { merchantInfo } = dataPage
-  moneyManagement_api.A_updatePrepaidDepositRechargeWarnConfig({ ...merchantInfo }).then(res => {
+  A_updatePrepaidDepositRechargeWarnConfig({ ...merchantInfo }).then(res => {
     ElMessage.success('修改成功!')
     initData()
   })
@@ -109,35 +114,153 @@ const changeHandler = () => {
 
 <style lang="scss" scoped>
 .deposit-card {
-  flex: 3;
+  display: flex;
+  margin-right: 6px;
+  width: 100%;
 
   .deposit-card-container {
-    border-radius: 10px;
-    flex: 1;
-    background: var(--el-searchForm-bg-color);
-    padding: 30px 60px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
     position: relative;
+    box-shadow: 0 6px 18px rgba(31, 41, 55, 0.08);
+    border: 1px solid #e6e8eb;
+    color: #1f2d3d;
+    transition: all 0.2s ease;
+  }
 
-    .deposit-title {
-      position: relative;
-      margin-bottom: 10px;
+  .deposit-card-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(31, 41, 55, 0.12);
+    border-color: #d7dade;
+  }
 
-      svg {
-        font-size: 20px;
-        position: absolute;
-        left: -25px;
-        top: 0px;
+  .left-card {
+    flex: 2;
+    display: flex;
+    justify-content: space-between;
+
+    .left-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .balance-label {
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 14px;
+
+        .warning-icon {
+          color: #ef4444;
+        }
+      }
+
+      .balance-amount {
+        font-size: 48px;
+        font-weight: bold;
+        color: #ef4444;
+        margin: 10px 0;
+        font-family: 'DIN Alternate', sans-serif;
+      }
+
+      .apply-btn-wrapper {
+        .apply-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px 24px;
+          border-radius: 24px;
+          cursor: pointer;
+          font-weight: 500;
+          font-size: 14px;
+          transition: all 0.2s;
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(31, 41, 55, 0.12);
+          }
+        }
       }
     }
 
-    .deposit-btn {
-      position: absolute;
-      right: 20px;
-      bottom: 10px;
+    .right-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      text-align: right;
+      padding: 24px;
+      border-left: 1px solid rgba(17, 24, 39, 0.08);
+      margin-left: 20px;
+
+      .dealer-info,
+      .credit-info {
+
+        .dealer-label,
+        .credit-label {
+          font-size: 12px;
+          color: #6b7280;
+          letter-spacing: 1px;
+          margin-bottom: 4px;
+          text-transform: uppercase;
+          text-align: right;
+        }
+
+        .dealer-value {
+          font-size: 24px;
+          color: #4f46e5;
+          font-weight: bold;
+          font-family: 'DIN Alternate', sans-serif;
+        }
+
+        .credit-value {
+          font-size: 24px;
+          color: #111827;
+          font-weight: bold;
+          font-family: 'DIN Alternate', sans-serif;
+        }
+      }
+    }
+  }
+
+  .right-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .frozen-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #6b7280;
+      font-size: 14px;
+
+      .info-icon {
+        color: #6b7280;
+        cursor: help;
+      }
     }
 
-    .home div:not(:last-child) {
-      margin-bottom: 8px;
+    .frozen-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .frozen-amount {
+        font-size: 32px;
+        color: #111827;
+        font-weight: bold;
+      }
+    }
+
+    .frozen-footer {
+      text-align: right;
+      color: #6b7280;
+      font-size: 12px;
     }
   }
 }
