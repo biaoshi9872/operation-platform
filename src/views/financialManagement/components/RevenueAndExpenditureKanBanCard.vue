@@ -1,23 +1,42 @@
 <template>
-  <div class="revenue-card-container ml-8">
-    <div class="flex items-center justify-between mb-20">
-      <div><svg-icon icon-name="zhiChu" name="zhiChu" class="fs-18 mr-4"></svg-icon>收入/支出(元)</div>
-      <div>
-        <el-radio-group v-model="dataPage.day" @change="queryFundBalance">
-          <el-radio-button value="1" label="1">昨日</el-radio-button>
-          <el-radio-button value="7" label="7">近7天</el-radio-button>
-          <el-radio-button value="30" label="30">近30天</el-radio-button>
-        </el-radio-group>
+  <div class="revenue-card-container">
+    <div class="header mb-6">
+      <div class="title flex items-center">
+        <el-icon class="refresh-icon mr-2" @click="queryFundBalance">
+          <Refresh />
+        </el-icon>
+        <span>收入/支出分析 (元)</span>
+      </div>
+      <div class="filter-group">
+        <div class="filter-btn" :class="{ active: dataPage.day === '1' }" @click="setDay('1')">昨日</div>
+        <div class="filter-btn" :class="{ active: dataPage.day === '7' }" @click="setDay('7')">近7天</div>
+        <div class="filter-btn" :class="{ active: dataPage.day === '30' }" @click="setDay('30')">近30天</div>
       </div>
     </div>
-    <div class="revenue-content">
-      <div>
-        <div>￥<span class="fs-28">{{ dataPage.fundBalance.incrementData }}</span></div>
-        <div>收入</div>
+
+    <div class="revenue-content flex gap-6">
+      <div class="info-card income-card flex-1">
+        <div class="card-left">
+          <div class="card-label">收入合计</div>
+          <div class="card-amount">￥{{ dataPage.fundBalance.incrementData }}</div>
+        </div>
+        <div class="card-right">
+          <el-icon class="trend-icon up">
+            <TopRight />
+          </el-icon>
+        </div>
       </div>
-      <div>
-        <div>￥<span class="fs-28">{{ dataPage.fundBalance.decrementData }}</span></div>
-        <div>支出</div>
+
+      <div class="info-card expense-card flex-1">
+        <div class="card-left">
+          <div class="card-label">支出合计</div>
+          <div class="card-amount">￥{{ dataPage.fundBalance.decrementData }}</div>
+        </div>
+        <div class="card-right">
+          <el-icon class="trend-icon down">
+            <BottomRight />
+          </el-icon>
+        </div>
       </div>
     </div>
   </div>
@@ -25,8 +44,10 @@
 
 <script setup lang="ts">
 import moneyManagement_api from '@/api/moneyManagement/index'
+
 import { useUserStore } from '@/stores'
 import { storeToRefs } from 'pinia'
+import { Refresh, TopRight, BottomRight } from '@element-plus/icons-vue'
 
 const { userInfo } = storeToRefs(useUserStore())
 const dataPage = reactive({
@@ -40,6 +61,11 @@ const dataPage = reactive({
 onMounted(() => {
   queryFundBalance()
 })
+
+const setDay = (val: string) => {
+  dataPage.day = val
+  queryFundBalance()
+}
 
 //获取资金
 const queryFundBalance = async () => {
@@ -62,29 +88,120 @@ const queryDecrement = () => {
     dataPage.fundBalance.decrementData = res
   })
 }
-
 </script>
 
 <style lang="scss" scoped>
 .revenue-card-container {
-  flex: 2;
-  border-radius: 10px;
-  background: var(--el-searchForm-bg-color);
-  padding: 20px 40px 20px 40px;
+  width: 100%;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 30px;
   position: relative;
+  box-shadow: 0 6px 18px rgba(31, 41, 55, 0.08);
+  border: 1px solid #e6e8eb;
+  color: #1f2d3d;
 
-  .revenue-content {
-    align-items: center;
+  .header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
-    >div {
-      flex: 1 1 auto;
-      text-align: center;
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+
+      .refresh-icon {
+        cursor: pointer;
+        color: #4f46e5;
+        transition: transform 1s;
+
+        &:hover {
+          transform: rotate(180deg);
+        }
+      }
     }
 
-    >div:first-child {
-      border-right: 1px solid #E6E6E6;
+    .filter-group {
+      display: flex;
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 4px;
+
+      .filter-btn {
+        padding: 6px 16px;
+        font-size: 14px;
+        color: #6b7280;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.3s;
+
+        &:hover {
+          color: #111827;
+        }
+
+        &.active {
+          background: #6366f1;
+          color: #ffffff;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .revenue-content {
+    .info-card {
+      background: #ffffff;
+      border: 1px solid #e6e8eb;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.3s;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      .card-left {
+        .card-label {
+          color: #6b7280;
+          font-size: 14px;
+          margin-bottom: 8px;
+        }
+
+        .card-amount {
+          font-size: 36px;
+          font-weight: bold;
+          font-family: 'DIN Alternate', sans-serif;
+        }
+      }
+
+      .card-right {
+        .trend-icon {
+          font-size: 24px;
+        }
+      }
+
+      &.income-card {
+        .card-amount {
+          color: #059669;
+        }
+
+        .trend-icon {
+          color: #059669;
+        }
+      }
+
+      &.expense-card {
+        .card-amount {
+          color: #ef4444;
+        }
+
+        .trend-icon {
+          color: #ef4444;
+        }
+      }
     }
   }
 }

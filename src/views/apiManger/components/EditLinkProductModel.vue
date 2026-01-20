@@ -96,7 +96,7 @@ const openHandler = () => {
     data.formData = {
       ...data.formData,
       ...props.curryInfo,
-      saleAttr: props.curryInfo?.originalSaleAttr || ''
+      saleAttr: props.curryInfo?.saleAttr || ''
     }
     const keys = Object.keys(data.formData)
     nextTick(() => {
@@ -183,7 +183,6 @@ const appChangeHandler = (isInit: Boolean = false) => {
 const changeGoods = (val: any) => {
   let item = data.goodsList.find((el: any) => el.skuCode === val)
   data.formData.skuName = item?.skuName || ''
-  debugger
   data.formData.saleAttr = item?.originalSaleAttr || ''
 }
 
@@ -253,7 +252,6 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
  * 项目类型
  */
 const customType = computed(() => {
-  debugger
   return data.appList.find((el: any) => el.id == data.formData.appId)?.customType || '0'
 })
 
