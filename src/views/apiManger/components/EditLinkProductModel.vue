@@ -55,6 +55,8 @@ const data = reactive<IData>({
     skuName: [{ required: true, message: '请输入驿宝通商品名称', trigger: ['change', 'blur'] }],
     skuCode: [{ required: true, message: '请输入驿宝通商品编码', trigger: ['change', 'blur'] }],
     outSkuCode: [{ required: true, message: '请输入外部商品编码', trigger: ['change', 'blur'] }],
+    branchName: [{ required: true, message: '请输入分行名称', trigger: ['change', 'blur'] }],
+    stockNum: [{ required: true, message: '请输入库存数量', trigger: ['change', 'blur'] }],
     outSkuName: [{ required: true, message: '请输入外部商品名称', trigger: ['change', 'blur'] }],
     jfRate: [{ required: true, message: '请输入积分比例或费率', trigger: ['change', 'blur'] }]
   },
@@ -311,11 +313,11 @@ const customType = computed(() => {
         </el-form-item>
         <!-- 定制类型 0:不定制 1:库存+分行名称-->
         <template v-if="customType == 1">
-          <el-form-item label="分行名称">
+          <el-form-item label="分行名称" prop="branchName">
             <el-input v-model.trim="data.formData.branchName" placeholder="请输入分行名称" maxlength="100" show-word-limit
               clearable />
           </el-form-item>
-          <el-form-item label="库存">
+          <el-form-item label="库存" prop="stockNum">
             <el-input-number v-model="data.formData.stockNum" :min="0" :max="99999999" :precision="0" :step="1"
               placeholder="请输入库存" />
           </el-form-item>
