@@ -43,11 +43,9 @@ export const useRouterStore = defineStore('routerStore', {
         key: 'SYS_HIDE_API_MENU'
       })
       let orgList: string[] = systemConfig?.page?.records?.[0]?.paramValue?.split(',')
-      if (orgList.findIndex(item => item == userInfo.orgId) != -1) {
+      if (orgList.findIndex(item => item == userInfo.orgId) == -1) {
         let index = res.findIndex((item: any) => item.name == 'API对接管理')
-        if (index != -1) {
-          res.splice(index, 1)
-        }
+        res.splice(index, 1)
       }
       return res
     },
