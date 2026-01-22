@@ -31,7 +31,8 @@ const dataPage: IPage<API.T_APIShangPinGuanLianFenYeSearchForm, any> = reactive(
     createTimeEnd: '',
     updateTimeStart: '', //更新时间
     updateTimeEnd: '', //
-    branchName: ''
+    branchName: '',
+    branchId: null
   },
   otherData: {
     editProductModel: false,
@@ -88,7 +89,9 @@ const addOrEditHandler = (row: any, type: 'edit' | 'add') => {
         <el-input v-model="dataPage.facade.outSkuCode" placeholder="请输入外部商品编码" clearable></el-input>
       </el-form-item>
       <el-form-item label="分行名称">
-        <el-input v-model="dataPage.facade.branchName" placeholder="请输入分行名称" clearable></el-input>
+        <!-- <el-input v-model="dataPage.facade.branchName" placeholder="请输入分行名称" clearable></el-input> -->
+        <BranchSelect v-model:modelName="dataPage.facade.branchName" v-model="dataPage.facade.branchId"
+          placeholder="请选择分行名称" filterable clearable :multiple="false"></BranchSelect>
       </el-form-item>
       <el-form-item label="商品状态">
         <el-select v-model="dataPage.facade.goodsStatus" placeholder="请选择" clearable filterable true>

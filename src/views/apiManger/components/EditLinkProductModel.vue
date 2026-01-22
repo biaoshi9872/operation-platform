@@ -26,11 +26,11 @@ interface IData {
   formDataBK: Partial<API.T_APIShangPinGuanLianXinZengRequest & API.T_APIShangPinGuanLianXiuGaiRequest>
   formRules: any
   submitLoading: boolean
-  page: any,
+  page: any
   orgList: any[]
   appList: any[]
   goodTypeList: any[]
-  goodsList: any[],
+  goodsList: any[]
   loading: Boolean
 }
 const data = reactive<IData>({
@@ -43,6 +43,8 @@ const data = reactive<IData>({
     outSkuCode: '',
     outSkuName: '',
     stockNum: null,
+    branchId: null,
+
     branchName: '',
     jfRate: undefined,
     saleAttr: ''
@@ -151,14 +153,13 @@ const getOrgList = () => {
 }
 /**
  * 机构变化
- * @param val 
+ * @param val
  */
 const orgChangeHandler = (isInit: Boolean = false) => {
   if (!isInit) {
     data.formData.appId = undefined
     data.formData.goodsSourceId = undefined
     data.formData.skuCode = null
-
   }
   let orgId = systemOrgId.value
   getApplicationList(orgId)
@@ -177,13 +178,22 @@ const appChangeHandler = (isInit: Boolean = false) => {
 }
 
 /**
- * 
- * @param val 
+ *
+ * @param val
  */
 const changeGoods = (val: any) => {
   let item = data.goodsList.find((el: any) => el.skuCode === val)
   data.formData.skuName = item?.skuName || ''
   data.formData.saleAttr = item?.originalSaleAttr || ''
+  //调用接口
+  getOutSkuCode()
+}
+
+const getOutSkuCode = () => {
+  if (data.formData.branchId && data.formData.skuCode) {
+    let value = data.formData.skuCode + '-' + data.formData.branchId
+    data.formData.outSkuCode = value
+  }
 }
 
 const goodTypeSizeChangeHandler = (val: any) => {
@@ -208,11 +218,13 @@ const goodTypeChangeHandler = (isInit: Boolean = false) => {
  */
 const getApplicationList = (orgId: any) => {
   let orgIdList = [orgId]
-  application_api.A_list({
-    orgIdList
-  } as any).then((res: any) => {
-    data.appList = res || []
-  })
+  application_api
+    .A_list({
+      orgIdList
+    } as any)
+    .then((res: any) => {
+      data.appList = res || []
+    })
 }
 
 /**
@@ -220,10 +232,11 @@ const getApplicationList = (orgId: any) => {
  */
 const getApplication = (appId: any) => {
   application_api.A_applicationDetail({ appId }).then((res: any) => {
-    data.goodTypeList = (res?.goodsSourceTypeNameList.map((el: any) => ({
-      label: el.sourceName,
-      value: el.id
-    })) || []) //.filter((el: any) => el.value != 105)
+    data.goodTypeList =
+      res?.goodsSourceTypeNameList.map((el: any) => ({
+        label: el.sourceName,
+        value: el.id
+      })) || [] //.filter((el: any) => el.value != 105)
   })
 }
 /**
@@ -241,12 +254,15 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
   }
   data.goodsList = []
   data.loading = true
-  goodPool.A_myGoodsPoolPage(obj).then((res: any) => {
-    data.goodsList = res.page.records || []
-    data.page.totalCount = res.page.totalRow
-  }).finally(() => {
-    data.loading = false
-  })
+  goodPool
+    .A_myGoodsPoolPage(obj)
+    .then((res: any) => {
+      data.goodsList = res.page.records || []
+      data.page.totalCount = res.page.totalRow
+    })
+    .finally(() => {
+      data.loading = false
+    })
 }
 /**
  * 项目类型
@@ -254,7 +270,6 @@ const getGoodsList = (appId: any, orgId: any, productSource: any) => {
 const customType = computed(() => {
   return data.appList.find((el: any) => el.id == data.formData.appId)?.customType || '0'
 })
-
 </script>
 <template>
   <el-dialog v-bind="$attrs" :title="curryInfo?.id ? '编辑API商品关联' : '新增API商品关联'" class="dialog-m" append-to-body
@@ -294,13 +309,24 @@ const customType = computed(() => {
             </template>
           </el-select>
         </el-form-item>
+        <!-- 定制类型 0:不定制 1:库存+分行名称-->
+        <template v-if="customType == 1">
+          <el-form-item label="分行名称" prop="branchName">
+            <BranchSelect v-model:modelName="data.formData.branchName" v-model="data.formData.branchId"
+              @change="getOutSkuCode" placeholder="请选择分行名称" filterable clearable :multiple="false"></BranchSelect>
+          </el-form-item>
+          <el-form-item label="库存" prop="stockNum">
+            <el-input-number v-model="data.formData.stockNum" :min="0" :max="99999999" :precision="0" :step="1"
+              placeholder="请输入库存" />
+          </el-form-item>
+        </template>
         <el-form-item label="外部商品名称" prop="outSkuName">
           <el-input v-model.trim="data.formData.outSkuName" placeholder="请输入外部商品名称" maxlength="100" show-word-limit
             clearable />
         </el-form-item>
         <el-form-item label="外部商品编码" prop="outSkuCode">
-          <el-input v-model.trim="data.formData.outSkuCode" placeholder="请输入外部商品编码" maxlength="100" show-word-limit
-            clearable />
+          <el-input v-model.trim="data.formData.outSkuCode" :disabled="customType == 1" placeholder="请输入外部商品编码"
+            maxlength="100" show-word-limit clearable />
         </el-form-item>
         <el-form-item label="积分比例">
           <template #label>
@@ -309,17 +335,7 @@ const customType = computed(() => {
           <el-input-number v-model="data.formData.jfRate" :min="0" :max="99999999" :precision="2" :step="0.01"
             placeholder="请输入积分比例" />
         </el-form-item>
-        <!-- 定制类型 0:不定制 1:库存+分行名称-->
-        <template v-if="customType == 1">
-          <el-form-item label="分行名称" prop="branchName">
-            <el-input v-model.trim="data.formData.branchName" placeholder="请输入分行名称" maxlength="100" show-word-limit
-              clearable />
-          </el-form-item>
-          <el-form-item label="库存" prop="stockNum">
-            <el-input-number v-model="data.formData.stockNum" :min="0" :max="99999999" :precision="0" :step="1"
-              placeholder="请输入库存" />
-          </el-form-item>
-        </template>
+
         <Auxiliary type="error">注意：填写外部商品名称和商品编码时，请务必填写客户平台真实准备的信息。填写错误，将影响业务正常运行！！</Auxiliary>
       </el-form>
     </div>
