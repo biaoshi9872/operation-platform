@@ -44,7 +44,7 @@ class bonusModel_api {
   }
   A_export(data: any) {
     return request({
-      url: '/goods/coupon/export',
+      url: '/export/goods/couponExport',
       method: 'post',
       data
     })

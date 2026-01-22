@@ -166,7 +166,8 @@ const openDetail = (row: any = null) => {
                     </template>
                 </el-table-column>
                 <el-table-column label="批次有效期" prop="createDate" min-width="200" align="left">
-                    <template #default="scope">{{ `${scope.row.expireDateMin} 至 ${scope.row.expireDateMax}`
+                    <template #default="scope">{{ scope.row.expireDateMin ? (`${scope.row.expireDateMin || ''} 至
+                        ${scope.row.expireDateMax || ''}`) : '-'
                         }}</template>
                 </el-table-column>
                 <el-table-column label="最近更新时间" prop="updateDate" min-width="170px" align="left">
