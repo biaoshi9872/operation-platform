@@ -80,12 +80,15 @@ const retryHandler = (row: any) => {
               comboNumName="singleComboNum" width="100%" :goodDetail="row"></SkuDetail>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="规格" min-width="200">
+        <el-table-column prop="date" label="规格" min-width="100">
           <template #default="{ row }">
-            <div class="flex flex-col ">
+            <div class="flex flex-col " v-if="row.species?.length">
               <div v-for="item in row.species">
                 {{ item }}
               </div>
+            </div>
+            <div v-else>
+              <span>-</span>
             </div>
           </template>
         </el-table-column>
@@ -143,40 +146,13 @@ const retryHandler = (row: any) => {
       </div>
     </div>
   </div>
-  <div class="mb-8 mt-16">
-    <h3 class="mb-8">子商品信息</h3>
-    <el-table style="width: 100%" row-key="rowKey" :data="orderInfo.goodsCouponInfo" border max-height="400">
-      <el-table-column prop="couponSkuName" label="子商品名称" show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column prop="couponSkuCode" label="商品编码" width="200">
-      </el-table-column>
-      <el-table-column prop="couponKey" label="券ID">
-      </el-table-column>
-      <el-table-column prop="supplyOrderNo" label="供应商订单编号">
-      </el-table-column>
-      <el-table-column prop="skuName" label="兑换状态">
-        <template #default="scope">
-          <span>{{ virtualCardPackProduct_enum.getCouponStatusTitle(scope.row.status) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="errMsg" label="失败原因描述" show-overflow-tooltip
-        v-if="['101', '201'].includes(getSystemOptionType)">
-      </el-table-column>
-      <el-table-column prop="skuName" label="操作" v-if="['101', '201'].includes(getSystemOptionType)" width="100"
-        align="right">
-        <template #default="scope">
-          <el-button type="primary" v-if="scope.row.status == -1" link @click="retryHandler(scope.row)">重试</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
   <div class="mt-16 table_container">
     <h3 class="mb-8">商品财务信息</h3>
     <el-table style="width: 70%" row-key="rowKey" :data="goodsList" border
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" :default-expand-all="true">
       <el-table-column prop="skuName" label="商品名称" :show-overflow-tooltip="true" min-width="150">
       </el-table-column>
-      <el-table-column prop="date" label="规格" min-width="150">
+      <el-table-column prop="date" label="规格" min-width="100">
         <template #default="{ row }">
           <div class="flex flex-col " v-if="row.species?.length">
             <div v-for="item in row.species">
@@ -198,7 +174,7 @@ const retryHandler = (row: any) => {
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+        }}</template>
       </el-table-column>
     </el-table>
     <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
