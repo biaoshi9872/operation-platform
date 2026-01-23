@@ -147,6 +147,8 @@ const openDetail = (row: any = null) => {
                 <el-table-column type="selection" width="55" />
                 <el-table-column label="商品编码" prop="couponId" min-width="180px" align="left" show-overflow-tooltip />
                 <el-table-column label="商品名称" prop="couponName" min-width="180px" align="left" show-overflow-tooltip />
+                <el-table-column label="立减金平台" prop="platformName" min-width="120px" align="left">
+                </el-table-column>
                 <el-table-column label="市场价" prop="faceValue" min-width="120px" align="left" />
                 <el-table-column label="平台成本" prop="supplyPrice" min-width="120px" align="left" />
                 <el-table-column label="面额" prop="faceValue" min-width="120px" align="left" />
