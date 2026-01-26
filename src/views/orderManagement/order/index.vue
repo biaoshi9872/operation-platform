@@ -655,7 +655,6 @@ eventBus.on('orderRefresh', searchQueryHarder)
             <span>
               <span class="title">分行名称:</span>
               <span class="value">{{ row.branchName ?? '-' }}</span>
-              <el-divider direction="vertical" />
             </span>
             <el-divider direction="vertical" />
             <span v-if="getSystemOptionType == 101">
