@@ -147,6 +147,8 @@ const openDetail = (row: any = null) => {
                 <el-table-column type="selection" width="55" />
                 <el-table-column label="商品编码" prop="couponId" min-width="180px" align="left" show-overflow-tooltip />
                 <el-table-column label="商品名称" prop="couponName" min-width="180px" align="left" show-overflow-tooltip />
+                <el-table-column label="立减金平台" prop="platformName" min-width="120px" align="left">
+                </el-table-column>
                 <el-table-column label="市场价" prop="faceValue" min-width="120px" align="left" />
                 <el-table-column label="平台成本" prop="supplyPrice" min-width="120px" align="left" />
                 <el-table-column label="面额" prop="faceValue" min-width="120px" align="left" />
@@ -166,8 +168,9 @@ const openDetail = (row: any = null) => {
                     </template>
                 </el-table-column>
                 <el-table-column label="批次有效期" prop="createDate" min-width="200" align="left">
-                    <template #default="scope">{{ `${scope.row.expireDateMin} 至 ${scope.row.expireDateMax}`
-                        }}</template>
+                    <template #default="scope">{{ scope.row.expireDateMin ? (`${scope.row.expireDateMin || ''} 至
+                        ${scope.row.expireDateMax || ''}`) : '-'
+                    }}</template>
                 </el-table-column>
                 <el-table-column label="最近更新时间" prop="updateDate" min-width="170px" align="left">
                 </el-table-column>

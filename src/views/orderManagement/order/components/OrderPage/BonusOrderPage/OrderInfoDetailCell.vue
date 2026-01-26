@@ -3,8 +3,7 @@ interface IProp {
   orderBaseInfo: any
   orderInfo: any
 }
-import isStateCheckHooks from '@/hooks/isStateCheckHooks';
-const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
+
 const props = withDefaults(defineProps<IProp>(), {
   orderBaseInfo: {},
   orderInfo: {}
@@ -13,6 +12,9 @@ const emits = defineEmits<{
   (e: 'update:modelValue', value: any): void
 }>()
 
+const goodDetail = computed(() => {
+  return props.orderInfo.goodsInfo[0] || {}
+})
 
 </script>
 
@@ -20,19 +22,22 @@ const emits = defineEmits<{
   <div class="content_box">
     <div class="item flex">
       <span class="item_title">商品名称:</span>
-      <span class="item_value"></span>
+      <span class="item_value">
+        {{ goodDetail.skuName || '-' }}
+      </span>
     </div>
     <div class="item flex">
       <span class="item_title">商品分类:</span>
-      <span class="item_value"></span>
+      <span class="item_value"> {{ goodDetail.ljj_couponType || '-' }}</span>
     </div>
     <div class="item flex">
       <span class="item_title">立减金平台:</span>
-      <span class="item_value"></span>
+      <span class="item_value"> {{ goodDetail.ljj_platform || '-' }}</span>
     </div>
     <div class="item flex">
       <span class="item_title">批次有效期:</span>
-      <span class="item_value"></span>
+      <span class="item_value"> {{ goodDetail.ljj_expireDateMin ?
+        `${goodDetail.ljj_expireDateMin} ~ ${goodDetail.ljj_expireDateMax}` : '-' }}</span>
     </div>
   </div>
 </template>

@@ -120,7 +120,9 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url))
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '@vue-office/excel/lib/index.css': path.resolve(process.cwd(), 'node_modules/@vue-office/excel/lib/v3/index.css'),
+        '@vue-office/excel': path.resolve(process.cwd(), 'node_modules/@vue-office/excel/lib/v3/vue-office-excel.mjs')
       },
       extensions: ['.vue', '.js', '.ts']
     }

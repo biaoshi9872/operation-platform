@@ -58,6 +58,17 @@ class application_api {
       params: data
     })
   }
+
+  /**
+   * 获取银行信息
+   */
+
+  A_getZjnxBankMap() {
+    return request<any>({
+      url: '/goods/api/getZjnxBankMap',
+      method: 'post'
+    })
+  }
 }
 
 export default new application_api()

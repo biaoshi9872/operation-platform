@@ -36,10 +36,6 @@ const FIELDS = computed(() => {
     prop: 'confirmTime'
   })
   arr.push({
-    label: '申请取消时间',
-    prop: 'confirmTime'
-  })
-  arr.push({
     label: '下单人',
     prop: 'buyer'
   })
