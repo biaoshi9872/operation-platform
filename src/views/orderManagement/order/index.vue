@@ -594,7 +594,10 @@ eventBus.on('orderRefresh', searchQueryHarder)
           placeholder="请输入电商订单编号(子单)"></el-input>
       </el-form-item>
       <el-form-item label="分行名称" class="formItem">
-        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].branchName" placeholder="请输入分行名称"></el-input>
+        <!-- <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].branchName" placeholder="请输入分行名称"></el-input> -->
+        <BranchSelect v-model:modelName="dataPage.facade[dataPage.facadeKz.tab].branchName"
+          v-model="dataPage.facade[dataPage.facadeKz.tab].branchId" placeholder="请选择分行名称">
+        </BranchSelect>
       </el-form-item>
       <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].projectTypeList"

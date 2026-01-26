@@ -11,8 +11,6 @@ defineOptions({
     name: 'ApplicationSelect'
 })
 import application_api from '@/api/system/application/index'
-import isStateCheckHooks from '@/hooks/isStateCheckHooks'
-const { decryptApplicationSource } = isStateCheckHooks()
 interface IProp {
     modelValue: string
     modelName: string
@@ -41,9 +39,9 @@ const value = computed({
             return props.modelValue || []
         } else return props.modelValue || null
     },
-    set(value: any) {
-        emits('update:modelValue', value)
-        let name = data.branchList.find((item: any) => item[props.valueKey] === value)?.[props.valueLabel] || ''
+    set(val: any) {
+        emits('update:modelValue', val)
+        let name = data.branchList.find((item: any) => item[props.valueKey] == val)?.[props.valueLabel] || ''
         emits('update:modelName', name)
     }
 })
