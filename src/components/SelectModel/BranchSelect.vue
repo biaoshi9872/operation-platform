@@ -57,7 +57,6 @@ onMounted(() => {
 const init = () => {
     getAllDictionaries()
 }
-
 const getAllDictionaries = () => {
     application_api.A_getZjnxBankMap().then((res: any) => {
         let arr = Object.keys(res || {})

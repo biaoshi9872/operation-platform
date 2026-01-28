@@ -24,7 +24,7 @@ interface IData {
 }
 const data = reactive<IData>({
   formData: {
-    amountWarningThreshold: '',
+    amountWarningThreshold: null,
     warningPhone: ''
   },
   formDataBK: {},
@@ -72,7 +72,7 @@ const handleSubmit = () => {
 }
 </script>
 <template>
-  <el-dialog v-bind="$attrs" title="预警阀值修改" width="600px" append-to-body @open="openHandler" draggable destroy-on-close
+  <el-dialog v-bind="$attrs" title="余额提醒设置" width="600px" append-to-body @open="openHandler" draggable destroy-on-close
     :close-on-click-modal="false" @closed="handleReset">
     <div class="option">
       <el-alert title="注意：当账户余额小于该值时，每天短信提醒一次，费用由您自己承担。" type="warning" class="mb-20" show-icon :closable="false" />

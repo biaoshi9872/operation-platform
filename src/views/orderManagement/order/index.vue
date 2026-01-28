@@ -46,7 +46,8 @@ const searchForm = {
   orderStatusList: [],
   desensitizationStatus: '', //面单是否脱敏
   outTradeNo: '', //电商订单编号(子单)
-  branchName: '' //分行名称
+  branchName: '',//分行名称
+  exchangeStatusList: null
 }
 const pageInfo = {
   page: 1,
@@ -423,6 +424,16 @@ const initColumns = () => {
     }
   })
   columns.value.push({
+    label: '兑换状态',
+    'min-width': '120px',
+    prop: 'exchangeStatus',
+    render: (row: any) => {
+      let statusDom = h('div', system_enum.getExchangeStatusList(row.exchangeStatus)) //订单状态
+      //状态显示
+      return h('div', {}, [statusDom])
+    }
+  })
+  columns.value.push({
     label: '售后状态',
     prop: 'afterStatus',
     'min-width': '120px',
@@ -594,7 +605,6 @@ eventBus.on('orderRefresh', searchQueryHarder)
           placeholder="请输入电商订单编号(子单)"></el-input>
       </el-form-item>
       <el-form-item label="分行名称" class="formItem">
-        <!-- <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].branchName" placeholder="请输入分行名称"></el-input> -->
         <BranchSelect v-model:modelName="dataPage.facade[dataPage.facadeKz.tab].branchName"
           v-model="dataPage.facade[dataPage.facadeKz.tab].branchId" placeholder="请选择分行名称">
         </BranchSelect>
@@ -602,6 +612,10 @@ eventBus.on('orderRefresh', searchQueryHarder)
       <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].projectTypeList"
           :selectList="system_enum.projectType"> </SelectModel>
+      </el-form-item>
+      <el-form-item label="兑换状态" class="formItem">
+        <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].exchangeStatusList"
+          :selectList="system_enum.exchangeStatusList"> </SelectModel>
       </el-form-item>
     </SearchForm>
     <OrderCustomTable class="order-container" :openFold="false" :openERP="false" :border="true" :dataPage="dataPage"
