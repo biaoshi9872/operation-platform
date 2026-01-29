@@ -423,16 +423,18 @@ const initColumns = () => {
       return h('div', {}, [statusDom])
     }
   })
-  columns.value.push({
-    label: '兑换状态',
-    'min-width': '120px',
-    prop: 'exchangeStatus',
-    render: (row: any) => {
-      let statusDom = h('div', system_enum.getExchangeStatusList(row.exchangeStatus)) //订单状态
-      //状态显示
-      return h('div', {}, [statusDom])
-    }
-  })
+  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+    columns.value.push({
+      label: '兑换状态',
+      'min-width': '120px',
+      prop: 'exchangeStatus',
+      render: (row: any) => {
+        let statusDom = h('div', system_enum.getExchangeStatusList(row.exchangeStatus)) //订单状态
+        //状态显示
+        return h('div', {}, [statusDom])
+      }
+    })
+  }
   columns.value.push({
     label: '售后状态',
     prop: 'afterStatus',
@@ -613,7 +615,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].projectTypeList"
           :selectList="system_enum.projectType"> </SelectModel>
       </el-form-item>
-      <el-form-item label="兑换状态" class="formItem">
+      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="兑换状态" class="formItem">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].exchangeStatusList"
           :selectList="system_enum.exchangeStatusList"> </SelectModel>
       </el-form-item>
@@ -684,9 +686,9 @@ eventBus.on('orderRefresh', searchQueryHarder)
             <span>
               <span class="title">订单总金额:</span>
               <span class="value">￥{{ row.totalAmount }}</span>
-              <el-divider direction="vertical" />
             </span>
             <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)">
+              <el-divider direction="vertical" />
               <span class="title">订单结算总金额:</span>
               <span class="value">￥{{ row.settlementPrice }}</span>
             </span>
