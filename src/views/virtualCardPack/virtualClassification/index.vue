@@ -105,14 +105,14 @@ async function updatePage(isUpdateTree: Boolean) {
             <el-main class="pt-0">
                 <TableModel :page="pageData" :listTableData="tableData" :isShowPagination="false"
                     v-loading="tableLoading">
-                    <El-table-column prop="categoryCode" label="类目编号" mix-width="80" />
-                    <El-table-column prop="categoryName" label="类目名称" mix-width="100" />
-                    <El-table-column label="父类目编号" mix-width="100">
+                    <El-table-column prop="categoryCode" label="类目编号" min-width="80" />
+                    <El-table-column prop="categoryName" label="类目名称" min-width="100" />
+                    <El-table-column label="父类目编号" min-width="100">
                         <template #default="{ row }">
                             <span>{{ row.parentCode === '0' ? '-' : row.parentCode }}</span>
                         </template>
                     </El-table-column>
-                    <El-table-column label="父类目名称" mix-width="100">
+                    <El-table-column label="父类目名称" min-width="100">
                         <template #default="{ row }">
                             <span>{{ row.parentName || '-' }}</span>
                         </template>

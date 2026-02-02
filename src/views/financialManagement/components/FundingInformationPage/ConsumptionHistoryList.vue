@@ -85,37 +85,37 @@ const exportHandler = () => {
           <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出
           </el-button>
         </template>
-        <YbtTableColumn prop="appCode" label="应用编码" show-overflow-tooltip mix-width="140"></YbtTableColumn>
-        <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip mix-width="140"></YbtTableColumn>
-        <YbtTableColumn prop="projectType" label="项目类型" mix-width="140">
+        <YbtTableColumn prop="appCode" label="应用编码" show-overflow-tooltip min-width="140"></YbtTableColumn>
+        <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip min-width="140"></YbtTableColumn>
+        <YbtTableColumn prop="projectType" label="项目类型" min-width="140">
           <template #default="{ row }">{{
             system_enum.getProjectType(row.projectType)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
         <YbtTableColumn prop="id" label="日志ID"></YbtTableColumn>
         <YbtTableColumn prop="actionType" label="操作类型" min-width="160">
           <template #default="{ row }">{{ distributionConstant.getMoneyManagementOperationType(row.actionType)
-            }}</template>
+          }}</template>
         </YbtTableColumn>
-        <YbtTableColumn prop="createDate" label="创建时间" mix-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="amount" label="变更金额" mix-width="160">
+        <YbtTableColumn prop="createDate" label="创建时间" min-width="160"></YbtTableColumn>
+        <YbtTableColumn prop="amount" label="变更金额" min-width="160">
           <template #default="{ row }">
             <span :class="row.amount >= 0 ? 'color-green' : 'color-red'">{{ `${row.amount >= 0 ? '+' :
               '-'}￥${Math.abs(row.amount)}` }}</span>
           </template>
         </YbtTableColumn>
-        <YbtTableColumn prop="amountBalance" label="预存可用余额" mix-width="160">
+        <YbtTableColumn prop="amountBalance" label="预存可用余额" min-width="160">
           <template #default="{ row }">{{ `￥${row.amountBalance}` }}</template>
         </YbtTableColumn>
-        <YbtTableColumn prop="amountBalance" label="固定授信概况" mix-width="160">
+        <YbtTableColumn prop="amountBalance" label="固定授信概况" min-width="160">
           <template #default="{ row }">
             <div>总额：￥{{ row.amountCreditLine }}</div>
             <div>已用：￥{{ row.amountCreditLineUsed }}</div>
             <div>可用：￥{{ row.amountCreditLineBalance }}</div>
           </template>
         </YbtTableColumn>
-        <YbtTableColumn prop="plantOrderNo" label="订单号" mix-width="140"></YbtTableColumn>
-        <YbtTableColumn prop="remark" label="平台备注" show-overflow-tooltip mix-width="140"></YbtTableColumn>
+        <YbtTableColumn prop="plantOrderNo" label="订单号" min-width="140"></YbtTableColumn>
+        <YbtTableColumn prop="remark" label="平台备注" show-overflow-tooltip min-width="140"></YbtTableColumn>
       </TableModel>
     </div>
   </div>
