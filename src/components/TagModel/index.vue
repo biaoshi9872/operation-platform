@@ -14,11 +14,8 @@ const props = withDefaults(defineProps<IProp>(), {
 <template>
   <div class="flex items-center justify-start">
     <span class="state_container">
-      <div v-if="hasTag" class="state_cell">
-        <span v-if="showTag" class="title">{{title}}</span>
-      </div>
-      <div v-else>
-        <span v-if="showTag" class="title">{{title}}</span>
+      <div v-if="hasTag && showTag" class="state_cell">
+        <span v-if="showTag" class="title">{{ title }}</span>
       </div>
     </span>
     <slot></slot>
@@ -35,13 +32,16 @@ const props = withDefaults(defineProps<IProp>(), {
   .state_cell {
     width: 18px;
     height: 18px;
+
     display: flex;
     justify-content: center;
     align-content: center;
   }
+
   .title {
     width: 100%;
     height: 100%;
+    border-radius: 3px;
     box-sizing: border-box;
     padding: 3px;
     font-size: 13px;

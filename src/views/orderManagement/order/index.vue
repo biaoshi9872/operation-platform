@@ -270,6 +270,7 @@ const initColumns = () => {
         goodDetail: newRow,
         width: '100%',
         dataList: parentRow.detailList,
+        showGiveawayTagBox: true,
         customAttribute: {
           url: 'images',
           name: 'titleSpec',
@@ -339,7 +340,7 @@ const initColumns = () => {
       align: 'center',
       width: '140px',
       render: (row: any) => {
-        return h('div', `￥${row.platformPurchasePrice ?? ''}`)
+        return h('div', row.isGift ? '-' : `￥${row.platformPurchasePrice ?? ''}`)
       },
       openMarginCell: true
     })
@@ -350,7 +351,7 @@ const initColumns = () => {
     align: 'center',
     width: '140px',
     render: (row: any) => {
-      return h('div', `￥${row.platformSupplyPrice ?? ''}`)
+      return h('div', row.isGift ? '-' : `￥${row.platformSupplyPrice ?? ''}`)
     },
     openMarginCell: true
   })
@@ -361,7 +362,7 @@ const initColumns = () => {
       align: 'center',
       width: '140px',
       render: (row: any) => {
-        return h('div', `￥${row.retailPrice ?? ''}`)
+        return h('div', row.isGift ? '-' : `￥${row.retailPrice ?? ''}`)
       },
       openMarginCell: true
     })
@@ -442,7 +443,7 @@ const initColumns = () => {
     render: (row: any) => {
       //状态显示
       const afterSaleStatus = order_enum.getAfter_order_statesTitle(row.afterSaleStatus)
-      const statusDom = h('div', afterSaleStatus)
+      const statusDom = h('div', row.isGift ? '-' : afterSaleStatus)
       return h('div', {}, [statusDom])
     },
     openMarginCell: true
