@@ -89,8 +89,8 @@ const rechargeHandler = (row: API.MerchantPrepaidRecording) => {
           <AuthButton type="primary" authKey :loading="dataPage.loadingExport" @click="exportHandler">导出</AuthButton>
         </template>
         <YbtTableColumn prop="orgId" label="机构ID"></YbtTableColumn>
-        <YbtTableColumn prop="orgName" label="机构名称"></YbtTableColumn>
-        <YbtTableColumn prop="customerName" label="客户名称"></YbtTableColumn>
+        <YbtTableColumn prop="orgName" min-width="180" label="机构名称"></YbtTableColumn>
+        <YbtTableColumn prop="customerName" min-width="180" label="客户名称"></YbtTableColumn>
         <YbtTableColumn prop="amountRechargeTotal" label="累计充值(元)" min-width="140"></YbtTableColumn>
         <YbtTableColumn prop="amountUsedTotal" label="已用额度(预存款)(元)" min-width="160"></YbtTableColumn>
         <YbtTableColumn prop="amountBalance" label="预存款账户余额(元)" min-width="160"></YbtTableColumn>
@@ -98,7 +98,7 @@ const rechargeHandler = (row: API.MerchantPrepaidRecording) => {
         <YbtTableColumn prop="amountCreditLine" label="授信额度(元)" min-width="160"></YbtTableColumn>
         <YbtTableColumn prop="prepaidDepositLimitFlag" label="是否预存款限制" min-width="160">
           <template #default="{ row }">{{ distributionConstant.getPrepaidDepositLimitFlag(row.prepaidDepositLimitFlag)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
         <YbtTableColumn prop label="操作" fixed="right" align="right" min-width="100">
           <template #default="{ row }">
