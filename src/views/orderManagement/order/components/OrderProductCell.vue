@@ -138,8 +138,14 @@ const dataInfo = reactive({
     <h3 class="mb-8">商品财务信息</h3>
     <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
       <YbtTableColumn prop="skuName" label="商品名称" show-overflow-tooltip>
+        <template #default="{ row }" class="flex">
+          <div class="flex">
+            <TagModel :hasTag="true" :showTag="row.isGift" title="赠"></TagModel>
+            <OverflowTooltipCell :text="row.skuName">{{ row.skuName }}</OverflowTooltipCell>
+          </div>
+        </template>
       </YbtTableColumn>
-      <el-table-column prop="date" label="规格" width="150">
+      <el-table-column prop="date" label="规格">
         <template #default="{ row }">
           <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row"
             :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2"></AttributeModule>
