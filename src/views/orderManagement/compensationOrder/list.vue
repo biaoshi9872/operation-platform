@@ -116,7 +116,7 @@ const initColumns = () => {
         prop: '1',
         width: '300px',
         align: 'left',
-        render: (row: any, props: any) => {
+        render: (row: any, parentRow: any, props: any) => {
             let newRow = row
             let spec = row.channelSource == 104 ? (row.attributeValue1 || '') + (row.attributeValue2 || '') : ''
             newRow.titleSpec = row.skuName + spec
@@ -249,7 +249,8 @@ const initColumns = () => {
     columns.value.push({
         label: '操作',
         align: 'center',
-        width: '160px',
+        fixed: 'right',
+        minWidth: '140px',
         render: (row: any) => {
             //撤销
             const revocationButton = row.compensateConfirmStatus == 1 &&
@@ -334,7 +335,7 @@ const initColumns = () => {
                 </SelectModel>
             </el-form-item>
         </SearchForm>
-        <OrderCustomTable class="order-container" :openERP="false" :openFold="false" :border="true" :dataPage="dataPage"
+        <OrderTable class="order-container" :openFold="false" :openERP="true" :border="true" :dataPage="dataPage"
             :dataList="dataPage.dataList" :columns="columns">
             <template #option>
                 <el-button authKey="VO_AFTERWORD_EXPORT" type="primary" @click="exportHandler"
@@ -350,7 +351,7 @@ const initColumns = () => {
                     </div>
                 </div>
             </template>
-        </OrderCustomTable>
+        </OrderTable>
         <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page"></CustomPagination>
     </PageContainer>
     <ConfirmReceiptModel v-model="dataPage.showConfirmReceiptModel" :curryInfo="dataPage.curryInfo"
@@ -370,26 +371,29 @@ const initColumns = () => {
     }
 }
 
-.order-container {
-    .order_row {
-        width: 100%;
+.order_row {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .order_detail {
+        flex: 1;
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: flex-start;
+        gap: 24px;
 
-        .order_detail {
-            flex: 1;
-            display: flex;
-            justify-content: flex-start;
-            gap: 100px;
+        .title {
+            font-weight: 400;
             color: #999;
+            text-align: right;
+        }
 
-            .thirdOrderNo {
-                width: 280px;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-            }
+        .value {
+            font-weight: 400;
+            color: #333333;
         }
     }
 }

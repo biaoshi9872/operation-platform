@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<IProp>(), {
       <div v-if="hasTag && showTag" class="state_cell">
         <span v-if="showTag" class="title">{{ title }}</span>
       </div>
+
     </span>
     <slot></slot>
   </div>

@@ -59,8 +59,15 @@ const dataInfo = reactive({
       <el-table style="width: 100%" :data="goodsList" border>
         <el-table-column prop="title" label="商品信息" width="320">
           <template #default="{ row }">
-            <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
-              comboNumName="singleComboNum" width="100%" showGiveawayTagBox="true" :goodDetail="row"></SkuDetail>
+            <div>
+              <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
+                comboNumName="singleComboNum" width="100%" showGiveawayTagBox="true" :goodDetail="row"
+                :style="{ 'height': '83px' }" class="bottom-border-dashed"></SkuDetail>
+              <SkuDetail v-for="item in row.orderGiftList" :key="item.skuCode" class="bottom-border-dashed"
+                :customAttribute="{ url: 'imageUrl', name: 'skuName', id: 'skuCode' }" comboNumName="singleComboNum"
+                width="100%" showGiveawayTagBox="true" :goodDetail="{ ...item, isGift: true }"
+                :style="{ 'height': '83px' }"></SkuDetail>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="规格" width="150">
@@ -89,7 +96,12 @@ const dataInfo = reactive({
         </el-table-column>
         <el-table-column prop="goodsNum" label="数量">
           <template #default="{ row }">
-            <span>{{ row.goodsNum }}</span>
+            <div :style="{ height: '80px', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center' }"
+              class="bottom-border-dashed">{{
+                row.goodsNum }}</div>
+            <div :style="{ height: '80px', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center' }"
+              v-for="item in row.orderGiftList" :key="item.skuCode" class="bottom-border-dashed">{{ item.totalNum }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="subAmount" min-width="130" label="小计">
@@ -139,9 +151,12 @@ const dataInfo = reactive({
     <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
       <YbtTableColumn prop="skuName" label="商品名称" show-overflow-tooltip>
         <template #default="{ row }" class="flex">
-          <div class="flex">
-            <TagModel :hasTag="true" :showTag="row.isGift" title="赠"></TagModel>
+          <div class="flex  mb-8  ">
             <OverflowTooltipCell :text="row.skuName">{{ row.skuName }}</OverflowTooltipCell>
+          </div>
+          <div class="flex mb-8" v-for="item in row.orderGiftList" :key="item.skuCode">
+            <TagModel :hasTag="true" :showTag="row.isGift" title="赠"></TagModel>
+            <OverflowTooltipCell :text="item.skuName">{{ item.skuName }}</OverflowTooltipCell>
           </div>
         </template>
       </YbtTableColumn>
@@ -153,7 +168,10 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="skuCode" label="商品编码">
         <template #default="{ row }">
-          <span>{{ row.skuCode ? row.skuCode : '/' }}</span>
+          <div class="mb-8 height-80">{{ row.skuCode ? row.skuCode : '/' }}</div>
+          <div class="mb-8 height-80" v-for="item in row.orderGiftList" :key="item.skuCode">{{ item.skuCode ?
+            item.skuCode : '/'
+            }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="tax" label="进项税率">
@@ -161,7 +179,7 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-        }}</template>
+          }}</template>
       </el-table-column>
     </el-table>
     <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">

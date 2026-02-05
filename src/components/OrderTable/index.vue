@@ -126,7 +126,7 @@ const foldingRow = computed(() => {
     return function (row: any) {
         let arr = props.orderChildAttr ? row[props.orderChildAttr] : [row]
         if (!row.folding) {
-            return arr.slice(0, props.foldingLength)
+            return arr?.slice(0, props.foldingLength)
         } else {
             return arr
         }
@@ -282,7 +282,7 @@ watch(() => props.dataList, (newVal) => {
             <slot name="option"></slot>
         </div>
     </div>
-    <div class="table-container">
+    <div class="table-container" :style="{ 'max-height': tableHight }">
         <table>
             <thead>
                 <!-- 合并表头 -->

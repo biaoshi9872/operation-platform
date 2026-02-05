@@ -91,7 +91,7 @@ const showTagBox = computed(() => {
 })
 
 const isShowGiveaway = computed(() => {
-  return props.goodDetail.giveaway == '2' || props.goodDetail.isGift
+  return props.goodDetail.giveaway == '2' || props.goodDetail.isGift == true
 })
 
 const webkitLine = computed(() => {
