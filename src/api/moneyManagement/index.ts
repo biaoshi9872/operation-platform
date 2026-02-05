@@ -136,7 +136,7 @@ class moneyManagement_api {
   //分销商_修改预存款预备警配置
   A_updatePrepaidDepositRechargeWarnConfig(data: any) {
     return request({
-      url: '/merchant/prepaidDeposit/merchant/updatePrepaidDepositRechargeWarnConfig',
+      url: '/merchant/prepaidDeposit/updatePrepaidDepositRechargeWarnConfig',
       method: 'post',
       data
     })

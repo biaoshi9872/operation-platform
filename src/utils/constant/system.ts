@@ -107,6 +107,31 @@ class system_enum {
   public getProjectType(value: any) {
     return this.projectType.find(item => item.value == value)?.label || '--'
   }
+
+  /**
+   * 兑换状态
+   */
+  public exchangeStatusList = [
+    {
+      value: -1,
+      label: '兑换失败'
+    },
+    {
+      value: 1,
+      label: '兑换中'
+    },
+    {
+      value: 0,
+      label: '未兑换'
+    },
+    {
+      value: 2,
+      label: '兑换完成'
+    }
+  ]
+  public getExchangeStatusList(value: any) {
+    return this.exchangeStatusList.find(item => item.value == value)?.label || '--'
+  }
 }
 
 export default new system_enum()

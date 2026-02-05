@@ -15,6 +15,9 @@
               <Plus />
             </el-icon>申请充值
           </AuthButton>
+          <AuthButton type="primary" size="large" round class="apply-btn" authKey="CWZL_YESZ" @click="reviseHandler">
+            余额提醒设置
+          </AuthButton>
         </div>
       </div>
       <div class="right-content">
@@ -31,7 +34,7 @@
 
     <div class="deposit-card-container right-card">
       <div class="frozen-header">
-        <span class="frozen-label">冻结预存款 (元)</span>
+        <h3 class="frozen-label">冻结预存款 (元)</h3>
         <el-tooltip class="box-item" content="提交订单就会进行预存款冻结" placement="top">
           <el-icon class="info-icon">
             <QuestionFilled />
@@ -102,14 +105,7 @@ const applyHandler = () => {
 const reviseHandler = () => {
   dataPage.openFundsAlert = true
 }
-//正常修改
-const changeHandler = () => {
-  const { merchantInfo } = dataPage
-  A_updatePrepaidDepositRechargeWarnConfig({ ...merchantInfo }).then(res => {
-    ElMessage.success('修改成功!')
-    initData()
-  })
-}
+
 </script>
 
 <style lang="scss" scoped>
@@ -166,6 +162,9 @@ const changeHandler = () => {
       }
 
       .apply-btn-wrapper {
+        display: flex;
+        justify-content: center;
+
         .apply-btn {
           display: inline-flex;
           align-items: center;

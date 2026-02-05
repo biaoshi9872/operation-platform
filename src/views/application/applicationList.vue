@@ -115,10 +115,10 @@ const toApplicationHandler = (row: any) => {
           </template>
         </el-table-column>
         <el-table-column prop="orgName" label="分支机构"></el-table-column>
-        <YbtTableColumn prop="projectType" label="项目类型" mix-width="140">
+        <YbtTableColumn prop="projectType" label="项目类型" min-width="140">
           <template #default="{ row }">{{
             system_enum.getProjectType(row.projectType)
-          }}</template>
+            }}</template>
         </YbtTableColumn>
         <el-table-column prop="createDate" label="创建时间"></el-table-column>
         <el-table-column prop="createUserName" label="创建人"></el-table-column>

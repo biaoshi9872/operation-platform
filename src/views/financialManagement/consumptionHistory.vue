@@ -98,21 +98,21 @@ const exportHandler = () => {
         <template #option>
           <AuthButton type="primary" authKey :loading="dataPage.loadingExport" @click="exportHandler">导出</AuthButton>
         </template>
-        <YbtTableColumn prop="orgId" label="机构ID" mix-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="orgName" label="机构名称" show-overflow-tooltip mix-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip mix-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="projectType" label="项目类型" mix-width="160">
+        <YbtTableColumn prop="orgId" label="机构ID" min-width="160"></YbtTableColumn>
+        <YbtTableColumn prop="orgName" label="机构名称" show-overflow-tooltip min-width="160"></YbtTableColumn>
+        <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip min-width="160"></YbtTableColumn>
+        <YbtTableColumn prop="projectType" label="项目类型" min-width="160">
           <template #default="{ row }">{{
             system_enum.getProjectType(row.projectType)
           }}</template>
         </YbtTableColumn>
-        <YbtTableColumn prop="id" label="日志ID" mix-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="actionType" label="操作类型" mix-width="160">
+        <YbtTableColumn prop="id" label="日志ID" min-width="160"></YbtTableColumn>
+        <YbtTableColumn prop="actionType" label="操作类型" min-width="160">
           <template #default="{ row }">{{ distributionConstant.getMoneyManagementOperationType(row.actionType)
             }}</template>
         </YbtTableColumn>
         <YbtTableColumn prop="createDate" label="创建时间" width="170"></YbtTableColumn>
-        <YbtTableColumn prop="amount" label="变更金额" mix-width="160">
+        <YbtTableColumn prop="amount" label="变更金额" min-width="160">
           <template #default="{ row }">
             <span :class="row.amount >= 0 ? 'color-green' : 'color-red'">{{ `${row.amount >= 0 ? '+' :
               '-'}￥${Math.abs(row.amount)}` }}</span>
@@ -130,7 +130,7 @@ const exportHandler = () => {
         </YbtTableColumn>
         <YbtTableColumn prop="plantOrderNo" label="订单号" width="240"></YbtTableColumn>
         <YbtTableColumn prop="afterSaleNo" label="售后单号" width="240"></YbtTableColumn>
-        <YbtTableColumn prop="remark" label="平台备注" show-overflow-tooltip mix-width="140"></YbtTableColumn>
+        <YbtTableColumn prop="remark" label="平台备注" show-overflow-tooltip min-width="140"></YbtTableColumn>
       </TableModel>
     </div>
   </PageContainer>
