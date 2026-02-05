@@ -150,7 +150,6 @@ const initColumns = () => {
           name: 'titleSpec',
           id: 'skuCode'
         },
-        width: '100%',
         curryPropInfo: props
       })
     }
