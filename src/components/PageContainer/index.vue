@@ -21,8 +21,6 @@ watchEffect(() => {
   console.log(pageInfo, 'pageInfo')
 })
 
-
-
 provide('pageInfo', pageInfo)
 
 </script>
@@ -34,5 +32,8 @@ provide('pageInfo', pageInfo)
 <style scoped lang="scss">
 .l-page-global-container {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
 }
 </style>
