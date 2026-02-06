@@ -50,19 +50,13 @@ const hiddenStatus = computed(() => {
       </template>
     </div>
     <div class="content_box">
-      <div class="content_box_left">
+      <div class="content_box_left" v-if="deliverInfo?.deliverGoodsList?.length > 0">
         <div v-for="item in deliverInfo.deliverGoodsList">
           <div class="item">
             <SkuDetail :customAttribute="{ url: 'images', name: 'goodsName', id: 'skuCode' }" width="100%"
               :goodDetail="item">
             </SkuDetail>
             <span>x{{ item.goodsNum }}</span>
-          </div>
-          <div class="mb-8 item" v-for="child in item.orderGiftList">
-            <SkuDetail :customAttribute="{ url: 'imageUrl', name: 'skuName', id: 'skuCode' }" width="100%"
-              :goodDetail="{ ...child, isGift: true }">
-            </SkuDetail>
-            <span>x{{ child.totalNum }}</span>
           </div>
         </div>
       </div>
