@@ -10,7 +10,7 @@ const source = computed(() => {
 </script>
 <template>
   <VoucherOrderPage v-if="source == '107'"></VoucherOrderPage>
-  <BonusOrderPage v-if="source == '108'"></BonusOrderPage>
+  <BonusOrderPage v-else-if="source == '108'"></BonusOrderPage>
   <BaseOrderPage v-else></BaseOrderPage>
 </template>
 
