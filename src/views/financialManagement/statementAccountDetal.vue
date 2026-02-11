@@ -113,49 +113,47 @@ const exportHandler = () => {
             </el-form-item>
         </SearchForm>
         <!-- 操作区 + 表格 -->
-        <div class="option_box">
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="pagingQueryHarder">
-                <template #option>
-                    <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
+        <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="pagingQueryHarder">
+            <template #option>
+                <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
+            </template>
+            <!-- 列定义 -->
+            <el-table-column label="订单编号" prop="orderNo" min-width="200" align="left" />
+            <el-table-column label="供应商订单编号" prop="channelOrderNo" min-width="200" align="left" />
+            <el-table-column label="第三方订单编号" prop="outOrderNo" min-width="200" align="left" />
+            <el-table-column label="提交订单时间" prop="submitTime" min-width="170" align="left" />
+            <el-table-column label="确认订单时间" prop="confirmTime" min-width="160" align="left" />
+            <el-table-column label="订单状态" prop="orderStatus" min-width="100" align="center">
+                <template #default="scope">
+                    {{ order_enum.getOrder_statesTitle(scope.row.orderStatus) }}
                 </template>
-                <!-- 列定义 -->
-                <el-table-column label="订单编号" prop="orderNo" min-width="200" align="left" />
-                <el-table-column label="供应商订单编号" prop="channelOrderNo" min-width="200" align="left" />
-                <el-table-column label="第三方订单编号" prop="outOrderNo" min-width="200" align="left" />
-                <el-table-column label="提交订单时间" prop="submitTime" min-width="170" align="left" />
-                <el-table-column label="确认订单时间" prop="confirmTime" min-width="160" align="left" />
-                <el-table-column label="订单状态" prop="orderStatus" min-width="100" align="center">
-                    <template #default="scope">
-                        {{ order_enum.getOrder_statesTitle(scope.row.orderStatus) }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="是否售后完成" prop="statementType" min-width="100" align="center">
-                    <template #default="scope">
-                        {{ scope.row.statementType === 1 ? '是' : '否' }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="售后类型" prop="afterOrderType" min-width="100" align="center">
-                    <template #default="scope">
-                        {{ order_enum.getAfterSalesTypeTitle(scope.row.afterOrderType) }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="商品编码" prop="skuCode" min-width="140" align="left" />
-                <el-table-column label="商品名称" prop="skuName" show-overflow-tooltip min-width="200" align="left" />
-                <el-table-column label="商品数量" prop="goodsNum" min-width="100" align="left" />
-                <el-table-column label="商品单价" prop="retailPrice" min-width="120" align="left" />
-                <el-table-column label="商品总金额" prop="goodsPriceTotal" min-width="140" align="left" />
-                <el-table-column label="运费（元）" prop="freightAmount" min-width="120" align="left" />
-                <el-table-column label="服务费（元）" prop="serviceAmount" min-width="120" align="left" />
-                <el-table-column label="结算总金额（元）" prop="settlementPriceTotal" min-width="160" align="left" />
-                <el-table-column label="商品类型" prop="goodsTypeName" min-width="120" align="center">
-                    <template #default="scope">
-                        {{ scope.row.goodsTypeName }}
-                    </template>
-                </el-table-column>
-                <el-table-column v-if="(['101'].includes(getSystemOptionType))" label="供应商" show-overflow-tooltip
-                    prop="supplyName" min-width="160" align="left" />
-            </TableModel>
-        </div>
+            </el-table-column>
+            <el-table-column label="是否售后完成" prop="statementType" min-width="100" align="center">
+                <template #default="scope">
+                    {{ scope.row.statementType === 1 ? '是' : '否' }}
+                </template>
+            </el-table-column>
+            <el-table-column label="售后类型" prop="afterOrderType" min-width="100" align="center">
+                <template #default="scope">
+                    {{ order_enum.getAfterSalesTypeTitle(scope.row.afterOrderType) }}
+                </template>
+            </el-table-column>
+            <el-table-column label="商品编码" prop="skuCode" min-width="140" align="left" />
+            <el-table-column label="商品名称" prop="skuName" show-overflow-tooltip min-width="200" align="left" />
+            <el-table-column label="商品数量" prop="goodsNum" min-width="100" align="left" />
+            <el-table-column label="商品单价" prop="retailPrice" min-width="120" align="left" />
+            <el-table-column label="商品总金额" prop="goodsPriceTotal" min-width="140" align="left" />
+            <el-table-column label="运费（元）" prop="freightAmount" min-width="120" align="left" />
+            <el-table-column label="服务费（元）" prop="serviceAmount" min-width="120" align="left" />
+            <el-table-column label="结算总金额（元）" prop="settlementPriceTotal" min-width="160" align="left" />
+            <el-table-column label="商品类型" prop="goodsTypeName" min-width="120" align="center">
+                <template #default="scope">
+                    {{ scope.row.goodsTypeName }}
+                </template>
+            </el-table-column>
+            <el-table-column v-if="(['101'].includes(getSystemOptionType))" label="供应商" show-overflow-tooltip
+                prop="supplyName" min-width="160" align="left" />
+        </PageTable>
     </PageContainer>
 </template>
 

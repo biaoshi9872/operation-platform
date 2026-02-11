@@ -85,33 +85,31 @@ const goDetail = (row: API.OpenBillPageRecord) => {
         </div>
         <!-- 说明文案（根据截图补充） -->
         <!-- 操作区 -->
-        <div class="option_box">
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
-                <template #option>
-                    <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
+        <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
+            <template #option>
+                <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
+            </template>
+            <!-- 列表 -->
+            <el-table-column label="所属分支机构" prop="orgName" min-width="180" show-overflow-tooltip align="left" />
+            <el-table-column label="应用名称" prop="appName" min-width="120" show-overflow-tooltip align="left" />
+            <el-table-column label="账单月份" prop="billDate" min-width="120" align="left" />
+            <el-table-column label="账单编号" prop="billNo" min-width="160" align="left" />
+            <el-table-column label="商品金额（元）" prop="goodsAmountTotal" min-width="160" align="left" />
+            <el-table-column label="售后商品金额（元）" prop="goodsAmountAfterTotal" min-width="180" align="left" />
+            <el-table-column label="开票商品金额（元）" prop="goodsAmountInvoiceTotal" min-width="180" align="left" />
+            <el-table-column label="商品运费金额（元）" prop="goodsFreightTotal" min-width="180" align="left" />
+            <el-table-column label="售后运费金额（元）" prop="goodsFreightAfterTotal" min-width="180" align="left" />
+            <el-table-column label="开票运费金额（元）" prop="goodsFreightInvoiceTotal" min-width="180" align="left" />
+            <el-table-column label="商品服务费金额（元）" prop="goodsServiceTotal" min-width="180" align="left" />
+            <el-table-column label="售后服务费金额（元）" prop="goodsServiceAfterTotal" min-width="180" align="left" />
+            <el-table-column label="开票服务费金额（元）" prop="goodsServiceInvoiceTotal" min-width="180" align="left" />
+            <el-table-column label="可开票金额（元）" prop="goodsAmountFinalInvoiceTotal" min-width="160" align="left" />
+            <el-table-column label="操作" min-width="100" align="right" fixed="right">
+                <template #default="{ row }">
+                    <el-button type="primary" link @click="goDetail(row)">详情</el-button>
                 </template>
-                <!-- 列表 -->
-                <el-table-column label="所属分支机构" prop="orgName" min-width="180" show-overflow-tooltip align="left" />
-                <el-table-column label="应用名称" prop="appName" min-width="120" show-overflow-tooltip align="left" />
-                <el-table-column label="账单月份" prop="billDate" min-width="120" align="left" />
-                <el-table-column label="账单编号" prop="billNo" min-width="160" align="left" />
-                <el-table-column label="商品金额（元）" prop="goodsAmountTotal" min-width="160" align="left" />
-                <el-table-column label="售后商品金额（元）" prop="goodsAmountAfterTotal" min-width="180" align="left" />
-                <el-table-column label="开票商品金额（元）" prop="goodsAmountInvoiceTotal" min-width="180" align="left" />
-                <el-table-column label="商品运费金额（元）" prop="goodsFreightTotal" min-width="180" align="left" />
-                <el-table-column label="售后运费金额（元）" prop="goodsFreightAfterTotal" min-width="180" align="left" />
-                <el-table-column label="开票运费金额（元）" prop="goodsFreightInvoiceTotal" min-width="180" align="left" />
-                <el-table-column label="商品服务费金额（元）" prop="goodsServiceTotal" min-width="180" align="left" />
-                <el-table-column label="售后服务费金额（元）" prop="goodsServiceAfterTotal" min-width="180" align="left" />
-                <el-table-column label="开票服务费金额（元）" prop="goodsServiceInvoiceTotal" min-width="180" align="left" />
-                <el-table-column label="可开票金额（元）" prop="goodsAmountFinalInvoiceTotal" min-width="160" align="left" />
-                <el-table-column label="操作" min-width="100" align="right" fixed="right">
-                    <template #default="{ row }">
-                        <el-button type="primary" link @click="goDetail(row)">详情</el-button>
-                    </template>
-                </el-table-column>
-            </TableModel>
-        </div>
+            </el-table-column>
+        </PageTable>
     </PageContainer>
 </template>
 

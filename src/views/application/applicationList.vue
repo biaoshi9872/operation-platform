@@ -101,35 +101,33 @@ const toApplicationHandler = (row: any) => {
         </SelectModel>
       </el-form-item>
     </SearchForm>
-    <div class="option_box">
-      <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
-        <template #option>
-          <AuthButton authKey="APP_ADD" type="primary" @click="addApplicationHandler">创建应用</AuthButton>
+    <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
+      <template #option>
+        <AuthButton authKey="APP_ADD" type="primary" @click="addApplicationHandler">创建应用</AuthButton>
+      </template>
+      <el-table-column prop="appName" label="应用名称">
+        <template #default="{ row }">
+          <div class="flex items-center gap-2" @dblclick="getProjectId(row)">
+            <img style="width: 20px; height:20px" src="@/assets/images/login/app.png" />
+            <OverflowTooltipCell :text="row.appName">{{ row.appName }}</OverflowTooltipCell>
+          </div>
         </template>
-        <el-table-column prop="appName" label="应用名称">
-          <template #default="{ row }">
-            <div class="flex items-center gap-2" @dblclick="getProjectId(row)">
-              <img style="width: 20px; height:20px" src="@/assets/images/login/app.png" />
-              <OverflowTooltipCell :text="row.appName">{{ row.appName }}</OverflowTooltipCell>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="orgName" label="分支机构"></el-table-column>
-        <YbtTableColumn prop="projectType" label="项目类型" min-width="140">
-          <template #default="{ row }">{{
-            system_enum.getProjectType(row.projectType)
-            }}</template>
-        </YbtTableColumn>
-        <el-table-column prop="createDate" label="创建时间"></el-table-column>
-        <el-table-column prop="createUserName" label="创建人"></el-table-column>
-        <el-table-column label="操作" width="200px" align="right">
-          <template #default="{ row }">
-            <el-button type="primary" link @click="toApplicationHandler(row)">应用管理</el-button>
-            <AuthButton authKey="APP_EDIT" type="primary" link @click="editApplicationHandler(row)">编辑</AuthButton>
-          </template>
-        </el-table-column>
-      </TableModel>
-    </div>
+      </el-table-column>
+      <el-table-column prop="orgName" label="分支机构"></el-table-column>
+      <YbtTableColumn prop="projectType" label="项目类型" min-width="140">
+        <template #default="{ row }">{{
+          system_enum.getProjectType(row.projectType)
+          }}</template>
+      </YbtTableColumn>
+      <el-table-column prop="createDate" label="创建时间"></el-table-column>
+      <el-table-column prop="createUserName" label="创建人"></el-table-column>
+      <el-table-column label="操作" width="200px" align="right">
+        <template #default="{ row }">
+          <el-button type="primary" link @click="toApplicationHandler(row)">应用管理</el-button>
+          <AuthButton authKey="APP_EDIT" type="primary" link @click="editApplicationHandler(row)">编辑</AuthButton>
+        </template>
+      </el-table-column>
+    </PageTable>
     <ApplicationModel v-model="dataPage.showApplication" :curryInfo="dataPage.curryInfo"></ApplicationModel>
   </PageContainer>
 </template>

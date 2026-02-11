@@ -98,42 +98,41 @@ const exportHandler = () => {
                 </OrgSelect>
             </el-form-item>
         </SearchForm>
-        <div class="option_box">
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
-                <template #option>
-                    <el-button type="primary" @click="handleAdd">新增</el-button>
-                    <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
+
+        <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
+            <template #option>
+                <el-button type="primary" @click="handleAdd">新增</el-button>
+                <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
+            </template>
+            <el-table-column label="提交时间" prop="createDate" min-width="170px" align="left"></el-table-column>
+            <el-table-column label="提交人" prop="createByStr" min-width="120px" align="left"></el-table-column>
+            <el-table-column v-if="getSystemOptionType == 101" label="所属机构" prop="orgName" min-width="120px"
+                align="left" show-overflow-tooltip></el-table-column>
+            <el-table-column label="供应商名称" prop="supplyName" min-width="120px" align="left"
+                show-overflow-tooltip></el-table-column>
+            <el-table-column label="联系人" show-overflow-tooltip prop="contractName" min-width="120px"
+                align="left"></el-table-column>
+            <el-table-column label="联系电话" prop="contractTel" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="合作时间" prop="cooperationStartDate" width="200px" align="left">
+                <template #default="{ row }">
+                    {{ row.cooperationStartDate }} 至 {{ row.cooperationEndDate }}
                 </template>
-                <el-table-column label="提交时间" prop="createDate" min-width="170px" align="left"></el-table-column>
-                <el-table-column label="提交人" prop="createByStr" min-width="120px" align="left"></el-table-column>
-                <el-table-column v-if="getSystemOptionType == 101" label="所属机构" prop="orgName" min-width="120px"
-                    align="left" show-overflow-tooltip></el-table-column>
-                <el-table-column label="供应商名称" prop="supplyName" min-width="120px" align="left"
-                    show-overflow-tooltip></el-table-column>
-                <el-table-column label="联系人" show-overflow-tooltip prop="contractName" min-width="120px"
-                    align="left"></el-table-column>
-                <el-table-column label="联系电话" prop="contractTel" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="合作时间" prop="cooperationStartDate" width="200px" align="left">
-                    <template #default="{ row }">
-                        {{ row.cooperationStartDate }} 至 {{ row.cooperationEndDate }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="经营范围" prop="businessScope" show-overflow-tooltip min-width="120px" align="left">
-                    <template #default="{ row }">
-                        {{ supplierEnum.getBusinessScope(row.businessScope) }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="最近更新时间" prop="updateDate" min-width="170px" align="left"></el-table-column>
-                <el-table-column label="最近更新人" show-overflow-tooltip prop="updateByStr" min-width="120px"
-                    align="left"></el-table-column>
-                <el-table-column label="操作" min-width="120px" align="right" fixed="right">
-                    <template #default="scope">
-                        <el-button type="primary" link @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="primary" link @click="handleView(scope.row)">详情</el-button>
-                    </template>
-                </el-table-column>
-            </TableModel>
-        </div>
+            </el-table-column>
+            <el-table-column label="经营范围" prop="businessScope" show-overflow-tooltip min-width="120px" align="left">
+                <template #default="{ row }">
+                    {{ supplierEnum.getBusinessScope(row.businessScope) }}
+                </template>
+            </el-table-column>
+            <el-table-column label="最近更新时间" prop="updateDate" min-width="170px" align="left"></el-table-column>
+            <el-table-column label="最近更新人" show-overflow-tooltip prop="updateByStr" min-width="120px"
+                align="left"></el-table-column>
+            <el-table-column label="操作" min-width="120px" align="right" fixed="right">
+                <template #default="scope">
+                    <el-button type="primary" link @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button type="primary" link @click="handleView(scope.row)">详情</el-button>
+                </template>
+            </el-table-column>
+        </PageTable>
     </PageContainer>
 </template>
 <style lang="scss" scoped></style>

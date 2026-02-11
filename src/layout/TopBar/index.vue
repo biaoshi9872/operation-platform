@@ -49,12 +49,15 @@ const { isUat } = useIsEevCheckHooks({})
     display: flex;
     align-items: center;
     border-radius: 2px;
+
     .full-big-container {
       cursor: pointer;
     }
+
     .top-info-divider {
       margin: 0 20px;
     }
+
     .down-info {
       color: var(--el-color-primary);
       text-decoration: underline;

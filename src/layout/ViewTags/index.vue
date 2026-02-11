@@ -2,7 +2,8 @@
   <div class="tabs-container">
     <div class="tabs-item">
       <el-tabs v-model="activeTabName" class="tabs-item-style" @tab-click="tabClick" @tab-remove="tabRemove">
-        <el-tab-pane v-for="tab in $tabsStore.visitedViews" :key="tab" :label="tab.title" :name="tab.pathKey" :closable="!isAffix(tab)">
+        <el-tab-pane v-for="tab in $tabsStore.visitedViews" :key="tab" :label="tab.title" :name="tab.pathKey"
+          :closable="!isAffix(tab)">
           <template #label>
             <span class="tab-label" @contextmenu="tabContextmenu($event, tab)">
               <span class="tab-title">{{ tab.title }}</span>
@@ -24,7 +25,8 @@
       </el-icon>
     </el-dropdown>
   </div>
-  <Contextmenu v-model:visible="showContextMenu" :contextMenuStyle="contextMenuStyle" :curryTab="curryTab"></Contextmenu>
+  <Contextmenu v-model:visible="showContextMenu" :contextMenuStyle="contextMenuStyle" :curryTab="curryTab">
+  </Contextmenu>
 </template>
 
 <script setup lang="ts">
@@ -176,6 +178,7 @@ addTab()
   position: relative;
   z-index: 6;
   height: 40px;
+  box-sizing: border-box;
   background-color: var(--el-searchForm-bg-color);
   //margin-bottom: 8px;
 
@@ -183,6 +186,10 @@ addTab()
     transition: left 0.3s;
     flex-grow: 1;
     overflow: hidden;
+
+    ::v-deep(.el-tabs__header) {
+      margin: 0 !important;
+    }
 
     ::v-deep(.el-tabs__nav-prev) {
       padding: 0 10px;

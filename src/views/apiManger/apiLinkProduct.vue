@@ -107,7 +107,7 @@ const addOrEditHandler = (row: any, type: 'edit' | 'add') => {
         <DatePickerRange v-model:start="dataPage.facade.updateDataMin" v-model:end="dataPage.facade.updateDataMax" />
       </el-form-item>
     </SearchForm>
-    <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" id="skuCode" @pagingQuery="searchQueryHarder"
+    <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" id="skuCode" @pagingQuery="searchQueryHarder"
       :loading="dataPage.loadingData" @selection-change="handleSelectionChange">
       <template #option>
         <AuthButton authKey="API_LINK_ADD" type="primary" @click="addOrEditHandler(null, 'add')">新增</AuthButton>
@@ -137,7 +137,7 @@ const addOrEditHandler = (row: any, type: 'edit' | 'add') => {
           <AuthButton authKey="API_LINK_EDIT" type="text" @click="addOrEditHandler(row, 'edit')">编辑</AuthButton>
         </template>
       </el-table-column>
-    </TableModel>
+    </PageTable>
     <EditLinkProductModel v-model="dataPage.otherData.editProductModel" :curryInfo="dataPage.otherData.curryInfo"
       @refresh="searchQueryHarder"></EditLinkProductModel>
   </PageContainer>

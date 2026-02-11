@@ -111,46 +111,44 @@ const updataPwdHandler = (row: any) => {
                 <OrgSelect v-model="dataPage.facade.orgId"></OrgSelect>
             </el-form-item>
         </SearchForm>
-        <div class="option_box">
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
-                <template #option>
-                    <el-button type="primary" @click="handleAdd">新增</el-button>
-                    <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
+        <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
+            <template #option>
+                <el-button type="primary" @click="handleAdd">新增</el-button>
+                <el-button type="primary" :loading="dataPage.loadingExport" @click="exportHandler">导出</el-button>
+            </template>
+            <el-table-column label="编号" prop="accountCode" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="创建时间" prop="createTime" min-width="170px" align="left"></el-table-column>
+            <el-table-column label="所属分支机构" prop="orgName" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="供应商名称" prop="supplyName" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="联系人" prop="contractName" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="联系电话" prop="contractTel" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="登录账号" prop="username" min-width="120px" align="left"></el-table-column>、
+            <el-table-column label="账号状态" prop="status" min-width="120px" align="left">
+                <template #default="{ row }">
+                    {{ supplierEnum.getAccountStatus(row.status) }}
                 </template>
-                <el-table-column label="编号" prop="accountCode" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="创建时间" prop="createTime" min-width="170px" align="left"></el-table-column>
-                <el-table-column label="所属分支机构" prop="orgName" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="供应商名称" prop="supplyName" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="联系人" prop="contractName" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="联系电话" prop="contractTel" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="登录账号" prop="username" min-width="120px" align="left"></el-table-column>、
-                <el-table-column label="账号状态" prop="status" min-width="120px" align="left">
-                    <template #default="{ row }">
-                        {{ supplierEnum.getAccountStatus(row.status) }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="账号有效期" prop="status" min-width="170px" align="left">
-                    <template #default="{ row }">
-                        {{ row.accountValidStart }} 至 {{ row.accountValidEnd }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="经营范围" prop="businessScope" min-width="120px" align="left">
-                    <template #default="{ row }">
-                        {{ supplierEnum.getBusinessScope(row.businessScope) }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" prop="accountValidStart" min-width="170px" align="right" fixed="right">
-                    <template #default="{ row }">
-                        <el-button type="primary" link @click="editAccountHandler(row)">编辑</el-button>
-                        <el-button v-if="row.status == 1" type="primary" link
-                            @click="updataStateHandler(row)">禁用</el-button>
-                        <el-button v-if="row.status != 1" type="primary" link
-                            @click="updataStateHandler(row)">启用</el-button>
-                        <el-button type="primary" link @click="updataPwdHandler(row)">重置密码</el-button>
-                    </template>
-                </el-table-column>
-            </TableModel>
-        </div>
+            </el-table-column>
+            <el-table-column label="账号有效期" prop="status" min-width="170px" align="left">
+                <template #default="{ row }">
+                    {{ row.accountValidStart }} 至 {{ row.accountValidEnd }}
+                </template>
+            </el-table-column>
+            <el-table-column label="经营范围" prop="businessScope" min-width="120px" align="left">
+                <template #default="{ row }">
+                    {{ supplierEnum.getBusinessScope(row.businessScope) }}
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" prop="accountValidStart" min-width="170px" align="right" fixed="right">
+                <template #default="{ row }">
+                    <el-button type="primary" link @click="editAccountHandler(row)">编辑</el-button>
+                    <el-button v-if="row.status == 1" type="primary" link
+                        @click="updataStateHandler(row)">禁用</el-button>
+                    <el-button v-if="row.status != 1" type="primary" link
+                        @click="updataStateHandler(row)">启用</el-button>
+                    <el-button type="primary" link @click="updataPwdHandler(row)">重置密码</el-button>
+                </template>
+            </el-table-column>
+        </PageTable>
         <SupplierEditModel v-model="dataPage.showSupplier" :curryInfo="dataPage.curryInfo" @refresh="searchQueryHarder">
         </SupplierEditModel>
         <!-- 修改密码 -->

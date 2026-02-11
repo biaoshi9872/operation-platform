@@ -124,7 +124,7 @@ const initColumns = () => {
     width: '120px',
     label: '是否脱敏发货',
     align: 'center',
-    render: (row: any, column: any, index: any, parentRow: any) => {
+    render: (row: any, parentRow: any) => {
       if (parentRow.channelSource == 104) {
         const title = parentRow?.desensitizationStatus === 1 ? '是' : '否'
         return h(StateCell, { title: title, isTrueState: parentRow?.desensitizationStatus == 1 })
@@ -138,7 +138,7 @@ const initColumns = () => {
     prop: '1',
     width: '300px',
     align: 'left',
-    render: (row: any, props: any) => {
+    render: (row: any, parentRow: any, props: any) => {
       let newRow = row
       let spec = row.channelSource == 104 ? (row.attributeValue1 || '') + (row.attributeValue2 || '') : ''
       newRow.titleSpec = row.skuName + spec
@@ -150,7 +150,6 @@ const initColumns = () => {
           name: 'titleSpec',
           id: 'skuCode'
         },
-        width: '100%',
         curryPropInfo: props
       })
     }
@@ -267,7 +266,8 @@ const initColumns = () => {
   columns.value.push({
     label: '操作',
     align: 'center',
-    width: '160px',
+    fixed: 'right',
+    minWidth: '140px',
     render: (row: any) => {
       //电商审核逻辑
       let authButton = null
@@ -404,7 +404,7 @@ const initColumns = () => {
         </SelectModel>
       </el-form-item>
     </SearchForm>
-    <OrderCustomTable class="order-container" :openERP="false" :openFold="false" :border="true" :dataPage="dataPage"
+    <OrderTable class="order-container" :openFold="false" :openERP="true" :border="true" :dataPage="dataPage"
       :dataList="dataPage.dataList" :columns="columns">
       <template #option>
         <el-button authKey="VO_AFTERWORD_EXPORT" type="primary" @click="exportHandler"
@@ -424,7 +424,7 @@ const initColumns = () => {
           </div>
         </div>
       </template>
-    </OrderCustomTable>
+    </OrderTable>
     <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page"></CustomPagination>
     <AuthModel v-model="dataPage.showAuthModel" :curryInfo="dataPage.curryInfo" :title="dataPage.title"
       @refresh="searchQueryHarder">
@@ -448,26 +448,29 @@ const initColumns = () => {
   }
 }
 
-.order-container {
-  .order_row {
-    width: 100%;
+.order_row {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .order_detail {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
 
-    .order_detail {
-      flex: 1;
-      display: flex;
-      justify-content: flex-start;
-      gap: 100px;
+    .title {
+      font-weight: 400;
       color: #999;
+      text-align: right;
+    }
 
-      .thirdOrderNo {
-        width: 280px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
+    .value {
+      font-weight: 400;
+      color: #333333;
     }
   }
 }
