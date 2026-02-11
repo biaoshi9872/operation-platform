@@ -52,23 +52,7 @@ const props = withDefaults(defineProps<IProp>(), {
 })
 
 const emits = defineEmits(['multipleHandler', 'update:multipleList'])
-const slot = useSlots()
-const pageInfo: any = inject('pageInfo', () => {
-    return null
-})
-//高度适配
-const tableHight = computed(() => {
-    let height = 'auto'
-    if (pageInfo) {
-        if (slot.hasOwnProperty('option')) {
-            pageInfo.optionHight = 40
-        }
-        let totalHeight =
-            pageInfo?.searchHight + pageInfo?.tabsHight + pageInfo?.optionHight + pageInfo?.layoutHight + pageInfo?.tabHeaderHeight + pageInfo?.paginationHeight
-        height = `calc(100vh - ${totalHeight}px )`
-    }
-    return height
-})
+
 const columnList = computed(() => {
     return props.columns.filter((item: IColumn) => {
         //1.erp校验
@@ -282,7 +266,7 @@ watch(() => props.dataList, (newVal) => {
             <slot name="option"></slot>
         </div>
     </div>
-    <div class="table-container" :style="{ 'max-height': tableHight }">
+    <div class="table-container">
         <table>
             <thead>
                 <!-- 合并表头 -->
