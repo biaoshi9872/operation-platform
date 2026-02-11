@@ -94,43 +94,41 @@ const exportHandler = () => {
                 </SelectModel>
             </el-form-item>
         </SearchForm>
-        <div class="option_box">
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" :loading="dataPage.loadingData"
-                :dataPage="dataPage" @pagingQuery="searchQueryHarder">
-                <template #option>
-                    <AuthButton type="primary" authKey :loading="dataPage.loadingExport" @click="exportHandler">导出
-                    </AuthButton>
-                    <Notices title="应用交易明细以平台分销价为结算依据。"></Notices>
+        <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" :loading="dataPage.loadingData"
+            :dataPage="dataPage" @pagingQuery="searchQueryHarder">
+            <template #option>
+                <AuthButton type="primary" authKey :loading="dataPage.loadingExport" @click="exportHandler">导出
+                </AuthButton>
+                <Notices title="应用交易明细以平台分销价为结算依据。"></Notices>
+            </template>
+            <YbtTableColumn v-if="getSystemOptionType == '101'" prop="orgName" label="机构名称" show-overflow-tooltip
+                min-width="140">
+            </YbtTableColumn>
+            <YbtTableColumn prop="appCode" label="应用编码" show-overflow-tooltip min-width="140"></YbtTableColumn>
+            <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip min-width="140"></YbtTableColumn>
+            <YbtTableColumn prop="projectType" label="项目类型" min-width="140">
+                <template #default="{ row }">{{
+                    system_enum.getProjectType(row.projectType)
+                }}</template>
+            </YbtTableColumn>
+            <YbtTableColumn prop="id" label="日志ID" min-width="120"></YbtTableColumn>
+            <YbtTableColumn prop="actionType" label="操作类型" min-width="120">
+                <template #default="{ row }">{{
+                    distributionConstant.getMoneyManagementOperationType1(row.actionType)
+                }}</template>
+            </YbtTableColumn>
+            <YbtTableColumn prop="createDate" label="创建时间" min-width="160"></YbtTableColumn>
+            <YbtTableColumn prop="retailAmount" label="变更金额" min-width="160">
+                <template #default="{ row }">
+                    <span :class="row.retailAmount >= 0 ? 'color-green' : 'color-red'">{{ `${row.retailAmount >= 0 ?
+                        '+' :
+                        '-'}￥${Math.abs(row.retailAmount)}` }}</span>
                 </template>
-                <YbtTableColumn v-if="getSystemOptionType == '101'" prop="orgName" label="机构名称" show-overflow-tooltip
-                    min-width="140">
-                </YbtTableColumn>
-                <YbtTableColumn prop="appCode" label="应用编码" show-overflow-tooltip min-width="140"></YbtTableColumn>
-                <YbtTableColumn prop="appName" label="应用名称" show-overflow-tooltip min-width="140"></YbtTableColumn>
-                <YbtTableColumn prop="projectType" label="项目类型" min-width="140">
-                    <template #default="{ row }">{{
-                        system_enum.getProjectType(row.projectType)
-                    }}</template>
-                </YbtTableColumn>
-                <YbtTableColumn prop="id" label="日志ID" min-width="120"></YbtTableColumn>
-                <YbtTableColumn prop="actionType" label="操作类型" min-width="120">
-                    <template #default="{ row }">{{
-                        distributionConstant.getMoneyManagementOperationType1(row.actionType)
-                    }}</template>
-                </YbtTableColumn>
-                <YbtTableColumn prop="createDate" label="创建时间" min-width="160"></YbtTableColumn>
-                <YbtTableColumn prop="retailAmount" label="变更金额" min-width="160">
-                    <template #default="{ row }">
-                        <span :class="row.retailAmount >= 0 ? 'color-green' : 'color-red'">{{ `${row.retailAmount >= 0 ?
-                            '+' :
-                            '-'}￥${Math.abs(row.retailAmount)}` }}</span>
-                    </template>
-                </YbtTableColumn>
-                <YbtTableColumn prop="plantOrderNo" label="订单号" width="240"></YbtTableColumn>
-                <YbtTableColumn prop="afterSaleNo" label="售后单号" width="240"></YbtTableColumn>
-                <YbtTableColumn prop="remark" label="平台备注" show-overflow-tooltip min-width="140"></YbtTableColumn>
-            </TableModel>
-        </div>
+            </YbtTableColumn>
+            <YbtTableColumn prop="plantOrderNo" label="订单号" width="240"></YbtTableColumn>
+            <YbtTableColumn prop="afterSaleNo" label="售后单号" width="240"></YbtTableColumn>
+            <YbtTableColumn prop="remark" label="平台备注" show-overflow-tooltip min-width="140"></YbtTableColumn>
+        </PageTable>
     </PageContainer>
 </template>
 <style lang="scss" scoped></style>

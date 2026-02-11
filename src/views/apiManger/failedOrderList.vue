@@ -149,7 +149,7 @@ const handleClose = () => {
         <KeySelect ref="keySelectRef" @keySelectChange="keySelectChange" :keySelectList="keySelectList"></KeySelect>
       </el-form-item>
     </SearchForm>
-    <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
+    <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
       :loading="dataPage.loadingData" @selection-change="handleSelectionChange">
       <template #option>
         <AuthButton authKey="API_FAILED_EXPORT" :loading="dataPage.loadingExport" type="primary" @click="exportHandler">
@@ -175,7 +175,7 @@ const handleClose = () => {
           <AuthButton authKey="API_FAILED_LOOK" type="text" @click="viewGoodsHandler(row)">查看商品</AuthButton>
         </template>
       </el-table-column>
-    </TableModel>
+    </PageTable>
     <!-- 商品明细弹窗 -->
     <el-dialog v-model="dataPage.viewGoodsModel" title="商品明细" width="750px" append-to-body @close="handleClose">
       <el-table :data="dataPage.viewGoodsList || []" size="small" max-height="400px" border style="width: 100%">

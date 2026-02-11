@@ -72,6 +72,18 @@ const rollingReset = (position: number = 0) => {
     pageRef.value.scrollTop = position
   }
 }
+const logoHandler = () => {
+  let title = ''
+  if (getSystemOptionType.value == 101) {
+    title = '顶级机构'
+  } else if (getSystemOptionType.value == 201) {
+    title = '分支机构'
+  } else if (getSystemOptionType.value == 401) {
+    title = '供应商角色'
+  }
+  ElMessage.warning(title)
+}
+
 
 provide('rollingReset', rollingReset)
 </script>
@@ -85,7 +97,6 @@ provide('rollingReset', rollingReset)
         </span>
         <img src="@/assets/images/logo.png" class="logo-img" />
         <span class="menu_text" @dblclick="logoHandler">供应链开放平台 </span>
-
       </div>
       <TopBar />
     </el-header>
@@ -129,8 +140,10 @@ provide('rollingReset', rollingReset)
       font-size: 26px;
     }
 
-    img {
-      height: 76%;
+    .logo-img {
+      height: 30px;
+      width: 30px;
+      margin: 8px;
     }
 
     .menu_text {

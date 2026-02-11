@@ -82,31 +82,29 @@ const rechargeHandler = (row: API.MerchantPrepaidRecording) => {
         </el-select>
       </el-form-item>
     </SearchForm>
-    <div class="option_box">
-      <TableModel :page="dataPage.page" :loading="dataPage.loadingData" :listTableData="dataPage.dataList"
-        :dataPage="dataPage" @pagingQuery="searchQueryHarder">
-        <template #option>
-          <AuthButton type="primary" authKey :loading="dataPage.loadingExport" @click="exportHandler">导出</AuthButton>
-        </template>
-        <YbtTableColumn prop="orgId" label="机构ID"></YbtTableColumn>
-        <YbtTableColumn prop="orgName" label="机构名称"></YbtTableColumn>
-        <YbtTableColumn prop="customerName" label="客户名称"></YbtTableColumn>
-        <YbtTableColumn prop="amountRechargeTotal" label="累计充值(元)" min-width="140"></YbtTableColumn>
-        <YbtTableColumn prop="amountUsedTotal" label="已用额度(预存款)(元)" min-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="amountBalance" label="预存款账户余额(元)" min-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="amountFreeze" label="冻结金额(元)" min-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="amountCreditLine" label="授信额度(元)" min-width="160"></YbtTableColumn>
-        <YbtTableColumn prop="prepaidDepositLimitFlag" label="是否预存款限制" min-width="160">
-          <template #default="{ row }">{{ distributionConstant.getPrepaidDepositLimitFlag(row.prepaidDepositLimitFlag)
+    <PageTable :page="dataPage.page" :loading="dataPage.loadingData" :listTableData="dataPage.dataList"
+      :dataPage="dataPage" @pagingQuery="searchQueryHarder">
+      <template #option>
+        <AuthButton type="primary" authKey :loading="dataPage.loadingExport" @click="exportHandler">导出</AuthButton>
+      </template>
+      <YbtTableColumn prop="orgId" label="机构ID"></YbtTableColumn>
+      <YbtTableColumn prop="orgName" label="机构名称"></YbtTableColumn>
+      <YbtTableColumn prop="customerName" label="客户名称"></YbtTableColumn>
+      <YbtTableColumn prop="amountRechargeTotal" label="累计充值(元)" min-width="140"></YbtTableColumn>
+      <YbtTableColumn prop="amountUsedTotal" label="已用额度(预存款)(元)" min-width="160"></YbtTableColumn>
+      <YbtTableColumn prop="amountBalance" label="预存款账户余额(元)" min-width="160"></YbtTableColumn>
+      <YbtTableColumn prop="amountFreeze" label="冻结金额(元)" min-width="160"></YbtTableColumn>
+      <YbtTableColumn prop="amountCreditLine" label="授信额度(元)" min-width="160"></YbtTableColumn>
+      <YbtTableColumn prop="prepaidDepositLimitFlag" label="是否预存款限制" min-width="160">
+        <template #default="{ row }">{{ distributionConstant.getPrepaidDepositLimitFlag(row.prepaidDepositLimitFlag)
           }}</template>
-        </YbtTableColumn>
-        <YbtTableColumn prop label="操作" fixed="right" align="right" min-width="100">
-          <template #default="{ row }">
-            <AuthButton type="text" authKey @click="rechargeHandler(row)">充值</AuthButton>
-          </template>
-        </YbtTableColumn>
-      </TableModel>
-    </div>
+      </YbtTableColumn>
+      <YbtTableColumn prop label="操作" fixed="right" align="right" min-width="100">
+        <template #default="{ row }">
+          <AuthButton type="text" authKey @click="rechargeHandler(row)">充值</AuthButton>
+        </template>
+      </YbtTableColumn>
+    </PageTable>
     <RechargeDiag v-model="dataPage.otherData.showRecharge" :curryInfo="dataPage.otherData.curryInfo"></RechargeDiag>
   </PageContainer>
 </template>

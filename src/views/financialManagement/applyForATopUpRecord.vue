@@ -106,43 +106,40 @@ const disposeHandler = (row: API.applyForATopUpRecordRecording) => {
           :selectList="distributionConstant.C_applyOperationStatus"></SelectModel>
       </el-form-item>
     </SearchForm>
-    <div class="option_box">
-      <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" :dataPage="dataPage"
-        @pagingQuery="searchQueryHarder">
-        <template #option>
-          <AuthButton type="primary" authKey :loading="dataPage.loadingExport" @click="exportHandler">导出</AuthButton>
+    <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" :dataPage="dataPage"
+      @pagingQuery="searchQueryHarder">
+      <template #option>
+        <AuthButton type="primary" authKey :loading="dataPage.loadingExport" @click="exportHandler">导出</AuthButton>
+      </template>
+      <YbtTableColumn prop="orgId" label="机构ID" min-width="120"></YbtTableColumn>
+      <YbtTableColumn prop="orgName" label="机构名称" min-width="140" show-overflow-tooltip></YbtTableColumn>
+      <YbtTableColumn prop="customerName" label="客户名称" show-overflow-tooltip></YbtTableColumn>
+      <YbtTableColumn prop="rechargeNo" label="交易流水号" min-width="140"></YbtTableColumn>
+      <YbtTableColumn prop="createDate" label="交易时间" width="160"></YbtTableColumn>
+      <YbtTableColumn prop="amount" label="申请充值金额" width="140">
+        <template #default="{ row }">￥{{ row.amount }}</template>
+      </YbtTableColumn>
+      <YbtTableColumn prop="createDate" label="转账凭证" align="center" width="140">
+        <template #header>
+          <div>
+            <div>转账凭证</div>
+            <div>(点击查看大图)</div>
+          </div>
         </template>
-        <YbtTableColumn prop="orgId" label="机构ID" min-width="120"></YbtTableColumn>
-        <YbtTableColumn prop="orgName" label="机构名称" min-width="140" show-overflow-tooltip></YbtTableColumn>
-        <YbtTableColumn prop="customerName" label="客户名称" show-overflow-tooltip></YbtTableColumn>
-        <YbtTableColumn prop="rechargeNo" label="交易流水号" min-width="140"></YbtTableColumn>
-        <YbtTableColumn prop="createDate" label="交易时间" width="160"></YbtTableColumn>
-        <YbtTableColumn prop="amount" label="申请充值金额" width="140">
-          <template #default="{ row }">￥{{ row.amount }}</template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="createDate" label="转账凭证" align="center" width="140">
-          <template #header>
-            <div>
-              <div>转账凭证</div>
-              <div>(点击查看大图)</div>
-            </div>
-          </template>
-          <template #default="{ row }">
-            <el-image style="width: 50px; height: 50px" :src="row.images?.split(',')?.[0]" :zoom-rate="1.2"
-              :max-scale="7" :min-scale="0.2" :preview-src-list="row.images?.split(',') || []" :initial-index="4"
-              fit="cover" />
-          </template>
-        </YbtTableColumn>
-        <YbtTableColumn prop="operationStatus" label="处理状态" width="100">
-          <template #default="{ row }">{{ row.operationStatus === 1 ? '已处理' : '未处理' }}</template>
-        </YbtTableColumn>
-        <YbtTableColumn prop label="操作" fixed="right" align="right" width="100">
-          <template #default="{ row }">
-            <el-button v-if="row.operationStatus !== 1" type="text" @click="disposeHandler(row)">已处理</el-button>
-          </template>
-        </YbtTableColumn>
-      </TableModel>
-    </div>
+        <template #default="{ row }">
+          <el-image style="width: 50px; height: 50px" :src="row.images?.split(',')?.[0]" :zoom-rate="1.2" :max-scale="7"
+            :min-scale="0.2" :preview-src-list="row.images?.split(',') || []" :initial-index="4" fit="cover" />
+        </template>
+      </YbtTableColumn>
+      <YbtTableColumn prop="operationStatus" label="处理状态" width="100">
+        <template #default="{ row }">{{ row.operationStatus === 1 ? '已处理' : '未处理' }}</template>
+      </YbtTableColumn>
+      <YbtTableColumn prop label="操作" fixed="right" align="right" width="100">
+        <template #default="{ row }">
+          <el-button v-if="row.operationStatus !== 1" type="text" @click="disposeHandler(row)">已处理</el-button>
+        </template>
+      </YbtTableColumn>
+    </PageTable>
   </PageContainer>
 </template>
 <style lang="scss" scoped></style>
