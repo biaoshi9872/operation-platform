@@ -498,6 +498,15 @@ const initColumns = () => {
     fixed: 'right',
     minWidth: '140px',
     render: (row: any, parentRow: any) => {
+      const detailButton =
+        h(ElButton, {
+          type: 'primary',
+          link: true,
+          innerText: '查看详情',
+          onClick: () => {
+            toOrderDetailHandler(parentRow) //
+          }
+        })
       //备注:自营体系才支持发货
       const viewButton =
         [105].includes(parentRow.channelSource) &&
@@ -513,7 +522,7 @@ const initColumns = () => {
           [[authDir, 'VO_PRODUCT_DEVIL']]
         )
       const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
-      return h('div', { style }, [viewButton])
+      return h('div', { style }, [detailButton, viewButton])
     }
   })
 }
@@ -606,7 +615,6 @@ eventBus.on('orderRefresh', searchQueryHarder)
       <el-form-item label="收货人姓名" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverName" placeholder="请输入收货人姓名"></el-input>
       </el-form-item>
-
       <el-form-item v-if="['10', '101'].includes(getSystemOptionType)" label="供应商" class="formItem" placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyIds" :hasJdChance="true">
         </AffiliatedSupplier>
@@ -726,9 +734,6 @@ eventBus.on('orderRefresh', searchQueryHarder)
               <span class="title">订单结算总金额:</span>
               <span class="value">￥{{ row.settlementPrice }}</span>
             </span>
-          </div>
-          <div>
-            <el-button type="primary" @click="toOrderDetailHandler(row)" link>查看详情</el-button>
           </div>
         </div>
       </template>
