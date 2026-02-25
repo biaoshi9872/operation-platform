@@ -5,7 +5,7 @@ import SkuDetail from '@/components/SkuDetail/index.vue'
 import StateCell from '@/components/Tooltip/StateCell.vue'
 import eventBus from '@/utils/eventBus'
 import pageHooks from '@/hooks/pageListHooks'
-import { tabsStore } from '@/stores'
+import { tabsStore, useRouterStore, useUserStore } from '@/stores'
 import { IPage } from '@/types/from-types'
 import goodPoor from '@/utils/constant/goodPoor'
 import order_enum from '@/utils/constant/order'
@@ -18,6 +18,8 @@ import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
+const $routerStore: any = useRouterStore()
+const $userStore = useUserStore()
 const authDir = resolveDirective('auth')
 const $route = useRoute()
 const routeConversion = () => {
@@ -54,6 +56,12 @@ const pageInfo = {
   limit: 10,
   totalCount: 0
 }
+const isShowBackName = computed(() => {
+  let SYS_HIDE_BANK = $routerStore.config.SYS_HIDE_BANK
+  let curryOrgId = $userStore.userInfo.orgId
+  let arrId = SYS_HIDE_BANK.split(',').map(Number) || []
+  return arrId.includes(curryOrgId)
+})
 const dataRestCallback = (res: any) => {
   //@ts-ignore
   dataPage.dataListCache[dataPage.facadeKz.tab] = (res?.list || res?.page?.records || res?.page?.list || res || []) as any
@@ -648,7 +656,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].outTradeNo"
           placeholder="请输入电商订单编号(子单)"></el-input>
       </el-form-item>
-      <el-form-item label="分行名称" class="formItem">
+      <el-form-item label="分行名称" class="formItem" v-if="isShowBackName">
         <BranchSelect v-model:modelName="dataPage.facade[dataPage.facadeKz.tab].branchName"
           v-model="dataPage.facade[dataPage.facadeKz.tab].branchId" placeholder="请选择分行名称">
         </BranchSelect>
@@ -710,11 +718,11 @@ eventBus.on('orderRefresh', searchQueryHarder)
               <span class="value">{{ row.delayTime ?? '-' }}分钟</span>
             </span>
             <el-divider direction="vertical" />
-            <span>
+            <span v-if="isShowBackName">
               <span class="title">分行名称:</span>
               <span class="value">{{ row.branchName ?? '-' }}</span>
+              <el-divider direction="vertical" />
             </span>
-            <el-divider direction="vertical" />
             <span v-if="getSystemOptionType == 101">
               <span class="title">供应商:</span>
               <span class="value">{{ row.supplyName ?? '-' }}</span>
