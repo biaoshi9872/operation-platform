@@ -7,6 +7,8 @@ import MenuItem from './Menu/MenuItem.vue'
 import TopBar from './TopBar/index.vue'
 import ViewTags from './ViewTags/index.vue'
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
+
+
 const useUserStoreInfo = useUserStore()
 const $routerStore = useRouterStore()
 const $route = useRoute()
@@ -24,10 +26,6 @@ const menuRoutes = computed(() => {
 const defaultActive = computed(() => {
   const { path } = $route
   return path
-})
-
-const curryRoute = computed(() => {
-  return $route.meta
 })
 
 const isCollapse = ref(false)
@@ -76,15 +74,17 @@ const rollingReset = (position: number = 0) => {
 }
 const logoHandler = () => {
   let title = ''
-  if(getSystemOptionType.value ==101){
+  if (getSystemOptionType.value == 101) {
     title = '顶级机构'
-  }else if(getSystemOptionType.value ==201){
+  } else if (getSystemOptionType.value == 201) {
     title = '分支机构'
-  }else if(getSystemOptionType.value == 401){
+  } else if (getSystemOptionType.value == 401) {
     title = '供应商角色'
   }
   ElMessage.warning(title)
 }
+
+
 provide('rollingReset', rollingReset)
 </script>
 
@@ -92,7 +92,7 @@ provide('rollingReset', rollingReset)
   <el-container class="layout-wrapper">
     <el-header class="layout-header" height="56px">
       <div class="logo-wrap">
-        <span @click="isCollapse = !isCollapse" class="fold-icon">
+        <span @click="isCollapse = !isCollapse" class="icon-collapse">
           <svg-icon :name="isCollapse ? 'packUp' : 'fold'"></svg-icon>
         </span>
         <img src="@/assets/images/logo.png" class="logo-img" />
@@ -102,6 +102,7 @@ provide('rollingReset', rollingReset)
     </el-header>
     <el-container v-if="showNavigation" class="layout-container">
       <div class="layout-sidebar sidebar-dark" :style="{ width: isCollapse ? '60px' : '190px' }">
+        <!--  :unique-opened="store.appStore.theme.uniqueOpened" -->
         <el-menu mode="vertical" :default-active="defaultActive" :collapse="isCollapse" :collapse-transition="false">
           <menu-item v-for="menu in menuRoutes" :key="menu.path" :menu="menu"></menu-item>
         </el-menu>
@@ -120,34 +121,14 @@ provide('rollingReset', rollingReset)
         </div>
       </div>
     </el-container>
-    <el-container v-else class="layout-container" ref="pageRef">
-      <router-view v-slot="{ Component, route }">
-        <keep-alive :include="[...cachedViews]">
-          <component :is="Component" :key="route.name" class="overflow-hidden" />
-        </keep-alive>
-      </router-view>
-    </el-container>
   </el-container>
 </template>
 
 <style lang="scss" scoped>
-.fold-icon {
-  font-size: 20px;
-}
-
-.logo-img {
-  width: 22px !important;
-  height: 22px !important;
-  margin-right: 8px;
-  margin-left: 8px;
-}
-
 .layout-wrapper {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-
-
 
   .logo-wrap {
     height: 100%;
@@ -155,15 +136,22 @@ provide('rollingReset', rollingReset)
     justify-content: center;
     align-items: center;
 
-    img {
-      height: 76%;
+    .icon-collapse {
+      font-size: 26px;
+    }
+
+    .logo-img {
+      height: 30px;
+      width: 30px;
+      margin: 8px;
     }
 
     .menu_text {
       font-size: 18px;
       transform: skewX(-10deg);
       font-weight: bold;
-      color: var(--el-color-primary);
+      background-image: linear-gradient(to right, #829ff1, #517aee);
+      color: transparent;
       -webkit-background-clip: text;
     }
   }
@@ -220,8 +208,9 @@ provide('rollingReset', rollingReset)
 
     .router_container {
       width: 100%;
-      max-height: calc(100% - 48px);
-      padding: 4px 0 2px 4px;
+      height: calc(100vh - 40px - 56px);
+      box-sizing: border-box;
+      padding: 4px 6px 2px 4px;
       overflow: auto;
     }
   }

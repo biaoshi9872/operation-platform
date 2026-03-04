@@ -59,8 +59,15 @@ const dataInfo = reactive({
       <el-table style="width: 100%" :data="goodsList" border>
         <el-table-column prop="title" label="商品信息" width="320">
           <template #default="{ row }">
-            <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
-              comboNumName="singleComboNum" width="100%" :goodDetail="row"></SkuDetail>
+            <div>
+              <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
+                comboNumName="singleComboNum" width="100%" showGiveawayTagBox="true" :goodDetail="row"
+                :style="{ 'height': '83px' }" class="bottom-border-dashed"></SkuDetail>
+              <SkuDetail v-for="item in row.orderGiftList" :key="item.skuCode" class="bottom-border-dashed"
+                :customAttribute="{ url: 'imageUrl', name: 'skuName', id: 'skuCode' }" comboNumName="singleComboNum"
+                width="100%" showGiveawayTagBox="true" :goodDetail="{ ...item, isGift: true }"
+                :style="{ 'height': '83px' }"></SkuDetail>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="规格" width="150">
@@ -72,45 +79,51 @@ const dataInfo = reactive({
         </el-table-column>
         <el-table-column v-if="!isFromOrgLast" prop="platformPurchasePrice" min-width="130" label="平台成本">
           <template #default="{ row }">
-            <span>{{ `￥${row.platformPurchasePrice}` }}</span>
+            <span>{{ row.isGift ? '-' : `￥${row.platformPurchasePrice}` }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="platformSupplyPrice" min-width="150"
           :label="getSystemOptionType == '401' ? '含税供应价' : '平台供应价'">
           <template #default="{ row }">
-            <span>{{ `￥${row.platformSupplyPrice}` }}</span>
+            <span>{{ row.isGift ? '-' : `￥${row.platformSupplyPrice}` }}</span>
           </template>
         </el-table-column>
         <el-table-column v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" prop="retailPrice"
           min-width="130" label="分销价">
           <template #default="{ row }">
-            <span>{{ `￥${row.retailPrice}` }}</span>
+            <span>{{ row.isGift ? '-' : `￥${row.retailPrice}` }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="goodsNum" label="数量">
           <template #default="{ row }">
-            <span>{{ row.goodsNum }}</span>
+            <div :style="{ height: '80px', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center' }"
+              class="bottom-border-dashed">{{
+                row.goodsNum }}</div>
+            <div :style="{ height: '80px', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center' }"
+              v-for="item in row.orderGiftList" :key="item.skuCode" class="bottom-border-dashed">{{ item.totalNum }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="subAmount" min-width="130" label="小计">
           <template #default="{ row }">
-            <span>{{ `￥${row.subTotal}` }}</span>
+            <span>{{ row.isGift ? '-' : `￥${row.subTotal}` }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="afterSaleStatus" min-width="130" label="售后状态">
           <template #default="{ row }">
-            <span>{{ order_enum.getAfter_order_statesTitle(row.afterSaleStatus) }}</span>
+            <span>{{ row.isGift ? '-' : order_enum.getAfter_order_statesTitle(row.afterSaleStatus) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="afterSaleType" min-width="130" label="售后类型">
           <template #default="{ row }">
-            <span>{{ order_enum.getAfterSalesTypeTitle(row.afterSaleType) }}</span>
+            <span>{{ row.isGift ? '-' : order_enum.getAfterSalesTypeTitle(row.afterSaleType) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="right">
           <template #default="{ row }">
             <AuthButton authKey="ORDER_SQSH" v-if="![1, 4].includes(row?.afterSaleStatus) && ![0, 4, 5, -1].includes(orderInfo?.orderBaseInfo?.orderStatus)
-              && ![104, 105, 106].includes(orderInfo?.channelSource)" type="text" @click="applyRefundHandler(row)">申请售后
+              && ![104, 105, 106].includes(orderInfo?.channelSource) && !row.isGift" type="text"
+              @click="applyRefundHandler(row)">申请售后
             </AuthButton>
             <el-button v-if="row.afterSaleNo && ![-1, -2].includes(row?.afterSaleStatus)" class="ml-12" type="text"
               @click="goToDetailHandler(row)">查看售后详情</el-button>
@@ -137,8 +150,17 @@ const dataInfo = reactive({
     <h3 class="mb-8">商品财务信息</h3>
     <el-table style="width: 100%" row-key="rowKey" :data="goodsList" border>
       <YbtTableColumn prop="skuName" label="商品名称" show-overflow-tooltip>
+        <template #default="{ row }" class="flex">
+          <div class="flex  mb-8  ">
+            <OverflowTooltipCell :text="row.skuName">{{ row.skuName }}</OverflowTooltipCell>
+          </div>
+          <div class="flex mb-8" v-for="item in row.orderGiftList" :key="item.skuCode">
+            <TagModel :hasTag="true" :showTag="row.isGift" title="赠"></TagModel>
+            <OverflowTooltipCell :text="item.skuName">{{ item.skuName }}</OverflowTooltipCell>
+          </div>
+        </template>
       </YbtTableColumn>
-      <el-table-column prop="date" label="规格" width="150">
+      <el-table-column prop="date" label="规格">
         <template #default="{ row }">
           <AttributeModule :row="row" comboNumName="singleComboNum" :parentRow="row"
             :attributeValue1="row.attributeValue1" :attributeValue2="row.attributeValue2"></AttributeModule>
@@ -146,7 +168,10 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="skuCode" label="商品编码">
         <template #default="{ row }">
-          <span>{{ row.skuCode ? row.skuCode : '/' }}</span>
+          <div class="mb-8 height-80">{{ row.skuCode ? row.skuCode : '/' }}</div>
+          <div class="mb-8 height-80" v-for="item in row.orderGiftList" :key="item.skuCode">{{ item.skuCode ?
+            item.skuCode : '/'
+            }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="tax" label="进项税率">
@@ -154,7 +179,7 @@ const dataInfo = reactive({
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-        }}</template>
+          }}</template>
       </el-table-column>
     </el-table>
     <ApplyRefundModel v-model="dataInfo.showApplyRefundModel" :orderInfo="orderInfo" :curryInfo="dataInfo.curryInfo">

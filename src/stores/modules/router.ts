@@ -11,6 +11,8 @@ export const useRouterStore = defineStore('routerStore', {
     menuRoutes: [] as RouteRecordRaw[],
     //按钮
     authorityList: [],
+    //配置新消息
+    config: getLocal('config') || {},
     routes: [] as RouteRecordRaw[]
   }),
   actions: {
@@ -20,6 +22,10 @@ export const useRouterStore = defineStore('routerStore', {
         res = (await menu_api.A_navigationBar({})) as any
         // 隐藏部分菜单
         res = await this.filterRoutes(res)
+        // 配置信息
+        const config = await configH5_api.A_getValueFromCache({})
+        setLocal('config', config)
+        console.log(config, 'config')
         //重置
         if (res?.length == 0) {
           //token失效

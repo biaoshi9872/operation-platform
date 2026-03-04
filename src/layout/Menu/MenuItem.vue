@@ -2,7 +2,8 @@
   <template v-if="menu.children.length > 0">
     <el-sub-menu :index="menu.path" v-if="hideMenu(menu.children)">
       <template #title>
-        <div class="iconfont" :class="menu.meta.icon"></div>
+        <!-- <svg-icon class="route-icon mr-10" :name="menu.meta.icon" icon-menu-site /> -->
+        <div class="iconfont route-icon mr-4" :class="menu.meta.icon"></div>
         <span>{{ menu.meta.title }}</span>
       </template>
       <menu-item v-for="sub in menu.children" :key="sub.path" :menu="sub" v-show="!sub.hidden"></menu-item>
@@ -60,8 +61,28 @@ const hideMenu = computed(() => {
   padding-left: 20px !important;
 }
 
-.iconfont {
-  margin-right: 4px;
+::v-deep(.el-sub-menu__title) {
+  &:hover {
+    color: var(--el-color-primary);
+
+    .route-icon {
+      transform: scale(1.3);
+      transition: all 0.3s;
+    }
+  }
+}
+
+.el-menu-item:hover {
+  color: var(--el-color-primary);
+  transition: all 0.3s;
+
+  .route-icon {
+    transform: scale(1.3);
+  }
+}
+
+.el-menu .el-menu-item.is-active {
+  background-color: var(--el-color-primary-light-9);
 }
 
 .route-icon {

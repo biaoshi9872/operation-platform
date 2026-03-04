@@ -18,6 +18,7 @@ interface IProp {
   width?: any
   comboNumName: string
   hasTag?: boolean
+  isShowModelTag: boolean
   openTooltip: boolean
 }
 
@@ -90,7 +91,7 @@ const showTagBox = computed(() => {
 })
 
 const isShowGiveaway = computed(() => {
-  return props.goodDetail.giveaway == '2'
+  return props.goodDetail.giveaway == '2' || props.goodDetail.isGift == true
 })
 
 const webkitLine = computed(() => {

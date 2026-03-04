@@ -194,61 +194,59 @@ const pushHandler = (row: any = null) => {
                 </el-select>
             </el-form-item>
         </SearchForm>
-        <div class="option_box">
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
-                :loading="dataPage.loadingData" row-key="packageCode" @selection-change="handleSelectionChange">
-                <template #option>
-                    <el-button type="primary" @click="handleAdd">创建</el-button>
-                    <el-button type="primary" @click="batchPushHandler"
-                        :disabled="!dataPage.multipleList.length">批量推送</el-button>
-                    <el-button v-if="dataPage.toDownloadCenterApi" type="primary" :loading="dataPage.loadingExport"
-                        @click="exportHandler">导出</el-button>
+        <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
+            :loading="dataPage.loadingData" row-key="packageCode" @selection-change="handleSelectionChange">
+            <template #option>
+                <el-button type="primary" @click="handleAdd">创建</el-button>
+                <el-button type="primary" @click="batchPushHandler"
+                    :disabled="!dataPage.multipleList.length">批量推送</el-button>
+                <el-button v-if="dataPage.toDownloadCenterApi" type="primary" :loading="dataPage.loadingExport"
+                    @click="exportHandler">导出</el-button>
+            </template>
+            <el-table-column type="selection" width="55" />
+            <el-table-column label="商品编码" prop="packageCode" min-width="140px" align="left" />
+            <el-table-column label="商品名称" prop="packageName" min-width="180px" align="left" show-overflow-tooltip />
+            <el-table-column label="子商品明细" min-width="240px" align="left">
+                <template #default="scope">
+                    <PackageAttributeModel :couponList="scope.row.couponList" />
                 </template>
-                <el-table-column type="selection" width="55" />
-                <el-table-column label="商品编码" prop="packageCode" min-width="140px" align="left" />
-                <el-table-column label="商品名称" prop="packageName" min-width="180px" align="left" show-overflow-tooltip />
-                <el-table-column label="子商品明细" min-width="240px" align="left">
-                    <template #default="scope">
-                        <PackageAttributeModel :couponList="scope.row.couponList" />
-                    </template>
-                </el-table-column>
-                <el-table-column label="礼包市场价" prop="markPrice" min-width="120px" align="left" />
-                <el-table-column label="平台成本" prop="supplyPrice" min-width="120px" align="left" />
-                <el-table-column label="商品状态" min-width="100px" align="left">
-                    <template #default="scope">{{
-                        virtualCardPackProductEnum.getGoodsStatusTitle(scope.row.packageStatus)
-                        || '-' }}</template>
-                </el-table-column>
-                <el-table-column label="礼包类型" min-width="100px" align="left">
-                    <template #default="scope">{{
-                        virtualCardPackProductEnum.getPackageTypeTitle(scope.row.packageType)
-                        || '-' }}</template>
-                </el-table-column>
-                <el-table-column label="推送状态" min-width="100px" align="left">
-                    <template #default="scope">{{
-                        virtualCardPackProductEnum.getGoodsPushStatusTitle(scope.row.pushStatus) || '-' }}</template>
-                </el-table-column>
-                <el-table-column label="已推送应用" min-width="160px" align="left">
-                    <template #default="scope">
-                        <MoreTag :list="scope.row.appNameList" titleKey="appName" />
-                    </template>
-                </el-table-column>
-                <el-table-column label="添加时间" prop="createDate" min-width="170px" align="left" />
-                <el-table-column label="操作" min-width="180px" align="right" fixed="right">
-                    <template #default="scope">
-                        <el-button type="primary" link v-if="scope.row.packageStatus === 2"
-                            @click="pushHandler(scope.row)">推送</el-button>
-                        <el-button type="primary" v-if="scope.row.packageStatus !== 2" link
-                            @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="primary" link @click="handleView(scope.row)">详情</el-button>
-                        <el-button type="primary" v-if="[0, 1].includes(scope.row.packageStatus)" link
-                            @click="deleteHandler(scope.row)">删除</el-button>
-                        <el-button type="primary" v-if="scope.row.packageStatus === 2" link
-                            @click="enableHandler(scope.row)">设为不可用</el-button>
-                    </template>
-                </el-table-column>
-            </TableModel>
-        </div>
+            </el-table-column>
+            <el-table-column label="礼包市场价" prop="markPrice" min-width="120px" align="left" />
+            <el-table-column label="平台成本" prop="supplyPrice" min-width="120px" align="left" />
+            <el-table-column label="商品状态" min-width="100px" align="left">
+                <template #default="scope">{{
+                    virtualCardPackProductEnum.getGoodsStatusTitle(scope.row.packageStatus)
+                    || '-' }}</template>
+            </el-table-column>
+            <el-table-column label="礼包类型" min-width="100px" align="left">
+                <template #default="scope">{{
+                    virtualCardPackProductEnum.getPackageTypeTitle(scope.row.packageType)
+                    || '-' }}</template>
+            </el-table-column>
+            <el-table-column label="推送状态" min-width="100px" align="left">
+                <template #default="scope">{{
+                    virtualCardPackProductEnum.getGoodsPushStatusTitle(scope.row.pushStatus) || '-' }}</template>
+            </el-table-column>
+            <el-table-column label="已推送应用" min-width="160px" align="left">
+                <template #default="scope">
+                    <MoreTag :list="scope.row.appNameList" titleKey="appName" />
+                </template>
+            </el-table-column>
+            <el-table-column label="添加时间" prop="createDate" min-width="170px" align="left" />
+            <el-table-column label="操作" min-width="180px" align="right" fixed="right">
+                <template #default="scope">
+                    <el-button type="primary" link v-if="scope.row.packageStatus === 2"
+                        @click="pushHandler(scope.row)">推送</el-button>
+                    <el-button type="primary" v-if="scope.row.packageStatus !== 2" link
+                        @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button type="primary" link @click="handleView(scope.row)">详情</el-button>
+                    <el-button type="primary" v-if="[0, 1].includes(scope.row.packageStatus)" link
+                        @click="deleteHandler(scope.row)">删除</el-button>
+                    <el-button type="primary" v-if="scope.row.packageStatus === 2" link
+                        @click="enableHandler(scope.row)">设为不可用</el-button>
+                </template>
+            </el-table-column>
+        </PageTable>
     </PageContainer>
     <PushVirtualProductModel v-model="dataPage.showPushVirtualProductModel" :curryInfo="dataPage.curryInfo"
         @refresh="searchQueryHarder" :type="dataPage.type" :isBatch="dataPage.isBatch" :mulSelect="dataPage.mulSelect"

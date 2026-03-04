@@ -4,7 +4,7 @@ body {
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   -webkit-text-size-adjust: none;
   font-size: 14px;
-  background-color:var(--el-color-primary-light-9) ;
+  background-color: var(--el-color-primary-light-9);
   scroll-behavior: smooth; // 页面滚动时，滚动条平滑滚动
 }
 
@@ -49,6 +49,7 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   appearance: none;
 }
+
 input[type='number'] {
   appearance: textfield;
 }
@@ -133,7 +134,11 @@ input:-internal-autofill-selected {
   background-color: red;
 }
 
-.u466{
+.bottom-border-dashed {
+  // border-bottom: 2px #ebeef5 dashed;
+}
+
+.u466 {
   display: flex;
   font-family: 'Arial Negreta', 'Arial Normal', 'Arial', sans-serif;
   font-weight: 700;
@@ -141,13 +146,15 @@ input:-internal-autofill-selected {
   font-size: 18px;
 }
 
-.icon-waring{
+.icon-waring {
   font-size: 20px;
   color: #E6A23C;
 }
-.upload-error{
+
+.upload-error {
   color: #F56C6C;
 }
-.upload-success{
+
+.upload-success {
   color: #67C23A;
 }

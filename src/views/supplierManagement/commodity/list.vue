@@ -213,77 +213,74 @@ const updataStockHandler = (row: any) => {
                 </DoubleInput>
             </el-form-item>
         </SearchForm>
-        <div class="option_box">
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList"
-                @selection-change="handleSelectionChange" :loading="dataPage.loadingData"
-                @pagingQuery="searchQueryHarder">
-                <template #option>
-                    <AuthButton authKey="Good_ADD" type="primary" @click="handleAdd">新增</AuthButton>
-                    <AuthButton authKey="GOOD_EXPOERT" type="primary" :loading="dataPage.loadingExport"
-                        @click="exportHandler">导出</AuthButton>
-                    <AuthButton authKey="Good_BATCH_UP" type="primary" @click="batchUpOrDownDateHandler('up')">批量上架
-                    </AuthButton>
-                    <AuthButton authKey="Good_BATCH_DOWN" type="primary" @click="batchUpOrDownDateHandler('down')">批量下架
-                    </AuthButton>
+
+        <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @selection-change="handleSelectionChange"
+            :loading="dataPage.loadingData" @pagingQuery="searchQueryHarder">
+            <template #option>
+                <AuthButton authKey="Good_ADD" type="primary" @click="handleAdd">新增</AuthButton>
+                <AuthButton authKey="GOOD_EXPOERT" type="primary" :loading="dataPage.loadingExport"
+                    @click="exportHandler">导出</AuthButton>
+                <AuthButton authKey="Good_BATCH_UP" type="primary" @click="batchUpOrDownDateHandler('up')">批量上架
+                </AuthButton>
+                <AuthButton authKey="Good_BATCH_DOWN" type="primary" @click="batchUpOrDownDateHandler('down')">批量下架
+                </AuthButton>
+            </template>
+            <el-table-column type="selection" width="80px" align="left"></el-table-column>
+            <el-table-column label="商品信息" prop="skuName" width="200px" align="left">
+                <template #default="{ row }">
+                    <SkuDetail :goodDetail="row" :showBrandName="false"
+                        :customAttribute="{ url: 'images', name: 'skuName', id: '' }">
+                    </SkuDetail>
                 </template>
-                <el-table-column type="selection" width="80px" align="left"></el-table-column>
-                <el-table-column label="商品信息" prop="skuName" width="200px" align="left">
-                    <template #default="{ row }">
-                        <SkuDetail :goodDetail="row" :showBrandName="false"
-                            :customAttribute="{ url: 'images', name: 'skuName', id: '' }">
-                        </SkuDetail>
-                    </template>
-                </el-table-column>
-                <el-table-column label="商品编码" prop="skuCode" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="商品分类" prop="skuCategory" min-width="120px" align="left"></el-table-column>
-                <el-table-column v-if="getSystemOptionType != 401" label="供应商" prop="supplyName" min-width="120px"
-                    align="left"></el-table-column>
-                <el-table-column label="市场价" prop="markPrice" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="库存数量" prop="stock" min-width="120px" align="left">
-                    <template #default="{ row }">
-                        <div class="stock-box">
-                            <div> {{ row.stock }}</div>
-                            <el-icon v-auth="'Good_EDIT_STOCK'" @click="updataStockHandler(row)">
-                                <Edit />
-                            </el-icon>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="含税供应价" prop="taxPurchaseCost" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="不含税供应价" prop="noTaxPurchaseCost" min-width="120px"
-                    align="left"></el-table-column>0
-                <el-table-column label="销售单位" prop="unit" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="状态" prop="operStatus" min-width="120px" align="left">
-                    <template #default="{ row }">
-                        {{ goods_enum.getOperStatus(row.operStatus) }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="添加时间" prop="createDate" min-width="120px" align="left"></el-table-column>
-                <el-table-column label="电商链接" prop="stock" min-width="120px" align="left">
-                    <template #default="{ row }">
-                        <JinDLink type="view" :row="{ jdLink: row.businessLink, ...row }"></JinDLink>
-                    </template>
-                </el-table-column>
-                <el-table-column label="限售模版" prop="limitTemplateId" min-width="120px" align="left">
-                    <template #default="{ row }">
-                        <el-link v-if="row.limitTemplateName" type="primary" @click="toFreightHandler(row)">{{
-                            row.limitTemplateName }}</el-link>
-                        <span v-else>-</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" prop="accountValidStart" min-width="180px" fixed="right" align="right">
-                    <template #default="{ row }">
-                        <AuthButton authKey="Good_EDIT" type="primary" v-if="[0, 2].includes(row.operStatus)" link
-                            @click="editGoodHandler(row)">编辑</AuthButton>
-                        <AuthButton authKey="Good_UP" v-if="[2].includes(row.operStatus)" type="primary" link
-                            @click="upOrDownDateHandler(row, 'up')">上架</AuthButton>
-                        <AuthButton authKey="Good_DOWN" v-if="row.operStatus == 1" type="primary" link
-                            @click="upOrDownDateHandler(row, 'down')">下架</AuthButton>
-                        <el-button type="primary" link @click="viewGoodHandler(row)">详情</el-button>
-                    </template>
-                </el-table-column>
-            </TableModel>
-        </div>
+            </el-table-column>
+            <el-table-column label="商品编码" prop="skuCode" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="商品分类" prop="skuCategory" min-width="120px" align="left"></el-table-column>
+            <el-table-column v-if="getSystemOptionType != 401" label="供应商" prop="supplyName" min-width="120px"
+                align="left"></el-table-column>
+            <el-table-column label="市场价" prop="markPrice" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="库存数量" prop="stock" min-width="120px" align="left">
+                <template #default="{ row }">
+                    <div class="stock-box">
+                        <div> {{ row.stock }}</div>
+                        <el-icon v-auth="'Good_EDIT_STOCK'" @click="updataStockHandler(row)">
+                            <Edit />
+                        </el-icon>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="含税供应价" prop="taxPurchaseCost" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="不含税供应价" prop="noTaxPurchaseCost" min-width="120px" align="left"></el-table-column>0
+            <el-table-column label="销售单位" prop="unit" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="状态" prop="operStatus" min-width="120px" align="left">
+                <template #default="{ row }">
+                    {{ goods_enum.getOperStatus(row.operStatus) }}
+                </template>
+            </el-table-column>
+            <el-table-column label="添加时间" prop="createDate" min-width="120px" align="left"></el-table-column>
+            <el-table-column label="电商链接" prop="stock" min-width="120px" align="left">
+                <template #default="{ row }">
+                    <JinDLink type="view" :row="{ jdLink: row.businessLink, ...row }"></JinDLink>
+                </template>
+            </el-table-column>
+            <el-table-column label="限售模版" prop="limitTemplateId" min-width="120px" align="left">
+                <template #default="{ row }">
+                    <el-link v-if="row.limitTemplateName" type="primary" @click="toFreightHandler(row)">{{
+                        row.limitTemplateName }}</el-link>
+                    <span v-else>-</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" prop="accountValidStart" min-width="180px" fixed="right" align="right">
+                <template #default="{ row }">
+                    <AuthButton authKey="Good_EDIT" type="primary" v-if="[0, 2].includes(row.operStatus)" link
+                        @click="editGoodHandler(row)">编辑</AuthButton>
+                    <AuthButton authKey="Good_UP" v-if="[2].includes(row.operStatus)" type="primary" link
+                        @click="upOrDownDateHandler(row, 'up')">上架</AuthButton>
+                    <AuthButton authKey="Good_DOWN" v-if="row.operStatus == 1" type="primary" link
+                        @click="upOrDownDateHandler(row, 'down')">下架</AuthButton>
+                    <el-button type="primary" link @click="viewGoodHandler(row)">详情</el-button>
+                </template>
+            </el-table-column>
+        </PageTable>
         <UpdateStockNumDialog v-model="dataPage.updateStockShow" :curryInfo="dataPage.curryInfo"
             @refresh="searchQueryHarder">
         </UpdateStockNumDialog>

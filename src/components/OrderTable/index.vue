@@ -52,23 +52,7 @@ const props = withDefaults(defineProps<IProp>(), {
 })
 
 const emits = defineEmits(['multipleHandler', 'update:multipleList'])
-const slot = useSlots()
-const pageInfo: any = inject('pageInfo', () => {
-    return null
-})
-//高度适配
-const tableHight = computed(() => {
-    let height = 'auto'
-    if (pageInfo) {
-        if (slot.hasOwnProperty('option')) {
-            pageInfo.optionHight = 40
-        }
-        let totalHeight =
-            pageInfo?.searchHight + pageInfo?.tabsHight + pageInfo?.optionHight + pageInfo?.layoutHight + pageInfo?.tabHeaderHeight + pageInfo?.paginationHeight
-        height = `calc(100vh - ${totalHeight}px )`
-    }
-    return height
-})
+
 const columnList = computed(() => {
     return props.columns.filter((item: IColumn) => {
         //1.erp校验
@@ -126,7 +110,7 @@ const foldingRow = computed(() => {
     return function (row: any) {
         let arr = props.orderChildAttr ? row[props.orderChildAttr] : [row]
         if (!row.folding) {
-            return arr.slice(0, props.foldingLength)
+            return arr?.slice(0, props.foldingLength)
         } else {
             return arr
         }

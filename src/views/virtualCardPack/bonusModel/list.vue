@@ -135,54 +135,52 @@ const openDetail = (row: any = null) => {
                 </ClassificationSelect>
             </el-form-item>
         </SearchForm>
-        <div class="option_box">
-            <TableModel :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
-                :loading="dataPage.loadingData" row-key="id" @selection-change="handleSelectionChange">
-                <template #option>
-                    <el-button type="primary" @click="batchPushHandler"
-                        :disabled="!dataPage.multipleList.length">批量推送</el-button>
-                    <el-button v-if="dataPage.toDownloadCenterApi" type="primary" :loading="dataPage.loadingExport"
-                        @click="exportHandler">导出</el-button>
+        <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder"
+            :loading="dataPage.loadingData" row-key="id" @selection-change="handleSelectionChange">
+            <template #option>
+                <el-button type="primary" @click="batchPushHandler"
+                    :disabled="!dataPage.multipleList.length">批量推送</el-button>
+                <el-button v-if="dataPage.toDownloadCenterApi" type="primary" :loading="dataPage.loadingExport"
+                    @click="exportHandler">导出</el-button>
+            </template>
+            <el-table-column type="selection" width="55" />
+            <el-table-column label="商品编码" prop="couponId" min-width="180px" align="left" show-overflow-tooltip />
+            <el-table-column label="商品名称" prop="couponName" min-width="180px" align="left" show-overflow-tooltip />
+            <el-table-column label="立减金平台" prop="platformName" min-width="120px" align="left">
+            </el-table-column>
+            <el-table-column label="市场价" prop="faceValue" min-width="120px" align="left" />
+            <el-table-column label="平台成本" prop="supplyPrice" min-width="120px" align="left" />
+            <el-table-column label="面额" prop="faceValue" min-width="120px" align="left" />
+            <el-table-column label="商品状态" min-width="100px" align="left">
+                <template #default="scope">{{
+                    bonusModel_enum.getGoodsStatusTitle(scope.row.status)
+                    || '-' }}</template>
+            </el-table-column>
+            <el-table-column label="商品分类" prop="couponTypeName" min-width="120px" align="left" />
+            <el-table-column label="推送状态" min-width="100px" align="left">
+                <template #default="scope">{{
+                    virtualCardPackProductEnum.getGoodsPushStatusTitle(scope.row.pushStatus) || '-' }}</template>
+            </el-table-column>
+            <el-table-column label="已推送应用" min-width="160px" align="left">
+                <template #default="scope">
+                    <MoreTag :list="scope.row.appNameList" titleKey="appName" />
                 </template>
-                <el-table-column type="selection" width="55" />
-                <el-table-column label="商品编码" prop="couponId" min-width="180px" align="left" show-overflow-tooltip />
-                <el-table-column label="商品名称" prop="couponName" min-width="180px" align="left" show-overflow-tooltip />
-                <el-table-column label="立减金平台" prop="platformName" min-width="120px" align="left">
-                </el-table-column>
-                <el-table-column label="市场价" prop="faceValue" min-width="120px" align="left" />
-                <el-table-column label="平台成本" prop="supplyPrice" min-width="120px" align="left" />
-                <el-table-column label="面额" prop="faceValue" min-width="120px" align="left" />
-                <el-table-column label="商品状态" min-width="100px" align="left">
-                    <template #default="scope">{{
-                        bonusModel_enum.getGoodsStatusTitle(scope.row.status)
-                        || '-' }}</template>
-                </el-table-column>
-                <el-table-column label="商品分类" prop="couponTypeName" min-width="120px" align="left" />
-                <el-table-column label="推送状态" min-width="100px" align="left">
-                    <template #default="scope">{{
-                        virtualCardPackProductEnum.getGoodsPushStatusTitle(scope.row.pushStatus) || '-' }}</template>
-                </el-table-column>
-                <el-table-column label="已推送应用" min-width="160px" align="left">
-                    <template #default="scope">
-                        <MoreTag :list="scope.row.appNameList" titleKey="appName" />
-                    </template>
-                </el-table-column>
-                <el-table-column label="批次有效期" prop="createDate" min-width="200" align="left">
-                    <template #default="scope">{{ scope.row.expireDateMin ? (`${scope.row.expireDateMin || ''} 至
-                        ${scope.row.expireDateMax || ''}`) : '-'
+            </el-table-column>
+            <el-table-column label="批次有效期" prop="createDate" min-width="200" align="left">
+                <template #default="scope">{{ scope.row.expireDateMin ? (`${scope.row.expireDateMin || ''} 至
+                    ${scope.row.expireDateMax || ''}`) : '-'
                     }}</template>
-                </el-table-column>
-                <el-table-column label="最近更新时间" prop="updateDate" min-width="170px" align="left">
-                </el-table-column>
-                <el-table-column label="操作" min-width="180px" align="right" fixed="right">
-                    <template #default="scope">
-                        <el-button type="primary" v-if="scope.row.status === 1" link
-                            @click="pushHandler(scope.row)">推送</el-button>
-                        <el-button type="primary" link @click="openDetail(scope.row)">详情</el-button>
-                    </template>
-                </el-table-column>
-            </TableModel>
-        </div>
+            </el-table-column>
+            <el-table-column label="最近更新时间" prop="updateDate" min-width="170px" align="left">
+            </el-table-column>
+            <el-table-column label="操作" min-width="180px" align="right" fixed="right">
+                <template #default="scope">
+                    <el-button type="primary" v-if="scope.row.status === 1" link
+                        @click="pushHandler(scope.row)">推送</el-button>
+                    <el-button type="primary" link @click="openDetail(scope.row)">详情</el-button>
+                </template>
+            </el-table-column>
+        </PageTable>
     </PageContainer>
     <PushBonusProductModel v-model="dataPage.showPushVirtualProductModel" :curryInfo="dataPage.curryInfo"
         @refresh="searchQueryHarder" :type="dataPage.type" :isBatch="dataPage.isBatch" :mulSelect="dataPage.mulSelect"

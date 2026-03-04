@@ -5,7 +5,7 @@ import SkuDetail from '@/components/SkuDetail/index.vue'
 import StateCell from '@/components/Tooltip/StateCell.vue'
 import eventBus from '@/utils/eventBus'
 import pageHooks from '@/hooks/pageListHooks'
-import { tabsStore } from '@/stores'
+import { tabsStore, useRouterStore, useUserStore } from '@/stores'
 import { IPage } from '@/types/from-types'
 import goodPoor from '@/utils/constant/goodPoor'
 import order_enum from '@/utils/constant/order'
@@ -18,6 +18,8 @@ import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
+const $routerStore: any = useRouterStore()
+const $userStore = useUserStore()
 const authDir = resolveDirective('auth')
 const $route = useRoute()
 const routeConversion = () => {
@@ -54,6 +56,12 @@ const pageInfo = {
   limit: 10,
   totalCount: 0
 }
+const isShowBackName = computed(() => {
+  let SYS_HIDE_BANK = $routerStore.config.SYS_HIDE_BANK
+  let curryOrgId = $userStore.userInfo.orgId
+  let arrId = SYS_HIDE_BANK.split(',').map(Number) || []
+  return arrId.includes(curryOrgId)
+})
 const dataRestCallback = (res: any) => {
   //@ts-ignore
   dataPage.dataListCache[dataPage.facadeKz.tab] = (res?.list || res?.page?.records || res?.page?.list || res || []) as any
@@ -246,7 +254,7 @@ const initColumns = () => {
     width: '120px',
     label: '是否脱敏发货',
     align: 'center',
-    render: (row: any, column: any, index: any, parentRow: any) => {
+    render: (row: any, parentRow: any) => {
       if (parentRow.channelSource == 104) {
         const title = parentRow?.desensitizationStatus === 1 ? '是' : '否'
         return h(StateCell, { title: title, isTrueState: parentRow?.desensitizationStatus == 1 })
@@ -260,22 +268,41 @@ const initColumns = () => {
     prop: '1',
     minWidth: '300px',
     align: 'left',
-    render: (row: any, column: any, index: any, parentRow: any) => {
+    render: (row: any, parentRow: any) => {
       console.log(row, 'row,row')
       let newRow = row
       let spec = row.channelSource == 104 ? (row.attributeValue1 || '') + (row.attributeValue2 || '') : ''
       newRow.titleSpec = row.skuName + spec
+      let orderGifArr: any = []
+      //赠品逻辑
+      row.orderGiftList?.forEach((item: any) => {
+        let itemNew = h(SkuDetail, {
+          goodDetail: {
+            ...item,
+            isGift: true
+          },
+          style: { height: '83px' },
+          showGiveawayTagBox: true,
+          customAttribute: {
+            url: 'imageUrl',
+            name: 'skuName',
+            id: 'skuCode'
+          }
+        })
+        orderGifArr.push(itemNew)
+      })
       //商品详情
-      const goodsDetail = h(SkuDetail, {
+      const goodsDetail = h('div', {}, [h(SkuDetail, {
         goodDetail: newRow,
-        width: '100%',
+        style: { height: '83px' },
         dataList: parentRow.detailList,
+        showGiveawayTagBox: true,
         customAttribute: {
           url: 'images',
           name: 'titleSpec',
           id: 'skuCode'
         }
-      })
+      }), ...orderGifArr])
       //申请售后
       const afterButton =
         ![0, 4, 5, -3].includes(parentRow.orderStatus) &&
@@ -330,7 +357,18 @@ const initColumns = () => {
     'min-width': '120px',
     label: '数量',
     align: 'center',
-    marginAttr: 'goodsNum'
+    marginAttr: 'goodsNum',
+    openMarginCell: true,
+    render: (row: any, parentRow: any) => {
+      //赠品逻辑
+      let orderGifArr: any = []
+      let style = { height: '80px', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center' }
+      row.orderGiftList?.forEach((item: any) => {
+        let itemNew = h('div', { style: style }, item.totalNum)
+        orderGifArr.push(itemNew)
+      })
+      return h('div', [h('div', { style: style }, row.goodsNum), ...orderGifArr])
+    },
   })
   if (!isFromOrgLast.value) {
     columns.value.push({
@@ -339,7 +377,7 @@ const initColumns = () => {
       align: 'center',
       width: '140px',
       render: (row: any) => {
-        return h('div', `￥${row.platformPurchasePrice ?? ''}`)
+        return h('div', row.isGift ? '-' : `￥${row.platformPurchasePrice ?? ''}`)
       },
       openMarginCell: true
     })
@@ -350,7 +388,7 @@ const initColumns = () => {
     align: 'center',
     width: '140px',
     render: (row: any) => {
-      return h('div', `￥${row.platformSupplyPrice ?? ''}`)
+      return h('div', row.isGift ? '-' : `￥${row.platformSupplyPrice ?? ''}`)
     },
     openMarginCell: true
   })
@@ -361,7 +399,7 @@ const initColumns = () => {
       align: 'center',
       width: '140px',
       render: (row: any) => {
-        return h('div', `￥${row.retailPrice ?? ''}`)
+        return h('div', row.isGift ? '-' : `￥${row.retailPrice ?? ''}`)
       },
       openMarginCell: true
     })
@@ -370,6 +408,8 @@ const initColumns = () => {
     label: '销售单位',
     align: 'center',
     'min-width': '120px',
+    prop: 'unit',
+    openMarginCell: true,
     marginAttr: 'unit'
   })
   columns.value.push({
@@ -384,8 +424,8 @@ const initColumns = () => {
       align: 'center',
       width: '100px',
       prop: 'channelSource',
-      render: (row: any) => {
-        return h('div', goodPoor.getSourceTypeNameByKey(row.channelSource))
+      render: (row: any, parentRow: any) => {
+        return h('div', goodPoor.getSourceTypeNameByKey(parentRow.channelSource))
       }
     })
   }
@@ -417,8 +457,8 @@ const initColumns = () => {
     label: '订单状态',
     'min-width': '120px',
     prop: 'orderStatus',
-    render: (row: any) => {
-      let statusDom = h('div', order_enum.getDictNameByKey(order_enum.order_states, row.orderStatus)) //订单状态
+    render: (row: any, parentRow: any) => {
+      let statusDom = h('div', order_enum.getDictNameByKey(order_enum.order_states, parentRow.orderStatus)) //订单状态
       //状态显示
       return h('div', {}, [statusDom])
     }
@@ -428,8 +468,8 @@ const initColumns = () => {
       label: '兑换状态',
       'min-width': '120px',
       prop: 'exchangeStatus',
-      render: (row: any) => {
-        let statusDom = h('div', system_enum.getExchangeStatusList(row.exchangeStatus)) //订单状态
+      render: (row: any, parentRow: any) => {
+        let statusDom = h('div', system_enum.getExchangeStatusList(parentRow.exchangeStatus)) //订单状态
         //状态显示
         return h('div', {}, [statusDom])
       }
@@ -439,10 +479,10 @@ const initColumns = () => {
     label: '售后状态',
     prop: 'afterStatus',
     'min-width': '120px',
-    render: (row: any) => {
+    render: (row: any, parentRow: any) => {
       //状态显示
-      const afterSaleStatus = order_enum.getAfter_order_statesTitle(row.afterSaleStatus)
-      const statusDom = h('div', afterSaleStatus)
+      const afterSaleStatus = order_enum.getAfter_order_statesTitle(parentRow.afterSaleStatus)
+      const statusDom = h('div', {}, afterSaleStatus)
       return h('div', {}, [statusDom])
     },
     openMarginCell: true
@@ -453,8 +493,8 @@ const initColumns = () => {
       align: 'center',
       width: '160px',
       prop: 'projectType',
-      render: (row: any) => {
-        let projectTypeName = h('div', system_enum.getProjectType(row.projectType)) //订单状态
+      render: (row: any, parentRow: any) => {
+        let projectTypeName = h('div', system_enum.getProjectType(parentRow.projectType)) //订单状态
         //状态显示
         return h('div', {}, [projectTypeName])
       }
@@ -463,23 +503,34 @@ const initColumns = () => {
   columns.value.push({
     label: '操作',
     align: 'center',
+    fixed: 'right',
+    minWidth: '140px',
     render: (row: any, parentRow: any) => {
+      const detailButton =
+        h(ElButton, {
+          type: 'primary',
+          link: true,
+          innerText: '查看详情',
+          onClick: () => {
+            toOrderDetailHandler(parentRow) //
+          }
+        })
       //备注:自营体系才支持发货
       const viewButton =
-        [105].includes(row.channelSource) &&
-        [1, 2].includes(row.orderStatus) &&
+        [105].includes(parentRow.channelSource) &&
+        [1, 2].includes(parentRow.orderStatus) &&
         withDirectives(
           h(ElButton, {
             type: 'primary',
-            innerText: row.orderStatus == 1 ? '发货' : '部分发货',
+            innerText: parentRow.orderStatus == 1 ? '发货' : '部分发货',
             onClick: () => {
-              devilryHandler(row)
+              devilryHandler(parentRow)
             }
           }),
           [[authDir, 'VO_PRODUCT_DEVIL']]
         )
       const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
-      return h('div', { style }, [viewButton])
+      return h('div', { style }, [detailButton, viewButton])
     }
   })
 }
@@ -572,7 +623,6 @@ eventBus.on('orderRefresh', searchQueryHarder)
       <el-form-item label="收货人姓名" class="formItem" placeholder="请选择">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].receiverName" placeholder="请输入收货人姓名"></el-input>
       </el-form-item>
-
       <el-form-item v-if="['10', '101'].includes(getSystemOptionType)" label="供应商" class="formItem" placeholder="请选择">
         <AffiliatedSupplier v-model.trim="dataPage.facade[dataPage.facadeKz.tab].supplyIds" :hasJdChance="true">
         </AffiliatedSupplier>
@@ -606,7 +656,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].outTradeNo"
           placeholder="请输入电商订单编号(子单)"></el-input>
       </el-form-item>
-      <el-form-item label="分行名称" class="formItem">
+      <el-form-item label="分行名称" class="formItem" v-if="isShowBackName">
         <BranchSelect v-model:modelName="dataPage.facade[dataPage.facadeKz.tab].branchName"
           v-model="dataPage.facade[dataPage.facadeKz.tab].branchId" placeholder="请选择分行名称">
         </BranchSelect>
@@ -620,7 +670,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
           :selectList="system_enum.exchangeStatusList"> </SelectModel>
       </el-form-item>
     </SearchForm>
-    <OrderCustomTable class="order-container" :openFold="false" :openERP="false" :border="true" :dataPage="dataPage"
+    <OrderTable class="order-container" :openFold="false" :openERP="true" :border="true" :dataPage="dataPage"
       :dataList="dataList" orderChildAttr="goodsList" :columns="columns">
       <template #option>
         <AuthButton authKey="VO_ORDER_EXPORT" type="primary" @click="exportOrderHandler"
@@ -668,11 +718,11 @@ eventBus.on('orderRefresh', searchQueryHarder)
               <span class="value">{{ row.delayTime ?? '-' }}分钟</span>
             </span>
             <el-divider direction="vertical" />
-            <span>
+            <span v-if="isShowBackName">
               <span class="title">分行名称:</span>
               <span class="value">{{ row.branchName ?? '-' }}</span>
+              <el-divider direction="vertical" />
             </span>
-            <el-divider direction="vertical" />
             <span v-if="getSystemOptionType == 101">
               <span class="title">供应商:</span>
               <span class="value">{{ row.supplyName ?? '-' }}</span>
@@ -693,12 +743,9 @@ eventBus.on('orderRefresh', searchQueryHarder)
               <span class="value">￥{{ row.settlementPrice }}</span>
             </span>
           </div>
-          <div>
-            <el-button type="primary" @click="toOrderDetailHandler(row)" link>查看详情</el-button>
-          </div>
         </div>
       </template>
-    </OrderCustomTable>
+    </OrderTable>
     <CustomPagination @pagingQuery="pagingQueryHarder" :page="dataPage.page[dataPage.facadeKz.tab]"></CustomPagination>
     <DeliverGood v-model="dataPage.showDeliverGood" :outgoingType="1" :curryInfo="dataPage.curryInfo"
       @refresh="searchQueryHarder"> </DeliverGood>
@@ -717,44 +764,29 @@ eventBus.on('orderRefresh', searchQueryHarder)
   }
 }
 
-.order-container {
-  .order_row {
-    width: 100%;
+.order_row {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .order_detail {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: nowrap;
+    justify-content: flex-start;
 
-    .content {
-      flex: 1;
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-
-      .order_detail {
-        display: flex;
-        justify-content: flex-start;
-        color: #999;
-
-        .title {
-          display: inline-block;
-          color: #999;
-        }
-
-        .value {
-          color: #333;
-        }
-      }
+    // gap: 40px;
+    .title {
+      font-weight: 400;
+      color: #999;
+      text-align: right;
     }
 
-    @media screen and (min-width: 100px) and (max-width: 1750px) {
-      .order-overflow {
-        // display: block;
-        overflow: hidden;
-        white-space: nowrap;
-        max-width: 200px;
-        text-overflow: ellipsis;
-      }
+    .value {
+      font-weight: 400;
+      color: #333333;
     }
   }
 }
