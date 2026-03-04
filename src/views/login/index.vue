@@ -32,6 +32,9 @@
       </el-form>
     </div>
     <CaptchaBoxDialog v-model="captchaShow" @validSuccess="handleCaptchaSuccess"></CaptchaBoxDialog>
+    <SelectRole v-model="selectRoleShow" :roleList="roleList" :userInfo="userInfo"
+      @submitSuccess="handleSelectRoleSuccess">
+    </SelectRole>
   </div>
 </template>
 
@@ -42,6 +45,10 @@ import { useUserStore } from '@/stores'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import CaptchaBoxDialog from './CaptchaBoxDialog.vue'
+import SelectRole from './SelectRole.vue'
+import { removeLocal, setLocal } from '@/utils/storage'
+const VITE_TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY
+
 const { isDevelopment } = isEevCheckHooks({})
 const userStore = useUserStore()
 const $router = useRouter()
@@ -61,7 +68,9 @@ const formData = reactive<FromData>({
   captcha: ''
 })
 const loading = ref(false)
-
+const selectRoleShow = ref(false)
+const roleList = ref([])
+const userInfo = ref({})
 const rules = reactive<FormRules>({
   username: [
     {
@@ -108,20 +117,59 @@ let captchaShow = ref(false)
 const handleCaptchaSuccess = async () => {
   loading.value = true
   try {
-    const res: any = await login_api.A_login({ ...formData })
+    const userInfoRes: any = await login_api.A_login({ ...formData })
+    setLocal(VITE_TOKEN_KEY, `${userInfoRes.token}`)
+    // 获取用户角色
+    const roleRes: any = await login_api.A_getRoleListByUserId({ userId: userInfoRes.id })
+    //是否存在多角色用户
+    checkUserRoleList(userInfoRes, roleRes)
+  } catch {
+    removeLocal(VITE_TOKEN_KEY)
+    ElMessage.success('登录成功')
+  } finally {
+    loading.value = false
+  }
+}
+const checkUserRoleList = async (userInfoRes: any, roleListRes: any) => {
+  //单角色登陆
+  if (roleListRes?.length == 1) {
+    loginSuccess(userInfoRes, roleListRes[0].id)
+  } else if (roleListRes?.length > 1) {
+    //多角色登陆
+    userInfo.value = userInfoRes
+    roleList.value = roleListRes
+    selectRoleShow.value = true
+  } else {
+    //超级管理元
+    loginSuccess(userInfoRes, '')
+  }
+}
+const handleSelectRoleSuccess = async (userInfoRes: any, roleId: string) => {
+  try {
+    loginSuccess(userInfoRes, roleId)
+  } catch (error) {
+    removeLocal(VITE_TOKEN_KEY)
+    ElMessage.error('登录失败')
+  }
+}
+const loginSuccess = async (userInfoRes: any, roleId: string | null) => {
+  try {
+    await login_api.A_saveRoleInfo({
+      userId: userInfoRes.id,
+      roleId
+    })
     // 登录成功后 更新用户信息
-    userStore.updateUserInfo(res)
+    userStore.updateUserInfo(userInfoRes)
     userStore.initInfo()
     ElMessage.success('登录成功')
     setTimeout(() => {
       location.reload()
     }, 1000)
-  } catch {
-  } finally {
-    loading.value = false
+  } catch (error) {
+    removeLocal(VITE_TOKEN_KEY)
+    ElMessage.error('登录失败')
   }
 }
-
 const designWidth = 1920
 // 基准字体大小（建议取设计稿宽度的1/100，便于计算）
 const baseFontSize = 19.2
@@ -135,7 +183,6 @@ function setRootFontSize() {
   if (clientWidth > 1920) {
     fontSize = 19.2 // 大屏保持基准大小
   }
-
   document.documentElement.style.fontSize = `${fontSize}px`
 }
 // 初始化执行

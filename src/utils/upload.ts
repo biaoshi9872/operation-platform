@@ -88,6 +88,7 @@ export const saveAs = (blob: any, filename: any) => {
 
 // 下载方法
 export function downloadExcel(url: any, filename: any) {
+  debugger
   getBlob(url).then((blob: any) => {
     saveAs(blob, filename)
   })

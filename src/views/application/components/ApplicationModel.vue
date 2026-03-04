@@ -31,6 +31,7 @@ const data = reactive<IData>({
     appName: '',
     goodsSourceTypeCodeList: [],
     appProfitModelDTOList: [],
+    operatorIdList: [],
     orgId: '',
     projectNo: '',
     projectType: '',
@@ -47,6 +48,7 @@ const data = reactive<IData>({
     appName: [{ required: true, message: '请输入应用名称', trigger: ['change', 'blur'] }],
     goodsSourceTypeCodeList: [{ required: true, message: '请选择可见商品类型', trigger: ['change', 'blur'] }],
     orgId: [{ required: true, message: '请选择分支机构', trigger: ['change', 'blur'] }],
+    operatorIdList: [{ required: true, message: '请选择运营负责人', trigger: ['change', 'blur'] }],
     projectNo: [{ required: true, message: '请输入综管项目编号', trigger: ['change', 'blur'] }],
     projectType: [{ required: true, message: '请选择项目类型', trigger: ['change', 'blur'] }],
     isSupportMask: [{ required: true, message: '请选择是否支持脱敏', trigger: ['change', 'blur'] }],
@@ -216,6 +218,13 @@ const blurHandler = () => {
         <el-form-item label="综管项目编号" prop="projectNo">
           <el-input v-model="data.formData.projectNo" placeholder="请输入综管项目编号" @blur="blurHandler" maxlength="50"
             show-word-limit></el-input>
+        </el-form-item>
+        <el-form-item label="运营负责人" prop="operatorIdList">
+          <template #label>
+            <Tooltip content="请正确勾选对应的运营负责人，未勾选的运营后续将无法对对应分支机构/应用的商品、订单、财务相关数据进行管理。">运营负责人</Tooltip>
+          </template>
+          <OperationSelect v-model="data.formData.operatorIdList" :multiple="true" :placeholder="'请选择运营负责人'">
+          </OperationSelect>
         </el-form-item>
         <el-form-item label="项目类型" prop="projectType">
           <template #label>

@@ -150,7 +150,7 @@ provide('rollingReset', rollingReset)
       font-size: 18px;
       transform: skewX(-10deg);
       font-weight: bold;
-      background-image: linear-gradient(to right, #829ff1, #517aee);
+      background-image: linear-gradient(to right, #c0aef2, #9373EE);
       color: transparent;
       -webkit-background-clip: text;
     }
