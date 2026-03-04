@@ -89,6 +89,7 @@ export const getService = (config: AxiosConfig = { timeout: 45000, baseURL: impo
       }
     },
     error => {
+      debugger
       ElMessage.error({ message: error?.response?.statusText || '' + [error?.response?.status] || '' || '网络异常或请求超时', duration: 2000 })
       console.log(error, error.response, 'response')
       return Promise.reject(new Error((error.response ? `${error.response.config.url} ` : '') + error))

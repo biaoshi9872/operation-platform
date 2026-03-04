@@ -15,12 +15,12 @@
             </h3>
             <div class="info-block">
                 <div class="info-item">
-                    <span class="label">机构名称</span>
+                    <span class="label">分支机构</span>
                     <span class="value">{{ row.orgName }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="label">创建人</span>
-                    <span class="value">{{ row.createUserName }}</span>
+                    <span class="label">运营</span>
+                    <span class="value">{{ row.operatorName || '-' }}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">创建时间</span>
@@ -84,21 +84,21 @@ const projectTypeClass = computed(() => {
         style = {
             bg: 'bg-green-100',
             text: 'text-green-600',
-            icon: 'campaign',
+            icon: 'yingxiao',
             tagBg: 'tag-green'
         }
     } else if (projectType == '2') {
         style = {
             bg: 'bg-pink-100',
             text: 'text-pink-600',
-            icon: 'account_balance_wallet',
+            icon: 'fulizhongxin',
             tagBg: 'tag-blue'
         }
     } else {
         style = {
             bg: 'bg-indigo-100',
             text: 'text-indigo-600',
-            icon: 'local_post_office',
+            icon: 'fuli',
             tagBg: 'tag-purple'
         }
     }
