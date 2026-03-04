@@ -57,9 +57,9 @@ const pageInfo = {
   totalCount: 0
 }
 const isShowBackName = computed(() => {
-  let SYS_HIDE_BANK = $routerStore.config.SYS_HIDE_BANK
-  let curryOrgId = $userStore.userInfo.orgId
-  let arrId = SYS_HIDE_BANK.split(',').map(Number) || []
+  let SYS_HIDE_BANK = $routerStore?.config?.SYS_HIDE_BANK || ''
+  let curryOrgId = $userStore?.userInfo?.orgId || ''
+  let arrId = SYS_HIDE_BANK?.split(',')?.map(Number) || []
   return arrId.includes(curryOrgId)
 })
 const dataRestCallback = (res: any) => {
