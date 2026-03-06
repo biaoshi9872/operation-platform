@@ -460,7 +460,7 @@ const initColumns = () => {
     render: (row: any, parentRow: any) => {
       let statusDom = h('div', order_enum.getDictNameByKey(order_enum.order_states, parentRow.orderStatus)) //订单状态
       //状态显示
-      return h('div', {}, [statusDom])
+      return h('div', { style: { 'display': 'flex', 'align-items': 'center', 'justify-content': 'center' } }, [statusDom])
     }
   })
   if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
@@ -471,19 +471,20 @@ const initColumns = () => {
       render: (row: any, parentRow: any) => {
         let statusDom = h('div', system_enum.getExchangeStatusList(parentRow.exchangeStatus)) //订单状态
         //状态显示
-        return h('div', {}, [statusDom])
+        return h('div', { style: { 'display': 'flex', 'align-items': 'center', 'justify-content': 'center' } }, [statusDom])
       }
     })
   }
   columns.value.push({
     label: '售后状态',
     prop: 'afterStatus',
+    align: 'center',
     'min-width': '120px',
     render: (row: any, parentRow: any) => {
       //状态显示
-      const afterSaleStatus = order_enum.getAfter_order_statesTitle(parentRow.afterSaleStatus)
+      const afterSaleStatus = order_enum.getAfter_order_statesTitle(row.afterSaleStatus)
       const statusDom = h('div', {}, afterSaleStatus)
-      return h('div', {}, [statusDom])
+      return h('div', { style: { 'display': 'flex', 'align-items': 'center', 'justify-content': 'center' } }, [statusDom])
     },
     openMarginCell: true
   })
