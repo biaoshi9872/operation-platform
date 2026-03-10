@@ -125,7 +125,6 @@ const handleCaptchaSuccess = async () => {
     checkUserRoleList(userInfoRes, roleRes)
   } catch {
     removeLocal(VITE_TOKEN_KEY)
-    ElMessage.success('登录成功')
   } finally {
     loading.value = false
   }
@@ -149,7 +148,6 @@ const handleSelectRoleSuccess = async (userInfoRes: any, roleId: string) => {
     loginSuccess(userInfoRes, roleId)
   } catch (error) {
     removeLocal(VITE_TOKEN_KEY)
-    ElMessage.error('登录失败')
   }
 }
 const loginSuccess = async (userInfoRes: any, roleId: string | null) => {
@@ -167,7 +165,6 @@ const loginSuccess = async (userInfoRes: any, roleId: string | null) => {
     }, 1000)
   } catch (error) {
     removeLocal(VITE_TOKEN_KEY)
-    ElMessage.error('登录失败')
   }
 }
 const designWidth = 1920
