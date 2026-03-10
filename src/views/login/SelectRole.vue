@@ -47,7 +47,6 @@ const openHandler = () => {
 
     .radio-group-container {
         display: flex;
-        flex-direction: column;
         justify-content: flex-start;
         margin-top: 12px;
 

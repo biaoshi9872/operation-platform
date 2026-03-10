@@ -197,7 +197,7 @@ const title = computed(() => {
           <el-input v-model="data.formData.customerName" placeholder="请输入客户名称" maxlength="50"
             show-word-limit></el-input>
         </el-form-item>
-        <el-form-item label="项目经理" prop="projectManager">
+        <el-form-item label="项目经理">
           <el-input v-model="data.formData.projectManager" placeholder="请输入项目经理电话" maxlength="50"
             show-word-limit></el-input>
         </el-form-item>
