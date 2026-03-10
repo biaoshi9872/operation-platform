@@ -412,6 +412,7 @@ watch(() => props.dataList, (newVal) => {
 .order-table-container {
     background: #ffff;
     padding: 8px;
+    flex-shrink: 0;
 
     .option_container {
         margin-bottom: 8px;

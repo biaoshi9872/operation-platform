@@ -2,6 +2,7 @@ import { onMounted, onUnmounted, provide, computed, reactive, onActivated } from
 import { IPage, Icustomize } from '@/types/from-types'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import store from '@/stores'
+import { useRouterStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
 import { cloneDeep, debounce } from 'lodash-es'
 /**
@@ -30,6 +31,7 @@ export default function <F, T>(page: IPage<F, T>) {
   })
   //默认字段,默认值
   pageData.loadingData = false
+  pageData.openColumnCache = pageData.openColumnCache ?? true
   pageData.loadingExport = false
 
   //导出--（文件方式）
@@ -223,7 +225,8 @@ export default function <F, T>(page: IPage<F, T>) {
 
   const getCurryMenuAuth = () => {
     //@ts-ignore
-    const menuRoutes = store.routerStore?.menuRoutes
+    const $routerStore = useRouterStore()
+    const menuRoutes = $routerStore?.menuRoutes || []
     const curryMenu = menuRoutes
       ?.map((item: any) => item.children)
       .flat(2)
@@ -233,7 +236,7 @@ export default function <F, T>(page: IPage<F, T>) {
 
   //开启列自动刷新功能
   onActivated(async () => {
-    if (getCurryMenuAuth()?.meta?.isColumnCache) {
+    if (getCurryMenuAuth()?.meta?.isColumnCache && pageData.openColumnCache) {
       refresh()
     }
   })
