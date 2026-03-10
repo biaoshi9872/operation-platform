@@ -19,6 +19,7 @@ export const getService = (config: AxiosConfig = { timeout: 45000, baseURL: impo
     withCredentials: true,
     timeout: config.timeout, // 请求超时时间
     validateStatus(status) {
+      console.log('status', status)
       return (status >= 200 && status < 300) || VALID_STATUS.includes(status)
     }
   })
@@ -51,6 +52,7 @@ export const getService = (config: AxiosConfig = { timeout: 45000, baseURL: impo
       return config
     },
     error => {
+      debugger
       return Promise.reject(error)
     }
   )
@@ -89,9 +91,31 @@ export const getService = (config: AxiosConfig = { timeout: 45000, baseURL: impo
       }
     },
     error => {
-      debugger
-      ElMessage.error({ message: error?.response?.statusText || '' + [error?.response?.status] || '' || '网络异常或请求超时', duration: 2000 })
-      console.log(error, error.response, 'response')
+      // 打印完整的错误对象，帮助定位问题
+      console.group('Axios Error')
+      console.log('Error Message:', error.message)
+      console.log('Error Code:', error.code)
+      console.log('Response Data:', error.response?.data)
+      console.log('Full Error:', error)
+      console.groupEnd()
+
+      let message = '网络异常或请求超时'
+      if (error.response) {
+        // 如果有响应，优先显示后端返回的 msg，或者是状态码
+        const status = error.response.status
+        const statusText = error.response.statusText || ''
+        message = `请求失败: ${status} ${statusText}`
+      } else if (error.message) {
+        if (error.message.includes('timeout')) {
+          message = '请求超时'
+        } else if (error.message.includes('Network Error')) {
+          message = '网络连接异常'
+        } else {
+          message = error.message
+        }
+      }
+
+      ElMessage.error({ message, duration: 3000 })
       return Promise.reject(new Error((error.response ? `${error.response.config.url} ` : '') + error))
     }
   )
