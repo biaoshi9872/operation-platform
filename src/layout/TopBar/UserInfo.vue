@@ -148,6 +148,8 @@ const updatePassword = () => {
       justify-content: space-between;
       align-items: center;
       gap: 2px;
+      color: var(--el-color-primary);
+      font-weight: 700;
     }
 
     .active {
