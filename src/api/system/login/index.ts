@@ -32,6 +32,34 @@ class login_api {
       data: data
     })
   }
+  /**
+   *
+   * 根据用户选角色
+   *
+   */
+  A_getRoleListByUserId(data: any) {
+    return request({
+      url: 'sys/role/getRoleListByUserId',
+      method: 'get',
+      params: data
+    })
+  }
+
+  /**
+   *
+   * 保存角色信息
+   *
+   */
+  A_saveRoleInfo(data: any) {
+    return request({
+      url: '/system/setCurrentRole',
+      method: 'post',
+      requestOptions: {
+        formData: true
+      },
+      data: data
+    })
+  }
 }
 
 export default new login_api()

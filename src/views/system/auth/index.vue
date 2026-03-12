@@ -111,7 +111,7 @@ function handleSubmit() {
 </script>
 
 <template>
-  <PageContainer class="auth-page">
+  <div class="auth-page">
     <div class=" border-rd-2 common-bg p-16">
       <RoleList @change="handleRoleChange" />
     </div>
@@ -125,7 +125,7 @@ function handleSubmit() {
         <el-button v-if="showOption" type="primary" :loading="submitLoading" @click="handleSubmit">保存权限</el-button>
       </div>
     </div>
-  </PageContainer>
+  </div>
 </template>
 
 <style lang="scss" scoped>

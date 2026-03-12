@@ -10,6 +10,7 @@ import { IPage } from '@/types/from-types'
 import { encrypted, strEncodeURIComponent } from '@/utils/encrypt'
 import { setLocal } from '@/utils/storage'
 import { ElButton } from 'element-plus'
+import AppCell from './components/AppCell.vue'
 import ApplicationModel from './components/ApplicationModel.vue'
 import system_enum from '@/utils/constant/system'
 const { isOrgLast } = isStateCheckHooks()
@@ -32,7 +33,7 @@ const dataPage: IPage<any, any> = reactive({
   showApplication: false,
   curryInfo: {},
   dataList: [],
-  toDownloadCenterApi: null,
+  toDownloadCenterApi: undefined,
   selectPage: application_api.A_page
 })
 const { searchQuery } = pageHooks(dataPage)
@@ -100,34 +101,19 @@ const toApplicationHandler = (row: any) => {
         <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
         </SelectModel>
       </el-form-item>
-    </SearchForm>
-    <PageTable :page="dataPage.page" :listTableData="dataPage.dataList" @pagingQuery="searchQueryHarder">
-      <template #option>
+      <template #button>
         <AuthButton authKey="APP_ADD" type="primary" @click="addApplicationHandler">创建应用</AuthButton>
       </template>
-      <el-table-column prop="appName" label="应用名称">
-        <template #default="{ row }">
-          <div class="flex items-center gap-2" @dblclick="getProjectId(row)">
-            <img style="width: 20px; height:20px" src="@/assets/images/login/app.png" />
-            <OverflowTooltipCell :text="row.appName">{{ row.appName }}</OverflowTooltipCell>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="orgName" label="分支机构"></el-table-column>
-      <YbtTableColumn prop="projectType" label="项目类型" min-width="140">
-        <template #default="{ row }">{{
-          system_enum.getProjectType(row.projectType)
-          }}</template>
-      </YbtTableColumn>
-      <el-table-column prop="createDate" label="创建时间"></el-table-column>
-      <el-table-column prop="createUserName" label="创建人"></el-table-column>
-      <el-table-column label="操作" width="200px" align="right">
-        <template #default="{ row }">
-          <el-button type="primary" link @click="toApplicationHandler(row)">应用管理</el-button>
-          <AuthButton authKey="APP_EDIT" type="primary" link @click="editApplicationHandler(row)">编辑</AuthButton>
-        </template>
-      </el-table-column>
-    </PageTable>
+    </SearchForm>
+    <div class="bg-#fff p-8 app-list-container">
+      <div class="app-grid">
+        <AppCell v-for="item in dataPage.dataList" :key="item.id" :row="item" @manage="toApplicationHandler"
+          @edit="editApplicationHandler" @copyId="getProjectId"></AppCell>
+      </div>
+      <div class="app-pagination-container">
+        <CustomPagination @pagingQuery="searchQueryHarder" :page="dataPage.page"></CustomPagination>
+      </div>
+    </div>
     <ApplicationModel v-model="dataPage.showApplication" :curryInfo="dataPage.curryInfo"></ApplicationModel>
   </PageContainer>
 </template>
@@ -142,5 +128,30 @@ const toApplicationHandler = (row: any) => {
   padding: 12px 16px;
   background: #f1eded99;
   color: #999;
+}
+
+.app-list-container {
+  flex: 1;
+  overflow: auto;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  /* gap-6 */
+  margin-top: 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 </style>

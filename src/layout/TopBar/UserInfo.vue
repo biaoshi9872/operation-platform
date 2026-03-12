@@ -13,7 +13,7 @@ async function handleLogout() {
       $router.push('/login')
     })
     // location.reload()
-  } catch (e) {}
+  } catch (e) { }
 }
 
 let showPwd = ref(false)
@@ -43,6 +43,10 @@ const updatePassword = () => {
               ：{{ userInfo?.name }}
             </p>
           </el-dropdown-item>
+          <el-dropdown-item disabled class="block pb-0">
+            <p class="lh-27"><span class="dropdown-item-label inline-block">角色</span>：{{ userInfo?.roleName || '-' }}
+            </p>
+          </el-dropdown-item>
           <el-dropdown-item divided @click="updatePassword" class="block pb-0">
             <span class="back_btn">修改密码</span>
           </el-dropdown-item>
@@ -62,10 +66,12 @@ const updatePassword = () => {
 .user-info-warp {
   display: flex;
   align-items: center;
+
   .user-icon {
     font-size: 20px;
     color: var(--el-color-primary);
   }
+
   .user-info {
     display: flex;
     align-items: center;

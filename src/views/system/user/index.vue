@@ -130,7 +130,7 @@ const searchQueryHandler = () => {
           </el-form-item>
         </SearchForm>
         <TableModel :page="dataPage.page" :loading="dataPage.loadingData" :listTableData="dataPage.dataList"
-          :dataPage="dataPage">
+          :dataPage="dataPage" @pagingQuery="searchQueryHandler">
           <template #option>
             <el-button type="primary" @click="handleAdd()">新增</el-button>
           </template>

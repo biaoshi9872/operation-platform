@@ -29,7 +29,6 @@ export const getService = (config: AxiosConfig = { timeout: 45000, baseURL: impo
       config.headers.token = getLocal(import.meta.env.VITE_TOKEN_KEY)
       const configData = config.data
       const configParams = config.params
-
       if (typeof configData !== 'object' && typeof configParams !== 'object') {
         return config
       }

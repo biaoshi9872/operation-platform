@@ -42,6 +42,7 @@ const data = reactive<IData>({
     parentOrgId: null,
     status: 1,
     customerName: '',
+    projectManager: '',
     projectManagerPhone: '',
     validateStartTime: null,
     validateEndTime: null,
@@ -66,6 +67,7 @@ const data = reactive<IData>({
   formRules: {
     name: [{ required: true, message: '请输入机构名称', trigger: ['change', 'blur'] }],
     customerName: [{ required: true, message: '请输入客户名称', trigger: ['change', 'blur'] }],
+    projectManager: [{ required: true, message: '请输入项目经理', trigger: ['change', 'blur'] }],
     projectManagerPhone: [
       { required: true, message: '请输入项目经理电话', trigger: ['change', 'blur'] },
       {
@@ -193,6 +195,10 @@ const title = computed(() => {
         </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
           <el-input v-model="data.formData.customerName" placeholder="请输入客户名称" maxlength="50"
+            show-word-limit></el-input>
+        </el-form-item>
+        <el-form-item label="项目经理">
+          <el-input v-model="data.formData.projectManager" placeholder="请输入项目经理电话" maxlength="50"
             show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="项目经理电话" prop="projectManagerPhone">
