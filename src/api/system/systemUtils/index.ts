@@ -100,5 +100,17 @@ class systemUtils_api {
       data: data
     })
   }
+
+  /**
+   * 运营列表
+   *
+   */
+  A_getProjectOperatorList(data: any) {
+    return request<any>({
+      url: 'sys/user/getProjectOperatorList',
+      method: 'get',
+      data: data
+    })
+  }
 }
 export default new systemUtils_api()

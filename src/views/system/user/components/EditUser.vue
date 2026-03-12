@@ -92,7 +92,47 @@ const formRules = reactive<FormRules<any>>({
 })
 
 const roleList = ref<any>()
-
+const specialRoleNames = ['项目运营', '供应链运营']
+const specialRoleIds = computed<number[]>(() => {
+  if (!Array.isArray(roleList.value)) return []
+  return roleList.value
+    .filter((el: any) => specialRoleNames.includes(el.name))
+    .map((el: any) => el.id)
+})
+const roleListOptions = computed(() => {
+  const selected: number[] = Array.isArray(formData.roleIds) ? formData.roleIds : []
+  const specials = specialRoleIds.value
+  const hasOtherSelected = selected.some(id => !specials.includes(id))
+  const otherSelectedId = selected.find(id => !specials.includes(id))
+  return roleList.value?.map((el: any) => {
+    let disabled = false
+    if (hasOtherSelected && otherSelectedId != null) {
+      disabled = el.id !== otherSelectedId
+    } else if (selected.length === 1 && specials.includes(selected[0])) {
+      disabled = !specials.includes(el.id)
+    } else if (selected.length >= 2 && selected.every(id => specials.includes(id))) {
+      disabled = !specials.includes(el.id)
+    }
+    return { ...el, disabled }
+  })
+})
+const prevRoleIds = ref<number[]>([])
+function onRoleChange(val: any) {
+  const specials = specialRoleIds.value
+  const next: number[] = Array.isArray(val) ? val.slice() : []
+  const added = next.filter(id => !prevRoleIds.value.includes(id))
+  const last = added.length ? added[added.length - 1] : next[next.length - 1]
+  const hasOther = next.some(id => !specials.includes(id))
+  if (hasOther) {
+    const keep = last ?? next.find(id => !specials.includes(id))
+    formData.roleIds = keep != null ? [keep] : []
+  } else {
+    const onlySpecials = next.filter(id => specials.includes(id))
+    const deduped = Array.from(new Set(onlySpecials)).slice(0, 2)
+    formData.roleIds = deduped
+  }
+  prevRoleIds.value = Array.isArray(formData.roleIds) ? formData.roleIds.slice() : []
+}
 function fetchRoleList() {
   role_api.A_addUserRoleList({ orgId: props.curDepartment?.id }).then((data: any) => {
     roleList.value = data as any[]
@@ -110,6 +150,8 @@ function handleOpen() {
     // 状态模块
     formData.status = 1
     formData.id = ''
+    formData.roleIds = []
+    prevRoleIds.value = []
     nextTick(() => {
       handleReset()
     })
@@ -124,6 +166,7 @@ const A_detail = () => {
       if (Object.hasOwn(res, key)) formData[key] = res[key] ?? ''
     })
     formData.roleIds = res.roleInfoList.map((el: any) => el.id) || []
+    prevRoleIds.value = Array.isArray(formData.roleIds) ? formData.roleIds.slice() : []
   })
 }
 
@@ -192,8 +235,10 @@ function handleClose() {
           clearable />
       </el-form-item>
       <el-form-item label="用户角色" v-if="!formData.ifAdminAccount" prop="roleIds">
-        <el-select v-model="formData.roleIds" multiple filterable placeholder="请选择用户角色" class="w-300">
-          <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" />
+        <el-select v-model="formData.roleIds" multiple filterable placeholder="请选择用户角色" class="w-300"
+          @change="onRoleChange">
+          <el-option v-for="item in roleListOptions" :key="item.id" :label="item.name" :value="item.id"
+            :disabled="item.disabled" />
         </el-select>
       </el-form-item>
       <el-form-item label="用户状态" prop="status">

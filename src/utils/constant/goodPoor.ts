@@ -183,7 +183,7 @@ class goodPoor_enum extends baseEnum {
   public D_sourceTypeList = [1, 11, 55, 63, 105]
 
   //自营类型。
-  public Z_sourceTypeList = [104, 106]
+  public Z_sourceTypeList = [104]
 
   public getSourceTypeNameByKey(key: number | string) {
     return this.getDictNameByKey(this.sourceTypeList, key)

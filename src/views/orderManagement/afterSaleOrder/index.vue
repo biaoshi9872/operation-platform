@@ -269,35 +269,36 @@ const initColumns = () => {
     fixed: 'right',
     minWidth: '140px',
     render: (row: any) => {
-      //电商审核逻辑
+      //审核逻辑:顶级机构--【自营】【电商】
       let authButton = null
+      let authButtonZy = null
+      let title = ''
+      switch (row.afterNode) {
+        case 1:
+          title = '审核'
+          break
+        case 2:
+          title = '上传退货物流'
+          break
+        case 3:
+          title = '上传发货物流'
+          break
+        case 4:
+          title = '确认收货'
+          break
+        case 5:
+          title = '用户确认收货'
+          break
+        case 6:
+          title = '确认退款'
+          break
+      }
       if (goodPoor.D_sourceTypeList.includes(row.channelSource)) {
         //1.：待售后审核 2：待用户上传物流信息 3：供应商上传物流信息 4：待供应商确认收货 5：待用户确认收货 6：待售后确认
         //1.退货退款   审核 上传退货物流 供应商确认收货  确认退款
         //2.换货      审核  上传退货物流 供应商确认收货 供应商上传发货物流 用户确认收货
         //3.仅退款：   审核 确认退款
         //4.节点等于-1强制隐藏审核
-        let title = ''
-        switch (row.afterNode) {
-          case 1:
-            title = '审核'
-            break
-          case 2:
-            title = '上传退货物流'
-            break
-          case 3:
-            title = '上传发货物流'
-            break
-          case 4:
-            title = '确认收货'
-            break
-          case 5:
-            title = '用户确认收货'
-            break
-          case 6:
-            title = '确认退款'
-            break
-        }
         authButton = row.afterNode != -1 && [1].includes(row.status) && withDirectives(
           h(ElButton, {
             type: 'text',
@@ -311,6 +312,27 @@ const initColumns = () => {
               authDir,
               {
                 authKey: 'AFTER_ORDER_SH',
+                detail: row
+              }
+            ]
+          ]
+        )
+      }
+      // 审核逻辑:分支机构 --【自营】
+      if (goodPoor.Z_sourceTypeList.includes(row.channelSource)) {
+        authButtonZy = row.afterNode != -1 && [1].includes(row.status) && withDirectives(
+          h(ElButton, {
+            type: 'text',
+            innerText: title,
+            onClick: () => {
+              authHandler(row, title)
+            }
+          }),
+          [
+            [
+              authDir,
+              {
+                authKey: 'AFTER_ORDER_FZJG_SH',
                 detail: row
               }
             ]
@@ -346,7 +368,7 @@ const initColumns = () => {
         }
       })
       const style = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
-      return h('div', { style }, [authButton, revocationButton, detailButton])
+      return h('div', { style }, [authButton, authButtonZy, revocationButton, detailButton])
     }
   })
 }
