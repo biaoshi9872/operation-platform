@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores/index'
 import { ElMessageBox } from 'element-plus'
 import ThemeToggle from './ThemeToggle.vue'
 import UpdatePwd from './UpdatePwd.vue'
+import login_api from '@/api/system/login'
 const { userInfo, reSetUserInfo } = useUserStore()
 const $router = useRouter()
 
@@ -14,6 +15,16 @@ async function handleLogout() {
     })
     // location.reload()
   } catch (e) { }
+}
+
+const selectChangeHandler = async (item: any) => {
+  await login_api.A_saveRoleInfo({
+    userId: userInfo.id,
+    roleId: item.id
+  })
+  setTimeout(() => {
+    location.reload()
+  }, 1000)
 }
 
 let showPwd = ref(false)
@@ -43,8 +54,21 @@ const updatePassword = () => {
               ：{{ userInfo?.name }}
             </p>
           </el-dropdown-item>
-          <el-dropdown-item disabled class="block pb-0">
-            <p class="lh-27"><span class="dropdown-item-label inline-block">角色</span>：{{ userInfo?.roleName || '-' }}
+          <div class="role-container" v-if="userInfo?.roleInfoList?.length">
+            <p class="title">切换角色
+            </p>
+            <div class="role-list">
+              <div @click="selectChangeHandler(item)" :class="userInfo.roleIdList.includes(item.id) ? 'active' : ''"
+                class="role-item" v-for="item in userInfo?.roleInfoList || []" :key="item.id">
+                <span>{{ item.name }}</span>
+                <el-icon v-if="userInfo.roleIdList.includes(item.id)"><Select /></el-icon>
+              </div>
+            </div>
+          </div>
+          <el-dropdown-item v-else disabled class="block pb-0">
+            <p class="lh-27">
+              <span class="dropdown-item-label inline-block">角色</span>
+              ：{{ userInfo?.roleName }}
             </p>
           </el-dropdown-item>
           <el-dropdown-item divided @click="updatePassword" class="block pb-0">
@@ -96,6 +120,39 @@ const updatePassword = () => {
 
     .user-arrow-down {
       font-size: 10px;
+    }
+
+
+  }
+}
+
+.role-container {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--el-border-color-lighter);
+  line-height: 22px;
+  color: var(--el-text-color-disabled);
+  font-size: var(--el-font-size-base);
+
+  .title {
+    font-size: 12px;
+    padding: 5px;
+    text-align: center;
+  }
+
+  .role-list {
+
+    .role-item {
+      padding: 5px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .active {
+      color: var(--el-color-primary);
+      background-color: var(--el-color-primary-light-7);
     }
   }
 }
