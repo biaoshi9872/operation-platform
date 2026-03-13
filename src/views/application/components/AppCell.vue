@@ -1,5 +1,5 @@
 <template>
-    <div class="app-cell-card group" @click="$emit('manage', row)">
+    <div class="app-cell-card group">
         <div class="card-content">
             <div class="card-header">
                 <div class="icon-wrapper" :class="projectTypeClass.bg">
@@ -30,14 +30,14 @@
         </div>
         <div class="card-footer">
             <div>
-                <el-button type="primary" class="manage-btn" @click.stop="$emit('manage', row)">
+                <el-button v-auth="'APP_ADD'" type="primary" class="manage-btn" @click.stop="$emit('manage', row)">
                     <el-icon class="mr-4">
                         <Tools />
                     </el-icon>应用管理
                 </el-button>
             </div>
             <div>
-                <el-button class="edit-btn" @click.stop="$emit('edit', row)">
+                <el-button v-auth="'APP_EDIT'" class="edit-btn" @click.stop="$emit('edit', row)">
                     <el-icon class="mr-4">
                         <Edit />
                     </el-icon>编辑
