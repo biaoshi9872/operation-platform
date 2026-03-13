@@ -77,6 +77,11 @@ const dataInfo = reactive({
             </AttributeModule>
           </template>
         </el-table-column>
+        <el-table-column prop="tmOutTradeNo" v-if="[63].includes(orderInfo?.channelSource)" label="天猫电商子单号" width="150">
+          <template #default="{ row }">
+            {{ row.tmOutTradeNo }}
+          </template>
+        </el-table-column>
         <el-table-column v-if="!isFromOrgLast" prop="platformPurchasePrice" min-width="130" label="平台成本">
           <template #default="{ row }">
             <span>{{ row.isGift ? '-' : `￥${row.platformPurchasePrice}` }}</span>
