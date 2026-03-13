@@ -30,7 +30,7 @@
         </div>
         <div class="card-footer">
             <div>
-                <el-button v-auth="'APP_ADD'" type="primary" class="manage-btn" @click.stop="$emit('manage', row)">
+                <el-button v-auth="'APP_OPTION'" type="primary" class="manage-btn" @click.stop="$emit('manage', row)">
                     <el-icon class="mr-4">
                         <Tools />
                     </el-icon>应用管理
