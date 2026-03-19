@@ -151,6 +151,7 @@ const openDetail = (row: any = null) => {
             <el-table-column label="市场价" prop="faceValue" min-width="120px" align="left" />
             <el-table-column label="平台成本" prop="supplyPrice" min-width="120px" align="left" />
             <el-table-column label="面额" prop="faceValue" min-width="120px" align="left" />
+            <el-table-column label="使用门槛"  prop="couponRule" min-width="120px" align="left" ></el-table-column>
             <el-table-column label="商品状态" min-width="100px" align="left">
                 <template #default="scope">{{
                     bonusModel_enum.getGoodsStatusTitle(scope.row.status)

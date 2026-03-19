@@ -132,6 +132,21 @@ class system_enum {
   public getExchangeStatusList(value: any) {
     return this.exchangeStatusList.find(item => item.value == value)?.label || '--'
   }
+
+  public couponPlatformList = [
+    {
+      value: 1,
+      label: '微信'
+    },
+    {
+      value: 2,
+      label: '支付宝'
+    }
+  ]
+
+  public getCouponPlatformList(value: any) {
+    return this.couponPlatformList.find(item => item.value == value)?.label || '--'
+  }
 }
 
 export default new system_enum()

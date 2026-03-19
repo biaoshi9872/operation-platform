@@ -16,6 +16,10 @@ const goodDetail = computed(() => {
   return props.orderInfo.goodsInfo[0] || {}
 })
 
+const receiverInfo = computed(()=>{
+  return props.orderInfo.receiverInfo
+})
+
 </script>
 
 <template>
@@ -38,6 +42,18 @@ const goodDetail = computed(() => {
       <span class="item_title">批次有效期:</span>
       <span class="item_value"> {{ goodDetail.ljj_expireDateMin ?
         `${goodDetail.ljj_expireDateMin} ~ ${goodDetail.ljj_expireDateMax}` : '-' }}</span>
+    </div>
+    <div class="item flex">
+      <span class="item_title">批次号:</span>
+      <span class="item_value"> {{ goodDetail.thirdBatchNo || '-' }}</span>
+    </div>
+    <div class="item flex">
+      <span class="item_title">领取账号:</span>
+      <span class="item_value"> {{ receiverInfo.receiverPhone || '-' }}</span>
+    </div>
+    <div class="item flex">
+      <span class="item_title">券ID:</span>
+      <span class="item_value"> {{ goodDetail.thirdCouponId || '-' }}</span>
     </div>
   </div>
 </template>

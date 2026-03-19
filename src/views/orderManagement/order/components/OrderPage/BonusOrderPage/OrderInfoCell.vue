@@ -60,6 +60,7 @@ const getTitle = computed(() => {
       <span class="item_value">{{ getTitle(item) || '-' }} {{ item.unit || '' }}</span>
     </div>
   </div>
+
 </template>
 
 <style lang="scss" scoped>

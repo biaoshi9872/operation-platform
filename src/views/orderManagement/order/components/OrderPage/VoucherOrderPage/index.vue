@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import order_api from '@/api/order'
 import order_enum from '@/utils/constant/order'
+import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
 import OrderInfoCell from './OrderInfoCell.vue'
 import OrderProductCell from './OrderProductCell.vue'
 import OrderStateNode from '../../OrderStateNode.vue'
+import { buildOrderCopyText, copyText } from '../orderCopy'
 const route = useRoute()
 const dataPage = reactive({
     detailInfo: {
@@ -46,10 +48,22 @@ const stateTitle = computed(() => {
     return order_enum.getOrder_statesTitle(dataPage.detailInfo.orderBaseInfo.orderStatus)
 })
 
+const copyOrderHandler = async () => {
+    try {
+        await copyText(buildOrderCopyText(dataPage.detailInfo))
+        ElMessage.success('复制成功')
+    } catch (error) {
+        ElMessage.error('复制失败')
+    }
+}
+
 </script>
 
 <template>
     <CardModel title="订单详情">
+        <template #option>
+            <el-button type="primary" @click="copyOrderHandler">一键复制</el-button>
+        </template>
         <OrderStateNode></OrderStateNode>
     </CardModel>
     <CardModel iconName="menu-order" :title="`订单状态:${stateTitle}`">

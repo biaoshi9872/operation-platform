@@ -154,6 +154,10 @@ declare namespace API {
      */
     receiverName: string
     /**
+     * 收货人手机号
+     */
+    receiverPhone: string
+    /**
      *
      */
     channelSource: string
@@ -161,6 +165,22 @@ declare namespace API {
      * 面单是否脱敏
      */
     desensitizationStatus: string
+    /**
+     * 批次号
+     */
+    thirdBatchNo: string
+    /**
+     * 券id
+     */
+    thirdCouponId: string
+    /**
+     * 立减金平台 1微信 2支付宝
+     */
+    couponPlatform: number | string
+    /**
+     * 领取账号
+     */
+    accountNumber: string
 
     /**
      *  扩展属性
@@ -450,4 +470,8 @@ declare namespace API {
      */
     [T: string]: any
   }
+
+  type OrderListParams = T_DingDanFenYeJieKouSearchForm
+
+  type OrderListRowInfo = T_DingDanFenYeJieKouListRecords
 }

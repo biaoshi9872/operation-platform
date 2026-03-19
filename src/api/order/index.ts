@@ -141,6 +141,48 @@ class order_api {
       }
     })
   }
+
+  /**
+   * 失败记录
+   */
+  A_queryFailLog(orderId: string) {
+    return request<any>({
+      url: `order/queryFailLog/${orderId}`,
+      method: 'post'
+    })
+  }
+
+  /**
+   * 重试
+   */
+  A_retry(data: { orderId: string; accountNumber: string }) {
+    return request<any>({
+      url: `order/retry`,
+      method: 'post',
+      params: data
+    })
+  }
+
+  /**
+   * 补发记录
+   */
+  A_queryPartLog(orderNo: string) {
+    return request<any>({
+      url: `/order/reissueLog/${orderNo}`,
+      method: 'post'
+    })
+  }
+
+  /**
+   * 补发
+   */
+  A_reissue(data: { orderId: string; accountNumber: string }) {
+    return request<any>({
+      url: `/order/reissue`,
+      method: 'post',
+      params: data
+    })
+  }
 }
 
 export default new order_api()

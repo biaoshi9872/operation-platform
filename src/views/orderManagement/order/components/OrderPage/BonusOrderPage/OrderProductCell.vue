@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
+import order_api from '@/api/order'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import order_enum from '@/utils/constant/order'
 import virtualCardPackProduct_enum from '@/utils/constant/virtualCardPackProduct'
@@ -21,7 +23,9 @@ const goodsTotal = computed(() => {
   return props.goodsVOList?.length || 0
 })
 const searchQueryHandler = inject('searchQueryHandler', () => { })
-
+const receiverInfo = computed(() => {
+  return props.orderInfo.receiverInfo
+}) as any
 const goodsList = computed(() => {
   let list: any = []
   props.goodsVOList?.forEach((item: any) => {
@@ -59,14 +63,119 @@ const aggregate = (list: any, parentKey: any) => {
 
 const dataInfo = reactive({
   showVirtualRechargeModel: false,
-  curryInfo: null
+  curryInfo: null,
+  showRetryDialog: false,
+  retryLoading: false,
+  retryForm: {
+    orderId: '',
+    accountNumber: ''
+  },
+  showReissueDialog: false,
+  reissueLoading: false,
+  reissueForm: {
+    orderId: '',
+    accountNumber: ''
+  }
 })
 
-const retryHandler = (row: any) => {
-  dataInfo.curryInfo = row
-  dataInfo.showVirtualRechargeModel = true
+const retryFormRef = ref<FormInstance>() as any
+const reissueFormRef = ref<FormInstance>() as any
+const retryRules = reactive<FormRules>({
+  accountNumber: [{ required: true, message: '请输入领取账号', trigger: ['blur', 'change'] }]
+})
+
+const getRetryOrderId = (row: any) => {
+  return props.orderInfo?.orderId
 }
 
+const retryHandler = (row: any) => {
+  const orderId = getRetryOrderId(row)
+  if (!orderId) {
+    ElMessage.warning('未获取到订单ID')
+    return
+  }
+  dataInfo.curryInfo = row
+  dataInfo.retryForm = {
+    orderId: String(orderId),
+    accountNumber: receiverInfo.value?.receiverPhone || ''
+  }
+  dataInfo.showRetryDialog = true
+}
+
+const closeRetryDialog = () => {
+  if (retryFormRef.value) {
+    retryFormRef.value.resetFields()
+  }
+  dataInfo.retryForm = {
+    orderId: '',
+    accountNumber: ''
+  }
+  dataInfo.showRetryDialog = false
+}
+
+const closeReissueDialog = () => {
+  if (reissueFormRef.value) {
+    reissueFormRef.value.resetFields()
+  }
+  dataInfo.reissueForm = {
+    orderId: '',
+    accountNumber: ''
+  }
+  dataInfo.showReissueDialog = false
+}
+
+const submitRetry = () => {
+  retryFormRef.value.validate().then(() => {
+    dataInfo.retryLoading = true
+    order_api.A_retry({
+      orderId: dataInfo.retryForm.orderId,
+      accountNumber: dataInfo.retryForm.accountNumber
+    }).then(() => {
+      ElMessage.success('操作成功')
+      closeRetryDialog()
+      searchQueryHandler()
+    }).finally(() => {
+      dataInfo.retryLoading = false
+    })
+  })
+}
+
+const reissueHandler = (row: any) => {
+  const orderId = getRetryOrderId(row)
+  if (!orderId) {
+    ElMessage.warning('未获取到订单ID')
+    return
+  }
+  ElMessageBox.confirm('该订单已正常生成，请确认是否还需进行补发?', '提醒', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+    draggable: true
+  }).then(() => {
+    dataInfo.curryInfo = row
+    dataInfo.reissueForm = {
+      orderId: String(orderId),
+      accountNumber: receiverInfo.value?.receiverPhone || ''
+    }
+    dataInfo.showReissueDialog = true
+  }).catch(() => { })
+}
+
+const submitReissue = () => {
+  reissueFormRef.value.validate().then(() => {
+    dataInfo.reissueLoading = true
+    order_api.A_reissue({
+      orderId: dataInfo.reissueForm.orderId,
+      accountNumber: dataInfo.reissueForm.accountNumber
+    }).then(() => {
+      ElMessage.success('操作成功')
+      closeReissueDialog()
+      searchQueryHandler()
+    }).finally(() => {
+      dataInfo.reissueLoading = false
+    })
+  })
+}
 
 </script>
 
@@ -129,6 +238,12 @@ const retryHandler = (row: any) => {
             <span>{{ order_enum.getAfterSalesTypeTitle(row.afterSaleType) }}</span>
           </template>
         </el-table-column>
+        <el-table-column prop="afterSaleType" min-width="130" label="操作">
+          <template #default="{ row }">
+            <el-button type="primary" v-if="props.orderInfo.failLogView" @click="retryHandler(row)">重试</el-button>
+            <el-button type="primary" v-if="props.orderInfo.reissueLogView" @click="reissueHandler(row)">补发</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="footer cell_content_box mt8">
@@ -174,12 +289,40 @@ const retryHandler = (row: any) => {
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-        }}</template>
+          }}</template>
       </el-table-column>
     </el-table>
     <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
       :curryInfo="dataInfo.curryInfo" :packageKey="orderInfo.orderBaseInfo.packageKey" @refresh="searchQueryHandler">
     </VirtualRechargeModel>
+    <el-dialog v-model="dataInfo.showRetryDialog" title="重试" width="500px" append-to-body draggable destroy-on-close
+      :close-on-click-modal="false" @closed="closeRetryDialog">
+      <el-form ref="retryFormRef" :model="dataInfo.retryForm" :rules="retryRules" label-width="100px">
+        <el-form-item label="领取账号" prop="accountNumber" required>
+          <el-input v-model="dataInfo.retryForm.accountNumber" maxlength="50" show-word-limit placeholder="请输入领取账号" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="closeRetryDialog">取消</el-button>
+          <el-button type="primary" :loading="dataInfo.retryLoading" @click="submitRetry">确认</el-button>
+        </div>
+      </template>
+    </el-dialog>
+    <el-dialog v-model="dataInfo.showReissueDialog" title="补发" width="500px" append-to-body draggable destroy-on-close
+      :close-on-click-modal="false" @closed="closeReissueDialog">
+      <el-form ref="reissueFormRef" :model="dataInfo.reissueForm" :rules="retryRules" label-width="100px">
+        <el-form-item label="领取账号" prop="accountNumber" required>
+          <el-input v-model="dataInfo.reissueForm.accountNumber" maxlength="50" show-word-limit placeholder="请输入领取账号" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="closeReissueDialog">取消</el-button>
+          <el-button type="primary" :loading="dataInfo.reissueLoading" @click="submitReissue">确认</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 

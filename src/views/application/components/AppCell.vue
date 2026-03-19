@@ -2,17 +2,24 @@
     <div class="app-cell-card group">
         <div class="card-content">
             <div class="card-header">
-                <div class="icon-wrapper" :class="projectTypeClass.bg">
-                    <SvgIcon class="material-icons-outlined" :class="projectTypeClass.text"
-                        :icon="projectTypeClass.icon" :name="projectTypeClass.icon" />
+                <div class="hero">
+                    <div class="icon-wrapper" :class="projectTypeClass.bg">
+                        <div class="icon-shell" :class="projectTypeClass.iconShell">
+                            <el-icon class="hero-icon">
+                                <component :is="projectTypeClass.icon" />
+                            </el-icon>
+                        </div>
+                    </div>
+                    <div class="hero-copy">
+                        <h3 class="app-title" :title="row.appName" @dblclick="handleDblClick">
+                            {{ row.appName }}
+                        </h3>
+                    </div>
                 </div>
                 <span class="tag" :class="projectTypeClass.tagBg">
                     {{ system_enum.getProjectType(row.projectType) }}
                 </span>
             </div>
-            <h3 class="app-title" :title="row.appName" @dblclick="handleDblClick">
-                {{ row.appName }}
-            </h3>
             <div class="info-block">
                 <div class="info-item">
                     <span class="label">分支机构</span>
@@ -49,6 +56,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { DataBoard, Present, WalletFilled, Tools, Edit } from '@element-plus/icons-vue'
 import system_enum from '@/utils/constant/system'
 
 const props = defineProps({
@@ -65,41 +73,36 @@ const handleDblClick = () => {
     emit('copyId', props.row)
 }
 
-// Map project types to styles/icons based on the enum text or value
-// Since we don't know the exact enum values mapping to "Financial", "Gift", etc., 
-// we'll use a deterministic hash or just default to one style, 
-// but try to mimic the demo's variety if possible.
 const projectTypeClass = computed(() => {
     const projectType = props.row.projectType || ''
 
-    // Default style (Purple/Financial)
     let style = {
-        bg: 'bg-secondary',
-        text: 'text-primary',
-        icon: 'layers',
-        tagBg: 'tag-blue'
+        bg: 'bg-amber',
+        iconShell: 'shell-amber',
+        icon: WalletFilled,
+        tagBg: 'tag-green'
     }
 
     if (projectType == '1') {
         style = {
-            bg: 'bg-green-100',
-            text: 'text-green-600',
-            icon: 'yingxiao',
+            bg: 'bg-emerald',
+            iconShell: 'shell-emerald',
+            icon: DataBoard,
             tagBg: 'tag-green'
         }
     } else if (projectType == '2') {
         style = {
-            bg: 'bg-pink-100',
-            text: 'text-pink-600',
-            icon: 'fulizhongxin',
-            tagBg: 'tag-blue'
+            bg: 'bg-violet',
+            iconShell: 'shell-violet',
+            icon: Present,
+            tagBg: 'tag-violet'
         }
     } else {
         style = {
-            bg: 'bg-indigo-100',
-            text: 'text-indigo-600',
-            icon: 'fuli',
-            tagBg: 'tag-purple'
+            bg: 'bg-amber',
+            iconShell: 'shell-amber',
+            icon: WalletFilled,
+            tagBg: 'tag-green'
         }
     }
 
@@ -108,264 +111,256 @@ const projectTypeClass = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-/* Define colors based on demo.html */
-$primary: #8B5CF6;
-$primary-hover: #7C3AED;
-$secondary: #EDE9FE;
-$text-main: #1F2937;
-$text-sub: #6B7280;
-$border: #E5E7EB;
-$bg-card: #FFFFFF;
-$bg-footer: #F9FAFB;
+$primary: #2f6bff;
+$primary-hover: #1f57db;
+$text-main: #162033;
+$text-sub: #66758f;
+$border: #d9e2ef;
+$bg-card: #ffffff;
+$bg-footer: linear-gradient(180deg, #f8fbff 0%, #f2f7ff 100%);
 
 .app-cell-card {
     background-color: $bg-card;
-    border-radius: 0.75rem;
-    /* rounded-xl */
+    border-radius: 18px;
     border: 1px solid $border;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    /* shadow-soft */
+    box-shadow: 0 10px 30px rgba(28, 52, 84, 0.08);
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+    position: relative;
 
     &:hover {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-        /* shadow-hover */
-        transform: translateY(-2px);
+        box-shadow: 0 18px 38px rgba(28, 52, 84, 0.14);
+        transform: translateY(-4px);
+        border-color: #c5d5eb;
     }
 
     .card-content {
-        padding: 1.25rem;
-        /* p-5 */
+        padding: 18px 18px 16px;
         flex: 1;
+        background:
+            radial-gradient(circle at top right, rgba(47, 107, 255, 0.08), transparent 36%),
+            linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
     }
 
     .card-header {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        margin-bottom: 1rem;
-        /* mb-4 */
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .hero {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .hero-copy {
+        min-width: 0;
     }
 
     .icon-wrapper {
-        width: 2rem;
-        /* w-12 */
-        height: 2rem;
-        /* h-12 */
-        border-radius: 0.5rem;
-        /* rounded-lg */
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
+        position: relative;
 
-        .material-icons-outlined {
-            font-size: 1.4rem;
-            /* text-2xl */
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
         }
     }
 
-    /* Color variants for icon wrapper */
-    .bg-secondary {
-        background-color: $secondary;
+    .icon-shell {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
 
-    .bg-green-100 {
-        background-color: #dcfce7;
+    .hero-icon {
+        font-size: 15px;
+        color: #fff;
     }
 
-    .bg-pink-100 {
-        background-color: #fce7f3;
+    .bg-emerald {
+        background: linear-gradient(145deg, #dcfff0 0%, #bff1d8 100%);
     }
 
-    .bg-indigo-100 {
-        background-color: #e0e7ff;
+    .bg-violet {
+        background: linear-gradient(145deg, #f4e9ff 0%, #dfd1ff 100%);
     }
 
-    .bg-orange-100 {
-        background-color: #ffedd5;
+    .bg-emerald::before,
+    .bg-violet::before,
+    .bg-amber::before {
+        content: '';
+        position: absolute;
+        inset: auto -12px -10px auto;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.5);
+        filter: blur(2px);
     }
 
-    .bg-teal-100 {
-        background-color: #ccfbf1;
+    .bg-amber {
+        background: linear-gradient(145deg, #fff3df 0%, #ffe2ae 100%);
     }
 
-    /* Text color variants */
-    .text-primary {
-        color: $primary;
+    .shell-emerald {
+        background: linear-gradient(145deg, #3abf7a 0%, #159a5e 100%);
     }
 
-    .text-green-600 {
-        color: #16a34a;
+    .shell-violet {
+        background: linear-gradient(145deg, #9460ff 0%, #6f40ea 100%);
     }
 
-    .text-pink-600 {
-        color: #db2777;
-    }
-
-    .text-indigo-600 {
-        color: #4f46e5;
-    }
-
-    .text-orange-600 {
-        color: #ea580c;
-    }
-
-    .text-teal-600 {
-        color: #0d9488;
+    .shell-amber {
+        background: linear-gradient(145deg, #f0ad34 0%, #db7e16 100%);
     }
 
     .tag {
         display: inline-flex;
         align-items: center;
-        padding: 0.125rem 0.625rem;
-        /* px-2.5 py-0.5 */
+        padding: 5px 10px;
         border-radius: 9999px;
-        /* rounded-full */
-        font-size: 0.75rem;
-        /* text-xs */
-        font-weight: 500;
+        font-size: 11px;
+        font-weight: 700;
         border-width: 1px;
         border-style: solid;
-    }
-
-    .tag-blue {
-        background-color: #dbeafe;
-        color: #1e40af;
-        border-color: #bfdbfe;
+        line-height: 1;
+        white-space: nowrap;
     }
 
     .tag-green {
-        background-color: #dcfce7;
-        color: #166534;
-        border-color: #bbf7d0;
+        background-color: #e5f8ea;
+        color: #1f7a45;
+        border-color: #bde9c9;
     }
 
-    .tag-purple {
-        background-color: #f3e8ff;
-        color: #6b21a8;
-        border-color: #e9d5ff;
+    .tag-violet {
+        background-color: #f0e8ff;
+        color: #7143d6;
+        border-color: #dcc9ff;
     }
 
     .app-title {
-        font-size: 1.125rem;
-        min-height: 2.5rem;
-        /* text-lg */
+        font-size: 16px;
+        line-height: 1.3;
         font-weight: 700;
-        color: #111827;
-        /* gray-900 */
-        margin-bottom: 0.25rem;
-        /* mb-1 */
+        color: $text-main;
+        margin: 6px 0 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         cursor: default;
     }
 
-    .org-name {
-        font-size: 0.75rem;
-        /* text-xs */
-        color: $text-sub;
-        margin-bottom: 1rem;
-        /* mb-4 */
-        height: 2.5rem;
-        /* h-10 */
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        line-height: 1.25rem;
-    }
-
     .info-block {
-        margin-top: 1rem;
-        /* mt-4 */
-        padding-top: 1rem;
-        /* pt-4 */
-        border-top: 1px dashed $border;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px dashed #d6dfec;
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
-        /* space-y-2 */
+        gap: 10px;
     }
 
     .info-item {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        font-size: 0.75rem;
-        /* text-xs */
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 13px;
 
         .label {
             color: $text-sub;
+            flex-shrink: 0;
         }
 
         .value {
-            font-weight: 500;
-            color: #374151;
-            /* gray-700 */
+            font-weight: 600;
+            color: #33415c;
+            text-align: right;
+            word-break: break-word;
         }
     }
 
     .card-footer {
-        padding: 1rem;
-        /* p-4 */
-        background-color: $bg-footer;
+        padding: 14px 16px 16px;
+        background: $bg-footer;
         border-top: 1px solid $border;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        /* gap-3 */
-        border-bottom-left-radius: 0.75rem;
-        border-bottom-right-radius: 0.75rem;
+        gap: 10px;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
     }
 
     .manage-btn {
         width: 100%;
-        background-color: $primary;
-        border-color: $primary;
+        height: 40px;
+        background-color: var(--el-color-primary);
+        border-color: var(--el-color-primary);
         color: white;
-        font-weight: 500;
-        border-radius: 0.5rem;
-        /* rounded-lg */
-        transition: background-color 0.2s;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+        box-shadow: none;
 
         &:hover {
-            background-color: $primary-hover;
-            border-color: $primary-hover;
+            background-color: var(--el-color-primary-dark-2);
+            border-color: var(--el-color-primary-dark-2);
             transform: scale(1.02);
-        }
-
-        .icon {
-            font-size: 0.75rem;
-            /* text-xs */
-            margin-right: 0.5rem;
         }
     }
 
     .edit-btn {
         width: 100%;
+        height: 40px;
         background-color: transparent;
-        color: $primary;
-        border: 1px solid $primary;
-        font-weight: 500;
-        border-radius: 0.5rem;
-        /* rounded-lg */
-        transition: background-color 0.2s;
+        color: var(--el-color-primary);
+        border: 1px solid var(--el-color-primary-light-5);
+        font-weight: 700;
+        border-radius: 12px;
+        transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
 
         &:hover {
-            background-color: #f3f4f6;
+            background-color: var(--el-color-primary-light-9);
+            border-color: var(--el-color-primary-light-4);
             transform: scale(1.02);
-            /* hover:bg-gray-100 */
+        }
+    }
+}
+
+@media (max-width: 1600px) {
+    .app-cell-card {
+        .card-header {
+            flex-direction: column;
+            align-items: stretch;
         }
 
-        .icon {
-            font-size: 0.75rem;
-            /* text-xs */
-            margin-right: 0.5rem;
+        .tag {
+            align-self: flex-start;
+        }
+
+        .app-title {
+            font-size: 15px;
         }
     }
 }
