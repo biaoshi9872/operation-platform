@@ -691,68 +691,82 @@ eventBus.on('orderRefresh', searchQueryHarder)
               <div class="detail_top_main">
                 <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)"
                   class="detail_item detail_item--headline">
-                  <span class="title">订单编号</span>
+                  <span class="title">订单编号:</span>
                   <span class="value">{{ row.orderNo || '-' }}</span>
+                  <el-divider direction="vertical" />
                 </span>
                 <span class="detail_item detail_item--headline">
-                  <span class="title">{{ getSystemOptionType == 401 ? '订单编号' : '供应商订单编号' }}</span>
+                  <span class="title">{{ getSystemOptionType == 401 ? '订单编号:' : '供应商订单编号:' }}</span>
                   <span class="value">{{ row.channelOrderNo || '-' }}</span>
+                  <el-divider direction="vertical" />
                 </span>
                 <span class="detail_item detail_item--minor">
-                  <span class="title">第三方订单编号</span>
+                  <span class="title">第三方订单编号:</span>
                   <span class="value">{{ row.thirdOrderNo || '-' }}</span>
+                  <el-divider direction="vertical" />
                 </span>
                 <span class="detail_item detail_item--minor">
-                  <span class="title">电商订单编号(子单)</span>
+                  <span class="title">电商订单编号(子单):</span>
                   <span class="value">{{ row.outTradeNo || '-' }}</span>
+                  <el-divider direction="vertical" />
                 </span>
               </div>
               <div class="detail_top_amount">
                 <span class="amount_item">
-                  <span class="title">订单总金额</span>
+                  <span class="title">订单总金额:</span>
                   <span class="value">￥{{ row.totalAmount }}</span>
+                  <el-divider direction="vertical" />
                 </span>
                 <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" class="amount_item">
-                  <span class="title">订单结算总金额</span>
+                  <span class="title">订单结算总金额:</span>
                   <span class="value">￥{{ row.settlementPrice }}</span>
                 </span>
               </div>
             </div>
             <div class="detail_line detail_line--bottom">
               <span class="detail_item">
-                <span class="title">提交订单时间</span>
+                <span class="title">提交订单时间:</span>
                 <span class="value">{{ row.submitTime || '-' }}</span>
+                <el-divider direction="vertical" />
               </span>
               <span class="detail_item">
-                <span class="title">确认下单时间</span>
+                <span class="title">确认下单时间:</span>
                 <span class="value">{{ row.confirmTime || '-' }}</span>
+                <el-divider direction="vertical" />
               </span>
               <span v-if="['4'].includes(dataPage.facadeKz.tab)" class="detail_item">
-                <span class="title">延迟时间</span>
+                <span class="title">延迟时间:</span>
                 <span class="value">{{ row.delayTime ?? '-' }}分钟</span>
+                <el-divider direction="vertical" />
               </span>
               <span v-if="getSystemOptionType == 101" class="detail_item">
-                <span class="title">机构名称</span>
+                <span class="title">机构名称:</span>
                 <span class="value">{{ row.orgName ?? '-' }}</span>
+                <el-divider direction="vertical" />
               </span>
               <span v-if="['101', '201'].includes(getSystemOptionType)" class="detail_item">
-                <span class="title">应用名称</span>
+                <span class="title">应用名称:</span>
                 <span class="value">{{ row.appName ?? '-' }}</span>
+                <el-divider direction="vertical" />
               </span>
               <span v-if="isShowBackName" class="detail_item">
-                <span class="title">分行名称</span>
+                <span class="title">分行名称:</span>
                 <span class="value">{{ row.branchName ?? '-' }}</span>
+                <el-divider direction="vertical" />
               </span>
               <span v-if="getSystemOptionType == 101" class="detail_item">
-                <span class="title">供应商</span>
+                <span class="title">供应商名称:</span>
                 <span class="value">{{ row.supplyName ?? '-' }}</span>
+                <el-divider direction="vertical" />
+
               </span>
               <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105" class="detail_item">
-                <span class="title">供应商</span>
+                <span class="title">供应商名称:</span>
                 <span class="value">{{ row.supplyName ?? '-' }}</span>
+                <el-divider direction="vertical" />
               </span>
               <span class="detail_item">
-                <span class="title">是否脱敏发货</span>
+                <span class="title">是否脱敏发货:</span>
                 <span class="value">{{ row.channelSource == 104 ? (row.desensitizationStatus === 1 ? '是' : '否') : '-'
                 }}</span>
               </span>
@@ -779,7 +793,9 @@ eventBus.on('orderRefresh', searchQueryHarder)
   }
 }
 
-.order-container {}
+::v-deep(.order-row-content) {
+  padding: 0 !important;
+}
 
 .order_row {
   width: 100%;
@@ -799,42 +815,38 @@ eventBus.on('orderRefresh', searchQueryHarder)
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 6px 28px;
       width: 100%;
     }
 
     .detail_line--top {
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 12px;
       padding-bottom: 8px;
       border-bottom: 1px solid rgba(223, 230, 239, 0.9);
     }
 
-    .detail_line--bottom {
-      gap: 6px 20px;
-    }
-
     .detail_top_main {
-      flex: 1;
-      min-width: 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 6px 28px;
+      min-width: 0;
     }
 
     .detail_top_amount {
-      display: flex;
-      flex-wrap: wrap;
+      display: inline-flex;
+      flex-wrap: nowrap;
       align-items: center;
       justify-content: flex-end;
-      gap: 6px 24px;
+      flex: 0 0 auto;
       margin-left: auto;
+      white-space: nowrap;
     }
 
     .detail_item {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       min-width: 0;
       max-width: 100%;
       line-height: 20px;
@@ -855,9 +867,8 @@ eventBus.on('orderRefresh', searchQueryHarder)
     }
 
     .amount_item {
-      display: flex;
+      display: inline-flex;
       align-items: baseline;
-      gap: 12px;
       white-space: nowrap;
 
       .title {
@@ -890,11 +901,11 @@ eventBus.on('orderRefresh', searchQueryHarder)
   .order_row {
     .order_detail {
       .detail_line--top {
+        grid-template-columns: 1fr;
         gap: 10px;
       }
 
       .detail_top_amount {
-        width: 100%;
         justify-content: flex-start;
         margin-left: 0;
       }
