@@ -14,6 +14,7 @@ import { ref, resolveDirective, withDirectives } from 'vue'
 import DeliverGood from '../components/DeliverGood/index.vue'
 import system_enum from '@/utils/constant/system'
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
+import StateCell from '@/components/Tooltip/StateCell.vue'
 
 const { isFromOrgLast, getSystemOptionType, isFromOrgLastNoApp } = isStateCheckHooks()
 const tabsStoreInfo: any = tabsStore()
@@ -48,7 +49,9 @@ const searchForm = {
   desensitizationStatus: '', //面单是否脱敏
   outTradeNo: '', //电商订单编号(子单)
   branchName: '', //分行名称
-  exchangeStatusList: null
+  exchangeStatusList: null,
+  thirdCouponId: '', //第三方券ID
+  couponPlatform: ''
 }
 const pageInfo = {
   page: 1,
@@ -250,6 +253,19 @@ const devilryHandler = (row: any) => {
 const initColumns = () => {
   columns.value = []
   columns.value.push({
+    width: '120px',
+    label: '是否脱敏发货',
+    align: 'center',
+    render: (row: any, parentRow: any) => {
+      if (parentRow.channelSource == 104) {
+        const title = parentRow?.desensitizationStatus === 1 ? '是' : '否'
+        return h(StateCell, { title: title, isTrueState: parentRow?.desensitizationStatus == 1 })
+      } else {
+        return h('div', '-')
+      }
+    }
+  })
+  columns.value.push({
     label: '商品信息',
     prop: '1',
     width: '260px',
@@ -267,6 +283,9 @@ const initColumns = () => {
             ...item,
             isGift: true
           },
+          productSource: parentRow.channelSource,
+          appId:parentRow.appId,
+          showDetailButton: true,
           style: { height: '83px' },
           showGiveawayTagBox: true,
           customAttribute: {
@@ -281,6 +300,9 @@ const initColumns = () => {
       const goodsDetail = h('div', {}, [
         h(SkuDetail, {
           goodDetail: newRow,
+          productSource: parentRow.channelSource,
+          appId:parentRow.appId,
+          showDetailButton: true,
           style: { height: '83px' },
           dataList: parentRow.detailList,
           showGiveawayTagBox: true,
@@ -292,6 +314,9 @@ const initColumns = () => {
         }),
         ...orderGifArr
       ])
+
+
+
       //申请售后
       const afterButton =
         ![0, 4, 5, -3].includes(parentRow.orderStatus) &&
@@ -301,7 +326,7 @@ const initColumns = () => {
           h(ElButton, {
             type: 'text',
             innerText: '申请售后',
-            style: { 'margin-left': '65px' },
+            style: { 'margin-left': '78px' },
             onClick: () => {
               afterApplyHandler(row, parentRow)
             }
@@ -666,8 +691,8 @@ eventBus.on('orderRefresh', searchQueryHarder)
       <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="批次号" class="formItem">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].thirdBatchNo" placeholder="请输入批次号"></el-input>
       </el-form-item>
-      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="券Id" class="formItem">
-        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].thirdCouponId" placeholder="请输入券Id"></el-input>
+      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="券ID" class="formItem">
+        <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].thirdCouponId" placeholder="请输入券ID"></el-input>
       </el-form-item>
       <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="领取账号" class="formItem">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].accountNumber" placeholder="请输入领取账号"></el-input>
@@ -708,7 +733,6 @@ eventBus.on('orderRefresh', searchQueryHarder)
                 <span class="detail_item detail_item--minor">
                   <span class="title">电商订单编号(子单):</span>
                   <span class="value">{{ row.outTradeNo || '-' }}</span>
-                  <el-divider direction="vertical" />
                 </span>
               </div>
               <div class="detail_top_amount">
@@ -757,18 +781,10 @@ eventBus.on('orderRefresh', searchQueryHarder)
               <span v-if="getSystemOptionType == 101" class="detail_item">
                 <span class="title">供应商名称:</span>
                 <span class="value">{{ row.supplyName ?? '-' }}</span>
-                <el-divider direction="vertical" />
-
               </span>
               <span v-else-if="getSystemOptionType == 201 && row.channelSource == 105" class="detail_item">
                 <span class="title">供应商名称:</span>
                 <span class="value">{{ row.supplyName ?? '-' }}</span>
-                <el-divider direction="vertical" />
-              </span>
-              <span class="detail_item">
-                <span class="title">是否脱敏发货:</span>
-                <span class="value">{{ row.channelSource == 104 ? (row.desensitizationStatus === 1 ? '是' : '否') : '-'
-                }}</span>
               </span>
             </div>
           </div>

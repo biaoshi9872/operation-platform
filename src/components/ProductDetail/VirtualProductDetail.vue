@@ -7,19 +7,12 @@ import isStateCheckHooks from '@/hooks/isStateCheckHooks'
 import goodPool_enum from '@/utils/constant/goodPoor'
 import PriceShowModel from '../PriceModel/PriceShowModel.vue'
 import { detailTransfer } from './BaseUtils'
-import CombineAttributeModule from './CombineAttributeModule.vue'
-const { isCombinationGoods, isFromOrgLast } = isStateCheckHooks()
-const isShowAttr = computed(() => {
-  if (dataPage?.goodDetail?.hasOwnProperty('comboType')) {
-    return isCombinationGoods(dataPage?.goodDetail)
-  } else {
-    return false
-  }
-})
+const { isFromOrgLast } = isStateCheckHooks()
+
 interface IProp {
   itemInfo?: any
   productSource?: string
-  appId?:string
+  appId:string,
   type: string
 }
 
@@ -130,11 +123,6 @@ defineExpose({
             <h5 class="mb-16">{{ dataPage.goodDetail.title }} {{ dataPage.goodDetail.attributeValue1 }} {{
               dataPage.goodDetail?.attributeValue2 }}
             </h5>
-            <CombineAttributeModule :goodDetail="dataPage.goodDetail"></CombineAttributeModule>
-            <div class="mb-16" v-if="dataPage.goodDetail.specification">
-              规格：
-              <span v-html="dataPage.goodDetail.specification"></span>
-            </div>
             <div class="mb-16" v-if="!isFromOrgLast">
               平台成本：
               <span class="color-red ">
@@ -161,27 +149,20 @@ defineExpose({
                 <PriceShowModel :showPriceSymbol="true" :value="dataPage.goodDetail.markPrice"></PriceShowModel>
               </span>
             </div>
-            <div class="mb-16" v-if="!isShowAttr">
-              品牌:
-              <span>{{ dataPage.goodDetail.brandName }}</span>
-            </div>
             <div class="mb-16">
               商品分类：
               <span>{{ dataPage.goodDetail.categoryCodeName }}</span>
             </div>
             <div class="mb-16">
-              销售单位：
-              <span>{{ dataPage.goodDetail.unitName }}</span>
-            </div>
-            <div class="mb-16">
               商品来源：
               <span>{{ goodPool_enum.getSourceTypeNameByKey(dataPage.goodDetail.source) }}</span>
             </div>
-            <div class="mb-16" v-if="![106].includes(dataPage.goodDetail.source)">
-              温馨提示:
-              <span>
-                {{ dataPage.goodDetail.refundStatus == '1' ? '支持' : '不支持'
-                }}7天无理由退换货
+            <div class="mb-16">
+              子商品明细：
+              <span class="coupon_list">
+                <div v-for="(item, index) in dataPage.goodDetail.couponDetail" :key="index">
+                  <span>{{ item.skuName }}* {{ item.goodsNum || 1 }}</span>
+                </div>
               </span>
             </div>
           </div>
@@ -235,6 +216,13 @@ defineExpose({
 
   .summary {
     background-color: var(--el-searchForm-bg-color);
+  }
+
+  .coupon_list {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 }
 </style>

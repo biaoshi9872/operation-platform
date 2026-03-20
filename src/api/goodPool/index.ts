@@ -109,5 +109,96 @@ class goodPool_api {
       data: data
     })
   }
+
+  A_vpDetails(data: any) {
+    return request<any>({
+      url: '/order/vp/goodsDetail',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 更新商品信息
+   */
+  A_updateGoodInfo(data: any) {
+    return request<any>({
+      url: '/goods/api/updateExtInfo',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 批量改价
+   */
+  A_updatePriceByExcel(data: any) {
+    return request<any>({
+      url: '/myGoodsPool/updatePriceByExcel',
+      method: 'post',
+      requestOptions: {
+        formData: true
+      },
+      data: data
+    })
+  }
+
+  /**
+   * 批量推送
+   */
+  A_addBatch(data: any) {
+    return request<any>({
+      url: '/myGoodsPool/addBatch',
+      method: 'post',
+      requestOptions: {
+        formData: true
+      },
+      data: data
+    })
+  }
+
+  /**
+   * 错位数据导出
+   */
+  A_exportErrHisList(data: any) {
+    return request<any>({
+      url: '/myGoodsPool/exportErrHisList',
+      method: 'post',
+      requestOptions: {
+        formData: true,
+        noCheck: true
+      },
+      responseType: 'blob',
+      params: data
+    })
+  }
+
+  /**
+   * 错位数据列表查询
+   */
+  A_errHisList(data: any) {
+    return request<any>({
+      url: '/myGoodsPool/errHisList',
+      method: 'get',
+      requestOptions: {
+        formData: true
+      },
+
+      params: data
+    })
+  }
+
+  /**
+   *
+   * 商品编辑
+   *
+   */
+  A_updateCouponDetail(data: any) {
+    return request<any>({
+      url: '/myGoodsPool/updateCouponDetail',
+      method: 'post',
+      data: data
+    })
+  }
 }
 export default new goodPool_api()

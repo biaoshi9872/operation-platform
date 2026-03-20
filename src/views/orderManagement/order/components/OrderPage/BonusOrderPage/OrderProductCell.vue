@@ -186,7 +186,8 @@ const submitReissue = () => {
         <el-table-column prop="title" label="商品信息" width="320">
           <template #default="{ row }">
             <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
-              comboNumName="singleComboNum" width="100%" :goodDetail="row"></SkuDetail>
+              comboNumName="singleComboNum" width="100%" :goodDetail="row" :productSource="orderInfo?.channelSource"
+              ></SkuDetail>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="规格" min-width="100">
