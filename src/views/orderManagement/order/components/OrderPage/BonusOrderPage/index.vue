@@ -106,10 +106,10 @@ const openReissueLogDialog = () => {
 }
 
 const getReissueStatus = (status: string | number) => {
-    if (String(status) === '1') {
+    if (String(status) == '1') {
         return '成功'
     }
-    if (String(status) === '-1') {
+    if (String(status) == '-1') {
         return '失败'
     }
     return status || '-'

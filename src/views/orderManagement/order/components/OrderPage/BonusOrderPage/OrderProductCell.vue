@@ -229,17 +229,8 @@ const submitReissue = () => {
             <span>{{ `￥${row.subTotal}` }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="afterSaleStatus" min-width="130" label="售后状态">
-          <template #default="{ row }">
-            <span>{{ order_enum.getAfter_order_statesTitle(row.afterSaleStatus) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="afterSaleType" min-width="130" label="售后类型">
-          <template #default="{ row }">
-            <span>{{ order_enum.getAfterSalesTypeTitle(row.afterSaleType) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="afterSaleType" min-width="130" label="操作">
+        <el-table-column prop="afterSaleType" min-width="130" label="操作"
+          v-if="['101', '201'].includes(getSystemOptionType)">
           <template #default="{ row }">
             <AuthButton auth="ORDER_RETRY" type="primary" v-if="props.orderInfo.orderBaseInfo.orderStatus == -3"
               @click="retryHandler(row)">
@@ -257,8 +248,6 @@ const submitReissue = () => {
       <div class="footer-content">
         <span class="item_title">商品金额:</span>
         <span class="item_price">￥{{ orderInfo.totalAmount }}</span>
-        <span class="item_title">运费共计:</span>
-        <span class="item_price">￥{{ orderInfo.freightAmount }}</span>
         <span class="item_title">订单总金额:</span>
         <span class="item_price">￥{{ orderInfo.orderAmount }}</span>
         <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" class="item_title">订单结算总金额:</span>
@@ -295,7 +284,7 @@ const submitReissue = () => {
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+        }}</template>
       </el-table-column>
     </el-table>
     <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
@@ -319,7 +308,8 @@ const submitReissue = () => {
       :close-on-click-modal="false" @closed="closeReissueDialog">
       <el-form ref="reissueFormRef" :model="dataInfo.reissueForm" :rules="retryRules" label-width="100px">
         <el-form-item label="领取账号" prop="accountNumber" required>
-          <el-input v-model="dataInfo.reissueForm.accountNumber" maxlength="50" show-word-limit placeholder="请输入领取账号" />
+          <el-input v-model="dataInfo.reissueForm.accountNumber" disabled maxlength="50" show-word-limit
+            placeholder="请输入领取账号" />
         </el-form-item>
       </el-form>
       <template #footer>

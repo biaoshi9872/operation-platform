@@ -478,7 +478,9 @@ const initColumns = () => {
   if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '批次号',
-      'min-width': '120px',
+      'width': '100px',
+      showOverflowTooltip: true,
+      align: 'center',
       prop: 'thirdBatchNo',
     })
   }
@@ -486,7 +488,7 @@ const initColumns = () => {
   if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '领取账号',
-      'width': '120px',
+      'width': '100px',
       align: 'center',
       showOverflowTooltip: true,
       prop: 'accountNumber',
@@ -496,7 +498,7 @@ const initColumns = () => {
   if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '券ID',
-      'width': '120px',
+      'width': '100px',
       align: 'center',
       showOverflowTooltip: true,
       prop: 'thirdCouponId',
@@ -760,6 +762,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
                 <span class="detail_item detail_item--minor">
                   <span class="title">电商订单编号(子单):</span>
                   <span class="value">{{ row.outTradeNo || '-' }}</span>
+                  <el-divider direction="vertical" />
                 </span>
               </div>
               <div class="detail_top_amount">
@@ -862,10 +865,8 @@ eventBus.on('orderRefresh', searchQueryHarder)
     }
 
     .detail_line--top {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: start;
-      gap: 12px;
+      display: flex;
+      gap: 24px;
       padding-bottom: 8px;
       border-bottom: 1px solid rgba(223, 230, 239, 0.9);
     }
