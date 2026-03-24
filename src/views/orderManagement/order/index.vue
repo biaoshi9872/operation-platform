@@ -250,6 +250,25 @@ const devilryHandler = (row: any) => {
   dataPage.showDeliverGood = true
 }
 
+watch(() => dataPage.facade[dataPage.facadeKz.tab]?.channelSourceList, (newVal: any) => {
+  if (newVal) {
+    initColumns()
+  }
+}, {
+  deep: true
+})
+
+const isHideUserInfo = computed(() => {
+  const allowSet = new Set(['106', '107', '108'])
+  const current = dataPage.facade[dataPage.facadeKz.tab]?.channelSourceList
+  if (!current) return false
+  if (Array.isArray(current)) {
+    if (current.length === 0) return false
+    return current.every((v: any) => allowSet.has(String(v)))
+  }
+  return allowSet.has(String(current))
+})
+
 const initColumns = () => {
   columns.value = []
   columns.value.push({
@@ -284,7 +303,7 @@ const initColumns = () => {
             isGift: true
           },
           productSource: parentRow.channelSource,
-          appId:parentRow.appId,
+          appId: parentRow.appId,
           showDetailButton: true,
           style: { height: '83px' },
           showGiveawayTagBox: true,
@@ -301,7 +320,7 @@ const initColumns = () => {
         h(SkuDetail, {
           goodDetail: newRow,
           productSource: parentRow.channelSource,
-          appId:parentRow.appId,
+          appId: parentRow.appId,
           showDetailButton: true,
           style: { height: '83px' },
           dataList: parentRow.detailList,
@@ -418,20 +437,22 @@ const initColumns = () => {
       openMarginCell: true
     })
   }
-  columns.value.push({
-    label: '销售单位',
-    align: 'center',
-    'min-width': '120px',
-    prop: 'unit',
-    openMarginCell: true,
-    marginAttr: 'unit'
-  })
-  columns.value.push({
-    label: '收货人',
-    align: 'center',
-    'min-width': '120px',
-    prop: 'receiverName'
-  })
+  if (!isHideUserInfo.value) {
+    columns.value.push({
+      label: '销售单位',
+      align: 'center',
+      'min-width': '120px',
+      prop: 'unit',
+      openMarginCell: true,
+      marginAttr: 'unit'
+    })
+    columns.value.push({
+      label: '收货人',
+      align: 'center',
+      'min-width': '120px',
+      prop: 'receiverName'
+    })
+  }
   if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '商品类型',
@@ -465,7 +486,9 @@ const initColumns = () => {
   if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '领取账号',
-      'min-width': '120px',
+      'width': '120px',
+      align: 'center',
+      showOverflowTooltip: true,
       prop: 'accountNumber',
     })
   }
@@ -473,7 +496,9 @@ const initColumns = () => {
   if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '券ID',
-      'min-width': '120px',
+      'width': '120px',
+      align: 'center',
+      showOverflowTooltip: true,
       prop: 'thirdCouponId',
     })
   }
@@ -490,19 +515,21 @@ const initColumns = () => {
       }
     })
   }
-  columns.value.push({
-    label: '售后状态',
-    prop: 'afterStatus',
-    align: 'center',
-    'min-width': '120px',
-    render: (row: any, parentRow: any) => {
-      //状态显示
-      const afterSaleStatus = order_enum.getAfter_order_statesTitle(row.afterSaleStatus)
-      const statusDom = h('div', {}, afterSaleStatus)
-      return h('div', { style: { display: 'flex', 'align-items': 'center', 'justify-content': 'center' } }, [statusDom])
-    },
-    openMarginCell: true
-  })
+  if (!isHideUserInfo.value) {
+    columns.value.push({
+      label: '售后状态',
+      prop: 'afterStatus',
+      align: 'center',
+      'min-width': '120px',
+      render: (row: any, parentRow: any) => {
+        //状态显示
+        const afterSaleStatus = order_enum.getAfter_order_statesTitle(row.afterSaleStatus)
+        const statusDom = h('div', {}, afterSaleStatus)
+        return h('div', { style: { display: 'flex', 'align-items': 'center', 'justify-content': 'center' } }, [statusDom])
+      },
+      openMarginCell: true
+    })
+  }
   if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '项目类型',

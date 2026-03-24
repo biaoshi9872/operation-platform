@@ -186,8 +186,8 @@ const submitReissue = () => {
         <el-table-column prop="title" label="商品信息" width="320">
           <template #default="{ row }">
             <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
-              comboNumName="singleComboNum" width="100%" :goodDetail="row" :productSource="orderInfo?.channelSource"
-              ></SkuDetail>
+              comboNumName="singleComboNum" width="100%" :goodDetail="row" :productSource="orderInfo?.channelSource">
+            </SkuDetail>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="规格" min-width="100">
@@ -241,8 +241,13 @@ const submitReissue = () => {
         </el-table-column>
         <el-table-column prop="afterSaleType" min-width="130" label="操作">
           <template #default="{ row }">
-            <el-button type="primary" v-if="props.orderInfo.failLogView" @click="retryHandler(row)">重试</el-button>
-            <el-button type="primary" v-if="props.orderInfo.reissueLogView" @click="reissueHandler(row)">补发</el-button>
+            <AuthButton auth="ORDER_RETRY" type="primary" v-if="props.orderInfo.orderBaseInfo.orderStatus == -3"
+              @click="retryHandler(row)">
+              重试
+            </AuthButton>
+            <AuthButton auth="ORDER_REISSUE" type="primary" v-if="props.orderInfo.orderBaseInfo.orderStatus == 6"
+              @click="reissueHandler(row)">补发
+            </AuthButton>
           </template>
         </el-table-column>
       </el-table>

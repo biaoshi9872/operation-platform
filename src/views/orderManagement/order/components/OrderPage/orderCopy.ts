@@ -30,12 +30,18 @@ const buildPhysicalLogisticsText = (orderDeliverExpressList: any[] = []) => {
   }
   return orderDeliverExpressList.map((deliverInfo: any) => {
     const latestTrack = getLatestTrack(deliverInfo)
-    const logisticsLine = deliverInfo?.deliveryType === '1'
-      ? `物流公司：${normalizeText(deliverInfo?.expressCompanyName)}，快递单号：${normalizeText(deliverInfo?.expressCode)}`
-      : `物流公司：自行配送，快递单号：${normalizeText(deliverInfo?.mobile)}`
+    const logisticsLineList = deliverInfo?.deliveryType == '1'
+      ? [
+        `物流信息：${normalizeText(deliverInfo?.expressCompanyName)}`,
+        `快递单号：${normalizeText(deliverInfo?.expressCode)}`
+      ]
+      : [
+        '物流方式：自行配送',
+        `配送员手机号：${normalizeText(deliverInfo?.mobile)}`
+      ]
     const trackDetail = normalizeText(latestTrack?.expressDetail, '')
     const trackTime = normalizeText(latestTrack?.expressTime, '')
-    return [logisticsLine, trackDetail, trackTime].filter(Boolean).join('\n')
+    return [...logisticsLineList, trackDetail, trackTime].filter(Boolean).join('\n')
   }).join('\n\n')
 }
 
