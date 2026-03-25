@@ -66,8 +66,10 @@ const isShowBackName = computed(() => {
 })
 const dataRestCallback = (res: any) => {
   //@ts-ignore
+  initColumns()
   dataPage.dataListCache[dataPage.facadeKz.tab] = (res?.list || res?.page?.records || res?.page?.list || res || []) as any
   dataPage.page[dataPage.facadeKz.tab].totalCount = res?.page?.totalCount || res?.totalRow || res?.page?.totalRow || 0
+
 }
 const dataList = computed(() => {
   //@ts-ignore
@@ -250,13 +252,13 @@ const devilryHandler = (row: any) => {
   dataPage.showDeliverGood = true
 }
 
-watch(() => dataPage.facade[dataPage.facadeKz.tab]?.channelSourceList, (newVal: any) => {
-  if (newVal) {
-    initColumns()
-  }
-}, {
-  deep: true
-})
+// watch(() => dataPage.facade[dataPage.facadeKz.tab]?.channelSourceList, (newVal: any) => {
+//   if (newVal) {
+//     initColumns()
+//   }
+// }, {
+//   deep: true
+// })
 
 const isHideUserInfo = computed(() => {
   const allowSet = new Set(['106', '107', '108'])
