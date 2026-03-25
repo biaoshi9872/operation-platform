@@ -166,7 +166,7 @@ const copyOrderHandler = async () => {
             <el-table-column prop="thirdOrderNo" label="第三方订单编号" min-width="160" show-overflow-tooltip />
             <el-table-column prop="thirdBatchNo" label="批次号" min-width="110" show-overflow-tooltip />
             <el-table-column prop="receiverPhone" label="领取账号" min-width="130" show-overflow-tooltip />
-            <el-table-column prop="errMsg" label="失败原因" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="remark2" label="失败原因" min-width="140" show-overflow-tooltip />
         </el-table>
     </el-dialog>
     <el-dialog v-model="dataPage.reissueLogVisible" title="补发记录" width="1300px" append-to-body draggable
