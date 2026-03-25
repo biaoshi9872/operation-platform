@@ -241,10 +241,11 @@ const submitReissue = () => {
         </el-table-column>
         <el-table-column prop="afterSaleType" min-width="130" label="操作">
           <template #default="{ row }">
-            <AuthButton auth="ORDER_RETRY" type="primary" v-if="props.orderInfo.retryView" @click="retryHandler(row)">
+            <AuthButton authKey="ORDER_RETRY" type="primary" v-if="props.orderInfo.retryView"
+              @click="retryHandler(row)">
               重试
             </AuthButton>
-            <AuthButton auth="ORDER_REISSUE" type="primary" v-if="props.orderInfo.reissueView"
+            <AuthButton authKey="ORDER_REISSUE" type="primary" v-if="props.orderInfo.reissueView"
               @click="reissueHandler(row)">补发
             </AuthButton>
           </template>
@@ -292,7 +293,7 @@ const submitReissue = () => {
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+        }}</template>
       </el-table-column>
     </el-table>
     <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
