@@ -241,11 +241,10 @@ const submitReissue = () => {
         </el-table-column>
         <el-table-column prop="afterSaleType" min-width="130" label="操作">
           <template #default="{ row }">
-            <AuthButton auth="ORDER_RETRY" type="primary" v-if="props.orderInfo.orderBaseInfo.orderStatus == -3"
-              @click="retryHandler(row)">
+            <AuthButton auth="ORDER_RETRY" type="primary" v-if="props.orderInfo.retryView" @click="retryHandler(row)">
               重试
             </AuthButton>
-            <AuthButton auth="ORDER_REISSUE" type="primary" v-if="props.orderInfo.orderBaseInfo.orderStatus == 6"
+            <AuthButton auth="ORDER_REISSUE" type="primary" v-if="props.orderInfo.reissueView"
               @click="reissueHandler(row)">补发
             </AuthButton>
           </template>
@@ -317,7 +316,8 @@ const submitReissue = () => {
       :close-on-click-modal="false" @closed="closeReissueDialog">
       <el-form ref="reissueFormRef" :model="dataInfo.reissueForm" :rules="retryRules" label-width="100px">
         <el-form-item label="领取账号" prop="accountNumber" required>
-          <el-input v-model="dataInfo.reissueForm.accountNumber" disabled maxlength="50" show-word-limit placeholder="请输入领取账号" />
+          <el-input v-model="dataInfo.reissueForm.accountNumber" disabled maxlength="50" show-word-limit
+            placeholder="请输入领取账号" />
         </el-form-item>
       </el-form>
       <template #footer>
