@@ -6,6 +6,12 @@ onMounted(() => {
   getOperationLog()
 })
 
+const props = defineProps({
+  showError: {
+    type: Boolean,
+    default: false
+  }
+})
 //节点状态
 const getOperationLog = () => {
   const { channelOrderNo } = route.query
@@ -36,7 +42,8 @@ const dataPage = reactive({
         :description="item.operationTime">
         <template #description>
           <div>{{ item.operationTime }}</div>
-          <div v-if="item.remark" class="remark_container">备注:{{ item.remark }}</div>
+          <div v-if="showError && item.remark" class="error">失败原因:{{ item.remark }}</div>
+          <div v-if="!showError && item.remark" class="remark_container">备注:{{ item.remark }}</div>
         </template>
       </el-step>
     </el-steps>
@@ -54,6 +61,11 @@ const dataPage = reactive({
     top: -18px;
     font-size: 16px;
     color: #606266;
+  }
+
+  .error {
+    font-size: 16px;
+    color: var(--el-color-danger-light-3);
   }
 }
 </style>
