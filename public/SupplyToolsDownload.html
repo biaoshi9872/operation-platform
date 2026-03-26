@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supply Tools 下载</title>
+    <style>
+      :root {
+        --bg-start: #f4f7fb;
+        --bg-end: #e6eefc;
+        --card-bg: rgba(255, 255, 255, 0.92);
+        --text-main: #172033;
+        --text-sub: #5d6b82;
+        --primary: #1f6fff;
+        --primary-hover: #1659d4;
+        --secondary: #eef4ff;
+        --secondary-hover: #dde9ff;
+        --border: rgba(31, 111, 255, 0.12);
+        --shadow: 0 24px 60px rgba(17, 38, 84, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC',
+          sans-serif;
+        color: var(--text-main);
+        background:
+          radial-gradient(circle at top left, rgba(31, 111, 255, 0.18), transparent 36%),
+          linear-gradient(135deg, var(--bg-start), var(--bg-end));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 720px;
+        padding: 48px 40px;
+        border-radius: 28px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(31, 111, 255, 0.1);
+        color: var(--primary);
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        font-size: 40px;
+        line-height: 1.15;
+      }
+
+      .desc {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.75;
+        color: var(--text-sub);
+      }
+
+      .env-box {
+        margin-top: 28px;
+        padding: 18px 20px;
+        border-radius: 20px;
+        background: #f7faff;
+        border: 1px solid rgba(31, 111, 255, 0.1);
+      }
+
+      .env-label {
+        font-size: 14px;
+        color: var(--text-sub);
+      }
+
+      .env-value {
+        margin-top: 8px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 54px;
+        padding: 0 20px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 600;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease,
+          background 0.2s ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .button.primary {
+        color: #fff;
+        background: linear-gradient(135deg, var(--primary), #4f8fff);
+        box-shadow: 0 14px 28px rgba(31, 111, 255, 0.22);
+      }
+
+      .button.primary:hover {
+        background: linear-gradient(135deg, var(--primary-hover), #3e7df5);
+      }
+
+      .button.secondary {
+        color: var(--primary);
+        background: var(--secondary);
+      }
+
+      .button.secondary:hover {
+        background: var(--secondary-hover);
+      }
+
+      .tips {
+        margin-top: 22px;
+        font-size: 14px;
+        line-height: 1.8;
+        color: var(--text-sub);
+      }
+
+      @media (max-width: 640px) {
+        .card {
+          padding: 32px 22px;
+          border-radius: 22px;
+        }
+
+        h1 {
+          font-size: 30px;
+        }
+
+        .actions {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="badge">Supply Tools</div>
+      <h1>下载桌面安装包</h1>
+      <p class="desc">
+        页面会自动识别当前系统，macOS 优先下载 DMG 安装包，Windows 优先下载 EXE 安装包。
+      </p>
+
+      <section class="env-box">
+        <div class="env-label">当前识别环境</div>
+        <div class="env-value" id="envText">正在识别...</div>
+      </section>
+
+      <section class="actions">
+        <a
+          id="autoDownload"
+          class="button primary"
+          href="https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-arm64.dmg"
+        >
+          立即下载
+        </a>
+        <a
+          id="manualDownload"
+          class="button secondary"
+          href="https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-setup.exe"
+        >
+          下载 Windows 版
+        </a>
+      </section>
+
+      <p class="tips" id="tipsText">
+        如果自动识别不准确，可以使用下方按钮手动下载对应安装包。
+      </p>
+
+      <section class="actions">
+        <a
+          class="button secondary"
+          href="https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-arm64.dmg"
+        >
+          下载 macOS 版（DMG）
+        </a>
+        <a
+          class="button secondary"
+          href="https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-setup.exe"
+        >
+          下载 Windows 版（EXE）
+        </a>
+      </section>
+    </main>
+
+    <script>
+      const DOWNLOAD_LINKS = {
+        mac: {
+          label: '下载 macOS 版（DMG）',
+          href: 'https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-arm64.dmg',
+          env: 'macOS',
+          tip: '已识别为 macOS，主按钮将下载 DMG 安装包。'
+        },
+        windows: {
+          label: '下载 Windows 版（EXE）',
+          href: 'https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-setup.exe',
+          env: 'Windows',
+          tip: '已识别为 Windows，主按钮将下载 EXE 安装包。'
+        },
+        other: {
+          label: '下载 macOS 版（DMG）',
+          href: 'https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-arm64.dmg',
+          env: '未识别系统',
+          tip: '未准确识别为 macOS 或 Windows，请根据设备手动选择下方安装包。'
+        }
+      }
+
+      const envText = document.getElementById('envText')
+      const tipsText = document.getElementById('tipsText')
+      const autoDownload = document.getElementById('autoDownload')
+      const manualDownload = document.getElementById('manualDownload')
+
+      function detectPlatform() {
+        const ua = navigator.userAgent || ''
+        const platform = navigator.platform || ''
+
+        if (/Mac|iPhone|iPad|iPod/i.test(platform) || /Mac OS X/i.test(ua)) {
+          return 'mac'
+        }
+
+        if (/Win/i.test(platform) || /Windows/i.test(ua)) {
+          return 'windows'
+        }
+
+        return 'other'
+      }
+
+      function applyDownloadTarget(type) {
+        const target = DOWNLOAD_LINKS[type]
+        envText.textContent = target.env
+        tipsText.textContent = target.tip
+        autoDownload.textContent = target.label
+        autoDownload.href = target.href
+
+        if (type === 'mac') {
+          manualDownload.textContent = '下载 Windows 版'
+          manualDownload.href = DOWNLOAD_LINKS.windows.href
+        } else {
+          manualDownload.textContent = '下载 macOS 版'
+          manualDownload.href = DOWNLOAD_LINKS.mac.href
+        }
+      }
+
+      applyDownloadTarget(detectPlatform())
+    </script>
+  </body>
+</html>
