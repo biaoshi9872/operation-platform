@@ -146,6 +146,112 @@
         color: var(--text-sub);
       }
 
+      .mac-guide {
+        display: none;
+        margin-top: 24px;
+        padding: 20px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, #f8fbff 0%, #f2f7ff 100%);
+        border: 1px solid rgba(31, 111, 255, 0.12);
+      }
+
+      .mac-guide.is-visible {
+        display: block;
+      }
+
+      .guide-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .guide-text {
+        margin: 10px 0 0;
+        font-size: 14px;
+        line-height: 1.8;
+        color: var(--text-sub);
+      }
+
+      .command-box {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        overflow-x: auto;
+        background: #172033;
+        color: #f3f7ff;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .command-box code {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+        white-space: nowrap;
+      }
+
+      .terminal-shot {
+        margin-top: 16px;
+        overflow: hidden;
+        border-radius: 18px;
+        border: 1px solid rgba(23, 32, 51, 0.08);
+        box-shadow: 0 18px 36px rgba(17, 38, 84, 0.12);
+        background: #1f1f23;
+      }
+
+      .terminal-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: #35363a;
+      }
+
+      .terminal-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .terminal-dot.red {
+        background: #ff5f57;
+      }
+
+      .terminal-dot.yellow {
+        background: #febc2e;
+      }
+
+      .terminal-dot.green {
+        background: #28c840;
+      }
+
+      .terminal-title {
+        margin-left: 8px;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .terminal-body {
+        padding: 18px 20px 22px;
+        color: #f5f7fb;
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .terminal-body p {
+        margin: 0;
+      }
+
+      .terminal-mask {
+        display: inline-block;
+        width: 10px;
+        height: 18px;
+        margin-left: 4px;
+        border-radius: 999px;
+        vertical-align: -3px;
+        background: rgba(255, 255, 255, 0.92);
+      }
+
       @media (max-width: 640px) {
         .card {
           padding: 32px 22px;
@@ -191,6 +297,29 @@
           下载 Windows 版
         </a>
       </section>
+
+      <section class="mac-guide" id="macGuide">
+        <p class="guide-title">macOS 安装后若提示无法打开</p>
+        <p class="guide-text">
+          如果应用已拖到“应用程序”目录，打开终端执行下面命令后再重新启动应用。
+        </p>
+        <div class="command-box">
+          <code>sudo xattr -rd com.apple.quarantine /Applications/supply-tools.app</code>
+        </div>
+        <div class="terminal-shot" aria-label="终端执行命令示意图">
+          <div class="terminal-bar">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">shibiao - sudo - 80x24</span>
+          </div>
+          <div class="terminal-body">
+            <p>Last login: Thu Mar 26 22:47:06 on ttys051</p>
+            <p>[shibiao@shibiaodeMacBook-Air ~ % sudo xattr -rd com.apple.quarantine /Applications/supply-tools.app</p>
+            <p>Password:<span class="terminal-mask"></span></p>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script>
@@ -215,6 +344,7 @@
       const envText = document.getElementById('envText')
       const autoDownload = document.getElementById('autoDownload')
       const manualDownload = document.getElementById('manualDownload')
+      const macGuide = document.getElementById('macGuide')
 
       function detectPlatform() {
         const ua = navigator.userAgent || ''
@@ -236,6 +366,7 @@
         envText.textContent = target.env
         autoDownload.textContent = target.label
         autoDownload.href = target.href
+        macGuide.classList.toggle('is-visible', type === 'mac')
 
         if (type === 'mac') {
           manualDownload.textContent = '下载 Windows 版'
