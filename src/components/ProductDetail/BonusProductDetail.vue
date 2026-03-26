@@ -208,6 +208,8 @@ defineExpose({
 
   .summary {
     background-color: var(--el-searchForm-bg-color);
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   .coupon_list {
