@@ -20,7 +20,7 @@ const dataPage: IPage<any, any> = reactive({
   isOnload: true,
   page: {
     page: 1,
-    limit: 10,
+    limit: 12,
     totalCount: 0
   },
   facade: {
@@ -111,7 +111,8 @@ const toApplicationHandler = (row: any) => {
           @edit="editApplicationHandler" @copyId="getProjectId"></AppCell>
       </div>
       <div class="app-pagination-container">
-        <CustomPagination @pagingQuery="searchQueryHarder" :page="dataPage.page"></CustomPagination>
+        <CustomPagination @pagingQuery="searchQueryHarder" :page="dataPage.page" :page-sizes="[12, 24, 36, 48]">
+        </CustomPagination>
       </div>
     </div>
     <ApplicationModel v-model="dataPage.showApplication" :curryInfo="dataPage.curryInfo"></ApplicationModel>
