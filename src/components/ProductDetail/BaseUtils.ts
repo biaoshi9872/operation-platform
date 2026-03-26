@@ -14,7 +14,10 @@ const goodDetail = {
   description: '', //商品描述
   baseAttributeDto: [], //扩展数据
   goodsBaseAttributeList: [], //扩展数据
-  bannerImages: [] //轮播图
+  bannerImages: [], //轮播图
+  saleInfo: {}, //销售属性
+  specification: '', //规格
+  source: ''
 }
 
 export function detailTransfer(details: any, goodsSourceType: any) {
@@ -28,9 +31,20 @@ export function detailTransfer(details: any, goodsSourceType: any) {
     //天猫超市
     case 55:
       return tmcsDetailTransfer(details)
+    //新天猫超市
+    case 63:
+      return tmcsDetailTransfer(details)
     //驿宝通精选
     case 104:
       return ybjxDetailTransfer(details)
+    //平台精选
+    case 106:
+      return ptjxDetailTransfer(details)
+    //虚拟卡包
+    case 107:
+      return xnkbDetailTransfer(details)
+    case 108:
+      return ljjDetailTransfer(details)
     //渠道自营
     case 105:
       return qdzyDetailTransfer(details)
@@ -68,8 +82,11 @@ const jdDetailTransfer = (details: any) => {
   goodsInfo.description = details.content
   goodsInfo.refundStatus = details.refundStatus
   goodsInfo.bannerImages = details.productImageList.map((el: any) => el.imageUrl)
+  goodsInfo.saleInfo = saleInfo
+  goodsInfo.specification = `<span class="specification mr-16"  >${saleInfo.color}</span><span class="specification">${saleInfo.size}</span>`
   return goodsInfo
 }
+
 const jdSxDetailTransfer = (details: any) => {
   let goodsInfo = cloneDeep(goodDetail)
   goodsInfo = {
@@ -88,6 +105,9 @@ const jdSxDetailTransfer = (details: any) => {
   goodsInfo.description = details.content
   goodsInfo.refundStatus = details.refundStatus
   goodsInfo.bannerImages = details.productImageList.map((el: any) => el.imageUrl)
+  goodsInfo.saleInfo = saleInfo
+  goodsInfo.specification = `<span class="specification mr-16">${saleInfo.color}</span>   <span class="specification">${saleInfo.size}</span>`
+
   return goodsInfo
 }
 
@@ -138,7 +158,7 @@ const qdzyDetailTransfer = (details: any) => {
     ...details
   }
   goodsInfo.title = details.title
-  goodsInfo.images = details.images
+  goodsInfo.images = '' //details.images
   goodsInfo.attributeValue1 = details.attributeValue1
   goodsInfo.attributeValue2 = details.attributeValue2
   goodsInfo.categoryCodeName = details.categoryCodeName
@@ -146,5 +166,67 @@ const qdzyDetailTransfer = (details: any) => {
   goodsInfo.unitName = details.unitName
   goodsInfo.description = details.description
   goodsInfo.refundStatus = details.refundStatus
+  return goodsInfo
+}
+
+/**
+ * 平台精选
+ * @param details
+ * @returns
+ */
+const ptjxDetailTransfer = (details: any) => {
+  let goodsInfo = cloneDeep(goodDetail)
+  goodsInfo = {
+    ...goodsInfo,
+    ...details
+  }
+  goodsInfo.title = details.skuName
+  goodsInfo.images = details.skuImage
+  goodsInfo.attributeValue1 = details.attributeValue1
+  goodsInfo.attributeValue2 = details.attributeValue2
+  goodsInfo.categoryCodeName = details.skuCategory
+  goodsInfo.brandName = details.brandName
+  goodsInfo.unitName = details.unit
+  goodsInfo.description = details.description
+  goodsInfo.refundStatus = details.refundStatus
+  goodsInfo.source = details.goodsSourceType
+  return goodsInfo
+}
+
+const xnkbDetailTransfer = (details: any) => {
+  let goodsInfo = cloneDeep(goodDetail)
+  goodsInfo = {
+    ...goodsInfo,
+    ...details
+  }
+  goodsInfo.title = details.skuName
+  goodsInfo.images = details.skuImage
+  goodsInfo.attributeValue1 = ''
+  goodsInfo.attributeValue2 = ''
+  goodsInfo.categoryCodeName = details.skuCategory
+  goodsInfo.brandName = ''
+  goodsInfo.unitName = ''
+  goodsInfo.description = details.remarks
+  goodsInfo.refundStatus = ''
+  goodsInfo.source = '107'
+  return goodsInfo
+}
+
+const ljjDetailTransfer = (details: any) => {
+  let goodsInfo = cloneDeep(goodDetail)
+  goodsInfo = {
+    ...goodsInfo,
+    ...details
+  }
+  goodsInfo.title = details.skuName
+  goodsInfo.images = details.skuImage
+  goodsInfo.attributeValue1 = ''
+  goodsInfo.attributeValue2 = ''
+  goodsInfo.categoryCodeName = details.skuCategory
+  goodsInfo.brandName = ''
+  goodsInfo.unitName = ''
+  goodsInfo.description = details.useDescription
+  goodsInfo.refundStatus = ''
+  goodsInfo.source = '108'
   return goodsInfo
 }

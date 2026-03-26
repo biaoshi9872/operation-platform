@@ -46,8 +46,6 @@ const getOrderDetail = () => {
             ...res
         }
         dataPage.activeName = 0
-        loadFailLogList()
-        loadReissueLogList()
     })
 }
 
@@ -59,11 +57,11 @@ const stateTitle = computed(() => {
 })
 
 const showFailLogButton = computed(() => {
-    return (dataPage.failLogList?.length || 0) > 0
+    return dataPage.detailInfo.failLogView
 })
 
 const showReissueLogButton = computed(() => {
-    return (dataPage.reissueLogList?.length || 0) > 0
+    return dataPage.detailInfo.reissueLogView
 })
 
 const normalizeList = (res: any) => {
@@ -77,33 +75,6 @@ const getFailLogOrderId = () => {
 const getReissueOrderNo = () => {
     return dataPage.detailInfo.orderBaseInfo?.orderNo
 }
-
-const loadFailLogList = () => {
-    const orderId = getFailLogOrderId()
-    if (!orderId) {
-        dataPage.failLogList = []
-        return
-    }
-    order_api.A_queryFailLog(String(orderId)).then((res: any) => {
-        dataPage.failLogList = normalizeList(res)
-    }).catch(() => {
-        dataPage.failLogList = []
-    })
-}
-
-const loadReissueLogList = () => {
-    const orderNo = getReissueOrderNo()
-    if (!orderNo) {
-        dataPage.reissueLogList = []
-        return
-    }
-    order_api.A_queryPartLog(String(orderNo)).then((res: any) => {
-        dataPage.reissueLogList = normalizeList(res)
-    }).catch(() => {
-        dataPage.reissueLogList = []
-    })
-}
-
 const openFailLogDialog = () => {
     const orderId = getFailLogOrderId()
     if (!orderId) {
@@ -135,10 +106,10 @@ const openReissueLogDialog = () => {
 }
 
 const getReissueStatus = (status: string | number) => {
-    if (String(status) === '1') {
+    if (String(status) == '1') {
         return '成功'
     }
-    if (String(status) === '-1') {
+    if (String(status) == '-1') {
         return '失败'
     }
     return status || '-'
@@ -186,7 +157,7 @@ const copyOrderHandler = async () => {
         <OrderProductCell :orderInfo="dataPage.detailInfo" :goodsVOList="dataPage.detailInfo.goodsInfo">
         </OrderProductCell>
     </CardModel>
-    <el-dialog v-model="dataPage.failLogVisible" title="失败记录" width="1100px" append-to-body draggable destroy-on-close>
+    <el-dialog v-model="dataPage.failLogVisible" title="失败记录" width="1300px" append-to-body draggable destroy-on-close>
         <el-table :data="dataPage.failLogList" border v-loading="dataPage.failLogLoading" max-height="460">
             <el-table-column prop="submitTime" label="提交订单时间" min-width="150" show-overflow-tooltip />
             <el-table-column prop="confirmTime" label="确认下单时间" min-width="150" show-overflow-tooltip />
@@ -195,7 +166,7 @@ const copyOrderHandler = async () => {
             <el-table-column prop="thirdOrderNo" label="第三方订单编号" min-width="160" show-overflow-tooltip />
             <el-table-column prop="thirdBatchNo" label="批次号" min-width="110" show-overflow-tooltip />
             <el-table-column prop="receiverPhone" label="领取账号" min-width="130" show-overflow-tooltip />
-            <el-table-column prop="errMsg" label="失败原因" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="remark2" label="失败原因" min-width="140" show-overflow-tooltip />
         </el-table>
     </el-dialog>
     <el-dialog v-model="dataPage.reissueLogVisible" title="补发记录" width="1300px" append-to-body draggable

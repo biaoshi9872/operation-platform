@@ -23,9 +23,8 @@ const isShowAttr = computed(() => {
   <div v-if="isShowAttr">
     <div class="mb-16 flex justify-start">
       规格：
-      <AttributeModule :row="props.goodDetail"></AttributeModule>
+      <AttributeModule :row="props.goodDetail" comboSkuListFiled="comboDetailList"></AttributeModule>
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

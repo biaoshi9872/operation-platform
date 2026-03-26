@@ -62,10 +62,12 @@ const dataInfo = reactive({
             <div>
               <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
                 comboNumName="singleComboNum" width="100%" showGiveawayTagBox="true" :goodDetail="row"
-                :style="{ 'height': '83px' }" class="bottom-border-dashed"></SkuDetail>
+                :productSource="orderInfo?.channelSource"  :style="{ 'height': '83px' }"
+                class="bottom-border-dashed"></SkuDetail>
               <SkuDetail v-for="item in row.orderGiftList" :key="item.skuCode" class="bottom-border-dashed"
                 :customAttribute="{ url: 'imageUrl', name: 'skuName', id: 'skuCode' }" comboNumName="singleComboNum"
                 width="100%" showGiveawayTagBox="true" :goodDetail="{ ...item, isGift: true }"
+                :productSource="orderInfo?.channelSource" 
                 :style="{ 'height': '83px' }"></SkuDetail>
             </div>
           </template>

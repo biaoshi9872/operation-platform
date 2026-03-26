@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import isStateCheckHooks from '@/hooks/isStateCheckHooks'
-import { split } from 'lodash-es'
+import ProductDetail from '../ProductDetail/index.vue'
 const { isCombinationGoods } = isStateCheckHooks()
 defineOptions({
   name: 'SkuDetail'
@@ -20,6 +20,9 @@ interface IProp {
   hasTag?: boolean
   isShowModelTag: boolean
   openTooltip: boolean
+  productSource?: number
+  appId?:number|null
+  showDetailButton?: boolean
 }
 
 const props = withDefaults(defineProps<IProp>(), {
@@ -29,9 +32,12 @@ const props = withDefaults(defineProps<IProp>(), {
     itemCode: '',
     brandName: ''
   },
+  productSource: -1,
+  appId:null,
   showExtraCode: false,
   hasTag: true,
   openTooltip: false,
+  showDetailButton: false,
   comboNumName: 'comboNum',
   dataList: [],
   showGiveawayTagBox: false,
@@ -49,6 +55,8 @@ const emits = defineEmits<{
   (e: 'linkProduct', value: any): void
 }>()
 const dialogVisible = ref(false)
+const showDetailModel = ref(false)
+const productDetailRef = ref(null)
 const attribute1TooltipShow = ref(false)
 const attributeRef1 = ref(null)
 const imagesSrc = computed(() => {
@@ -104,7 +112,12 @@ const webkitLine = computed(() => {
   }
   return line
 })
-
+const toDetailHandler = () => {
+  showDetailModel.value = true
+  nextTick(() => {
+    productDetailRef.value?.openHandler?.()
+  })
+}
 const linkClickHandler = () => {
   emits('linkProduct', props.goodDetail)
 }
@@ -161,6 +174,9 @@ const linkClickHandler = () => {
                 goodDetail.extraCode
                 || '-' }}</el-tooltip>
             </div>
+              <div v-if="showDetailButton" class="detailButtonBox">
+            <el-button @click="toDetailHandler" type="primary" link >商品详情</el-button>
+          </div>
           </div>
         </div>
         <!-- 实现预览 -->
@@ -177,8 +193,13 @@ const linkClickHandler = () => {
           </el-tooltip>
         </div>
       </div>
+  
     </div>
   </div>
+  <!-- 商品详情-->
+  <ProductDetail ref="productDetailRef" v-model="showDetailModel" :appId="appId" :productSource="productSource" type="myPool"
+    :itemInfo="goodDetail">
+  </ProductDetail>
 </template>
 
 <style lang="scss" scoped>
@@ -230,5 +251,17 @@ const linkClickHandler = () => {
     padding: 2px 8px;
     @include overflow(1);
   }
+}
+
+.detailButtonBox {
+  margin-top: 6px;
+  line-height: 1;
+}
+
+.detailButton {
+  height: auto;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 400;
 }
 </style>

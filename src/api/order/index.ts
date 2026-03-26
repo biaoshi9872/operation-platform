@@ -168,8 +168,11 @@ class order_api {
    */
   A_queryPartLog(orderNo: string) {
     return request<any>({
-      url: `/order/reissueLog/${orderNo}`,
-      method: 'post'
+      url: `/order/reissueLog`,
+      method: 'post',
+      params: {
+        orderNo
+      }
     })
   }
 

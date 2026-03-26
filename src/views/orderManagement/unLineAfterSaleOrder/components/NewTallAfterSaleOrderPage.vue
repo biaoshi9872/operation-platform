@@ -193,7 +193,7 @@ const isUploadVoucherRequired: any = computed(() => {
             </div>
         </div>
     </CardModel>
-    <CardModel title="基本信息">
+    <CardModel title="售后信息">
         <div>
             <el-form ref="formRef" :model="data.formData" label-suffix=":" label-position="right" label-width="100px"
                 :rules="data.formRules">

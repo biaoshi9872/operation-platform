@@ -186,7 +186,8 @@ const submitReissue = () => {
         <el-table-column prop="title" label="商品信息" width="320">
           <template #default="{ row }">
             <SkuDetail :customAttribute="{ url: 'images', name: 'skuName', id: 'skuCode' }"
-              comboNumName="singleComboNum" width="100%" :goodDetail="row"></SkuDetail>
+              comboNumName="singleComboNum" width="100%" :goodDetail="row" :productSource="orderInfo?.channelSource">
+            </SkuDetail>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="规格" min-width="100">
@@ -240,8 +241,13 @@ const submitReissue = () => {
         </el-table-column>
         <el-table-column prop="afterSaleType" min-width="130" label="操作">
           <template #default="{ row }">
-            <el-button type="primary" v-if="props.orderInfo.failLogView" @click="retryHandler(row)">重试</el-button>
-            <el-button type="primary" v-if="props.orderInfo.reissueLogView" @click="reissueHandler(row)">补发</el-button>
+            <AuthButton authKey="ORDER_RETRY" type="primary" v-if="props.orderInfo.retryView"
+              @click="retryHandler(row)">
+              重试
+            </AuthButton>
+            <AuthButton authKey="ORDER_REISSUE" type="primary" v-if="props.orderInfo.reissueView"
+              @click="reissueHandler(row)">补发
+            </AuthButton>
           </template>
         </el-table-column>
       </el-table>
@@ -251,8 +257,6 @@ const submitReissue = () => {
       <div class="footer-content">
         <span class="item_title">商品金额:</span>
         <span class="item_price">￥{{ orderInfo.totalAmount }}</span>
-        <span class="item_title">运费共计:</span>
-        <span class="item_price">￥{{ orderInfo.freightAmount }}</span>
         <span class="item_title">订单总金额:</span>
         <span class="item_price">￥{{ orderInfo.orderAmount }}</span>
         <span v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" class="item_title">订单结算总金额:</span>
@@ -289,7 +293,7 @@ const submitReissue = () => {
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-          }}</template>
+        }}</template>
       </el-table-column>
     </el-table>
     <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
@@ -313,7 +317,8 @@ const submitReissue = () => {
       :close-on-click-modal="false" @closed="closeReissueDialog">
       <el-form ref="reissueFormRef" :model="dataInfo.reissueForm" :rules="retryRules" label-width="100px">
         <el-form-item label="领取账号" prop="accountNumber" required>
-          <el-input v-model="dataInfo.reissueForm.accountNumber" maxlength="50" show-word-limit placeholder="请输入领取账号" />
+          <el-input v-model="dataInfo.reissueForm.accountNumber" disabled maxlength="50" show-word-limit
+            placeholder="请输入领取账号" />
         </el-form-item>
       </el-form>
       <template #footer>
