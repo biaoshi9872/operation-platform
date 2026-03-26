@@ -131,7 +131,7 @@ const copyOrderHandler = async () => {
         <template #option>
             <el-button type="primary" @click="copyOrderHandler">一键复制</el-button>
         </template>
-        <OrderStateNode></OrderStateNode>
+        <OrderStateNode :showError="true"></OrderStateNode>
     </CardModel>
     <CardModel iconName="menu-order" :title="`订单状态:${stateTitle}`">
         <template #option>

@@ -31,7 +31,12 @@
       >
         <div class="slide-verify-slider-mask" :style="{ width: dataInfo.sliderMaskWidth }">
           <!-- slider -->
-          <div class="slide-verify-slider-mask-item" :style="{ left: dataInfo.sliderLeft }" @mousedown="touchStartEvent">
+          <div
+            class="slide-verify-slider-mask-item"
+            :style="{ left: dataInfo.sliderLeft }"
+            @mousedown="touchStartEvent"
+            @touchstart="touchStartEvent"
+          >
             <div class="slide-verify-slider-mask-item-icon">
               <svg-icon icon-class="slide" name="slide" class="icon-box" />
             </div>
@@ -81,12 +86,26 @@ const open = () => {
 onMounted(() => {
   window.addEventListener('mousemove', touchMoveEvent)
   window.addEventListener('mouseup', touchEndEvent)
+  window.addEventListener('touchmove', touchMoveEvent, { passive: false })
+  window.addEventListener('touchend', touchEndEvent, { passive: false })
+  window.addEventListener('touchcancel', touchEndEvent, { passive: false })
 })
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', touchMoveEvent, false)
   window.removeEventListener('mouseup', touchEndEvent, false)
+  window.removeEventListener('touchmove', touchMoveEvent)
+  window.removeEventListener('touchend', touchEndEvent)
+  window.removeEventListener('touchcancel', touchEndEvent)
 })
+
+const getEventPoint = (event: any) => {
+  const point = event.touches?.[0] || event.changedTouches?.[0] || event
+  return {
+    pageX: point?.pageX ?? 0,
+    pageY: point?.pageY ?? 0
+  }
+}
 
 const initCaptcha = () => {
   reset()
@@ -105,15 +124,17 @@ const initCaptcha = () => {
 }
 const touchStartEvent = (event: any) => {
   event.preventDefault()
+  const { pageX, pageY } = getEventPoint(event)
   dataInfo.startSlidingTime = new Date()
-  dataInfo.originX = event.pageX
-  dataInfo.originY = event.pageY
+  dataInfo.originX = pageX
+  dataInfo.originY = pageY
   dataInfo.isMouseDown = true
 }
 const touchMoveEvent = (e: any) => {
-  e.preventDefault()
   if (!dataInfo.isMouseDown) return false
-  let moveX = e.pageX - dataInfo.originX
+  e.preventDefault()
+  const { pageX, pageY } = getEventPoint(e)
+  let moveX = pageX - dataInfo.originX
   if (moveX < 0) {
     moveX = 0
   }
@@ -122,9 +143,9 @@ const touchMoveEvent = (e: any) => {
   }
   dataInfo.sliderLeft = moveX + 'px'
   const blockLeft = ((280 - 50) / (280 - 40)) * moveX
-  block.value.style.left = blockLeft + 'px'
-  const pageX = e.pageX
-  const pageY = e.pageY
+  if (block.value) {
+    block.value.style.left = blockLeft + 'px'
+  }
   dataInfo.trackArr.push({
     x: pageX - dataInfo.originX,
     y: pageY - dataInfo.originY,
@@ -134,13 +155,14 @@ const touchMoveEvent = (e: any) => {
   dataInfo.sliderMaskWidth = moveX + 'px'
 }
 const touchEndEvent = (e: any) => {
-  e.preventDefault()
-  dataInfo.entSlidingTime = new Date()
   if (!dataInfo.isMouseDown) return false
+  e.preventDefault()
+  const { pageX } = getEventPoint(e)
+  dataInfo.entSlidingTime = new Date()
   dataInfo.isMouseDown = false
-  if (e.pageX === dataInfo.originX) return false
+  if (pageX === dataInfo.originX) return false
   dataInfo.containerActive = false // remove active
-  const x = block.value.style.left.substring(0, block.value.style.left.length - 2)
+  const x = block.value?.style.left.substring(0, block.value.style.left.length - 2) || '0'
   onEnd(Math.round(Number(x)))
 }
 const onEnd = (x: any) => {
@@ -187,7 +209,9 @@ const reset = () => {
   dataInfo.containerSuccess = false
   dataInfo.containerFail = false
   dataInfo.sliderLeft = 0
-  block.value.style.left = 0
+  if (block.value) {
+    block.value.style.left = '0px'
+  }
   dataInfo.sliderMaskWidth = 0
   dataInfo.cutoutImage = ''
   dataInfo.shadeImage = ''
@@ -297,6 +321,7 @@ const newFormatDate = (date: any, code: any, type: any) => {
         background: #fff;
         box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
         cursor: pointer;
+        touch-action: none;
         transition: background 0.2s linear;
         .slide-verify-slider-mask-item-icon {
           width: 40px;

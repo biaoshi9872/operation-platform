@@ -112,7 +112,9 @@ const closeRetryDialog = () => {
   }
   dataInfo.showRetryDialog = false
 }
-
+const goodDetail = computed(() => {
+  return props.orderInfo.goodsInfo[0] || {}
+})
 const closeReissueDialog = () => {
   if (reissueFormRef.value) {
     reissueFormRef.value.resetFields()
@@ -293,7 +295,7 @@ const submitReissue = () => {
       </el-table-column>
       <el-table-column prop="price" label="进项发票类型">
         <template #default="{ row }">{{ order_enum.getDictNameByKey(order_enum.C_invoiceTypeList, row.invoiceType)
-        }}</template>
+          }}</template>
       </el-table-column>
     </el-table>
     <VirtualRechargeModel v-model="dataInfo.showVirtualRechargeModel" :orderInfo="orderInfo"
@@ -303,7 +305,8 @@ const submitReissue = () => {
       :close-on-click-modal="false" @closed="closeRetryDialog">
       <el-form ref="retryFormRef" :model="dataInfo.retryForm" :rules="retryRules" label-width="100px">
         <el-form-item label="领取账号" prop="accountNumber" required>
-          <el-input v-model="dataInfo.retryForm.accountNumber" maxlength="50" show-word-limit placeholder="请输入领取账号" />
+          <el-input v-model="dataInfo.retryForm.accountNumber" :disabled="goodDetail.ljj_platform == '微信'"
+            maxlength="50" show-word-limit placeholder="请输入领取账号" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -317,8 +320,8 @@ const submitReissue = () => {
       :close-on-click-modal="false" @closed="closeReissueDialog">
       <el-form ref="reissueFormRef" :model="dataInfo.reissueForm" :rules="retryRules" label-width="100px">
         <el-form-item label="领取账号" prop="accountNumber" required>
-          <el-input v-model="dataInfo.reissueForm.accountNumber" disabled maxlength="50" show-word-limit
-            placeholder="请输入领取账号" />
+          <el-input v-model="dataInfo.reissueForm.accountNumber" :disabled="goodDetail.ljj_platform == '微信'"
+            maxlength="50" show-word-limit placeholder="请输入领取账号" />
         </el-form-item>
       </el-form>
       <template #footer>
