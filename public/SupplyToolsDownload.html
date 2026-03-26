@@ -191,25 +191,6 @@
           下载 Windows 版
         </a>
       </section>
-
-      <p class="tips" id="tipsText">
-        如果自动识别不准确，可以使用下方按钮手动下载对应安装包。
-      </p>
-
-      <section class="actions">
-        <a
-          class="button secondary"
-          href="https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-arm64.dmg"
-        >
-          下载 macOS 版（DMG）
-        </a>
-        <a
-          class="button secondary"
-          href="https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-setup.exe"
-        >
-          下载 Windows 版（EXE）
-        </a>
-      </section>
     </main>
 
     <script>
@@ -217,25 +198,21 @@
         mac: {
           label: '下载 macOS 版（DMG）',
           href: 'https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-arm64.dmg',
-          env: 'macOS',
-          tip: '已识别为 macOS，主按钮将下载 DMG 安装包。'
+          env: 'macOS'
         },
         windows: {
           label: '下载 Windows 版（EXE）',
           href: 'https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-setup.exe',
-          env: 'Windows',
-          tip: '已识别为 Windows，主按钮将下载 EXE 安装包。'
+          env: 'Windows'
         },
         other: {
           label: '下载 macOS 版（DMG）',
           href: 'https://ybt-vsc.oss-cn-hangzhou.aliyuncs.com/supply-tools/supply-tools-arm64.dmg',
-          env: '未识别系统',
-          tip: '未准确识别为 macOS 或 Windows，请根据设备手动选择下方安装包。'
+          env: '未识别系统'
         }
       }
 
       const envText = document.getElementById('envText')
-      const tipsText = document.getElementById('tipsText')
       const autoDownload = document.getElementById('autoDownload')
       const manualDownload = document.getElementById('manualDownload')
 
@@ -257,7 +234,6 @@
       function applyDownloadTarget(type) {
         const target = DOWNLOAD_LINKS[type]
         envText.textContent = target.env
-        tipsText.textContent = target.tip
         autoDownload.textContent = target.label
         autoDownload.href = target.href
 
