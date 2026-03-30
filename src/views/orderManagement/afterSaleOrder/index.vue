@@ -250,7 +250,7 @@ const initColumns = () => {
       prop: 'appName'
     })
   }
-  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+  if (['10', '101'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '项目类型',
       align: 'center',
@@ -421,7 +421,7 @@ const initColumns = () => {
         <SelectModel v-model.trim="dataPage.facade.desensitizationStatus" :selectList="order_enum.C_isMaskList">
         </SelectModel>
       </el-form-item>
-      <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
+      <el-form-item v-if="['101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade.projectTypeList" :selectList="system_enum.projectType">
         </SelectModel>
       </el-form-item>

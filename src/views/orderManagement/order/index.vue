@@ -477,7 +477,7 @@ const initColumns = () => {
     }
   })
 
-  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+  if (['10', '101'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '批次号',
       'width': '100px',
@@ -487,7 +487,7 @@ const initColumns = () => {
     })
   }
 
-  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+  if (['10', '101'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '领取账号',
       'width': '100px',
@@ -497,7 +497,7 @@ const initColumns = () => {
     })
   }
 
-  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+  if (['10', '101'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '券ID',
       'width': '100px',
@@ -507,7 +507,7 @@ const initColumns = () => {
     })
   }
 
-  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+  if (['10', '101'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '兑换状态',
       'min-width': '120px',
@@ -534,7 +534,7 @@ const initColumns = () => {
       openMarginCell: true
     })
   }
-  if (['10', '101', '20', '201'].includes(getSystemOptionType.value)) {
+  if (['10', '101'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '项目类型',
       align: 'center',
@@ -711,24 +711,24 @@ eventBus.on('orderRefresh', searchQueryHarder)
           v-model="dataPage.facade[dataPage.facadeKz.tab].branchId" placeholder="请选择分行名称">
         </BranchSelect>
       </el-form-item>
-      <el-form-item v-if="['201', '101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
+      <el-form-item v-if="['101'].includes(getSystemOptionType)" label="项目类型" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].projectTypeList"
           :selectList="system_enum.projectType"> </SelectModel>
       </el-form-item>
-      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="兑换状态" class="formItem">
+      <el-form-item v-if="['10', '101'].includes(getSystemOptionType)" label="兑换状态" class="formItem">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].exchangeStatusList"
           :selectList="system_enum.exchangeStatusList"> </SelectModel>
       </el-form-item>
-      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="批次号" class="formItem">
+      <el-form-item v-if="['10', '101'].includes(getSystemOptionType)" label="批次号" class="formItem">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].thirdBatchNo" placeholder="请输入批次号"></el-input>
       </el-form-item>
-      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="券ID" class="formItem">
+      <el-form-item v-if="['10', '101'].includes(getSystemOptionType)" label="券ID" class="formItem">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].thirdCouponId" placeholder="请输入券ID"></el-input>
       </el-form-item>
-      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="领取账号" class="formItem">
+      <el-form-item v-if="['10', '101'].includes(getSystemOptionType)" label="领取账号" class="formItem">
         <el-input v-model.trim="dataPage.facade[dataPage.facadeKz.tab].accountNumber" placeholder="请输入领取账号"></el-input>
       </el-form-item>
-      <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="立减金平台" class="formItem">
+      <el-form-item v-if="['10', '101'].includes(getSystemOptionType)" label="立减金平台" class="formItem">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].couponPlatform"
           :selectList="system_enum.couponPlatformList"> </SelectModel>
       </el-form-item>

@@ -3,6 +3,7 @@ import { generateRoutes } from '@/utils/routerUtils'
 import { RouteRecordRaw } from 'vue-router'
 import menu_api from '@/api/system/menu'
 import configH5_api from '@/api/configH5'
+import org_api from '@/api/system/org'
 import { getLocal, removeLocal, setLocal } from '@/utils/storage'
 const VITE_TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY
 export const useRouterStore = defineStore('routerStore', {
@@ -42,6 +43,7 @@ export const useRouterStore = defineStore('routerStore', {
     },
     async filterRoutes(res: any) {
       const userInfo = getLocal('userInfo')
+      //1. 隐藏API对接管理菜单
       const systemConfig: any = await configH5_api.A_getSysConfigList({
         page: 1,
         limit: 10,
@@ -52,6 +54,18 @@ export const useRouterStore = defineStore('routerStore', {
       if (orgList.findIndex(item => item == userInfo.orgId) == -1) {
         let index = res.findIndex((item: any) => item.name == 'API对接管理')
         res.splice(index, 1)
+      }
+      //2.隐藏 赔付订单菜单
+      const orgInfo: any = await org_api.A_getOrgDetail(userInfo.orgId)
+      let hasTamil = orgInfo.goodsOrgMarkupDTOList
+        .filter((item: any) => !!item.priceMarkupType)
+        .map((item: any) => item.goodsSourceId)
+        .includes(63)
+      if (!hasTamil) {
+        let orderIndex = res.findIndex((item: any) => item.name == '订单管理')
+        let orderInfo = res[orderIndex]
+        let index = orderInfo.children.findIndex((item: any) => item.name == '赔付订单')
+        orderInfo.children.splice(index, 1)
       }
       return res
     },
