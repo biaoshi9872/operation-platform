@@ -7,6 +7,7 @@ import OrderInfoCell from './OrderInfoCell.vue'
 import OrderInfoDetailCell from './OrderInfoDetailCell.vue'
 import OrderProductCell from './OrderProductCell.vue'
 import OrderStateNode from '../../OrderStateNode.vue'
+
 import { buildOrderCopyText, copyText } from '../orderCopy'
 
 const route = useRoute()
