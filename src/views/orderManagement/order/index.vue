@@ -687,8 +687,7 @@ eventBus.on('orderRefresh', searchQueryHarder)
       </el-form-item>
       <el-form-item v-if="['10', '101', '20', '201'].includes(getSystemOptionType)" label="商品类型" class="formItem"
         placeholder="请选择">
-        <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelSourceList"
-          :selectList="goodPoor.sourceTypeList"> </SelectModel>
+        <AppSelect v-model.trim="dataPage.facade[dataPage.facadeKz.tab].channelSourceList"> </AppSelect>
       </el-form-item>
       <el-form-item label="是否脱敏发货" class="formItem" placeholder="请选择">
         <SelectModel v-model.trim="dataPage.facade[dataPage.facadeKz.tab].desensitizationStatus"

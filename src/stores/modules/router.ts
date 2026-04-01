@@ -6,6 +6,14 @@ import configH5_api from '@/api/configH5'
 import org_api from '@/api/system/org'
 import { getLocal, removeLocal, setLocal } from '@/utils/storage'
 const VITE_TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY
+
+type HideMenuConfigItem = {
+  orgId?: Array<number | string>
+  level?: number
+}
+
+type HideMenuConfig = Record<string, HideMenuConfigItem>
+
 export const useRouterStore = defineStore('routerStore', {
   state: () => ({
     //菜单
@@ -17,16 +25,54 @@ export const useRouterStore = defineStore('routerStore', {
     routes: [] as RouteRecordRaw[]
   }),
   actions: {
+    getHideMenuConfigValue(config: any, keys: string[]) {
+      if (!config || typeof config !== 'object') return ''
+      for (const key of keys) {
+        const value = config[key]
+        if (typeof value === 'string' && value.trim()) {
+          return value
+        }
+      }
+      return ''
+    },
+    parseHideMenuConfig(configValue: string): HideMenuConfig {
+      try {
+        const config = JSON.parse(configValue || '{}')
+        return config && typeof config === 'object' ? config : {}
+      } catch (error) {
+        return {}
+      }
+    },
+    filterOrgHideMenus(menuList: any[], orgHideConfig: HideMenuConfig, userOrgId: number | string, depth = 1) {
+      if (!Array.isArray(menuList) || !menuList.length) return []
+      const currentOrgId = String(userOrgId)
+      return menuList.reduce((list: any[], menu: any) => {
+        const rule = orgHideConfig?.[menu?.name]
+        const orgIdList = Array.isArray(rule?.orgId) ? rule.orgId.map(item => String(item)) : []
+        const shouldShow = !!rule && Number(rule.level) === depth && orgIdList.includes(currentOrgId)
+        const shouldHide = !!rule && !shouldShow
+        if (shouldHide) {
+          return list
+        }
+
+        const nextMenu = { ...menu }
+        if (Array.isArray(nextMenu.children) && nextMenu.children.length > 0) {
+          nextMenu.children = this.filterOrgHideMenus(nextMenu.children, orgHideConfig, currentOrgId, depth + 1)
+        }
+
+        list.push(nextMenu)
+        return list
+      }, [])
+    },
     async getMenuRoutes() {
       let res = null
       try {
+        const config = await configH5_api.A_getValueFromCache({})
+        setLocal('config', config)
+        this.config = config || {}
         res = (await menu_api.A_navigationBar({})) as any
         // 隐藏部分菜单
         res = await this.filterRoutes(res)
-        // 配置信息
-        const config = await configH5_api.A_getValueFromCache({})
-        setLocal('config', config)
-        console.log(config, 'config')
         //重置
         if (res?.length == 0) {
           //token失效
@@ -43,19 +89,7 @@ export const useRouterStore = defineStore('routerStore', {
     },
     async filterRoutes(res: any) {
       const userInfo = getLocal('userInfo')
-      //1. 隐藏API对接管理菜单
-      const systemConfig: any = await configH5_api.A_getSysConfigList({
-        page: 1,
-        limit: 10,
-        name: '',
-        key: 'SYS_HIDE_API_MENU'
-      })
-      let orgList: string[] = systemConfig?.page?.records?.[0]?.paramValue?.split(',')
-      if (orgList.findIndex(item => item == userInfo.orgId) == -1) {
-        let index = res.findIndex((item: any) => item.name == 'API对接管理')
-        res.splice(index, 1)
-      }
-      //2.隐藏 赔付订单菜单
+      //1.隐藏 赔付订单菜单
       const orgInfo: any = await org_api.A_getOrgDetail(userInfo.orgId)
       let hasTamil = orgInfo.goodsOrgMarkupDTOList
         .filter((item: any) => !!item.priceMarkupType)
@@ -64,9 +98,25 @@ export const useRouterStore = defineStore('routerStore', {
       if (!hasTamil) {
         let orderIndex = res.findIndex((item: any) => item.name == '订单管理')
         let orderInfo = res[orderIndex]
-        let index = orderInfo.children.findIndex((item: any) => item.name == '赔付订单')
-        orderInfo.children.splice(index, 1)
+        let index = orderInfo?.children?.findIndex((item: any) => item.name == '赔付订单')
+        if (index > -1) {
+          orderInfo.children.splice(index, 1)
+        }
       }
+      //2.动态隐藏 机构菜单
+      const cacheConfig = this.config || getLocal('config') || {}
+      let orgHideConfigValue = this.getHideMenuConfigValue(cacheConfig, ['orgHideConfig', 'SYS_HIDE_MENU_ORG', 'sysHideMenuOrg'])
+      if (!orgHideConfigValue) {
+        const orgSystemConfig: any = await configH5_api.A_getSysConfigList({
+          page: 1,
+          limit: 10,
+          name: '',
+          key: 'SYS_HIDE_MENU_ORG'
+        })
+        orgHideConfigValue = orgSystemConfig?.page?.records?.[0]?.paramValue || ''
+      }
+      const orgHideConfig = this.parseHideMenuConfig(orgHideConfigValue)
+      res = this.filterOrgHideMenus(res, orgHideConfig, userInfo.orgId)
       return res
     },
     setRoutes(routers: RouteRecordRaw[]) {
