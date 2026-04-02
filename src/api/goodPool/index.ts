@@ -207,7 +207,6 @@ class goodPool_api {
    */
   async A_getGoodsSourceList(data: any) {
     let { type, appId, orgId } = data
-    debugger
     /**
      *
      * 1.顶级机构端查

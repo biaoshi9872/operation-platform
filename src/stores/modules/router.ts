@@ -48,9 +48,19 @@ export const useRouterStore = defineStore('routerStore', {
       const currentOrgId = String(userOrgId)
       return menuList.reduce((list: any[], menu: any) => {
         const rule = orgHideConfig?.[menu?.name]
-        const orgIdList = Array.isArray(rule?.orgId) ? rule.orgId.map(item => String(item)) : []
-        const shouldShow = !!rule && Number(rule.level) === depth && orgIdList.includes(currentOrgId)
-        const shouldHide = !!rule && !shouldShow
+        if (!rule) {
+          const nextMenu = { ...menu }
+          if (Array.isArray(nextMenu.children) && nextMenu.children.length > 0) {
+            nextMenu.children = this.filterOrgHideMenus(nextMenu.children, orgHideConfig, currentOrgId, depth + 1)
+          }
+          list.push(nextMenu)
+          return list
+        }
+
+        const orgIdList = Array.isArray(rule.orgId) ? rule.orgId.map(item => String(item)) : []
+        const isSameLevel = Number(rule.level) === depth
+        const shouldShow = isSameLevel && orgIdList.includes(currentOrgId)
+        const shouldHide = isSameLevel && !shouldShow
         if (shouldHide) {
           return list
         }

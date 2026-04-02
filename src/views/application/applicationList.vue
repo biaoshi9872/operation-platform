@@ -70,6 +70,7 @@ const toApplicationHandler = (row: any) => {
   const enPro = getProjectId(row)
   setLocal('projectId', enPro)
   let url = window.location.origin
+  debugger
   if (url.indexOf('localhost') > -1) {
     let path = `http://localhost:7071/api_application/goodsManger/goodsPoor/index?projectId=${enPro}`
     window.open(path, '_blank')
