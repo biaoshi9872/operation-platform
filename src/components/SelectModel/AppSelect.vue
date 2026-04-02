@@ -17,7 +17,7 @@ interface IProp {
 
 const props = withDefaults(defineProps<IProp>(), {
   modelValue: '',
-  multiple: false,
+  multiple: true,
   valueKey: 'id',
   valueLabel: 'name'
 })
