@@ -105,7 +105,7 @@ export const useRouterStore = defineStore('routerStore', {
         .filter((item: any) => !!item.priceMarkupType)
         .map((item: any) => item.goodsSourceId)
         .includes(63)
-      if (!hasTamil) {
+      if (!hasTamil && userInfo.orgType != 1) {
         let orderIndex = res.findIndex((item: any) => item.name == '订单管理')
         let orderInfo = res[orderIndex]
         let index = orderInfo?.children?.findIndex((item: any) => item.name == '赔付订单')
