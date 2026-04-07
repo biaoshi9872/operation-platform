@@ -34,6 +34,50 @@ class application_api {
   }
 
   /**
+   * 应用价格预警分页列表
+   */
+  A_pagePriceAlarm(data: API.T_YingYongJiaGeYuJingFenYeSearchForm) {
+    return request<API.T_YingYongJiaGeYuJingFenYeListRecords[]>({
+      url: '/sys/application/pagePriceAlarm',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 更新应用价格风控开关
+   */
+  A_updatePriceAlarm(data: API.T_GengXinYingYongJiaGeFengKongKaiGuanRequest) {
+    return request<any>({
+      url: '/sys/application/updatePriceAlarm',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
+   * 查询价格预警变更记录
+   */
+  A_priceAlarmLog(data: API.T_JiaGeYuJingBianGengJiLuSearchForm) {
+    return request<API.T_JiaGeYuJingBianGengJiLuListRecords[]>({
+      url: '/sys/application/priceAlarmLog',
+      method: 'get',
+      params: data
+    })
+  }
+
+  /**
+   * 导出
+   */
+  A_pagePriceAlarmExport(data: API.T_YingYongJiaGeYuJingFenYeSearchForm) {
+    return request<any>({
+      url: '/sys/application/pagePriceAlarmExport',
+      method: 'post',
+      data: data
+    })
+  }
+
+  /**
    * 启用禁用状态
    */
   A_status(data: any) {
