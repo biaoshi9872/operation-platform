@@ -32,7 +32,7 @@ const dataPage: IPage<any, any> = reactive({
   facade: {
     skuCode: '', //
     orgIdList: [], //应用进入应用的时候要传
-  
+
     submitTimeStart: '', //订单提交时间
     submitTimeEnd: '', //
     confirmTimeStart: '', //订单确认时间
@@ -45,7 +45,7 @@ const dataPage: IPage<any, any> = reactive({
     supplyIds: [], //供应商
     skuName: '', //商品名称
     receiverName: '', //收货人
-   
+
     orderStatusList: [],
     desensitizationStatus: '', //面单是否脱
   },
@@ -82,7 +82,8 @@ const toOrderDetailHandler = (row: any) => {
     path: '/orderManagement/order/orderDetail',
     query: {
       channelOrderNo: row.channelOrderNo,
-      source: row.channelSource
+      source: row.channelSource,
+      type: 'abOrder'
     }
   })
 }
@@ -90,14 +91,14 @@ const toOrderDetailHandler = (row: any) => {
 const columns: any = ref([])
 
 onMounted(async () => {
-    //1. 武大项目动态配置
+  //1. 武大项目动态配置
   const systemConfig: any = await configH5_api.A_getSysConfigList({
     page: 1,
     limit: 10,
     name: '',
     key: 'SYS_WD_APP_ID'
   })
-  let appIdList: string[] = systemConfig?.page?.records?.[0]?.paramValue?.split(',') ||[]
+  let appIdList: string[] = systemConfig?.page?.records?.[0]?.paramValue?.split(',') || []
   dataPage.facadeKz.appIdList = appIdList
   searchQueryHarder()
   initColumns()
@@ -260,7 +261,7 @@ const initColumns = () => {
     }
   })
 
-    if (['101'].includes(getSystemOptionType.value)) {
+  if (['101'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '机构名称',
       prop: 'orgName',
@@ -270,7 +271,7 @@ const initColumns = () => {
     })
   }
 
-    if ([ '101','201'].includes(getSystemOptionType.value)) {
+  if (['101', '201'].includes(getSystemOptionType.value)) {
     columns.value.push({
       label: '应用名称',
       prop: 'appName',
@@ -399,19 +400,19 @@ const initColumns = () => {
                   <el-divider direction="vertical" />
                 </span>
                 <span class="detail_item">
-                <span class="title">提交订单时间:</span>
-                <span class="value">{{ row.submitTime || '-' }}</span>
-                <el-divider direction="vertical" />
-              </span>
-              <span class="detail_item">
-                <span class="title">确认下单时间:</span>
-                <span class="value">{{ row.confirmTime || '-' }}</span>
-                <el-divider direction="vertical" />
-              </span>
-              <span v-if="getSystemOptionType == 101" class="detail_item">
-                <span class="title">供应商名称:</span>
-                <span class="value">{{ row.supplyName ?? '-' }}</span>
-              </span>
+                  <span class="title">提交订单时间:</span>
+                  <span class="value">{{ row.submitTime || '-' }}</span>
+                  <el-divider direction="vertical" />
+                </span>
+                <span class="detail_item">
+                  <span class="title">确认下单时间:</span>
+                  <span class="value">{{ row.confirmTime || '-' }}</span>
+                  <el-divider direction="vertical" />
+                </span>
+                <span v-if="getSystemOptionType == 101" class="detail_item">
+                  <span class="title">供应商名称:</span>
+                  <span class="value">{{ row.supplyName ?? '-' }}</span>
+                </span>
               </div>
               <div class="detail_top_amount">
                 <span class="amount_item">
@@ -419,7 +420,7 @@ const initColumns = () => {
                   <span class="value">￥{{ row.totalAmount }}</span>
                   <el-divider direction="vertical" />
                 </span>
-              </div>            
+              </div>
             </div>
           </div>
         </div>

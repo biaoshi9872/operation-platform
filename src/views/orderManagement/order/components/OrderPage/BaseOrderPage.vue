@@ -69,6 +69,17 @@ const copyOrderHandler = async () => {
         ElMessage.error('复制失败')
     }
 }
+
+const showError = computed(() => {
+    let type = route.query.type
+    switch (type) {
+        case 'abOrder':
+            return true
+        default:
+            return false
+    }
+})
+
 </script>
 
 <template>
@@ -76,7 +87,7 @@ const copyOrderHandler = async () => {
         <template #option>
             <el-button type="primary" @click="copyOrderHandler">一键复制</el-button>
         </template>
-        <OrderStateNode></OrderStateNode>
+        <OrderStateNode :showError="showError"></OrderStateNode>
     </CardModel>
     <CardModel iconName="menu-order" :title="`订单状态:${stateTitle}`">
         <OrderInfoCell :orderBaseInfo="dataPage.detailInfo.orderBaseInfo" :orderInfo="dataPage.detailInfo">
