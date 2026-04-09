@@ -1,0 +1,9 @@
+.git
+.github
+node_modules
+dist
+voperate_admin
+*.log
+npminstall-debug.log
+.DS_Store
+deploy/*.tar.gz

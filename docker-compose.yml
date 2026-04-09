@@ -1,0 +1,7 @@
+services:
+  operation-platform:
+    image: operation-platform:latest
+    container_name: operation-platform
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:18080:80"

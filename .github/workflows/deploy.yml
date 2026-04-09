@@ -1,0 +1,51 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DEPLOY_DIR: /opt/operation-platform
+  IMAGE_NAME: operation-platform
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        run: docker buildx build --platform linux/amd64 --load -t "$IMAGE_NAME:latest" .
+
+      - name: Export image
+        run: docker save "$IMAGE_NAME:latest" | gzip > /tmp/operation-platform.tar.gz
+
+      - name: Install SSH password helper
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Trust server host key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.DEPLOY_PORT || 22 }}" "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Create remote deploy directory
+        run: |
+          sshpass -p "${{ secrets.DEPLOY_PASSWORD }}" ssh -p "${{ secrets.DEPLOY_PORT || 22 }}" "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            "mkdir -p '$DEPLOY_DIR'"
+
+      - name: Upload image and compose file
+        run: |
+          sshpass -p "${{ secrets.DEPLOY_PASSWORD }}" scp -P "${{ secrets.DEPLOY_PORT || 22 }}" /tmp/operation-platform.tar.gz docker-compose.yml \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:$DEPLOY_DIR/"
+
+      - name: Restart service
+        run: |
+          sshpass -p "${{ secrets.DEPLOY_PASSWORD }}" ssh -p "${{ secrets.DEPLOY_PORT || 22 }}" "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            "cd '$DEPLOY_DIR' && docker load -i operation-platform.tar.gz && docker compose up -d --force-recreate --remove-orphans && docker image prune -f"
