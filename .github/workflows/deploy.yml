@@ -7,7 +7,6 @@ on:
   workflow_dispatch:
 
 env:
-  DEPLOY_DIR: /opt/operation-platform
   IMAGE_NAME: operation-platform
 
 jobs:
@@ -18,34 +17,69 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Build image
-        run: docker buildx build --platform linux/amd64 --load -t "$IMAGE_NAME:latest" .
+        run: docker build --platform linux/amd64 -t "$IMAGE_NAME:latest" .
 
       - name: Export image
-        run: docker save "$IMAGE_NAME:latest" | gzip > /tmp/operation-platform.tar.gz
+        run: |
+          docker save "$IMAGE_NAME:latest" | gzip -1 > operation-platform.tar.gz
+          sha256sum operation-platform.tar.gz > operation-platform.tar.gz.sha256
 
       - name: Install SSH password helper
         run: sudo apt-get update && sudo apt-get install -y sshpass
 
-      - name: Trust server host key
+      - name: Validate secrets
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+          WORKLOAD_HOST: ${{ secrets.WORKLOAD_HOST }}
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -p "${{ secrets.DEPLOY_PORT || 22 }}" "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+          test -n "$DEPLOY_HOST"
+          test -n "$DEPLOY_PORT"
+          test -n "$DEPLOY_USER"
+          test -n "$DEPLOY_PASSWORD"
+          test -n "$WORKLOAD_HOST"
 
-      - name: Create remote deploy directory
+      - name: Upload deploy files
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+          WORKLOAD_HOST: ${{ secrets.WORKLOAD_HOST }}
         run: |
-          sshpass -p "${{ secrets.DEPLOY_PASSWORD }}" ssh -p "${{ secrets.DEPLOY_PORT || 22 }}" "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
-            "mkdir -p '$DEPLOY_DIR'"
+          sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p /opt/k8s/manifests/operation-platform"
+          sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no -p "$DEPLOY_PORT" "$DEPLOY_USER@$WORKLOAD_HOST" "mkdir -p /opt/k8s/images/operation-platform"
+          sshpass -p "$DEPLOY_PASSWORD" scp -o StrictHostKeyChecking=no -P "$DEPLOY_PORT" operation-platform.tar.gz "$DEPLOY_USER@$WORKLOAD_HOST:/opt/k8s/images/operation-platform/"
+          sshpass -p "$DEPLOY_PASSWORD" scp -o StrictHostKeyChecking=no -P "$DEPLOY_PORT" operation-platform.tar.gz.sha256 "$DEPLOY_USER@$WORKLOAD_HOST:/opt/k8s/images/operation-platform/"
+          sshpass -p "$DEPLOY_PASSWORD" scp -o StrictHostKeyChecking=no -P "$DEPLOY_PORT" operation-platform.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/opt/k8s/manifests/operation-platform/"
+          sshpass -p "$DEPLOY_PASSWORD" scp -o StrictHostKeyChecking=no -P "$DEPLOY_PORT" operation-platform.tar.gz.sha256 "$DEPLOY_USER@$DEPLOY_HOST:/opt/k8s/manifests/operation-platform/"
+          sshpass -p "$DEPLOY_PASSWORD" scp -o StrictHostKeyChecking=no -P "$DEPLOY_PORT" deploy/k8s/*.yaml "$DEPLOY_USER@$DEPLOY_HOST:/opt/k8s/manifests/operation-platform/"
 
-      - name: Upload image and compose file
+      - name: Deploy to k3s
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+          WORKLOAD_HOST: ${{ secrets.WORKLOAD_HOST }}
         run: |
-          sshpass -p "${{ secrets.DEPLOY_PASSWORD }}" scp -P "${{ secrets.DEPLOY_PORT || 22 }}" /tmp/operation-platform.tar.gz docker-compose.yml \
-            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:$DEPLOY_DIR/"
-
-      - name: Restart service
-        run: |
-          sshpass -p "${{ secrets.DEPLOY_PASSWORD }}" ssh -p "${{ secrets.DEPLOY_PORT || 22 }}" "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
-            "cd '$DEPLOY_DIR' && docker load -i operation-platform.tar.gz && docker compose up -d --force-recreate --remove-orphans && docker image prune -f"
+          sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no -p "$DEPLOY_PORT" "$DEPLOY_USER@$WORKLOAD_HOST" "\
+            set -e; \
+            cd /opt/k8s/images/operation-platform; \
+            sha256sum -c operation-platform.tar.gz.sha256; \
+            rm -f operation-platform.tar; \
+            gunzip -c operation-platform.tar.gz > operation-platform.tar; \
+            /usr/local/bin/k3s ctr images import /opt/k8s/images/operation-platform/operation-platform.tar; \
+          "
+          sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "\
+            set -e; \
+            kubectl apply -f /opt/k8s/manifests/operation-platform/namespace.yaml; \
+            kubectl apply -f /opt/k8s/manifests/operation-platform/deployment.yaml; \
+            kubectl apply -f /opt/k8s/manifests/operation-platform/service.yaml; \
+            kubectl apply -f /opt/k8s/manifests/operation-platform/nodeport.yaml; \
+            kubectl -n apps rollout status deploy/operation-platform --timeout=180s; \
+            kubectl -n apps get pods -o wide; \
+          "

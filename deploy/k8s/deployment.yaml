@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operation-platform
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: operation-platform
+  template:
+    metadata:
+      labels:
+        app: operation-platform
+    spec:
+      nodeSelector:
+        workload: apps
+      containers:
+        - name: operation-platform
+          image: operation-platform:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 300m
+              memory: 192Mi
+          readinessProbe:
+            httpGet:
+              path: /api_platform/
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api_platform/
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
